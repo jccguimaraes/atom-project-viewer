@@ -34,7 +34,7 @@ Settings  | Type      | Description                                             
 
 #### DataBase Configuration <a id="database-configuration"></a>
 
-A JSON file that contains an array of groups and projects.
+A JSON file that contains an array of groups and projects (if not present, it will be created automatically).
 
 ```js
 {
