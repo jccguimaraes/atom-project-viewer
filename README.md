@@ -28,9 +28,9 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 
 #### Settings <a id="inspired"></a>
 
-| settings | description | default
-|-|-|
-| startUp  | a boolean that defines if project viewer should be opened from the start of Atom. | false
+Settings | Type      | Description                                                        | Default
+---------|-----------|--------------------------------------------------------------------|--------
+`startUp | `boolean` | Defines if project viewer should be opened from the start of Atom. | false
 
 #### DataBase Configuration <a id="database-configuration"></a>
 
