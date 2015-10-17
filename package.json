@@ -1,0 +1,19 @@
+{
+  "name": "project-viewer",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "Project viewer/manager that lets you add and remove groups/projects as well as switching between them.",
+  "keywords": [
+    "project",
+    "manager",
+    "viewer",
+    "group"
+  ],
+  "repository": "https://github.com/jccguimaraes/atom-project-viewer",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

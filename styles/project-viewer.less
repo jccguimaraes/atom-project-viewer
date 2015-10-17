@@ -1,0 +1,109 @@
+@import "ui-variables";
+
+@pv-header-text-size: 18px;
+
+div[is="project-viewer-view"] {
+
+    -webkit-user-select: none;
+    user-select: none;
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    cursor: default;
+    -webkit-user-select: none;
+    min-width: 100px;
+    width: 200px;
+    z-index: 2;
+
+    .panel-heading {
+        color: @text-color-highlight;
+        font-size: @pv-header-text-size;
+    }
+
+    .list-nested-item span {
+        color: @text-color;
+        transition: color 0.3s ease-out 0s;
+    }
+
+.list-nested-item:hover span {
+        transition: color 0.3s ease-in 0s;
+        color: @text-color-highlight;
+    }
+
+    .inset-panel {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .list-item {
+        cursor: pointer;
+
+        .selected {
+            color: @ui-site-color-1;
+        }
+    }
+
+    .icon {
+        text-align: center;
+        margin-right: 4px;
+    }
+
+    .icon-none::before {
+        font-family: 'Octicons Regular';
+        font-weight: normal;
+        font-style: normal;
+        display: inline-block;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        text-decoration: none;
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        content: "\f00a";
+        color: @text-color-info;
+    }
+
+    .group-number-projects {
+        margin: 0 5px 0 0;
+    }
+}
+
+div[is="add-project-view"],
+div[is="remove-project-view"],
+div[is="add-group-view"],
+div[is="remove-group-view"] {
+    hr {
+        border-width: thin;
+        border-color: @input-background-color;
+    }
+
+    h3 {
+        color: @text-color-info;
+    }
+}
+
+div[is="group-selection-view"],
+div[is="paths-selection-view"],
+div[is="project-viewer-select"] {
+    select {
+        background-color: @background-color-highlight;
+        color: @text-color;
+        cursor: pointer;
+    }
+}
+
+div[is="input-selection-view"] {
+    input {
+        background-color: @background-color-highlight;
+        color: @text-color;
+    }
+}
+
+li[is="project-view"].list-item {
+    cursor: pointer;
+}
+
+li[is="project-view"].chosen {
+    color: @ui-site-color-1 !important;
+}
