@@ -28,11 +28,20 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 
 #### Settings <a id="inspired"></a>
 
-missing
+| settings | description | default
+|-|-|
+| startUp  | a boolean that defines if project viewer should be opened from the start of Atom. | false
 
 #### DataBase Configuration <a id="database-configuration"></a>
 
-missing
+A JSON file that contains an array of groups and projects.
+
+```js
+{
+    groups: [],
+    projects: []
+}
+```
 
 #### Future features <a id="future-features"></a>
 * adding ungrouped projects.
