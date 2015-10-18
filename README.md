@@ -4,6 +4,11 @@ This package was driven by other packages that manage projects but didn't give m
 
 Please send comments, issues, bugs, features and other stuff.
 
+## Builds
+
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
+[![apm downloads](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
+
 ## Table of Contents
   * [Projects that inspired me!](#inspired)
   * [Installation](#installation)
@@ -14,9 +19,9 @@ Please send comments, issues, bugs, features and other stuff.
 
 #### Projects that inspired me! <a id="inspired"></a>
 
-* [tree-view](https://github.com/atom/tree-view/) from *atom*.
-* [project-manager](https://github.com/danielbrodin/atom-project-manager/) from *danielbrodin*.
-* [project-sidebar](https://github.com/bripkens/project-sidebar/) from *bripkens*.
+* [tree-view](https://atom.io/packages/tree-view) from *atom*.
+* [project-manager](https://atom.io/packages/project-manager) from *danielbrodin*.
+* [project-sidebar](https://atom.io/packages/project-sidebar) from *bripkens*.
 
 #### Installation <a id="installation"></a>
 

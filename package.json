@@ -15,5 +15,10 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "cz-conventional-changelog": "^1.1.4"
+  },
+  "czConfig": {
+    "path": "./node_modules/cz-conventional-changelog"
+  }
 }
