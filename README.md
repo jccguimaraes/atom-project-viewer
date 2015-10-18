@@ -4,26 +4,18 @@ This package was driven by other packages that manage projects but didn't give m
 
 Please send comments, issues, bugs, features and other stuff.
 
-## Builds
+### Builds
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 [![apm downloads](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 
-## Table of Contents
-  * [Projects that inspired me!](#inspired)
-  * [Installation](#installation)
-  * [Settings](#settings)
-  * [DataBase Configuration](#database-configuration)
-  * [Future features](#future-features)
-  * [Other](#other)
-
-#### Projects that inspired me! <a id="inspired"></a>
+### Projects that inspired me! <a id="inspired"></a>
 
 * [tree-view](https://atom.io/packages/tree-view) from *atom*.
 * [project-manager](https://atom.io/packages/project-manager) from *danielbrodin*.
 * [project-sidebar](https://atom.io/packages/project-sidebar) from *bripkens*.
 
-#### Installation <a id="installation"></a>
+### Installation <a id="installation"></a>
 
 Simply run the following command:
 ```sh
@@ -31,13 +23,13 @@ apm install project-viewer
 ```
 Or find the package in **Atom → Settings → Install** and search for ***project-viewer***.
 
-#### Settings <a id="inspired"></a>
+### Settings <a id="inspired"></a>
 
 Settings  | Type      | Description                                                        | Default
 ----------|-----------|--------------------------------------------------------------------|--------
 `startUp` | `boolean` | Defines if project viewer should be opened from the start of Atom. | false
 
-#### DataBase Configuration <a id="database-configuration"></a>
+### DataBase Configuration <a id="database-configuration"></a>
 
 A JSON file that contains an array of groups and projects (if not present, it will be created automatically).
 
@@ -48,14 +40,15 @@ A JSON file that contains an array of groups and projects (if not present, it wi
 }
 ```
 
-#### Future features <a id="future-features"></a>
+### Future features <a id="future-features"></a>
 * adding ungrouped projects.
 * edit groups/projects (ongoing).
+* add ability to open files (buffers) that were opened before quitting or changing projects.
 * add travis and stuff alike.
 * improve performance and stability.
 * sanitize user inputs (allow only specific chars and stuff).
 * unit tests (yes, none for now...).
 * others (*please contribute with ideas*).
 
-#### Other <a id="other"></a>
+### Other <a id="other"></a>
 You can follow me on [Twitter](https://twitter.com/jccguimaraes)
