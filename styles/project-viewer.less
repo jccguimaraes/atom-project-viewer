@@ -1,6 +1,6 @@
 @import "ui-variables";
 
-@pv-header-text-size: 18px;
+@project-viewer-header-text-size: 18px;
 
 div[is="project-viewer-view"] {
 
@@ -15,9 +15,9 @@ div[is="project-viewer-view"] {
     width: 200px;
     z-index: 2;
 
-    .panel-heading {
+    .heading {
         color: @text-color-highlight;
-        font-size: @pv-header-text-size;
+        font-size: @project-viewer-header-text-size;
     }
 
     .list-nested-item span {
@@ -84,18 +84,21 @@ div[is="remove-group-view"] {
 }
 
 div[is="group-selection-view"],
+div[is="icon-selection-view"],
 div[is="paths-selection-view"],
 div[is="project-viewer-select"] {
     select {
-        background-color: @background-color-highlight;
+        background-color: @pane-item-background-color;
+        border-color:@pane-item-border-color;
         color: @text-color;
         cursor: pointer;
     }
 }
 
 div[is="input-selection-view"] {
-    input {
-        background-color: @background-color-highlight;
+    atom-text-editor[mini] {
+        background-color: @pane-item-background-color;
+        border-color:@pane-item-border-color;
         color: @text-color;
     }
 }

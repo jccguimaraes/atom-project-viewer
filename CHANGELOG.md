@@ -1,3 +1,10 @@
+## 0.1.6
+* Refactored the main project structure.
+* UI tweaks on some components to have Atom's style guide.
+
+## 0.1.5
+* Added basic UI changes for the selected project
+
 ## 0.1.4
 * Fixed an issue regarding inputs in the modal, changed to tag atom-text-editor instead of old input.
 * small updates on the README file.
