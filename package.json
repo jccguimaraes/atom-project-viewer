@@ -20,5 +20,9 @@
   },
   "czConfig": {
     "path": "./node_modules/cz-conventional-changelog"
+  },
+  "scripts": {
+    "lint": "eslint lib/**",
+    "postlint": "jscs lib/**"
   }
 }

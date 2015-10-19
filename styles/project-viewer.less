@@ -25,16 +25,30 @@ div[is="project-viewer-view"] {
         transition: color 0.3s ease-out 0s;
     }
 
+.list-item {
+    cursor: pointer;
+    transition: color 0.3s ease-in 0s;
+
+    &:hover {
+        transition: color 0.3s ease-out 0s;
+        color: @text-color-highlight;
+    }
+
+    .chosen {
+        color: @ui-site-color-1;
+    }
+}
+
 .list-nested-item:hover span {
         transition: color 0.3s ease-in 0s;
         color: @text-color-highlight;
     }
 
-    .inset-panel {
-        height: 100%;
-        width: 100%;
-        overflow: auto;
-    }
+    // .inset-panel {
+    //     height: 100%;
+    //     width: 100%;
+    //     overflow: auto;
+    // }
 
     .list-item {
         cursor: pointer;
@@ -92,6 +106,12 @@ div[is="project-viewer-select"] {
         border-color:@pane-item-border-color;
         color: @text-color;
         cursor: pointer;
+    }
+}
+
+div[is="icon-selection-view"] {
+    .preview-icon {
+        margin-left: 5px;
     }
 }
 
