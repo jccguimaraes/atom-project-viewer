@@ -20,42 +20,40 @@ div[is="project-viewer-view"] {
         font-size: @project-viewer-header-text-size;
     }
 
-    .list-nested-item span {
-        color: @text-color;
+    // GROUPS VIEW
+    ul[is="groups-view"] .background-message li {
+        transition: opacity 0.3s ease-in 0s;
+        font-size: 0.4em;
+        color: @text-color-subtle;
+    }
+
+    // GROUP VIEW
+    li[is="group-view"] {
+        transition: opacity 0.3s ease-out 0s;
+    }
+
+    li[is="group-view"] .list-item {
+        cursor: pointer;
+    }
+    li[is="group-view"] .list-item .group-number-projects {
+        cursor: pointer;
+        margin: 0 5px 0 0;
+    }
+
+    // PROJECT VIEW
+    li[is="project-view"].list-item {
+        cursor: pointer;
+    }
+    li[is="project-view"].list-item span {
         transition: color 0.3s ease-out 0s;
     }
-
-.list-item {
-    cursor: pointer;
-    transition: color 0.3s ease-in 0s;
-
-    &:hover {
-        transition: color 0.3s ease-out 0s;
-        color: @text-color-highlight;
+    li[is="project-view"].list-item span.chosen {
+        transition: color 0.3s ease-in 0s;
+        color: @text-color-success; //@text-color-highlight;
     }
-
-    .chosen {
-        color: @ui-site-color-1;
-    }
-}
-
-.list-nested-item:hover span {
+    li[is="project-view"].list-item:hover span {
         transition: color 0.3s ease-in 0s;
         color: @text-color-highlight;
-    }
-
-    // .inset-panel {
-    //     height: 100%;
-    //     width: 100%;
-    //     overflow: auto;
-    // }
-
-    .list-item {
-        cursor: pointer;
-
-        .chosen {
-            color: @ui-site-color-1;
-        }
     }
 
     .icon {
@@ -77,56 +75,44 @@ div[is="project-viewer-view"] {
         content: "\f00a";
         color: @text-color-info;
     }
-
-    .group-number-projects {
-        margin: 0 5px 0 0;
-    }
 }
 
-div[is="add-project-view"],
-div[is="remove-project-view"],
-div[is="add-group-view"],
-div[is="remove-group-view"] {
-    hr {
-        border-width: thin;
-        border-color: @input-background-color;
-    }
-
-    h3 {
-        color: @text-color-info;
-    }
+// INPUT VIEW
+div[is="input-selection-view"] atom-text-editor[mini] {
+    background-color: @pane-item-background-color;
+    border-color:@pane-item-border-color;
+    color: @text-color;
 }
 
-div[is="group-selection-view"],
-div[is="icon-selection-view"],
-div[is="paths-selection-view"],
-div[is="project-viewer-select"] {
-    select {
-        background-color: @pane-item-background-color;
-        border-color:@pane-item-border-color;
-        color: @text-color;
-        cursor: pointer;
-    }
-}
-
-div[is="icon-selection-view"] {
-    .preview-icon {
+atom-panel-container.modal {
+    // ICON SELECTION VIEW
+    div[is="icon-selection-view"] .preview-icon {
         margin-left: 5px;
     }
-}
 
-div[is="input-selection-view"] {
-    atom-text-editor[mini] {
-        background-color: @pane-item-background-color;
-        border-color:@pane-item-border-color;
-        color: @text-color;
+    div[is="group-selection-view"],
+    div[is="icon-selection-view"],
+    div[is="paths-selection-view"],
+    div[is="project-viewer-select"] {
+        select {
+            background-color: @pane-item-background-color;
+            border-color:@pane-item-border-color;
+            color: @text-color;
+            cursor: pointer;
+        }
     }
-}
 
-li[is="project-view"].list-item {
-    cursor: pointer;
-}
+    div[is="add-project-view"],
+    div[is="remove-project-view"],
+    div[is="add-group-view"],
+    div[is="remove-group-view"] {
+        hr {
+            border-width: thin;
+            border-color: @input-background-color;
+        }
 
-li[is="project-view"].chosen {
-    color: @ui-site-color-1 !important;
+        h3 {
+            color: @text-color-info;
+        }
+    }
 }

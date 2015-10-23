@@ -25,9 +25,10 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 
 ### Settings <a id="inspired"></a>
 
-Settings  | Type      | Description                                                        | Default
-----------|-----------|--------------------------------------------------------------------|--------
-`startUp` | `boolean` | Defines if project viewer should be opened from the start of Atom. | false
+Settings      | Type      | Description                                                                                                                | Default
+--------------|-----------|----------------------------------------------------------------------------------------------------------------------------|--------
+`startUp`     | `boolean` | Defines if project viewer should be opened from the start of Atom.                                                         | false
+`openBuffers` | `boolean` | When changing projects, it will close all files and open only files that were opened before changing/closing that project. | false
 
 ### DataBase Configuration <a id="database-configuration"></a>
 

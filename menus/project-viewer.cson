@@ -1,23 +1,23 @@
-# See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
 'context-menu':
   'div[is="project-viewer-view"]': [
     {
-      'label': 'Add Group'
-      'command': 'project-viewer:add-group'
+      'label': 'Add Group', 'command': 'project-viewer:add-group'
     },
     {
-      'label': 'Remove Group'
-      'command': 'project-viewer:remove-group'
+      'label': 'Remove Group', 'command': 'project-viewer:remove-group'
     },
     {
-      'label': 'Add Project'
-      'command': 'project-viewer:add-project'
+      'label': 'Add Project', 'command': 'project-viewer:add-project'
     },
     {
-      'label': 'Remove Project'
-      'command': 'project-viewer:remove-project'
+      'label': 'Remove Project', 'command': 'project-viewer:remove-project'
     }
   ]
+  # 'div[is="project-viewer-view"] li[is="group-view"]': [
+  #   {
+  #     'label': 'Edit Group', 'command': 'project-viewer:edit-group'
+  #   }
+  # ]
 'menu': [
   {
     'label': 'Packages'
@@ -25,37 +25,31 @@
       'label': 'Project Viewer'
       'submenu': [
         {
-          'label': 'Toggle'
-          'command': 'project-viewer:toggle'
+          'label': 'Toggle', 'command': 'project-viewer:toggle'
         },
         {
           'type': 'separator'
         },
         {
-          'label': 'Add Group'
-          'command': 'project-viewer:add-group'
+          'label': 'Add Group', 'command': 'project-viewer:add-group'
         },
         {
-          'label': 'Remove Group'
-          'command': 'project-viewer:remove-group'
-        },
-        {
-          'type': 'separator'
-        },
-        {
-          'label': 'Add Project'
-          'command': 'project-viewer:add-project'
-        },
-        {
-          'label': 'Remove Project'
-          'command': 'project-viewer:remove-project'
+          'label': 'Remove Group', 'command': 'project-viewer:remove-group'
         },
         {
           'type': 'separator'
         },
         {
-          'label': 'Edit file'
-          'command': 'project-viewer:edit-file'
+          'label': 'Add Project', 'command': 'project-viewer:add-project'
+        },
+        {
+          'label': 'Remove Project', 'command': 'project-viewer:remove-project'
+        },
+        {
+          'type': 'separator'
+        },
+        {
+          'label': 'Edit file', 'command': 'project-viewer:edit-file'
         }
       ]
     ]

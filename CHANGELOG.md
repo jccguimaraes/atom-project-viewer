@@ -1,3 +1,11 @@
+## 0.2.0
+* A message display when no groups exist.
+* Improved the context menu on the right panel.
+* Small code improvements.
+* Buffering files (check settings to enable), may cause some lag on switching projects.
+* Improved the file writing workflow. Added as a promise for overlaping savings (was corrupting the projects.json).
+* Fixed clicking on the active project would switch to itself again.
+
 ## 0.1.6
 * Refactored the main project structure.
 * UI tweaks on some components to have Atom's style guide.
