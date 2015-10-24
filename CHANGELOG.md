@@ -1,3 +1,9 @@
+## 0.2.2
+* Fixed deleting the file after each update. Sorry!!!!!! The file needed to change where it was. So hopefully you will not loose any more of your groups/projects.
+
+## 0.2.1
+* Removed a file that was wrongly added.
+
 ## 0.2.0
 * A message display when no groups exist.
 * Improved the context menu on the right panel.
