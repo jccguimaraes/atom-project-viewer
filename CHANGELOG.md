@@ -1,3 +1,10 @@
+## 0.2.4
+* When adding a path to a project, if the name is empty, it will populate with the name of the folder of that path. [Issue #3](https://github.com/jccguimaraes/atom-project-viewer/issues/3)
+* Fixed remove path workflow.
+
+## 0.2.3
+* Added gif for package preview.
+
 ## 0.2.2
 * Fixed deleting the file after each update. Sorry!!!!!! The file needed to change where it was. So hopefully you will not loose any more of your groups/projects.
 
