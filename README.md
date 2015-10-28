@@ -1,5 +1,7 @@
 # Project Viewer
 
+[![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 [![apm downloads](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 
