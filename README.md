@@ -2,7 +2,6 @@
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 [![apm downloads](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
-[![gitter](https://img.shields.io/badge/gitter-chat-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer)
 
 This package was driven by other packages that manage projects but didn't give me all I wanted for my day to basis setup, so I created this package.
 

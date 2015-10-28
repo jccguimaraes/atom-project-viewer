@@ -1,3 +1,6 @@
+## 0.2.5
+* Saving copllapsed/expanded state for groups as well as fixed refreshing of all groups/projects after add/remove/edit groups/projects. [Issue #4](https://github.com/jccguimaraes/atom-project-viewer/issues/4)
+
 ## 0.2.4
 * When adding a path to a project, if the name is empty, it will populate with the name of the folder of that path. [Issue #3](https://github.com/jccguimaraes/atom-project-viewer/issues/3)
 * Fixed remove path workflow.
