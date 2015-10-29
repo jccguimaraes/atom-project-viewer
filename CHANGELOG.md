@@ -1,3 +1,7 @@
+## 0.2.10
+* (Ongoing/continuing) fixing huge issues that have been created from the previous updates.
+* Fixed issue when checking active project. [Issue #6](https://github.com/jccguimaraes/atom-project-viewer/issues/6).
+
 ## 0.2.9
 * (Ongoing/continuing) fixing huge issues that have been created from the previous updates.
 
