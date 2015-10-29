@@ -1,3 +1,6 @@
+## 0.2.9
+* (Ongoing/continuing) fixing huge issues that have been created from the previous updates.
+
 ## 0.2.8
 * (Ongoing) fixing huge issues that have been created from the previous updates.
 
