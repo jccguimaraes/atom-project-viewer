@@ -7,8 +7,6 @@ This package was driven by other packages that manage projects but didn't give m
 
 Please send comments, issues, bugs, features and other stuff.
 
-**NOTE**: I am sorry for the last updates to have deleted your groups/projects file.
-
 ![Project Manager](https://raw.github.com/jccguimaraes/atom-project-viewer/master/project-viewer.gif)
 
 ### Projects that inspired me!
@@ -30,7 +28,7 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 Settings      | Type      | Description                                                                                                                | Default
 --------------|-----------|----------------------------------------------------------------------------------------------------------------------------|--------
 `startUp`     | `boolean` | Defines if project viewer should be opened from the start of Atom.                                                         | false
-`openBuffers` | `boolean` | Every time you open a file that\'s relative to any of the paths of the project, it will be buffered until you close it manually. Every time you switch projects, they will be restored (setting to **true** will **close** none project files!)                                                        | false
+`openBuffers` | `boolean` | Every time you open a file that's relative to any of the paths of the project, it will be buffered until you close it manually. Every time you switch projects, they will be restored (setting to **true** will **close** none project files!)                                                        | false
 
 ### DataBase Configuration
 

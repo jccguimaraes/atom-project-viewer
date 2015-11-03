@@ -1,3 +1,7 @@
+## 0.2.12
+* Adding groups and projects got more sanitized.
+* If the name of group/project exists, it will not be created (Ability to add projects with same name in different groups).
+
 ## 0.2.11
 * (Ongoing/continuing) fixing huge issues that have been created from the previous updates.
 * Fixed abrupt close of files that were not saved when changing projects (solution is a patch for now).
