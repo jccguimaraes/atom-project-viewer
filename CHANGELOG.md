@@ -1,3 +1,15 @@
+## 0.2.17
+* Bug fixes
+
+## 0.2.16
+* Bug fixes
+
+## 0.2.15
+* Bug fixes
+
+## 0.2.14
+* Bug fixes
+
 ## 0.2.13
 * Edit groups and projects.
 * Coloring groups and projects (check settings for extra configuration).
