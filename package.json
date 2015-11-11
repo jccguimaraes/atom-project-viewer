@@ -1,7 +1,7 @@
 {
   "name": "project-viewer",
   "main": "./lib/main",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Project viewer/manager that lets you add and remove groups/projects as well as switching between them.",
   "keywords": [
     "project",
