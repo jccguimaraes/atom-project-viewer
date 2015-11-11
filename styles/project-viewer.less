@@ -6,14 +6,11 @@ div[is="project-viewer-view"] {
 
     -webkit-user-select: none;
     user-select: none;
-    position: relative;
     height: 100%;
-    overflow: hidden;
     cursor: default;
     -webkit-user-select: none;
     min-width: 100px;
     width: 200px;
-    z-index: 2;
 
     .heading {
         color: @text-color-highlight;
@@ -21,6 +18,14 @@ div[is="project-viewer-view"] {
     }
 
     // GROUPS VIEW
+    ul[is="groups-view"] {
+        // height: 100%;
+        height: calc(~"100% - " @component-padding*2 + @component-line-height);
+        overflow: scroll;
+        position: absolute;
+        padding-bottom: 40px;
+    }
+
     ul[is="groups-view"] .background-message li {
         transition: opacity 0.3s ease-in 0s;
         font-size: 0.4em;
@@ -91,6 +96,7 @@ atom-panel-container.modal {
     }
 
     div[is="group-selection-view"],
+    div[is="project-selection-view"],
     div[is="icon-selection-view"],
     div[is="paths-selection-view"],
     div[is="project-viewer-select"] {
@@ -104,6 +110,7 @@ atom-panel-container.modal {
 
     div[is="add-project-view"],
     div[is="remove-project-view"],
+    div[is="edit-project-view"],
     div[is="add-group-view"],
     div[is="edit-group-view"],
     div[is="remove-group-view"] {
@@ -114,6 +121,24 @@ atom-panel-container.modal {
 
         h3 {
             color: @text-color-info;
+        }
+
+        input[type="color"] {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            position: relative;
+            top: 5px;
+            left: 5px;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
         }
     }
 }

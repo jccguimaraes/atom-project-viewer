@@ -1,3 +1,9 @@
+## 0.2.13
+* Edit groups and projects.
+* Coloring groups and projects (check settings for extra configuration).
+* Project folders state are now saved (check settings for extra configuration).
+* Changed the json file properties (will not affect the previous file - I hope...).
+
 ## 0.2.12
 * Adding groups and projects got more sanitized.
 * If the name of group/project exists, it will not be created (Ability to add projects with same name in different groups).
