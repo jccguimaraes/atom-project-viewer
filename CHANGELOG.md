@@ -1,3 +1,6 @@
+## 0.2.18
+* Bug fix related to buffers
+
 ## 0.2.17
 * Bug fixes
 
