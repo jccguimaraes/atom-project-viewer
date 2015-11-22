@@ -27,7 +27,7 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 ### Settings
 
 Settings | Type | Description | Default
--|-|-|-
+---------|------|-------------|--------
 `startUp` | `boolean` | Defines if project viewer should be opened from the start of Atom. | false
 `openBuffers` | `boolean` | Every time you open a file that's relative to any of the paths of the project, it will be buffered until you close it manually. Every time you switch projects, they will be restored (setting to **true** will **close** none project files!) | false
 `foldersCollapsed` | `boolean` | Defines if folders should always be collapsed when switching/opening the project. | false
@@ -44,7 +44,7 @@ A JSON file that contains an array of groups and projects (if not present, it wi
 }
 ```
 
-Defining a group at this moment is as simple as:
+##### Defining a group at this moment is as simple as:
 
 ```js
 {
@@ -55,13 +55,13 @@ Defining a group at this moment is as simple as:
 }
 ```
 Setting | Type | Require | Description
--|-|-|-
+--------|------|---------|------------
 `name` | String | true | The name of the group.
 `icon` | String | optional | An icon showing next to the group name. As listed from Atom's octicons set.
 `expanded` | Boolean | optional | Sets if group should be expanded from the start.
 `color` | String | optional | Sets the group and it's child project color (only accepts hex strings).
 
-Defining a project is a little bit more complex:
+##### Defining a project is a little bit more complex:
 
 ```js
 {
@@ -80,7 +80,7 @@ Defining a project is a little bit more complex:
 Defining a project at this moment is a little bit more complex:
 
 Setting | Type | Require | Description
--|-|-|-
+--------|------|---------|------------
 `name` | String | true | The name of the project.
 `group` | String | optional | The name of the group which this project belongs to. If none, it will be grouped in the ungrouped projects.
 `paths` | Object | optional | An object which keys are the project folders to show in the *tree view* and their values are the state of it's children folders (expanded or collapsed).

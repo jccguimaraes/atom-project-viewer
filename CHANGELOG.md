@@ -1,3 +1,9 @@
+## 0.2.20
+* Added previous changelog and fixed README tables
+
+## 0.2.19
+* Bug fix related to buffers paths and a string in the constants
+
 ## 0.2.18
 * Bug fix related to buffers
 
