@@ -1,3 +1,6 @@
+## 0.2.23
+* Fixing a typo
+
 ## 0.2.22
 * Fixing other issues
 
