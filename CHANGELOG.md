@@ -1,3 +1,6 @@
+## 0.2.22
+* Fixing other issues
+
 ## 0.2.21
 * Fixing issue #12 when a query for the stylesheet did not return an actual stylesheet object
 
