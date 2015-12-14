@@ -18,9 +18,9 @@ div[is="project-viewer-view"] {
 
     // GROUPS VIEW
     ul[is="groups-view"] {
-        // height: 100%;
+        width: calc(~"100% - " @component-padding*2);
         height: calc(~"100% - " @component-padding*2 + @component-line-height);
-        overflow: scroll;
+        overflow: auto;
         position: absolute;
         padding-bottom: 40px;
     }

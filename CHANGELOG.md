@@ -1,3 +1,6 @@
+## 0.2.24
+* hopefully closes issue #16 and #12 (although this changing colors will probably not work on windows until a permanent solution)
+
 ## 0.2.23
 * Fixing a typo
 
