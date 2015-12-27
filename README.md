@@ -94,16 +94,17 @@ This is a resume of all the features of the package
 * Icons in groups.
 * Set custom color for a group and it's child projects.
 * Expanding and collapsing groups.
-* Group ungrouped projects. *(not yet)*
-* Keep opened files when switching between projects. *(currently buggy)*
+* Group ungrouped projects. *(not yet)*.
+* Keep opened files when switching between projects. *(currently buggy)*.
 * Keep state of project folders.
+* Drag projects from a group to another one.
 
 ### Future features
 
 * Add travis and stuff alike.
 * Improve performance and stability.
 * Sanitize user inputs (allow only specific chars and stuff).
-* Add unit tests
+* Add unit tests (on refactor)
 * Others (*please contribute with ideas*).
 
 ### Future

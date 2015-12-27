@@ -1,5 +1,14 @@
-## 0.2.24
+## 0.2.26
+* Feature implemented: drag&drop projects from one group to another (thanks to @canastro)
+* fixed issue #17 - removed some leftovers
+* fixed issue #11 - improved states reference and also a bug when multiple paths existed
+* fixed a typo on config
+
+## 0.2.25
 * hopefully closes issue #16 and #12 (although this changing colors will probably not work on windows until a permanent solution)
+
+## 0.2.24
+* hanging group name would not reflex on the child projects
 
 ## 0.2.23
 * Fixing a typo
