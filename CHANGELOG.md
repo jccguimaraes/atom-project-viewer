@@ -1,3 +1,9 @@
+## 0.2.28
+* closes issue #19
+
+## 0.2.27
+* first attempt to close issue #19
+
 ## 0.2.26
 * Feature implemented: drag&drop projects from one group to another (thanks to @canastro)
 * fixed issue #17 - removed some leftovers
