@@ -51,13 +51,17 @@ div[is="project-viewer-view"] {
     li[is="project-view"].list-item span {
         transition: color 0.3s ease-out 0s;
     }
-    li[is="project-view"].list-item span.chosen {
+    li[is="project-view"].list-item.chosen {
         transition: color 0.3s ease-in 0s;
-        color: @text-color-success; //@text-color-highlight;
+        border-left: 2px solid @text-color-success;
+        // color: @text-color-success; //@text-color-highlight;
     }
     li[is="project-view"].list-item:hover span {
         transition: color 0.3s ease-in 0s;
         color: @text-color-highlight;
+    }
+    li[is="project-view"].list-item.chosen span {
+        margin-left: -2px;
     }
 
     .icon {
