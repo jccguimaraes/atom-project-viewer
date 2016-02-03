@@ -7,7 +7,7 @@
     "project",
     "manager",
     "viewer",
-    "group"
+    "grouping"
   ],
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
@@ -18,11 +18,9 @@
   "devDependencies": {
     "cz-conventional-changelog": "^1.1.4"
   },
-  "czConfig": {
-    "path": "./node_modules/cz-conventional-changelog"
-  },
-  "scripts": {
-    "lint": "eslint lib/**",
-    "postlint": "jscs lib/**"
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

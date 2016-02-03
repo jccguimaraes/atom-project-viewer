@@ -1,6 +1,8 @@
+## 0.2.30
+* closes issue #23
+
 ## 0.2.29
 * closes issue #12
-
 
 ## 0.2.28
 * closes issue #19
