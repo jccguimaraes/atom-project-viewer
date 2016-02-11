@@ -1,147 +1,132 @@
 @import "ui-variables";
+@import "./helpers";
 
-@project-viewer-header-text-size: 18px;
+project-viewer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
 
-div[is="project-viewer-view"] {
-
-    -webkit-user-select: none;
-    user-select: none;
+    width: @project-viewer-width;
     height: 100%;
-    cursor: default;
-    min-width: 100px;
-    width: 200px;
-
-    .heading {
-        color: @text-color-highlight;
-        font-size: @project-viewer-header-text-size;
-    }
-
-    // GROUPS VIEW
-    ul[is="groups-view"] {
-        width: calc(~"100% - " @component-padding*2);
-        height: calc(~"100% - " @component-padding*2 + @component-line-height);
-        overflow: auto;
-        position: absolute;
-        padding-bottom: 40px;
-    }
-
-    ul[is="groups-view"] .background-message li {
-        transition: opacity 0.3s ease-in 0s;
-        font-size: 0.4em;
-        color: @text-color-subtle;
-    }
-
-    // GROUP VIEW
-    li[is="group-view"] {
-        transition: opacity 0.3s ease-out 0s;
-    }
-
-    li[is="group-view"] .list-item {
-        cursor: pointer;
-    }
-    li[is="group-view"] .list-item .group-number-projects {
-        cursor: pointer;
-        margin: 0 5px 0 0;
-    }
-
-    // PROJECT VIEW
-    li[is="project-view"].list-item {
-        cursor: pointer;
-    }
-    li[is="project-view"].list-item span {
-        transition: color 0.3s ease-out 0s;
-    }
-    li[is="project-view"].list-item.chosen {
-        transition: color 0.3s ease-in 0s;
-        border-left: 2px solid @text-color-success;
-        // color: @text-color-success; //@text-color-highlight;
-    }
-    li[is="project-view"].list-item:hover span {
-        transition: color 0.3s ease-in 0s;
-        color: @text-color-highlight;
-    }
-    li[is="project-view"].list-item.chosen span {
-        margin-left: -2px;
-    }
-
-    .icon {
-        text-align: center;
-        margin-right: 4px;
-    }
-
-    .icon-none::before {
-        font-family: 'Octicons Regular';
-        font-weight: normal;
-        font-style: normal;
-        display: inline-block;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        text-decoration: none;
-        font-size: 16px;
-        width: 16px;
-        height: 16px;
-        content: "\f00a";
-        color: @text-color-info;
-    }
-}
-
-// INPUT VIEW
-div[is="input-selection-view"] atom-text-editor[mini] {
+    padding: @component-padding;
     background-color: @pane-item-background-color;
-    border-color:@pane-item-border-color;
-    color: @text-color;
+    font-size: @font-size;
+    font-family: @font-family;
+    border: 1px solid @pane-item-border-color;
+
+    overflow: hidden;
+    position: relative;
+
+    &:focus, &:hover {
+        pv-topic {
+            color: @project-viewer-active-state;
+            transition: color @project-viewer-transition-duration;
+        }
+    }
 }
 
-atom-panel-container.modal {
-    // ICON SELECTION VIEW
-    div[is="icon-selection-view"] .preview-icon {
-        margin-left: 5px;
+pv-topic {
+    color: @project-viewer-topic-color;
+    font-size: @project-viewer-topic-size;
+    padding-bottom: @component-padding;
+
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
+
+    width: 100%;
+
+    animation-duration: @project-viewer-animation-duration;
+    animation-name: fadeIn;
+    transition: all @project-viewer-transition-duration;
+}
+
+ul[is="pv-groups"] {
+    font-size: @font-family;
+
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: auto;
+
+    width: 100%;
+    height: 1px;
+    overflow: scroll;
+}
+
+li[is="pv-group"] {
+    pointer-events: all;
+    width: 100%;
+    cursor: pointer;
+    display: block;
+}
+
+li.list-item[is="pv-group"]::before {
+    &.expanded, &.collapsed {
+        transition: all @project-viewer-transition-duration;
+    }
+}
+
+li.list-item[is="pv-project"] {
+    pointer-events: all;
+    width: 100%;
+    cursor: pointer;
+    display: block;
+    transition: color @project-viewer-transition-duration ease-in 0s;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        bottom: 0;
+        left: 0;
+        background-color: @project-viewer-active-state;
+        visibility: hidden;
+        transform: scaleY(0);
+        transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
     }
 
-    div[is="group-selection-view"],
-    div[is="project-selection-view"],
-    div[is="icon-selection-view"],
-    div[is="paths-selection-view"],
-    div[is="project-viewer-select"] {
-        select {
-            background-color: @pane-item-background-color;
-            border-color:@pane-item-border-color;
-            color: @text-color;
-            cursor: pointer;
-        }
+    &:hover::before,
+    &.selected::before {
+        visibility: visible;
+        transform: scaleY(1);
     }
 
-    div[is="add-project-view"],
-    div[is="remove-project-view"],
-    div[is="edit-project-view"],
-    div[is="add-group-view"],
-    div[is="edit-group-view"],
-    div[is="remove-group-view"] {
-        hr {
-            border-width: thin;
-            border-color: @input-background-color;
-        }
+    &:hover {
+        color: @text-color-highlight;
+        transition: color @project-viewer-transition-duration ease-out 0s;
+    }
+}
 
-        h3 {
-            color: @text-color-info;
-        }
+pv-handler {
+    background-color: transparent;
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: col-resize;
+    pointer-events: all;
+}
 
-        input[type="color"] {
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            position: relative;
-            top: 5px;
-            left: 5px;
-        }
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        input[type="color"]::-webkit-color-swatch {
-            border: none;
-        }
+span[is="pv-loader"] {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity @project-viewer-animation-duration;
+
+    &.enabled {
+        opacity: 1;
+        pointer-events: all;
+        transition: opacity @project-viewer-animation-duration;
     }
 }

@@ -1,0 +1,13 @@
+{
+    "context-menu": [],
+    "menu": [
+        {
+            "label": "Packages",
+            "submenu": [
+                {
+                "label": "Project Viewer2"
+                }
+            ]
+        }
+    ]
+}

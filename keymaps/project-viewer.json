@@ -1,0 +1,10 @@
+{
+  ".platform-darwin": {
+      "alt-ctrl-p": "project-viewer2:toggleDisplay",
+      "alt-ctrl-e": "project-viewer2:editFile",
+      "ctrl-9": "project-viewer2:toggleFocus"
+  },
+  ".platform-win32, .platform-linux": {
+      "alt-ctrl-p": "project-viewer2:toggleDisplay"
+  }
+}
