@@ -57,6 +57,11 @@ class GroupElement extends HTMLElement {
         this.model.getProjects().forEach(
             this.addProject.bind(this)
         );
+
+        this.addEventListener('click', () => {
+            this.model.setAsSelected();
+            // this.classList.add('selected');
+        });
     }
 
     /**

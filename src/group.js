@@ -223,6 +223,23 @@ class Group {
      * @public
      */
     unregister () {}
+
+    onDidSetAsSelected (callback) {
+        this.emitter.on(
+            'on-did-set-as-selected',
+            callback
+        );
+    }
+    /**
+     * Description.
+     * @public
+     */
+    setAsSelected () {
+        this.emitter.emit(
+            'on-did-set-as-selected',
+            this
+        );
+    }
 }
 
 module.exports = Group;

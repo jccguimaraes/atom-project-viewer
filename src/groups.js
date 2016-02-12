@@ -7,6 +7,7 @@
 const CompositeDisposable = require('atom').CompositeDisposable,
     Emitter = require('atom').Emitter,
     Helpers = require('./helpers'),
+    // Database = require('./database'),
     Group = require('./group'),
     privates = new WeakMap();
 
@@ -75,6 +76,10 @@ class Groups {
 
             group = new Group(candidate);
             this.register(group);
+
+            group.onDidSetAsSelected((whichGroup) => {
+                console.debug(whichGroup);
+            });
 
             atom.views.getView(this).appendGroup(group);
         });

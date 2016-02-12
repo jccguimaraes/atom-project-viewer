@@ -25,9 +25,9 @@ class ProjectViewer {
 
         this.disposables.add(
             atom.commands.add('atom-workspace', {
-                'project-viewer2:toggleDisplay': this.togglePanel.bind(this),
-                'project-viewer2:editFile': this.editFile.bind(this),
-                'project-viewer2:toggleFocus': this.toggleFocus.bind(this)
+                'project-viewer:toggleDisplay': this.togglePanel.bind(this),
+                'project-viewer:editFile': this.editFile.bind(this),
+                'project-viewer:toggleFocus': this.toggleFocus.bind(this)
             }));
 
         this.panel = atom.workspace.addRightPanel({
@@ -48,7 +48,11 @@ class ProjectViewer {
     toggleFocus () {
         this.panel.getItem().toggleFocus();
     }
-    
+
+    projectViewerOn () {}
+
+    projectViewerEmit () {}
+
     /**
      * This optional method is called when the window is shutting down,
      * allowing you to return JSON to represent the state of your component.

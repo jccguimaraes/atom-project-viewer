@@ -15,15 +15,22 @@
         "semi": [
             2,
             "always"
-        ]
+        ],
+        "no-console": 1
     },
     "env": {
         "es6": true,
         "node": true,
-        "browser": true
+        "browser": true,
+        "mocha": true
     },
     "globals": {
         "atom": true,
     },
-    "extends": "eslint:recommended"
+    "extends": "eslint:recommended",
+    "ecmaFeatures": {
+        "arrowFunctions": true,
+        "blockBindings": true,
+        "classes": true
+    }
 }

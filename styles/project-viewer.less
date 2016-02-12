@@ -90,8 +90,7 @@ li.list-item[is="pv-project"] {
         transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
     }
 
-    &:hover::before,
-    &.selected::before {
+    &:hover::before {
         visibility: visible;
         transform: scaleY(1);
     }

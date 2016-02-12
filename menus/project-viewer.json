@@ -5,7 +5,7 @@
             "label": "Packages",
             "submenu": [
                 {
-                "label": "Project Viewer2"
+                "label": "Project Viewer"
                 }
             ]
         }
