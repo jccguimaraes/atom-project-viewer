@@ -2,7 +2,7 @@
 
 const CompositeDisposable = require('atom').CompositeDisposable,
     Emitter = require('atom').Emitter,
-    Project = require('./project');
+    ProjectsPool = require('./projects-pool');
 
 /**
  * A Class that represents a group
@@ -31,7 +31,8 @@ class Group {
         this.setName(candidate.name);
         this.setColor(candidate.color);
         this.setIsExpanded(candidate.isExpanded);
-        this.setProjects(candidate.projects);
+
+        this.pool = new ProjectsPool(candidate.projects);
     }
 
     onDidChangeIsExpanded (callback) {
@@ -47,7 +48,7 @@ class Group {
      */
     onDidChangeName (callback) {
         this.emitter.on(
-            'on-did-change-name',
+            'on-did-set-name',
             callback
         );
     }
@@ -67,57 +68,13 @@ class Group {
      * Description.
      * @public
      */
-    onDidChangeProjects (callback) {
-        this.emitter.on(
-            'on-did-change-projects',
-            callback
-        );
-    }
-
-    /**
-     * Description.
-     * @public
-     */
-    onDidAddProject (callback) {
-        this.emitter.on(
-            'on-did-add-project',
-            callback
-        );
-    }
-
-    /**
-     * Description.
-     * @public
-     */
-    onDidEditProject (callback) {
-        this.emitter.on(
-            'on-did-edit-project',
-            callback
-        );
-    }
-
-    /**
-     * Description.
-     * @public
-     */
-    onDidRemoveProject (callback) {
-        this.emitter.on(
-            'on-did-remove-project',
-            callback
-        );
-    }
-
-    /**
-     * Description.
-     * @public
-     */
     setName (name) {
         if (!name || typeof name !== 'string') {
             return;
         }
         this.name = name;
         this.emitter.emit(
-            'on-did-change-name',
+            'on-did-set-name',
             this.getName()
         );
     }
@@ -177,69 +134,6 @@ class Group {
         return this.color;
     }
 
-    /**
-     * Description.
-     * @public
-     */
-    addProject (candidate) {
-        if (!Array.isArray(this.projects)) {
-            this.projects = [];
-        }
-        let project = new Project(candidate);
-        this.projects.push(project);
-        this.emitter.emit(
-            'on-did-add-project',
-            project
-        );
-    }
-
-    /**
-     * Description.
-     * @public
-     */
-    setProjects (candidates) {
-        if (!Array.isArray(candidates) || candidates.length === 0) {
-            this.projects = [];
-            return;
-        }
-
-        candidates.forEach(
-            this.addProject.bind(this)
-        );
-    }
-
-    getProjects () {
-        return this.projects;
-    }
-
-    /**
-     * Description.
-     * @public
-     */
-    register () {}
-
-    /**
-     * Description.
-     * @public
-     */
-    unregister () {}
-
-    onDidSetAsSelected (callback) {
-        this.emitter.on(
-            'on-did-set-as-selected',
-            callback
-        );
-    }
-    /**
-     * Description.
-     * @public
-     */
-    setAsSelected () {
-        this.emitter.emit(
-            'on-did-set-as-selected',
-            this
-        );
-    }
 }
 
 module.exports = Group;

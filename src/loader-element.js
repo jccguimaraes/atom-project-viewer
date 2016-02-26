@@ -8,14 +8,6 @@ class LoaderElement extends HTMLElement {
             'loading-spinner-small',
             'inline-block'
         );
-
-        this.addEventListener('animationend', (evt) => {
-            if (evt.animationName === 'fadeOut') {
-                this.model.emitter.emit('on-did-faded-out');
-            } else if (evt.animationName === 'fadeIn') {
-                this.model.emitter.emit('on-did-faded-in');
-            }
-        }, false);
     }
 
     attachedCallback () {}

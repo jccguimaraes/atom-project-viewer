@@ -36,7 +36,7 @@ function fetch(property) {
 /**
  * A representation of a pool of groups
  */
-class Groups {
+class GroupsPool {
 
     /**
      * Initializes the private variables
@@ -47,8 +47,8 @@ class Groups {
 
         this.disposables.add(
             atom.views.addViewProvider({
-                modelConstructor: Groups,
-                viewConstructor: require('./groups-element')
+                modelConstructor: GroupsPool,
+                viewConstructor: require('./groups-pool-element')
             })
         );
 
@@ -76,10 +76,6 @@ class Groups {
 
             group = new Group(candidate);
             this.register(group);
-
-            group.onDidSetAsSelected((whichGroup) => {
-                console.debug(whichGroup);
-            });
 
             atom.views.getView(this).appendGroup(group);
         });
@@ -147,4 +143,4 @@ class Groups {
     }
 }
 
-module.exports = Groups;
+module.exports = GroupsPool;

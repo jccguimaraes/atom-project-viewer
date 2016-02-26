@@ -12,10 +12,9 @@ class ProjectElement extends HTMLElement {
     createdCallback () {
         this.classList.add('list-item');
 
-        this.elements = {};
-        this.elements.listItemText = document.createElement('span');
+        this.listItemText = document.createElement('span');
         this.appendChild(
-            this.elements.listItemText
+            this.listItemText
         );
     }
 
@@ -23,18 +22,55 @@ class ProjectElement extends HTMLElement {
      * Description.
      */
     attachedCallback () {
-        this.addEventListener('click', () => {
-            // this.classList.add('selected');
-            this.model.addPaths();
-            this.model.setAsSelected();
+
+        this.observer = new MutationObserver(this.mutationObserver);
+
+        // configuration of the observer:
+        let config = {
+            attributes: true,
+            childList: true,
+            attributeOldValue: true,
+            characterData: true,
+            characterDataOldValue: true
+        };
+
+        // pass in the target node, as well as the observer options
+        this.observer.observe(this.listItemText, config);
+
+        this.setName();
+
+        this.addEventListener(
+            'click',
+            this.clickHandler.bind(this)
+        );
+
+        this.model.onDidSelectProject(() => {
+            this.classList.add('selected');
         });
-        this.elements.listItemText.textContent = this.model.getName();
+
+        this.model.onDidUnselectProject(() => {
+            this.classList.remove('selected');
+        });
+
+        this.model.isCurrentProject();
     }
 
-    /**
-     * Description.
-     */
-    detachedCallback () {}
+    detachedCallback () {
+        this.observer.disconnect();
+    }
+
+    mutationObserver (mutations) {
+        mutations.forEach((mutation) => {
+            if (['attributes', 'childList'].indexOf(mutation.type) === -1) {
+                return;
+            }
+        });
+    }
+
+    clickHandler () {
+        this.model.setAsSelected();
+        this.model.addPaths();
+    }
 
     initialize (model) {
         if (!model) {
@@ -43,6 +79,10 @@ class ProjectElement extends HTMLElement {
         this.model = model;
 
         return this;
+    }
+
+    setName () {
+        this.listItemText.textContent = this.model.getName();
     }
 }
 

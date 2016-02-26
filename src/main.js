@@ -6,8 +6,9 @@ const CompositeDisposable = require('atom').CompositeDisposable,
     Constants = require('./constants'),
     Loader = require('./loader'),
     Handler = require('./handler'),
-    Groups = require('./groups'),
-    Topic = require('./topic');
+    GroupsPool = require('./groups-pool'),
+    Topic = require('./topic'),
+    StatusInfo = require('./status-info');
 
 /**
  * A Class that represents the Project Viewer
@@ -16,20 +17,11 @@ class Main {
 
     constructor () {
         this.disposables = new CompositeDisposable();
+
         this.disposables.add(
             atom.views.addViewProvider({
                 modelConstructor: Main,
                 viewConstructor: require('./main-element')
-            }),
-            atom.project.onDidChangePaths(function (data) {
-                if (!data) {
-                    return;
-                }
-            }),
-            atom.project.onDidAddBuffer(function (data) {
-                if (!data) {
-                    return;
-                }
             })
         );
 
@@ -38,22 +30,17 @@ class Main {
         this.loader = new Loader();
 
         this.handler = new Handler();
-        atom.views.getView(this).appendChild(
-            atom.views.getView(this.handler)
-        );
 
         this.topic = new Topic(Constants.TOPIC);
-        atom.views.getView(this).appendChild(
-            atom.views.getView(this.topic)
-        );
 
-        this.groups = new Groups();
-        atom.views.getView(this).appendChild(
-            atom.views.getView(this.groups)
-        );
+        this.groupsPool = new GroupsPool();
+
+        this.statusInfo = new StatusInfo();
 
         this.database = new Database();
+
         this.database.updateDB();
+
         this.database.onDidChangeDatabase(() => {
             this.updateContent(() => {
                 return new Promise((resolve) => {
@@ -68,7 +55,7 @@ class Main {
         delete this.loader;
         delete this.handler;
         delete this.topic;
-        delete this.groups;
+        delete this.groupsPool;
     }
 
     enableLoader () {
@@ -92,8 +79,30 @@ class Main {
                 this.disableLoader.bind(this)
             )
             .then(() => {
-                this.groups.setGroups(this.database.getDB());
+                this.groupsPool.setGroups(this.database.getDB());
             });
+    }
+
+    onDidAddFile (callback) {
+        if (typeof callback !== 'function') {
+            return;
+        }
+
+        this.emitter.on(
+            'on-did-add-file',
+            callback
+        );
+    }
+
+    onDidCloseFile (callback) {
+        if (typeof callback !== 'function') {
+            return;
+        }
+
+        this.emitter.on(
+            'on-did-close-file',
+            callback
+        );
     }
 }
 

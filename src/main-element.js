@@ -7,12 +7,33 @@ class MainElement extends HTMLElement {
 
     createdCallback () {
         this.setAttribute('tabindex', '-1');
+
+        atom.config.observe('project-viewer2.autohide', (value) => {
+            if (value) {
+                this.classList.add('autohide');
+            } else {
+                this.classList.remove('autohide');
+            }
+        });
     }
 
     attachedCallback () {
         this.addEventListener('click', () => {
             this.setFocus();
         });
+
+        this.appendElement(
+            this.model.handler
+        );
+        this.appendElement(
+            this.model.topic
+        );
+        this.appendElement(
+            this.model.groupsPool
+        );
+        this.appendElement(
+            this.model.statusInfo
+        );
     }
 
     detachedCallback () {}
@@ -24,8 +45,8 @@ class MainElement extends HTMLElement {
 
         this.model = model;
 
-        this.appendChild(
-            atom.views.getView(this.model.loader)
+        this.appendElement(
+            this.model.loader
         );
 
         return this;
@@ -94,6 +115,12 @@ class MainElement extends HTMLElement {
             next.classList.add('selected');
             selected.classList.remove('selected');
         }
+    }
+
+    appendElement (elementModel) {
+        this.appendChild(
+            atom.views.getView(elementModel)
+        );
     }
 
 }

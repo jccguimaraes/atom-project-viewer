@@ -21,14 +21,10 @@ class GroupElement extends HTMLElement {
         });
         this.elements.listItemText = document.createElement('span');
 
-        this.elements.listTree = document.createElement('ul');
-        this.elements.listTree.classList.add('list-tree', 'has-flat-children');
-
         this.elements.listItem.appendChild(
             this.elements.listItemText
         );
         this.appendChild(this.elements.listItem);
-        this.appendChild(this.elements.listTree);
     }
 
     /**
@@ -38,30 +34,22 @@ class GroupElement extends HTMLElement {
         this.model.onDidChangeName(
             this.changeName.bind(this)
         );
+
         this.model.onDidChangeColor(
             this.changeColor.bind(this)
         );
-        this.model.onDidAddProject(
-            this.addProject.bind(this)
-        );
-        this.model.onDidEditProject(
-            this.editProject.bind(this)
-        );
-        this.model.onDidRemoveProject(
-            this.removeProject.bind(this)
-        );
+
+        this.addEventListener('click', () => {
+            // this.classList.add('selected');
+        });
 
         this.changeName(
             this.model.getName()
         );
-        this.model.getProjects().forEach(
-            this.addProject.bind(this)
-        );
 
-        this.addEventListener('click', () => {
-            this.model.setAsSelected();
-            // this.classList.add('selected');
-        });
+        this.appendChild(
+            atom.views.getView(this.model.pool)
+        );
     }
 
     /**
@@ -73,40 +61,30 @@ class GroupElement extends HTMLElement {
         if (!model) {
             return;
         }
+
         this.model = model;
 
         return this;
     }
 
+    /**
+     * Description.
+     */
     changeName (name) {
         if (!name) {
             return;
         }
+
         this.elements.listItemText.textContent = name;
     }
 
+    /**
+     * Description.
+     */
     changeColor (color) {
         if (!color) {
             return;
         }
-        return color;
-    }
-
-    addProject (project) {
-        if (!project) {
-            return;
-        }
-        this.elements.listTree.appendChild(
-            atom.views.getView(project)
-        );
-    }
-
-    editProject (project) {
-        return project;
-    }
-
-    removeProject (project) {
-        return project;
     }
 }
 
