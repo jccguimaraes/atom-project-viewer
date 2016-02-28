@@ -6,6 +6,7 @@ const Path = require('path'),
     CompositeDisposable = require('atom').CompositeDisposable,
     Emitter = require('atom').Emitter;
 
+let flag = false;
 /**
  * A Class that represents a project.
  */
@@ -36,14 +37,18 @@ class Project {
         this.setName(candidate.name);
 
         // Set the root paths.
-        this.setRootPaths(candidate.paths);
+        this.setPaths(candidate.paths);
 
-        // Set the state of the folders.
-        // this.setState(candidate.state);
+        // Set the state of the folders in the tree-view.
+        this.setTreeViewState(candidate.treeViewState);
 
         // Set the files that were opened
         this.setBuffers(candidate.buffers);
     }
+
+    // =============================================
+    // sets
+    // =============================================
 
     /**
      * Sets the name for the current project.
@@ -63,28 +68,67 @@ class Project {
     }
 
     /**
-     * Gets the name of the current project.
-     * @public
-     */
-    getName () {
-        return this.name;
-    }
-
-    /**
      * Sets the root paths for the current project.
      * @public
      */
-    setRootPaths (paths) {
+    setPaths (paths) {
         if (!paths || !Array.isArray(paths)) {
             return;
         }
 
         this.paths = paths;
+    }
 
-        this.emitter.emit(
-            'on-did-set-paths',
-            this.getName()
-        );
+    /**
+     * Description.
+     * @public
+     */
+    setTreeViewState (state) {
+        if (!state) {
+            return;
+        }
+
+        this.treeViewState = state;
+    }
+
+    /**
+     * Description.
+     * @public
+     */
+    setBuffers (candidates) {
+
+        if (!candidates || !Array.isArray(candidates)) {
+            return;
+        }
+
+        this.buffers = [];
+
+        candidates.forEach((groupOfCandidates, groupOfCandidatesIdx) => {
+            let buffersForPath = this.paths[groupOfCandidatesIdx];
+
+            groupOfCandidates.forEach((candidate) => {
+                let file = Path.join(buffersForPath, candidate);
+
+                let fileExits = Fs.statSync(file);
+
+                if (!fileExits) {
+                    return;
+                }
+                this.buffers.push(file);
+            });
+        });
+    }
+
+    // =============================================
+    // gets
+    // =============================================
+
+    /**
+     * Gets the name of the current project.
+     * @public
+     */
+    getName () {
+        return this.name;
     }
 
     /**
@@ -94,6 +138,27 @@ class Project {
     getPaths () {
         return this.paths;
     }
+
+    /**
+     * Description.
+     * @public
+     */
+    getTreeViewState () {
+        return this.treeViewState;
+    }
+
+    /**
+     * Description.
+     * @public
+     */
+    getBuffers () {
+        return this.buffers;
+    }
+
+
+
+
+
 
     /**
      * Sets initially opened files for the current project.
@@ -153,32 +218,31 @@ class Project {
         // });
     }
 
+
+
+
+
+
+
     /**
      * Description.
      * @public
      */
-    setBuffers (candidates) {
+    updateTreeView () {
+        let tvPackage = atom.packages.getActivePackage('tree-view');
+        let state = this.getTreeViewState();
 
-        if (!candidates || !Array.isArray(candidates)) {
+        if (!state) {
             return;
         }
 
-        this.buffers = [];
+        if (!tvPackage || !tvPackage.mainModule || !tvPackage.mainModule.treeView) {
+            return;
+        }
 
-        candidates.forEach((groupOfCandidates, groupOfCandidatesIdx) => {
-            let buffersForPath = this.paths[groupOfCandidatesIdx];
-
-            groupOfCandidates.forEach((candidate) => {
-                let file = Path.join(buffersForPath, candidate);
-
-                let fileExits = Fs.statSync(file);
-
-                if (!fileExits) {
-                    return;
-                }
-                this.buffers.push(file);
-            });
-        });
+        tvPackage.mainModule.treeView.updateRoots(
+            state.directoryExpansionStates
+        );
     }
 
 
@@ -208,29 +272,60 @@ class Project {
                 return;
             }
 
+            if (!this.buffers) {
+                return;
+            }
+
             // TODO: it can only be set when active project
             this.volatile.removeFile = buffer.onDidDestroy(() => {
+                if (!flag) {
+                    return;
+                }
                 let idx = this.buffers.indexOf(buffer.getPath());
                 if (idx !== -1) {
                     this.buffers.splice(idx, 1);
                 }
             });
 
-            // TODO: it can only be set when active project
             let idx = this.buffers.indexOf(buffer.getPath());
             if (idx === -1) {
                 this.buffers.push(buffer.getPath());
             }
         });
 
-        // atom.project.getBuffers().forEach((buffer) => {
-        //     this.volatile.removeExistingFile = buffer.onDidDestroy(() => {
-        //         let idx = this.buffers.indexOf(buffer.getPath());
-        //         if (idx !== -1) {
-        //             this.buffers.splice(idx, 1);
-        //         }
-        //     });
-        // }, this);
+        atom.project.getBuffers().forEach((buffer) => {
+            this.volatile.removeExistingFile = buffer.onDidDestroy(() => {
+                if (!flag) {
+                    return;
+                }
+                let idx = this.buffers.indexOf(buffer.getPath());
+                if (idx !== -1) {
+                    this.buffers.splice(idx, 1);
+                }
+            });
+        }, this);
+    }
+
+    addBuffer (buffer) {
+        if (!flag) {
+            return;
+        }
+
+        let idx = this.buffers.indexOf(buffer.getPath());
+        if (idx === -1) {
+            this.buffers.push(buffer.getPath());
+        }
+    }
+
+    removeBuffer (buffer) {
+        if (!flag) {
+            return;
+        }
+
+        let idx = this.buffers.indexOf(buffer.getPath());
+        if (idx !== -1) {
+            this.buffers.splice(idx, 1);
+        }
     }
 
     onDidSelectProject (callback) {
@@ -258,16 +353,18 @@ class Project {
         );
     }
 
-    addPaths () {
+    setRootPaths () {
         let updatedProjects = [];
         this.getPaths().forEach((path) => {
             let normalized = Path.normalize(Path.join(path, Path.sep));
             updatedProjects.push(normalized);
         });
         atom.project.setPaths(updatedProjects);
+        this.updateTreeView();
     }
 
     setAsSelected () {
+
         this.emitter.emit(
             'on-did-select-project',
             this
@@ -275,30 +372,16 @@ class Project {
 
         // register listeners for adding and removing files from the workspace
         this.addBufferHandlers();
+
         if (!atom.config.get('project-viewer2.keepProjectState')) {
             return;
         }
 
-        this.closeOpenedFiles();
-        this.openStateFiles();
+        // this.closeOpenedFiles();
+        // this.openStateFiles();
     }
 
     unsetAsSelected () {
-        let treeView;
-        let roots;
-
-        treeView = document.querySelector('.tree-view');
-
-        if (treeView) {
-            roots = treeView.querySelectorAll('.directory.project-root');
-        }
-
-        if (roots) {
-            this.state = [];
-            for (let rootIdx = 0; rootIdx < roots.length; rootIdx++) {
-                this.state.push(JSON.stringify(roots[rootIdx].directory.serializeExpansionState()));
-            }
-        }
 
         this.emitter.emit(
             'on-did-unselect-project',

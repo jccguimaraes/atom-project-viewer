@@ -2,14 +2,14 @@
 
 const CompositeDisposable = require('atom').CompositeDisposable,
     Path = require('path'),
-    Main = require('./main'),
+    ProjectViewer = require('./main'),
     StatusBar = require('./status-bar'),
     ProjectsPool = require('./projects-pool');
 
 /**
 * A Class that represents the Project Viewer
 */
-class ProjectViewer {
+class Index {
     /**
     * This required method is called when your package is activated.
     * It is passed the state data from the last time the window was
@@ -18,7 +18,7 @@ class ProjectViewer {
     * started (like setting up DOM elements or binding events).
     * @param {string} state - a serialized data
     */
-    static activate (/*state*/) {
+    static activate () {
 
         this.disposables = new CompositeDisposable();
         this.disposables.add(
@@ -28,8 +28,10 @@ class ProjectViewer {
                 'project-viewer2:toggleFocus': this.toggleFocus.bind(this)
             }));
 
+        this.projectViewer = new ProjectViewer();
+
         this.panel = atom.workspace.addRightPanel({
-            item: atom.views.getView(new Main()),
+            item: atom.views.getView(this.projectViewer),
             visible: atom.config.get('project-viewer2.startupVisibility')
         });
 
@@ -78,7 +80,9 @@ class ProjectViewer {
     * your module’s activate method so you can restore your view to
     * where the user left off.
     */
-    static serialize () {}
+    static serialize () {
+        return {};//this.projectViewer;
+    }
 
     /**
     * This optional method is called when the window is shutting down.
@@ -137,4 +141,4 @@ class ProjectViewer {
     }
 }
 
-module.exports = ProjectViewer;
+module.exports = Index;

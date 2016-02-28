@@ -15,7 +15,10 @@ const CompositeDisposable = require('atom').CompositeDisposable,
  */
 class Main {
 
-    constructor () {
+    constructor (data) {
+
+        this.data = data;
+
         this.disposables = new CompositeDisposable();
 
         this.disposables.add(
@@ -41,7 +44,7 @@ class Main {
 
         this.database.updateDB();
 
-        this.database.onDidChangeDatabase(() => {
+        this.database.onDidChangeFile(() => {
             this.updateContent(() => {
                 return new Promise((resolve) => {
                     setTimeout(resolve, 200);

@@ -31,6 +31,8 @@ class ProjectsPool {
         this.registerAll(candidates);
     }
 
+    destroy () {}
+
     onDidAddProject (callback) {
         this.emitter.on(
             'on-did-add-project',
@@ -122,7 +124,14 @@ class ProjectsPool {
     }
 
     static setSelectedProject (project) {
+        if (selectedProject) {
+            selectedProject.setTreeViewState(
+                atom.packages.getActivePackage('tree-view').mainModule.serialize()
+            );
+        }
+
         selectedProject = project;
+
         emitter.emit(
             'on-did-change-selected-project',
             project

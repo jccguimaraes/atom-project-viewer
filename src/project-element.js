@@ -69,7 +69,7 @@ class ProjectElement extends HTMLElement {
 
     clickHandler () {
         this.model.setAsSelected();
-        this.model.addPaths();
+        this.model.setRootPaths();
     }
 
     initialize (model) {

@@ -5,9 +5,6 @@ const Path = require('path'),
     EventEmitter = require('events'),
     json = Path.join(atom.styles.configDirPath, 'project-viewer2.json');
 
-let group,
-    project;
-
 class Database {
 
     constructor () {
@@ -26,11 +23,30 @@ class Database {
                 'problem with the file watcher'
             );
         });
+
+        this.onDidChangeLocal(
+            (db) => {
+                console.debug(db);
+            }
+        );
+
+        this.onDidChangeFile(
+            (db) => {
+                console.debug(db);
+            }
+        );
     }
 
-    onDidChangeDatabase (callback) {
+    onDidChangeLocal (callback) {
         this.emitter.on(
-            'on-did-change-database',
+            'on-did-change-local',
+            callback
+        );
+    }
+
+    onDidChangeFile (callback) {
+        this.emitter.on(
+            'on-did-change-file',
             callback
         );
     }
@@ -46,10 +62,11 @@ class Database {
      * Description.
      * @public
      */
-    setDB (db) {
+    setDB (db, from) {
+        let place = from === 'local' ? 'local' : 'file';
         this.db = db;
         this.emitter.emit(
-            'on-did-change-database',
+            'on-did-change-'.concat(place),
             this.getDB()
         );
     }
@@ -90,51 +107,6 @@ class Database {
                 );
             }
         );
-    }
-
-    static setActiveGroup (newGroup) {
-        group = newGroup;
-    }
-
-    static getActiveGroup () {
-        return group;
-    }
-
-    static setActiveProject (newProject) {
-        project = newProject;
-    }
-
-    static getActiveProject () {
-        return project;
-    }
-
-    static addOpenedFile (file) {
-        let project = Database.getActiveProject();
-        let addToList = false;
-
-        if (!file || !project) {
-            return;
-        }
-
-        if (!project.buffers || !Array.isArray(project.buffers)) {
-            return;
-        }
-
-        addToList = !project.buffers.some((savedFile) => {
-            return savedFile === file;
-        });
-
-        if (!addToList) {
-            return;
-        }
-
-        project.addBuffer(file);
-    }
-
-    static removeClosedFile (file) {
-        if (!file) {
-            return;
-        }
     }
 }
 
