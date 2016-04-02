@@ -58,6 +58,9 @@ let statusBarModel = {
 
         this.children.span = document.createElement('span');
         this.appendChild(this.children.span);
+    },
+    setText: function setText(text) {
+        this.children.span.textContent = text;
     }
 };
 
@@ -258,26 +261,7 @@ let projectModel = {
                 return;
             }
 
-            let serializationFile,
-                serialization;
-
-            serializationFile = atom.getStateKey(
-            project.getProject().paths
-            );
-
-            if (serializationFile) {
-                serialization = atom.storageFolder.load(serializationFile);
-            }
-
-            if (serialization) {
-                pv.projectDeserialization(serialization.project);
-                pv.workspaceDeserialization(serialization.workspace);
-                pv.treeViewDeserialization(serialization.treeview);
-            } else {
-                atom.project.setPaths(this.model.getProject().paths);
-            }
-
-            pv.storeDB();
+            project.openState();
         });
     },
     setModel: function setModel(model) {
@@ -341,62 +325,109 @@ let projectConstructor = component.register({
 
 // =============================================================================
 
-//
-// let statusBarComponent = {
-//     model: {
-//         createdCallback: function createdCallback() {
-//             this.classList.add('inline-block');
-//             this.textContent = this.description;
-//         },
-//         attachedCallback: function attachedCallback() {},
-//         detachedCallback: function detachedCallback() {},
-//         attributeChangedCallback: function attributeChangedCallback(attr, oldValues, newValues) {}
-//     },
-//     tag: 'project-viewer-status-bar',
-//     createElement: function () {
-//         return undefined;
-//     },
-//     initialize: function initialize() {
-//         if (this.createElement()) {
-//             return;
-//         }
-//
-//         Object.setPrototypeOf(this.model, HTMLElement.prototype);
-//
-//         this.createElement = document.registerElement(this.tag, {
-//             prototype: this.model
-//         });
-//     }
-// };
-
 let pv = {
     statusBar: null,
+    statusBarTile: null,
     selectListView: null,
-    activate: function activate() {
+    config: {
+        startupVisibility: {
+            description: 'Define if you want **project-viewer** to be visible on startup.',
+            type: 'boolean',
+            default: false,
+            order: 0
+        },
+        statusBarVisibility: {
+            description: 'Define if you want **project-viewer** to show active *group* and *project*.',
+            type: 'boolean',
+            default: false,
+            order: 1
+        },
+        autohide: {
+            description: 'Hability to autohide project viewer',
+            type: 'boolean',
+            default: false,
+            order: 2
+        },
+        keepProjectState: {
+            description: 'Set to false will not keep track of each project\´s **tree-view** folder state',
+            type: 'boolean',
+            default: true,
+            order: 3
+        }
+    },
+    addToStatusBar: function addToStatusBar() {
+        let project = this.searchProject({
+            paths: atom.project.getPaths()
+        })[0],
+            view;
 
-        if (!this.children) {
-            this.children = {};
+        view = new statusBarConstructor();
+
+        if (project) {
+            view.setText(project.getProjectGroup().name
+                .concat(' / ')
+                .concat(project.getProject().name));
+        } else {
+            view.setText('no project selected!');
         }
 
-        this.children.mainView = new mainConstructor();
-        this.children.topicView = new topicConstructor();
-        this.children.clientsView = new clientsConstructor();
-
-        this.children.topicView.appendTo(this.children.mainView);
-        this.children.clientsView.appendTo(this.children.mainView);
-
-        this.panel = atom.workspace.addRightPanel({
-            item: this.children.mainView,
-            visible: true
+        this.statusBarTile = this.statusBar.addRightTile({
+            item: view,
+            priority: 0
         });
+    },
+    removeToStatusBar: function removeToStatusBar() {
+        this.statusBarTile.destroy();
+    },
+    consumeStatusBar (statusBar) {
+        let project = this.searchProject({
+            paths: atom.project.getPaths()
+        })[0],
+            view;
 
-        this.populate();
+        this.statusBar = statusBar;
 
-        this.selectListView = new PVSelectListView();
+        if (atom.config.get('project-viewer2.statusBarVisibility')) {
+            this.addToStatusBar();
+        }
+    },
+    activate: function activate() {
+
+        process.nextTick(() => {
+            if (!this.children) {
+                this.children = {};
+            }
+
+            this.children.mainView = new mainConstructor();
+            this.children.topicView = new topicConstructor();
+            this.children.clientsView = new clientsConstructor();
+
+            this.children.topicView.appendTo(this.children.mainView);
+            this.children.clientsView.appendTo(this.children.mainView);
+
+            this.panel = atom.workspace.addRightPanel({
+                item: this.children.mainView,
+                visible: true
+            });
+
+            this.populate();
+
+            this.selectListView = new PVSelectListView();
+
+            atom.config.onDidChange('project-viewer2.statusBarVisibility', (status) => {
+                if (status.newValue) {
+                    this.addToStatusBar();
+                } else {
+                    this.removeToStatusBar();
+                }
+            });
+        });
     },
     serialize: function serialize() {},
     deactivate: function deactivate() {
         this.selectListView.cancel();
+        this.statusBarTile.destroy();
+        this.statusBarTile = null;
     },
     populate: function populate() {
         this.storage.clients.forEach((clientStored) => {
@@ -548,6 +579,35 @@ let pv = {
         }
     },
     project_methods: {
+        openState: function openState() {
+            let serializationFile,
+                serialization,
+                project;
+
+            serializationFile = atom.getStateKey(
+                this.getProject().paths
+            );
+
+            if (serializationFile) {
+                serialization = atom.storageFolder.load(serializationFile);
+            }
+
+            project = this.getProject();
+
+            if (serialization) {
+                pv.projectDeserialization(serialization.project);
+                pv.workspaceDeserialization(serialization.workspace);
+                pv.treeViewDeserialization(serialization.treeview);
+            } else {
+                atom.project.setPaths(project.paths);
+            }
+
+            pv.storeDB();
+
+            pv.statusBar.setText(this.getProjectGroup().name
+                .concat(' / ')
+                .concat(project.name));
+        },
         setProjectName: function setProjectName(name) {
             this.getProject().name = name;
         },
@@ -642,123 +702,97 @@ let pv = {
             (client) => {
                 return forClient.name === client.name;
             });
-            if (idx === -1) {
-                return -1;
-            }
-
-            let isNew = !this.store.clients[idx].groups.some(
-                (group) => {
-                    return candidate.name === group.name;
-                }
-            );
-            if (isNew || !this.store.clients[idx].groups.length) {
-                return this.store.clients[idx].groups.push({
-                    name: candidate.name,
-                    icon: candidate.icon,
-                    expanded: candidate.expanded,
-                    projects: []
-                });
-            }
+        if (idx === -1) {
             return -1;
-        },
-        addProject: function addProject(candidate, forGroup, forClient) {
-            let c_idx = this.store.clients.findIndex(
-                (client) => {
-                    return forClient.name === client.name;
-                }),
-                g_idx = this.store.clients[c_idx].groups.findIndex(
-                (group) => {
-                    return forGroup.name === group.name;
-                });
-
-            if (c_idx === -1 || g_idx === -1) {
-                return -1;
-            }
-
-            let isNew = !this.store.clients[c_idx].groups[g_idx].projects.some(
-                (project) => {
-                    return candidate.name === project.name;
-                }
-            );
-
-            if (isNew || !this.store.clients[c_idx].groups[g_idx].projects.length) {
-                return this.store.clients[c_idx].groups[g_idx].projects.push({
-                    name: candidate.name,
-                    paths: candidate.paths,
-                    serializationFile: candidate.serializationFile
-                });
-            }
-            return -1;
-        },
-        storeDB: function storeDB() {
-            this.db.clients.forEach((client) => {
-                let currentClient = client.getClient();
-
-                this.addClient(currentClient);
-            });
-
-            this.db.groups.forEach((group) => {
-                let currentClient = group.getGroupClient(),
-                currentGroup = group.getGroup();
-
-                this.addClient(currentClient);
-
-                this.addGroup(
-                    currentGroup,
-                    currentClient
-                );
-            });
-
-            this.db.projects.forEach((project) => {
-                let currentClient = project.getProjectClient(),
-                currentGroup = project.getProjectGroup(),
-                currentProject = project.getProject();
-
-                this.addClient(currentClient);
-
-                this.addGroup(
-                    currentGroup,
-                    currentClient
-                );
-
-                this.addProject(
-                    currentProject,
-                    currentGroup,
-                    currentClient
-                );
-            });
-
-            atom.getStorageFolder().store('project-viewer2.json', this.store);
-        },
-        consumeStatusBar (statusBar) {
-            let project = this.searchProject({
-                paths: atom.project.getPaths()
-            })[0];
-
-            // pv.statusBar = {};
-            //
-            // statusBarComponent.initialize();
-            //
-            // Object.setPrototypeOf(pv.statusBar, statusBarComponent);
-            //
-            // if (project) {
-            //     pv.statusBar.model.description = project.getProjectGroup().name
-            //         .concat(' / ')
-            //         .concat(project.getProject().name);
-            // } else {
-            //     pv.statusBar.model.description = 'no project selected!';
-            // }
-            //
-            // pv.statusBar.view = new statusBarComponent.createElement();
-            //
-            // this.statusBarTile = statusBar.addRightTile({
-            //     item: pv.statusBar.view,
-            //     priority: 0
-            // });
         }
-    };
 
-    module.exports = pv;
+        let isNew = !this.store.clients[idx].groups.some(
+            (group) => {
+                return candidate.name === group.name;
+            }
+        );
+        if (isNew || !this.store.clients[idx].groups.length) {
+            return this.store.clients[idx].groups.push({
+                name: candidate.name,
+                icon: candidate.icon,
+                expanded: candidate.expanded,
+                projects: []
+            });
+        }
+        return -1;
+    },
+    addProject: function addProject(candidate, forGroup, forClient) {
+        let c_idx = this.store.clients.findIndex(
+            (client) => {
+                return forClient.name === client.name;
+            }),
+            g_idx = this.store.clients[c_idx].groups.findIndex(
+            (group) => {
+                return forGroup.name === group.name;
+            });
+
+        if (c_idx === -1 || g_idx === -1) {
+            return -1;
+        }
+
+        let isNew = !this.store.clients[c_idx].groups[g_idx].projects.some(
+            (project) => {
+                return candidate.name === project.name;
+            }
+        );
+
+        if (isNew || !this.store.clients[c_idx].groups[g_idx].projects.length) {
+            return this.store.clients[c_idx].groups[g_idx].projects.push({
+                name: candidate.name,
+                paths: candidate.paths,
+                serializationFile: candidate.serializationFile
+            });
+        }
+        return -1;
+    },
+    storeDB: function storeDB() {
+        this.db.clients.forEach((client) => {
+            let currentClient = client.getClient();
+
+            this.addClient(currentClient);
+        });
+
+        this.db.groups.forEach((group) => {
+            let currentClient = group.getGroupClient(),
+            currentGroup = group.getGroup();
+
+            this.addClient(currentClient);
+
+            this.addGroup(
+                currentGroup,
+                currentClient
+            );
+        });
+
+        this.db.projects.forEach((project) => {
+            let currentClient = project.getProjectClient(),
+            currentGroup = project.getProjectGroup(),
+            currentProject = project.getProject();
+
+            this.addClient(currentClient);
+
+            this.addGroup(
+                currentGroup,
+                currentClient
+            );
+
+            this.addProject(
+                currentProject,
+                currentGroup,
+                currentClient
+            );
+        });
+
+        atom.getStorageFolder().store('project-viewer2.json', this.store);
+    }
+};
+
+module.exports = pv;
 
 
 
@@ -843,29 +877,9 @@ class PVSelectListView extends SelectListView {
             this.cancel();
         }
 
-        // pv.statusBar.view.textContent = project.getProjectGroup().name
-        //     .concat(' / ')
-        //     .concat(project.getProject().name);
-
         pv.selectedProject = project;
 
-        serializationFile = atom.getStateKey(
-            pv.selectedProject.getProject().paths
-        );
-
-        if (serializationFile) {
-            serialization = atom.storageFolder.load(serializationFile);
-        }
-
-        if (serialization) {
-            pv.projectDeserialization(serialization.project);
-            pv.workspaceDeserialization(serialization.workspace);
-            pv.treeViewDeserialization(serialization.treeview);
-        } else {
-            atom.project.setPaths(project.getProject().paths);
-        }
-
-        pv.storeDB();
+        pv.selectedProject.openState();
 
         this.cancel();
     }

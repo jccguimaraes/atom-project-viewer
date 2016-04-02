@@ -38,19 +38,5 @@
         "^1.0.0": "consumeStatusBar"
       }
     }
-  },
-  "providedServices": {
-    "project-viewer-on": {
-      "description": "Listens to a change in the selected group and/or project",
-      "versions": {
-        "0.3.0": "projectViewerOn"
-      }
-    },
-    "project-viewer-emit": {
-      "description": "Informs an intent to change the group and/or project",
-      "versions": {
-        "0.3.0": "projectViewerEmit"
-      }
-    }
   }
 }
