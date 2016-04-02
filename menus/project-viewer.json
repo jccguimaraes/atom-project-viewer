@@ -1,5 +1,28 @@
 {
-    "context-menu": [],
+    "context-menu": {
+        "li[is='pv-group']": [
+            {
+                "label": "Edit group..."
+            },
+            {
+                "label": "Remove group..."
+            }
+        ],
+        "li[is='pv-project']": [
+            {
+                "label": "Edit project..."
+            },
+            {
+                "label": "Remove project..."
+            },
+            {
+                "label": "Edit group..."
+            },
+            {
+                "label": "Remove group..."
+            }
+        ]
+    },
     "menu": [
         {
             "label": "Packages",
