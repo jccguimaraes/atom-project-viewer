@@ -1,5 +1,7 @@
 'use strict';
 
+const CompositeDisposable = require('atom').CompositeDisposable;
+
 // =============================================================================
 
 let component = {
@@ -63,6 +65,22 @@ let statusBarModel = {
         this.children.span.textContent = text;
     }
 };
+
+let statusInfoModel = {
+    createdCallback: function createdCallback() {
+        if (!this.children) {
+            this.children = {};
+        }
+
+        this.children.span = document.createElement('span');
+        this.children.span.classList.add('icon', 'icon-primitive-dot');
+
+        this.appendChild(this.children.span);
+    },
+    appendTo: function appendTo(node) {
+        node.appendChild(this);
+    }
+}
 
 let mainModel = {
     createdCallback: function createdCallback() {
@@ -253,22 +271,166 @@ let projectModel = {
         this.appendChild(this.children.span);
 
         this.addEventListener('click', () => {
-            let project = pv.searchProject({
-                name: this.children.span.textContent
-            })[0];
+            let project;
 
-            if (!project) {
+            if (pv.selectedProject) {
+                pv.selectedProject.getProject().view.classList.remove('selected');
+                pv.selectedProject.closeState();
+            }
+
+            project = pv.searchProject({
+                name: this.children.span.textContent
+            });
+
+            if (!project.length) {
                 return;
             }
 
-            project.openState();
+            project = project.filter((projectListed) => {
+                return projectListed.getProjectClient().name === this.getAttribute('data-client')
+                    && projectListed.getProjectGroup().name === this.getAttribute('data-group');
+            });
+
+            if (project.length !== 1) {
+                return;
+            }
+
+            pv.selectedProject = project[0];
+            pv.selectedProject.getProject().view.classList.add('selected');
+            pv.selectedProject.openState();
+            pv.storeDB();
         });
     },
-    setModel: function setModel(model) {
-        this.model = model;
+    setDataGroup: function setDataGroup(group) {
+        this.setAttribute('data-group', group);
+    },
+    setDataClient: function setDataClient(client) {
+        this.setAttribute('data-client', client);
     },
     setText: function setText(text) {
         this.children.span.textContent = text;
+    },
+    appendTo: function appendTo(node) {
+        node.appendChild(this);
+    },
+    removeFrom: function removeFrom(node) {
+        node.removeChild(this);
+    }
+};
+
+let addClientModel = {
+    createdCallback: function createdCallback() {
+        if (!this.children) {
+            this.children = {};
+        }
+
+        this.children.topic = document.createElement('h1');
+        this.children.topic.classList.add('block');
+        this.children.topic.textContent = 'Add a new client';
+
+        this.children.inputName = document.createElement('atom-text-editor');
+        this.children.inputName.setAttribute('mini', true);
+
+        this.children.error = document.createElement('div');
+        this.children.error.classList.add('block', 'error-message');
+        this.children.error.textContent = 'add a new client!';
+
+        this.children.save = document.createElement('div');
+        this.children.save.classList.add('inline-block');
+        this.children.saveText = document.createElement('button');
+        this.children.saveText.classList.add('btn', 'btn-primary');
+        this.children.saveText.textContent = 'add';
+        this.children.save.addEventListener('click', () => {
+            let name = this.children.inputName.getModel().buffer.getText();
+
+            if (name.trim().length) {
+                console.debug(pv.newClient({
+                    name: name
+                }));
+                pv.storeDB();
+            }
+
+            atom.workspace.panelForItem(this).destroy();
+        });
+
+        this.children.cancel = document.createElement('div');
+        this.children.cancel.classList.add('inline-block');
+        this.children.cancelText = document.createElement('button');
+        this.children.cancelText.classList.add('btn');
+        this.children.cancelText.textContent = 'cancel';
+        this.children.cancel.addEventListener('click', () => {
+            atom.workspace.panelForItem(this).destroy();
+        });
+
+        this.children.save.appendChild(this.children.saveText);
+        this.children.cancel.appendChild(this.children.cancelText);
+
+        this.appendChild(this.children.topic);
+        this.appendChild(this.children.inputName);
+        this.appendChild(this.children.error);
+        this.appendChild(this.children.save);
+        this.appendChild(this.children.cancel);
+    },
+    appendTo: function appendTo(node) {
+        node.appendChild(this);
+    },
+    removeFrom: function removeFrom(node) {
+        node.removeChild(this);
+    }
+};
+
+let removeClientModel = {
+    createdCallback: function createdCallback() {
+        if (!this.children) {
+            this.children = {};
+        }
+
+        this.children.topic = document.createElement('h1');
+        this.children.topic.classList.add('block');
+        this.children.topic.textContent = 'Remove an existing client';
+
+        this.children.inputName = document.createElement('atom-text-editor');
+        this.children.inputName.setAttribute('mini', true);
+
+        this.children.error = document.createElement('div');
+        this.children.error.classList.add('block', 'error-message');
+        this.children.error.textContent = 'remove an existing client from the list!';
+
+        this.children.save = document.createElement('div');
+        this.children.save.classList.add('inline-block');
+        this.children.saveText = document.createElement('button');
+        this.children.saveText.classList.add('btn', 'btn-error');
+        this.children.saveText.textContent = 'remove';
+        this.children.save.addEventListener('click', () => {
+            let name = this.children.inputName.getModel().buffer.getText();
+
+            if (name.trim().length) {
+                console.debug(pv.deleteClient({
+                    name: name
+                }));
+                pv.storeDB();
+            }
+
+            atom.workspace.panelForItem(this).destroy();
+        });
+
+        this.children.cancel = document.createElement('div');
+        this.children.cancel.classList.add('inline-block');
+        this.children.cancelText = document.createElement('button');
+        this.children.cancelText.classList.add('btn');
+        this.children.cancelText.textContent = 'cancel';
+        this.children.cancel.addEventListener('click', () => {
+            atom.workspace.panelForItem(this).destroy();
+        });
+
+        this.children.save.appendChild(this.children.saveText);
+        this.children.cancel.appendChild(this.children.cancelText);
+
+        this.appendChild(this.children.topic);
+        this.appendChild(this.children.inputName);
+        this.appendChild(this.children.error);
+        this.appendChild(this.children.save);
+        this.appendChild(this.children.cancel);
     },
     appendTo: function appendTo(node) {
         node.appendChild(this);
@@ -283,6 +445,10 @@ let projectModel = {
 let statusBarConstructor = component.register({
     custom: 'pv-status-bar'
 }, statusBarModel);
+
+let statusInfoConstructor = component.register({
+    custom: 'pv-status-info'
+}, statusInfoModel);
 
 let mainConstructor = component.register({
     custom: 'project-viewer'
@@ -323,12 +489,35 @@ let projectConstructor = component.register({
     extends: 'li'
 }, projectModel);
 
+let addClientConstructor = component.register({
+    custom: 'pv-add-client',
+    extends: 'div'
+}, addClientModel);
+
+let removeClientConstructor = component.register({
+    custom: 'pv-remove-client',
+    extends: 'div'
+}, removeClientModel);
+
 // =============================================================================
 
-let pv = {
+let settings = {
+    storage: atom.getStorageFolder().load('project-viewer2.json'),
+    store: {
+        clients: []
+    },
+    db: {
+        clients: [],
+        groups: [],
+        projects: []
+    },
+    selectedProject: null,
     statusBar: null,
     statusBarTile: null,
-    selectListView: null,
+    selectListView: null
+};
+
+let pv = {
     config: {
         startupVisibility: {
             description: 'Define if you want **project-viewer** to be visible on startup.',
@@ -355,18 +544,27 @@ let pv = {
             order: 3
         }
     },
+    addModalAddClient: function addModalAddClient() {
+        this.disposables.add(atom.workspace.addModalPanel({
+            item: new addClientConstructor(),
+            visible: true
+        }));
+    },
+    removeModalAddClient: function removeModalAddClient() {
+        this.disposables.add(atom.workspace.addModalPanel({
+            item: new removeClientConstructor(),
+            visible: true
+        }));
+    },
     addToStatusBar: function addToStatusBar() {
-        let project = this.searchProject({
-            paths: atom.project.getPaths()
-        })[0],
-            view;
+        let view;
 
         view = new statusBarConstructor();
 
-        if (project) {
-            view.setText(project.getProjectGroup().name
+        if (this.selectedProject) {
+            view.setText(this.selectedProject.getProjectGroup().name
                 .concat(' / ')
-                .concat(project.getProject().name));
+                .concat(this.selectedProject.getProject().name));
         } else {
             view.setText('no project selected!');
         }
@@ -380,18 +578,15 @@ let pv = {
         this.statusBarTile.destroy();
     },
     consumeStatusBar (statusBar) {
-        let project = this.searchProject({
-            paths: atom.project.getPaths()
-        })[0],
-            view;
-
         this.statusBar = statusBar;
 
-        if (atom.config.get('project-viewer2.statusBarVisibility')) {
+        if (atom.config.get('project-viewer2.startupVisibility') && atom.config.get('project-viewer2.statusBarVisibility')) {
             this.addToStatusBar();
         }
     },
     activate: function activate() {
+
+        let project;
 
         process.nextTick(() => {
             if (!this.children) {
@@ -401,24 +596,57 @@ let pv = {
             this.children.mainView = new mainConstructor();
             this.children.topicView = new topicConstructor();
             this.children.clientsView = new clientsConstructor();
+            this.children.statusInfoView = document.createElement('atom-panel');
+
+            this.children.statusInfoView.appendChild(new statusInfoConstructor());
 
             this.children.topicView.appendTo(this.children.mainView);
             this.children.clientsView.appendTo(this.children.mainView);
 
+            this.children.mainView.appendChild(this.children.statusInfoView);
+
             this.panel = atom.workspace.addRightPanel({
                 item: this.children.mainView,
-                visible: true
+                visible: atom.config.get('project-viewer2.startupVisibility')
             });
 
             this.populate();
 
+            project = this.searchProject({
+                paths: atom.project.getPaths()
+            });
+
+            if (project && project.length === 1) {
+                this.selectedProject = project[0];
+                pv.selectedProject.getProject().view.classList.add('selected');
+            }
+
             this.selectListView = new PVSelectListView();
+
+            this.disposables = new CompositeDisposable();
+                this.disposables.add(
+                    atom.commands.add('atom-workspace', {
+                        'project-viewer2:add-client': this.addModalAddClient.bind(this),
+                        'project-viewer2:remove-client': this.removeModalAddClient.bind(this),
+                        'project-viewer2:toggleDisplay': this.togglePanel.bind(this),
+                        'project-viewer2:toggleFocus': this.toggleFocus.bind(this)
+                    }
+                )
+            );
 
             atom.config.onDidChange('project-viewer2.statusBarVisibility', (status) => {
                 if (status.newValue) {
                     this.addToStatusBar();
                 } else {
                     this.removeToStatusBar();
+                }
+            });
+
+            atom.config.observe('project-viewer2.autohide', (value) => {
+                if (value) {
+                    this.children.mainView.classList.add('autohide');
+                } else {
+                    this.children.mainView.classList.remove('autohide');
                 }
             });
         });
@@ -428,6 +656,8 @@ let pv = {
         this.selectListView.cancel();
         this.statusBarTile.destroy();
         this.statusBarTile = null;
+        this.panel.destroy();
+        this.disposables.dispose();
     },
     populate: function populate() {
         this.storage.clients.forEach((clientStored) => {
@@ -493,22 +723,13 @@ let pv = {
                     this.db.projects.push(project);
 
                     project.project.view.setText(project.project.name);
-                    project.project.view.setModel(projectStored);
+                    project.project.view.setDataGroup(group.group.name);
+                    project.project.view.setDataClient(client.client.name);
                     project.project.view.appendTo(projectsView);
                 });
             });
         });
     },
-    storage: atom.getStorageFolder().load('project-viewer2.json'),
-    store: {
-        clients: []
-    },
-    db: {
-        clients: [],
-        groups: [],
-        projects: []
-    },
-    selectedProject: null,
     projectSerialization: function projectSerialization() {
         return atom.project.serialize();
     },
@@ -530,7 +751,7 @@ let pv = {
     treeViewSerialization: function treeViewSerialization() {
         let pkg = atom.packages.getActivePackage('tree-view');
 
-        if (!pkg) {
+        if (!pkg || !pkg.mainModule || !pkg.mainModule.treeView) {
             return;
         };
 
@@ -542,7 +763,16 @@ let pv = {
         if (!pkg || !serialization || !serialization.directoryExpansionStates) {
             return;
         }
-        pkg.mainModule.treeView.updateRoots(serialization.directoryExpansionStates);
+
+        if (!pkg || !pkg.mainModule) {
+            return;
+        }
+
+        if (!pkg.mainModule.treeView) {
+            pkg.mainModule.treeView.createView(serialization.directoryExpansionStates);
+        } else {
+            pkg.mainModule.treeView.updateRoots(serialization.directoryExpansionStates);
+        }
     },
     updateGroupClient: function updateGroupClient(group, client) {
         Object.setPrototypeOf(group, client);
@@ -579,20 +809,38 @@ let pv = {
         }
     },
     project_methods: {
+        closeState: function closeState() {
+            let serializationFile = atom.getStateKey(
+                this.getProject().paths
+            );
+
+            if (serializationFile) {
+                atom.storageFolder.store(
+                    serializationFile,
+                    {
+                        project: pv.projectSerialization(),
+                        workspace: pv.workspaceSerialization(),
+                        treeview: pv.treeViewSerialization()
+                    }
+                );
+            }
+
+            atom.workspace.destroyActivePane();
+
+            pv.statusBarTile.getItem().setText('');
+        },
         openState: function openState() {
             let serializationFile,
                 serialization,
                 project;
 
-            serializationFile = atom.getStateKey(
-                this.getProject().paths
-            );
+            project = this.getProject();
+
+            serializationFile = atom.getStateKey(project.paths);
 
             if (serializationFile) {
                 serialization = atom.storageFolder.load(serializationFile);
             }
-
-            project = this.getProject();
 
             if (serialization) {
                 pv.projectDeserialization(serialization.project);
@@ -602,9 +850,7 @@ let pv = {
                 atom.project.setPaths(project.paths);
             }
 
-            pv.storeDB();
-
-            pv.statusBar.setText(this.getProjectGroup().name
+            pv.statusBarTile.getItem().setText(this.getProjectGroup().name
                 .concat(' / ')
                 .concat(project.name));
         },
@@ -627,7 +873,6 @@ let pv = {
             return this.group.expanded;
         }
     },
-
     searchClient: function searchClient(byProps) {
         let matches = [];
         this.db.clients.forEach(
@@ -680,6 +925,36 @@ let pv = {
             }
         );
         return matches;
+    },
+    newClient: function newClient(candidate) {
+        let isNew = !this.db.clients.some(
+            (client) => {
+                return candidate.name === client.name;
+            }
+        );
+        if ((isNew || !this.db.clients.length) && candidate.name) {
+            return this.db.clients.push(Object.assign({
+                client: {
+                    name: candidate.name,
+                    icon: candidate.icon || '',
+                    expanded: candidate.expanded || false,
+                    view: new clientConstructor()
+                }
+            }, this.client_methods));
+        }
+        return -1;
+    },
+    deleteClient: function newClient(candidate) {
+        let isNew = this.db.clients.some(
+            (client) => {
+                return candidate.name === client.name;
+            }
+        );
+        if ((isNew || !this.db.clients.length) && candidate.name) {
+            // TODO actually remove client
+            return this.db.clients;
+        }
+        return -1;
     },
     addClient: function addClient(candidate) {
         let isNew = !this.store.clients.some(
@@ -789,8 +1064,33 @@ let pv = {
         });
 
         atom.getStorageFolder().store('project-viewer2.json', this.store);
+    },
+    togglePanel: function togglePanel() {
+        this.panel.visible ? this.panel.hide() : this.panel.show();
+    },
+    setFocus: function setFocus() {
+        this.panel.getItem().focus();
+    },
+    toggleFocus: function toggleFocus() {
+        if (document.activeElement === this.panel.getItem()) {
+            atom.workspace.getActivePane().activate();
+            this.downDisposable && this.downDisposable.dispose();
+            this.upDisposable && this.upDisposable.dispose();
+        } else {
+            this.setFocus();
+        }
+    },
+    moveUp: function moveUp(evt) {
+        console.debug(evt);
+        evt.stopPropagation();
+    },
+    moveDown: function moveDown(evt) {
+        console.debug(evt);
+        evt.stopPropagation();
     }
 };
+
+Object.setPrototypeOf(pv, settings);
 
 module.exports = pv;
 
@@ -799,8 +1099,11 @@ module.exports = pv;
 
 
 
+
+
+
 const SelectListView = require('atom-space-pen-views').SelectListView,
-$$ = require('atom-space-pen-views').$$;
+    $$ = require('atom-space-pen-views').$$;
 
 class PVSelectListView extends SelectListView {
 
@@ -880,6 +1183,8 @@ class PVSelectListView extends SelectListView {
         pv.selectedProject = project;
 
         pv.selectedProject.openState();
+
+        pv.storeDB();
 
         this.cancel();
     }

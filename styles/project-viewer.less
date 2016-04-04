@@ -32,6 +32,10 @@ project-viewer {
             transition: color @project-viewer-transition-duration;
         }
     }
+
+	&::selection {
+		background-color: transparent;
+	}
 }
 
 pv-topic {
@@ -44,11 +48,19 @@ pv-topic {
     animation-duration: @project-viewer-animation-duration;
     animation-name: fadeIn;
     transition: all @project-viewer-transition-duration;
+
+	&::selection {
+		background-color: transparent;
+	}
 }
 
 ul[is="pv-clients"],
 ul[is="pv-groups"] {
     font-family: @font-family;
+
+	&::selection {
+		background-color: transparent;
+	}
 }
 
 ul[is="pv-clients"] {
@@ -67,6 +79,10 @@ li[is="pv-group"] {
     width: 100%;
     cursor: pointer;
     display: block;
+
+	span::selection {
+		background-color: transparent;
+	}
 }
 
 li.list-item[is="pv-client"]::before,
@@ -151,7 +167,6 @@ div[is="status-bar-project-viewer"] {
 }
 
 pv-status-info {
-    font-size: 11px;
     cursor: default;
     display: inline-flex;
     justify-content: flex-end;
@@ -166,18 +181,8 @@ pv-status-info {
     border-top-color: @base-border-color;
     border-top-style: solid;
     box-sizing: border-box;
-
-    span {
-        display: inline-block;
-        vertical-align: middle;
-        max-width: 20vw;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        margin-right: 0;
-
-        &.icon-alert::before {
-            font-size: 14px;
-        }
-    }
+	padding: 0 @component-padding;
+	color: @text-color-success;
+	font-size: @font-size * 0.7;
+	text-align: right;
 }

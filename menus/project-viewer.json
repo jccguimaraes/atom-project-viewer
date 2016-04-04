@@ -28,7 +28,17 @@
             "label": "Packages",
             "submenu": [
                 {
-                "label": "Project Viewer 2"
+                "label": "Project Viewer 2",
+                "submenu": [
+                    {
+                        "label": "Client - Add",
+                        "command": "project-viewer2:add-client"
+                    },
+                    {
+                        "label": "Client - Remove",
+                        "command": "project-viewer2:remove-client"
+                    }
+                ]
                 }
             ]
         }
