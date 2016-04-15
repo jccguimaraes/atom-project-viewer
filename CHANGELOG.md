@@ -1,3 +1,11 @@
+## 0.2.32
+* closes issue #33
+* closes issue #34
+* closes issue #35
+
+## 0.2.31
+* bug fixes
+
 ## 0.2.30
 * closes issue #23
 
