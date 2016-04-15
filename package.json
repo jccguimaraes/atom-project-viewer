@@ -12,7 +12,7 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.6.1"
+    "atom": ">=1.7.0"
   },
   "dependencies": {},
   "devDependencies": {
@@ -31,7 +31,6 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "atomTestRunner": "./custom/specs.js",
   "consumedServices": {
     "status-bar": {
       "versions": {

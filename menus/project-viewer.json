@@ -21,6 +21,15 @@
             {
                 "label": "Remove group..."
             }
+        ],
+        ".tree-view-resizer": [
+            {
+                "type": "separator"
+            },
+            {
+                "label": "Save as a project",
+                "command": "project-viewer2:elevate-project"
+            }
         ]
     },
     "menu": [

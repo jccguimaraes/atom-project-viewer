@@ -11,7 +11,6 @@ project-viewer {
     background-color: @tree-view-background-color;
     font-size: @font-size;
     font-family: @font-family;
-    border: 1px solid @pane-item-border-color;
     box-sizing: content-box;
 
     transition-property: width, opacity;
@@ -27,6 +26,7 @@ project-viewer {
         width: @project-viewer-width;
         transition: width @project-viewer-transition-duration;
 
+		pv-header,
         pv-topic {
             color: @project-viewer-active-state;
             transition: color @project-viewer-transition-duration;
@@ -38,6 +38,7 @@ project-viewer {
 	}
 }
 
+pv-header,
 pv-topic {
     color: @project-viewer-topic-color;
     font-size: @project-viewer-topic-size;
@@ -54,23 +55,37 @@ pv-topic {
 	}
 }
 
+ul.list-tree.has-collapsable-children {
+	padding: 0 @component-padding;
+}
+
 ul[is="pv-clients"],
 ul[is="pv-groups"] {
-    font-family: @font-family;
+	font-family: @font-family;
 
 	&::selection {
 		background-color: transparent;
 	}
 }
 
+ul.has-collapsable-children,
 ul[is="pv-clients"] {
-    padding-left: @component-padding;
-
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	width: 100%;
 	overflow: auto;
+}
+
+li[is="pv-client"] {
+	> .list-item {
+		padding: 0 @component-padding;
+	}
+}
+
+project-viewer .list-tree.has-collapsable-children .list-nested-item > .list-tree > li[is="pv-project"] {
+	// padding: 0 10px;
+	margin: 0;
 }
 
 li[is="pv-client"],
@@ -99,6 +114,7 @@ project-viewer li.list-item[is="pv-project"] {
     display: block;
     transition: color @project-viewer-transition-duration ease-in 0s;
     position: relative;
+	margin: 0;
 
     &::before {
         content: "";
@@ -185,4 +201,40 @@ pv-status-info {
 	color: @text-color-success;
 	font-size: @font-size * 0.7;
 	text-align: right;
+}
+
+project-viewer li.list-item[is="pv-list-item"] {
+    pointer-events: all;
+    width: 100%;
+    cursor: pointer;
+    display: block;
+    transition: color @project-viewer-transition-duration ease-in 0s;
+    position: relative;
+
+    // &::before {
+    //     content: "";
+    //     position: absolute;
+    //     width: 2px;
+    //     height: 100%;
+    //     bottom: 0;
+    //     left: -17px;
+    //     background-color: @project-viewer-active-state;
+    //     visibility: hidden;
+    //     transform: scaleY(0);
+    //     transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+    // }
+	//
+    // &:hover::before {
+    //     visibility: visible;
+    //     transform: scaleY(1);
+    // }
+
+    &:hover {
+        color: @project-viewer-selected-state;
+        transition: color @project-viewer-transition-duration ease-out 0s;
+    }
+
+    &.selected {
+        color: @project-viewer-selected-state;
+    }
 }
