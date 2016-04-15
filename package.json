@@ -1,7 +1,7 @@
 {
   "name": "project-viewer2",
   "main": "./src/index",
-  "version": "0.2.30",
+  "version": "0.2.32",
   "description": "Project viewer/manager that lets you add and remove groups/projects as well as switching between them.",
   "keywords": [
     "project",
@@ -12,19 +12,11 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.7.0"
+    "atom": ">=1.7.1"
   },
   "dependencies": {},
   "devDependencies": {
-    "chai": "latest",
-    "cz-conventional-changelog": "latest",
-    "eslint": "latest",
-    "istanbul": "latest",
-    "jscs": "latest",
-    "loophole": "latest",
-    "mocha": "latest",
-    "sinon": "latest",
-    "sinon-chai": "latest"
+    "cz-conventional-changelog": "latest"
   },
   "config": {
     "commitizen": {

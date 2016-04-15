@@ -4,7 +4,6 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 
 const _db = require('./db');
 const _config = require('./config');
-const _states = require('./states');
 const _component = require('./component');
 const _mainComponent = require('./main-component');
 const _headerComponent = require('./header-component');
@@ -59,7 +58,8 @@ function addProjects(mappedGroup, groupView) {
             let projectModel = {
                 projectName: mappedProject.name,
                 projectIcon: mappedProject.icon || 'icon',
-                projectActive: mappedProject.active || false
+                projectActive: mappedProject.active || false,
+                projectPaths: mappedProject.paths || []
             };
 
             let clientModel = _db.clientsMap.get(groupView);
@@ -143,8 +143,6 @@ const projectViewer = {
     config: _config,
     activate: function activate(state) {
         this.disposables = new CompositeDisposable();
-
-        console.debug(_states.projectSerialization());
 
         if (state) {
             // TODO

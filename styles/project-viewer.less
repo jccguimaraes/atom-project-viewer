@@ -234,7 +234,11 @@ project-viewer li.list-item[is="pv-list-item"] {
         transition: color @project-viewer-transition-duration ease-out 0s;
     }
 
-    &.selected {
+    &.active {
         color: @project-viewer-selected-state;
     }
+}
+
+li[is="pv-list-nested-item"] {
+	cursor: pointer;
 }

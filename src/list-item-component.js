@@ -1,6 +1,7 @@
 'use strict';
 
 const _utils = require('./utils');
+const _states = require('./states');
 const _db = require('./db');
 
 const component = {
@@ -22,14 +23,66 @@ const htmlMethods = {
         this.setAttribute('draggable', true);
     },
     attachedCallback: function attachedCallback() {
+        this.addEventListener('click', (evt) => {
+            let serializationFile;
+            let serialization;
+            let model;
+
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            serializationFile = atom.getStateKey(
+                atom.project.getPaths()
+            );
+
+            if (serializationFile) {
+                atom.storageFolder.storeSync(
+                    serializationFile,
+                    {
+                        project: _states.projectSerialization(),
+                        workspace: _states.workspaceSerialization(),
+                        treeview: _states.treeViewSerialization()
+                    }
+                );
+            }
+
+            model = _db.projectsMap.get(this);
+
+            if (!model.projectPaths || model.projectPaths.length === 0) {
+                return;
+            }
+
+            serializationFile = atom.getStateKey(model.projectPaths);
+
+            if (serializationFile) {
+                serialization = atom.storageFolder.load(serializationFile);
+            }
+
+            if (serialization) {
+                _states.projectDeserialization(serialization.project);
+                _states.workspaceDeserialization(serialization.workspace);
+                _states.treeViewDeserialization(serialization.treeview);
+            } else {
+                atom.project.setPaths(model.projectPaths);
+            }
+
+            let selected = document.querySelector('project-viewer .active');
+            if (selected) {
+                selected.classList.remove('active');
+            }
+            this.classList.add('active');
+        });
+
         this.addEventListener('dragstart', (evt) => {
             event.dataTransfer.setData('project', this.getId());
         });
+
         this.addEventListener('dragover', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
             return false;
         });
+
         this.addEventListener('dragenter', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();

@@ -25,14 +25,23 @@ const htmlMethods = {
         this.setAttribute('draggable', true);
     },
     attachedCallback: function attachedCallback() {
+        this.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            this.classList.toggle('expanded');
+            this.classList.toggle('collapsed');
+        });
+
         this.addEventListener('dragstart', (evt) => {
             event.dataTransfer.setData('client/group', this.getId());
         });
+
         this.addEventListener('dragover', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
             return false;
         });
+
         this.addEventListener('dragenter', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
