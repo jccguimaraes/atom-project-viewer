@@ -33,7 +33,8 @@ const htmlMethods = {
         });
 
         this.addEventListener('dragstart', (evt) => {
-            event.dataTransfer.setData('client/group', this.getId());
+            evt.stopPropagation();
+            event.dataTransfer.setData('pv-dropview', this.getId());
         });
 
         this.addEventListener('dragover', (evt) => {
@@ -52,38 +53,35 @@ const htmlMethods = {
             evt.preventDefault();
             evt.stopPropagation();
 
-            let dropNode = document.getElementById(evt.dataTransfer.getData('project'));
+            let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
 
             if (!dropNode) {
-                _utils.notification('warning', 'cannot find the dragged HTML element', {
+                _utils.notification('warning', 'nothing to add', {
                     icon: 'horizontal-rule'
                 });
                 return;
             }
 
-            let dropModel = _db.projectsMap.get(dropNode);
-            let thisModel = _db.groupsMap.get(this);
-
-            if (!thisModel) {
-                thisModel = _db.clientsMap.get(this);
-            }
-
-            this.addChild(dropNode);
+            let dropModel = _db.mapper.get(dropNode);
+            let thisModel = _db.mapper.get(this);
 
             Object.setPrototypeOf(dropModel, thisModel);
+            this.addChild(dropNode);
+
+            _db.save();
 
             return false;
         });
     },
     addNode: function addNode(node, force) {
         if (!node) {
-            _utils.notification('error', 'no HTML element was passed', {
+            _utils.notification('error', 'nothing to add', {
                 icon: 'code'
             });
             return;
         }
         if (!force && this.hasNode(node)) {
-            _utils.notification('info', 'HTML element already added', {
+            _utils.notification('info', 'it\'s already here!', {
                 icon: 'code'
             });
             return;
@@ -92,6 +90,7 @@ const htmlMethods = {
     },
     addChild: function addChild(node) {
         this.querySelector('ul').addNode(node);
+        this.sortChildren();
     },
     hasNode: function hasNode(node) {
         let has = false;
@@ -108,19 +107,22 @@ const htmlMethods = {
             return;
         }
         if (typeof text !== 'string') {
-            _utils.notification('info', 'list-item text is not valid', {
+            _utils.notification('info', 'text is not valid', {
                 icon: 'code'
             });
             return;
         }
         this.nodes.listItemSpan.textContent = text;
     },
+    getText: function getText() {
+        return this.nodes.listItemSpan.textContent;
+    },
     setIcon: function setIcon(icon) {
         if (!icon) {
             return;
         }
         if (typeof icon !== 'string') {
-            _utils.notification('info', 'list-item icon is not valid', {
+            _utils.notification('info', 'icon is not valid', {
                 icon: 'code'
             });
             return;
@@ -132,7 +134,7 @@ const htmlMethods = {
             return;
         }
         if (typeof id !== 'string') {
-            _utils.notification('info', 'list-item id is not valid', {
+            _utils.notification('info', 'id is not valid', {
                 icon: 'code'
             });
             return;
@@ -143,29 +145,32 @@ const htmlMethods = {
         return this.id;
     },
     sortChildren: function sortChildren() {
-        if (!this.getSortType()) {
+        let thisModel = _db.mapper.get(this);
+        let sort = thisModel.sortBy;
+
+        if (!sort) {
             return;
         }
-        // let view = this.getClientsView();
-        // let sort = this.getClientsSort();
-        // let children = Array.apply(null, view.childNodes);
-        // let reverse = sort.includes('reverse') ? -1 : 1;
-        // let results = children.sort((currentNode, nextNode) => {
-        //     let result;
-        //
-        //     if (sort.includes('alphabetic')) {
-        //         result = reverse * new Intl.Collator().compare(
-        //             currentNode.getText(),
-        //             nextNode.getText()
-        //         );
-        //     } else if (sort.includes('position')) {
-        //         result = -reverse;
-        //     }
-        //     if (result === 1) {
-        //         view.insertBefore(nextNode, currentNode);
-        //     }
-        //     return result;
-        // });
+
+        let view = this.querySelector('ul');
+        let children = Array.apply(null, view.childNodes);
+        let reverse = sort.includes('reverse') ? -1 : 1;
+        let results = children.sort((currentNode, nextNode) => {
+            let result;
+
+            if (sort.includes('alphabetic')) {
+                result = reverse * new Intl.Collator().compare(
+                    currentNode.getText(),
+                    nextNode.getText()
+                );
+            } else if (sort.includes('position')) {
+                result = -reverse;
+            }
+            if (result === 1) {
+                view.insertBefore(nextNode, currentNode);
+            }
+            return result;
+        });
     }
 };
 

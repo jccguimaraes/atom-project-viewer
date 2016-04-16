@@ -35,7 +35,7 @@ const htmlMethods = {
                 atom.project.getPaths()
             );
 
-            if (serializationFile) {
+            if (serializationFile && atom.storageFolder && typeof atom.storageFolder.storeSync === 'function') {
                 atom.storageFolder.storeSync(
                     serializationFile,
                     {
@@ -46,7 +46,13 @@ const htmlMethods = {
                 );
             }
 
-            model = _db.projectsMap.get(this);
+            atom.project.getRepositories().forEach((repo) => {
+                repo.destroy();
+            });
+
+            atom.workspace.getActivePane().destroy();
+
+            model = _db.mapper.get(this);
 
             if (!model.projectPaths || model.projectPaths.length === 0) {
                 return;
@@ -74,7 +80,8 @@ const htmlMethods = {
         });
 
         this.addEventListener('dragstart', (evt) => {
-            event.dataTransfer.setData('project', this.getId());
+            evt.stopPropagation();
+            event.dataTransfer.setData('pv-dropview', this.getId());
         });
 
         this.addEventListener('dragover', (evt) => {
@@ -93,17 +100,22 @@ const htmlMethods = {
             evt.preventDefault();
             evt.stopPropagation();
 
-            let dropNode = document.getElementById(evt.dataTransfer.getData('project'));
+            let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
 
             if (!dropNode) {
-                _utils.notification('warning', 'no HTML element was dragged', {
+                _utils.notification('warning', 'nothing to add', {
                     icon: 'horizontal-rule'
                 });
                 return;
             }
 
-            let dropModel = _db.projectsMap.get(dropNode);
-            let thisModel = _db.projectsMap.get(this);
+            let dropModel = _db.mapper.get(dropNode);
+            let thisModel = _db.mapper.get(this);
+
+            Object.setPrototypeOf(dropModel, Object.getPrototypeOf(thisModel));
+            this.parentElement.addNode(dropNode);
+
+            _db.save();
 
             return false;
         });
@@ -113,7 +125,7 @@ const htmlMethods = {
             return;
         }
         if (typeof text !== 'string') {
-            _utils.notification('info', 'list-item text is not valid', {
+            _utils.notification('info', 'text is not valid', {
                 icon: 'code'
             });
             return;
@@ -128,7 +140,7 @@ const htmlMethods = {
             return;
         }
         if (typeof icon !== 'string') {
-            _utils.notification('info', 'list-item icon is not valid', {
+            _utils.notification('info', 'icon is not valid', {
                 icon: 'code'
             });
             return;
@@ -143,7 +155,7 @@ const htmlMethods = {
             return;
         }
         if (typeof id !== 'string') {
-            _utils.notification('info', 'list-item id is not valid', {
+            _utils.notification('info', 'id is not valid', {
                 icon: 'code'
             });
             return;

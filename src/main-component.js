@@ -12,13 +12,13 @@ const htmlMethods = {
     },
     addNode: function addNode(node, force) {
         if (!node) {
-            _utils.notification('error', 'no HTML element was passed', {
+            _utils.notification('error', 'nothing to add', {
                 icon: 'code'
             });
             return;
         }
         if (!force && this.hasNode(node)) {
-            _utils.notification('info', 'HTML element already added', {
+            _utils.notification('info', 'it\'s already here!', {
                 icon: 'code'
             });
             return;

@@ -31,19 +31,29 @@ const htmlMethods = {
             evt.preventDefault();
             evt.stopPropagation();
 
-            let dropNode = document.getElementById(evt.dataTransfer.getData('project'));
+            if (!this.classList.contains('has-collapsable-children')) {
+                return;
+            }
+
+            let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
 
             if (!dropNode) {
-                _utils.notification('warning', 'no HTML element was dragged', {
+                _utils.notification('warning', 'nothing to add', {
                     icon: 'horizontal-rule'
                 });
                 return;
             }
 
-            let dropModel = _db.projectsMap.get(dropNode);
+            let dropModel = _db.mapper.get(dropNode);
+            let thisModel = _db.mapper.get(this);
 
-            let projectsContainer = this.querySelector('.has-collapsable-children > ul[is="pv-list-tree"]:last-child');
-            projectsContainer.addNode(dropNode);
+            // if (thisModel) {
+            //     Object.setPrototypeOf(dropModel, thisModel);
+            // }
+
+            this.addChild(dropNode);
+
+            _db.save();
 
             return false;
         });
@@ -53,18 +63,22 @@ const htmlMethods = {
     },
     addNode: function addNode(node, force) {
         if (!node) {
-            _utils.notification('error', 'no HTML element was passed', {
+            _utils.notification('error', 'nothing to add', {
                 icon: 'code'
             });
             return;
         }
         if (!force && this.hasNode(node)) {
-            _utils.notification('info', 'HTML element already added', {
+            _utils.notification('info', 'it\'s already here!', {
                 icon: 'code'
             });
             return;
         }
         this.appendChild(node);
+    },
+    addChild: function addChild(node) {
+        this.querySelector('ul').addNode(node);
+        // this.sortChildren();
     },
     hasNode: function hasNode(node) {
         let has = false;

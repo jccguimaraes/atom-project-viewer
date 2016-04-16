@@ -53,26 +53,37 @@ function addProjects(mappedGroup, groupView) {
             projectView.setText(mappedProject.name);
             projectView.setIcon(mappedProject.icon);
             projectView.setId(mappedProject.name);
+
+
+            let isActive = false;
+            if (Array.isArray(mappedProject.paths) && mappedProject.paths.length > 0) {
+                isActive = atom.project.getPaths().every((path) => {
+                    return mappedProject.paths.indexOf(path) !== -1;
+                });
+            }
+            if (isActive) {
+                projectView.classList.add('active');
+            }
             projectsView.addNode(projectView);
 
             let projectModel = {
+                type: 'project',
                 projectName: mappedProject.name,
                 projectIcon: mappedProject.icon || 'icon',
                 projectActive: mappedProject.active || false,
                 projectPaths: mappedProject.paths || []
             };
 
-            let clientModel = _db.clientsMap.get(groupView);
-            let groupModel = _db.groupsMap.get(groupView);
+            let model = _db.mapper.get(groupView);
 
-            if (groupModel) {
-                Object.setPrototypeOf(projectModel, groupModel);
-            } else if (clientModel) {
-                Object.setPrototypeOf(projectModel, clientModel);
-            }
-            _db.projectsMap.set(projectView, projectModel);
+            Object.setPrototypeOf(projectModel, model);
+            _db.mapper.set(projectView, projectModel);
         }
     );
+
+    if (typeof groupView.sortChildren === 'function') {
+        groupView.sortChildren();
+    }
 }
 
 function addGroups(mappedClient, clientView) {
@@ -88,24 +99,30 @@ function addGroups(mappedClient, clientView) {
             groupsView.addNode(groupView);
 
             let groupModel = {
+                type: 'group',
+                sortBy: mappedGroup.sortBy,
                 groupName: mappedGroup.name,
                 groupIcon: mappedGroup.icon,
                 groupExpanded: mappedGroup.expanded
             };
 
-            let clientModel = _db.clientsMap.get(clientView);
+            let clientModel = _db.mapper.get(clientView);
 
             if (clientModel) {
                 Object.setPrototypeOf(groupModel, clientModel);
             }
 
-            _db.groupsMap.set(groupView, groupModel);
+            _db.mapper.set(groupView, groupModel);
 
             if (mappedGroup.hasOwnProperty('projects') && Array.isArray(mappedGroup.projects)) {
                 addProjects(mappedGroup, groupView);
             }
         }
     );
+
+    if (typeof clientView.sortChildren === 'function') {
+        clientView.sortChildren();
+    }
 }
 
 function addClients(mappedRoot, rootView) {
@@ -118,12 +135,14 @@ function addClients(mappedRoot, rootView) {
             rootView.addNode(clientView);
 
             let clientModel = {
+                type: 'client',
+                sortBy: mappedClient.sortBy,
                 clientName: mappedClient.name,
                 clientIcon: mappedClient.icon,
                 clientExpanded: mappedClient.expanded
             };
 
-            _db.clientsMap.set(clientView, clientModel);
+            _db.mapper.set(clientView, clientModel);
 
             if (mappedClient.hasOwnProperty('groups') && Array.isArray(mappedClient.groups)) {
                 let clientGroupsView = new _listTreeConstructor();
@@ -137,6 +156,10 @@ function addClients(mappedRoot, rootView) {
             }
         }
     );
+
+    if (typeof rootView.sortChildren === 'function') {
+        rootView.sortChildren();
+    }
 };
 
 const projectViewer = {
