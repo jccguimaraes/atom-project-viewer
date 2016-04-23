@@ -42,10 +42,6 @@
                     {
                         "label": "Client - Add",
                         "command": "project-viewer2:add-client"
-                    },
-                    {
-                        "label": "Client - Remove",
-                        "command": "project-viewer2:remove-client"
                     }
                 ]
                 }

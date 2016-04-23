@@ -1,12 +1,81 @@
 'use strict';
 
 const _utils = require('./utils');
+const _utility = require('./utilities');
 const _db = require('./db');
 
-const component = {
+const definition = {
     custom: 'pv-list-nested-item',
     extends: 'li'
 };
+
+function clickListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.toggle('expanded');
+    this.classList.toggle('collapsed');
+}
+
+function dragStartListener(evt) {
+    evt.stopPropagation();
+    event.dataTransfer.setData('pv-dropview', this.getId());
+}
+
+function dragOverListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    evt.dataTransfer.dropEffect = 'move';
+    this.classList.add('over');
+    return false;
+}
+
+function dragLeaveListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.remove('over');
+    return false;
+}
+
+function dragEnterListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    return false;
+}
+
+function dropListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.remove('over');
+
+    let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
+
+    if (!dropNode) {
+        _utils.notification('warning', 'nothing to add', {
+            icon: 'horizontal-rule'
+        });
+        return;
+    }
+
+    let dropModel = _db.mapper.get(dropNode);
+    let thisModel = _db.mapper.get(this);
+
+    if (dropModel.type === 'client') {
+        return;
+    }
+
+    let dropPrototype = Object.getPrototypeOf(dropModel);
+    let thisPrototype = Object.getPrototypeOf(thisModel);
+
+    let didAdd = this.addChild(dropNode);
+
+    if (didAdd) {
+        Object.setPrototypeOf(dropModel, thisModel);
+        _db.store();
+        _utility.updateStatusBar();
+    }
+
+    return false;
+}
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -24,54 +93,21 @@ const htmlMethods = {
 
         this.setAttribute('draggable', true);
     },
+    detachedCallback: function detachedCallback() {
+        this.removeEventListener('click', clickListener);
+        this.removeEventListener('dragstart', dragStartListener);
+        this.removeEventListener('dragover', dragOverListener);
+        this.removeEventListener('dragleave', dragLeaveListener);
+        this.removeEventListener('dragenter', dragEnterListener);
+        this.removeEventListener('drop', dropListener);
+    },
     attachedCallback: function attachedCallback() {
-        this.addEventListener('click', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            this.classList.toggle('expanded');
-            this.classList.toggle('collapsed');
-        });
-
-        this.addEventListener('dragstart', (evt) => {
-            evt.stopPropagation();
-            event.dataTransfer.setData('pv-dropview', this.getId());
-        });
-
-        this.addEventListener('dragover', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            return false;
-        });
-
-        this.addEventListener('dragenter', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            return false;
-        });
-
-        this.addEventListener('drop', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-
-            let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
-
-            if (!dropNode) {
-                _utils.notification('warning', 'nothing to add', {
-                    icon: 'horizontal-rule'
-                });
-                return;
-            }
-
-            let dropModel = _db.mapper.get(dropNode);
-            let thisModel = _db.mapper.get(this);
-
-            Object.setPrototypeOf(dropModel, thisModel);
-            this.addChild(dropNode);
-
-            _db.save();
-
-            return false;
-        });
+        this.addEventListener('click', clickListener, false);
+        this.addEventListener('dragstart', dragStartListener, false);
+        this.addEventListener('dragover', dragOverListener, false);
+        this.addEventListener('dragleave', dragLeaveListener, false);
+        this.addEventListener('dragenter', dragEnterListener, false);
+        this.addEventListener('drop', dropListener, false);
     },
     addNode: function addNode(node, force) {
         if (!node) {
@@ -88,9 +124,17 @@ const htmlMethods = {
         }
         this.appendChild(node);
     },
-    addChild: function addChild(node) {
-        this.querySelector('ul').addNode(node);
-        this.sortChildren();
+    addChild: function addChild(node, sort) {
+        let parent = this.querySelector('ul');
+
+        if (node.hasNode && (!parent || node.hasNode(parent))) {
+            return;
+        }
+        parent.addNode(node);
+        if (sort) {
+            this.sortChildren();
+        }
+        return true;
     },
     hasNode: function hasNode(node) {
         let has = false;
@@ -177,6 +221,6 @@ const htmlMethods = {
 Object.setPrototypeOf(htmlMethods, HTMLElement);
 
 module.exports = {
-    component: component,
+    definition: definition,
     methods: htmlMethods
 };

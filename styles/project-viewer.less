@@ -7,57 +7,59 @@ project-viewer {
 	flex: 1;
 	width: 100%;
 
-    width: @project-viewer-width;
-    background-color: @tree-view-background-color;
-    font-size: @font-size;
-    font-family: @font-family;
-    box-sizing: content-box;
+	width: @project-viewer-width;
+	background-color: @tree-view-background-color;
+	font-size: @font-size;
+	font-family: @font-family;
+	box-sizing: content-box;
 
-    transition-property: width, opacity;
-    transition-duration: @project-viewer-transition-duration;
+	transition-property: width, opacity;
+	transition-duration: @project-viewer-transition-duration;
 
-    &.autohide:not(:focus):not(:hover) {
-        width: @project-viewer-auto-width;
-        opacity: 0;
-    }
+	&.autohide:not(:focus):not(:hover) {
+		width: @project-viewer-auto-width;
+		opacity: 0;
+	}
 
-    &:focus,
-    &:hover {
-        width: @project-viewer-width;
-        transition: width @project-viewer-transition-duration;
+	&:focus,
+	&:hover {
+		width: @project-viewer-width;
+		transition: width @project-viewer-transition-duration;
 
-		pv-header,
-        pv-topic {
-            color: @project-viewer-active-state;
-            transition: color @project-viewer-transition-duration;
-        }
-    }
+		pv-header {
+			color: @project-viewer-active-state;
+			transition: color @project-viewer-transition-duration;
+		}
+	}
 
 	&::selection {
 		background-color: transparent;
 	}
 }
 
-pv-header,
-pv-topic {
-    color: @project-viewer-topic-color;
-    font-size: @project-viewer-topic-size;
-    padding: @component-padding;
+pv-header {
+	color: @project-viewer-topic-color;
+	font-size: @project-viewer-topic-size;
+	padding: @component-padding;
 
-    width: 100%;
+	width: 100%;
 
-    animation-duration: @project-viewer-animation-duration;
-    animation-name: fadeIn;
-    transition: all @project-viewer-transition-duration;
+	animation-duration: @project-viewer-animation-duration;
+	animation-name: fadeIn;
+	transition: all @project-viewer-transition-duration;
 
 	&::selection {
 		background-color: transparent;
 	}
+
+	&.autohide {
+		display: none;
+	}
 }
 
-ul.list-tree.has-collapsable-children {
-	padding: 0 @component-padding;
-}
+// ul.list-tree.has-collapsable-children {
+// 	padding: 0 @component-padding;
+// }
 
 ul[is="pv-clients"],
 ul[is="pv-groups"] {
@@ -77,23 +79,18 @@ ul[is="pv-clients"] {
 	overflow: auto;
 }
 
-li[is="pv-client"] {
-	> .list-item {
-		padding: 0 @component-padding;
-	}
-}
-
-project-viewer .list-tree.has-collapsable-children .list-nested-item > .list-tree > li[is="pv-project"] {
-	// padding: 0 10px;
-	margin: 0;
-}
+// li[is="pv-client"] {
+// 	> .list-item {
+// 		padding: 0 @component-padding;
+// 	}
+// }
 
 li[is="pv-client"],
 li[is="pv-group"] {
-    pointer-events: all;
-    width: 100%;
-    cursor: pointer;
-    display: block;
+	pointer-events: all;
+	width: 100%;
+	cursor: pointer;
+	display: block;
 
 	span::selection {
 		background-color: transparent;
@@ -102,143 +99,98 @@ li[is="pv-group"] {
 
 li.list-item[is="pv-client"]::before,
 li.list-item[is="pv-group"]::before {
-    &.expanded, &.collapsed {
-        transition: all @project-viewer-transition-duration;
-    }
+	&.expanded, &.collapsed {
+		transition: all @project-viewer-transition-duration;
+	}
 }
 
 project-viewer li.list-item[is="pv-project"] {
-    pointer-events: all;
-    width: 100%;
-    cursor: pointer;
-    display: block;
-    transition: color @project-viewer-transition-duration ease-in 0s;
-    position: relative;
-	margin: 0;
+	pointer-events: all;
+	width: 100%;
+	cursor: pointer;
+	display: block;
+	transition: color @project-viewer-transition-duration ease-in 0s;
+	position: relative;
+	// margin: 0;
 
-    &::before {
-        content: "";
-        position: absolute;
-        width: 2px;
-        height: 100%;
-        bottom: 0;
-        left: 0;
-        background-color: @project-viewer-active-state;
-        visibility: hidden;
-        transform: scaleY(0);
-        transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
-    }
+	&::before {
+		content: "";
+		position: absolute;
+		width: 2px;
+		height: 100%;
+		bottom: 0;
+		left: 0;
+		background-color: @project-viewer-active-state;
+		visibility: hidden;
+		transform: scaleY(0);
+		transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+	}
 
-    &:hover::before {
-        visibility: visible;
-        transform: scaleY(1);
-    }
+	&:hover::before {
+		visibility: visible;
+		transform: scaleY(1);
+	}
 
-    &:hover {
-        color: @project-viewer-selected-state;
-        transition: color @project-viewer-transition-duration ease-out 0s;
-    }
+	&:hover {
+		color: @project-viewer-selected-state;
+		transition: color @project-viewer-transition-duration ease-out 0s;
+	}
 
-    &.selected {
-        color: @project-viewer-selected-state;
-    }
-}
-
-pv-handler {
-    background-color: transparent;
-    width: 2px;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    cursor: col-resize;
-    pointer-events: all;
-}
-
-span[is="pv-loader"] {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity @project-viewer-animation-duration;
-
-    &.enabled {
-        opacity: 1;
-        pointer-events: all;
-        transition: opacity @project-viewer-animation-duration;
-    }
-}
-
-div[is="status-bar-project-viewer"] {
-    opacity: 0;
-    transition: opacity @project-viewer-animation-duration;
-
-    &.enabled {
-        opacity: 1;
-    }
-}
-
-pv-status-info {
-    cursor: default;
-    display: inline-flex;
-    justify-content: flex-end;
-    min-width: -webkit-min-content;
-    overflow: hidden;
-    line-height: @component-line-height - 3px;
-    height: @component-line-height + 1px;
-    position: relative;
-    white-space: nowrap;
-    width: 100%;
-    border-top-width: 1px;
-    border-top-color: @base-border-color;
-    border-top-style: solid;
-    box-sizing: border-box;
-	padding: 0 @component-padding;
-	color: @text-color-success;
-	font-size: @font-size * 0.7;
-	text-align: right;
+	&.selected {
+		color: @project-viewer-selected-state;
+	}
 }
 
 project-viewer li.list-item[is="pv-list-item"] {
-    pointer-events: all;
-    width: 100%;
-    cursor: pointer;
-    display: block;
-    transition: color @project-viewer-transition-duration ease-in 0s;
-    position: relative;
+	pointer-events: all;
+	width: 100%;
+	cursor: pointer;
+	display: block;
+	transition: color @project-viewer-transition-duration ease-in 0s;
+	position: relative;
 
-    // &::before {
-    //     content: "";
-    //     position: absolute;
-    //     width: 2px;
-    //     height: 100%;
-    //     bottom: 0;
-    //     left: -17px;
-    //     background-color: @project-viewer-active-state;
-    //     visibility: hidden;
-    //     transform: scaleY(0);
-    //     transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
-    // }
-	//
-    // &:hover::before {
-    //     visibility: visible;
-    //     transform: scaleY(1);
-    // }
+	&:hover {
+		color: @project-viewer-selected-state;
+		transition: color @project-viewer-transition-duration ease-out 0s;
+	}
 
-    &:hover {
-        color: @project-viewer-selected-state;
-        transition: color @project-viewer-transition-duration ease-out 0s;
-    }
+	&.active {
+		color: @project-viewer-selected-state;
+	}
 
-    &.active {
-        color: @project-viewer-selected-state;
-    }
+	&.disabled {
+		cursor: not-allowed;
+		color: @text-color-subtle;
+		text-decoration: line-through;
+	}
 }
 
 li[is="pv-list-nested-item"] {
 	cursor: pointer;
+}
+
+ul[is="pv-list-tree"].has-collapsable-children,
+li[is="pv-list-nested-item"] {
+	transition: all @project-viewer-transition-duration ease-out 0s;
+	&.over {
+		opacity: 0.5;
+	}
+}
+
+li[is="pv-list-item"] {
+	transition: all @project-viewer-transition-duration ease-out 0s;
+	&.over {
+		opacity: 0.5;
+	}
+}
+
+pv-modal {
+	.pv-btn-clients {
+		transition: all 0.3s;
+
+		&:hover {
+			cursor: pointer;
+			background-color: @background-color-info;
+		}
+	}
 }

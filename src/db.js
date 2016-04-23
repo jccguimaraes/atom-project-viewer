@@ -1,12 +1,22 @@
 'use strict';
 
 const _utils = require('./utils');
-// const storage = require('./file.json');
+const pkg = 'project-viewer2';
 const file = 'project-viewer2.json';
-const storage = atom.getStorageFolder().load(file);
+// const storage = require('./file.json');
+const storage = atom.getStorageFolder().load(file) || {};
 const mapper = new WeakMap();
 
-const save = function save() {
+const info = {
+    version: '0.3.0',
+    name: 'project-viewer2'
+};
+
+const getConfig = function getConfig(config) {
+    return pkg.concat('.', config);
+};
+
+const store = function store() {
     let data = {
         clients: [],
         groups: [],
@@ -59,12 +69,13 @@ const save = function save() {
             }
         }
     }
-
     atom.getStorageFolder().storeSync(file, data);
 };
 
 module.exports = {
+    info: info,
     mapper: mapper,
     storage: storage,
-    save: save
+    store: store,
+    getConfig: getConfig
 };

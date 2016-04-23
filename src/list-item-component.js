@@ -1,13 +1,148 @@
 'use strict';
 
+const _utility = require('./utilities');
 const _utils = require('./utils');
 const _states = require('./states');
-const _db = require('./db');
 
-const component = {
+const definition = {
     custom: 'pv-list-item',
     extends: 'li'
 };
+
+function clickListener(evt) {
+    let serializationFile;
+    let serialization;
+    let model;
+    let selected;
+
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    serializationFile = atom.getStateKey(
+        atom.project.getPaths()
+    );
+
+    selected = _utility.getSelectedProjectView();
+
+    if (selected === this) {
+        return;
+    }
+
+    if (serializationFile && atom.storageFolder && typeof atom.storageFolder.storeSync === 'function') {
+        let serializers = {
+            project: _states.projectSerialization(),
+            workspace: _states.workspaceSerialization(),
+            treeview: _states.treeViewSerialization()
+        };
+
+        atom.storageFolder.storeSync(serializationFile, serializers);
+    }
+
+    model = _utility.getDB().mapper.get(this);
+
+    if (!model.projectPaths || model.projectPaths.length === 0) {
+        return;
+    }
+
+    atom.project.getRepositories().forEach((repo) => {
+        repo.destroy();
+    });
+
+    atom.workspace.getActivePane().destroy();
+
+    serializationFile = atom.getStateKey(model.projectPaths);
+
+    if (serializationFile) {
+        serialization = atom.storageFolder.load(serializationFile);
+    }
+
+    if (serialization) {
+        _states.projectDeserialization(serialization.project);
+        _states.workspaceDeserialization(serialization.workspace);
+        _states.treeViewDeserialization(serialization.treeview);
+    } else {
+        atom.project.setPaths(model.projectPaths);
+    }
+
+    if (selected) {
+        selected.classList.remove('active');
+        selected.classList.remove('selected');
+    }
+    this.classList.add('active');
+    this.classList.add('selected');
+
+    _utility.setSelectedProjectView(this);
+};
+
+function dragStartListener(evt) {
+    evt.stopPropagation();
+    event.dataTransfer.setData('pv-dropview', this.getId());
+};
+
+function dragOverListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    evt.dataTransfer.dropEffect = 'move';
+    this.classList.add('over');
+    return false;
+};
+
+function dragLeaveListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.remove('over');
+    return false;
+}
+
+function dragEnterListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    return false;
+}
+
+function dragEndListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.remove('over');
+    return false;
+}
+
+function dropListener(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.remove('over');
+
+    let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
+
+    if (!dropNode) {
+        _utils.notification('warning', 'nothing to add', {
+            icon: 'horizontal-rule'
+        });
+        return;
+    }
+
+    let dropModel = _utility.getDB().mapper.get(dropNode);
+    let thisModel = _utility.getDB().mapper.get(this);
+
+    if (dropModel.type === thisModel.type && dropModel.type === 'project') {
+        this.parentElement.insertBefore(dropNode, this);
+    } else {
+        this.parentElement.addNode(dropNode);
+    }
+
+    let dropPrototype = Object.getPrototypeOf(dropModel);
+    let thisPrototype = Object.getPrototypeOf(thisModel);
+
+    if (dropPrototype !== thisPrototype) {
+        Object.setPrototypeOf(dropModel, thisPrototype);
+    }
+
+    _utility.getDB().store();
+
+    _utility.updateStatusBar();
+
+    return false;
+}
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -22,103 +157,25 @@ const htmlMethods = {
 
         this.setAttribute('draggable', true);
     },
+    detachedCallback: function detachedCallback() {
+        this.removeEventListener('click', clickListener);
+        this.removeEventListener('dragstart', dragStartListener);
+        this.removeEventListener('dragover', dragOverListener);
+        this.removeEventListener('dragleave', dragLeaveListener);
+        this.removeEventListener('dragenter', dragEnterListener);
+        this.removeEventListener('dragend', dragEndListener);
+        this.removeEventListener('drop', dropListener);
+    },
     attachedCallback: function attachedCallback() {
-        this.addEventListener('click', (evt) => {
-            let serializationFile;
-            let serialization;
-            let model;
+        this.addEventListener('click', clickListener, false);
+        this.addEventListener('dragstart', dragStartListener, false);
+        this.addEventListener('dragover', dragOverListener, false);
+        this.addEventListener('dragleave', dragLeaveListener, false);
+        this.addEventListener('dragenter', dragEnterListener, false);
+        this.addEventListener('dragend', dragEndListener, false);
+        this.addEventListener('drop', dropListener, false);
 
-            evt.preventDefault();
-            evt.stopPropagation();
-
-            serializationFile = atom.getStateKey(
-                atom.project.getPaths()
-            );
-
-            if (serializationFile && atom.storageFolder && typeof atom.storageFolder.storeSync === 'function') {
-                atom.storageFolder.storeSync(
-                    serializationFile,
-                    {
-                        project: _states.projectSerialization(),
-                        workspace: _states.workspaceSerialization(),
-                        treeview: _states.treeViewSerialization()
-                    }
-                );
-            }
-
-            atom.project.getRepositories().forEach((repo) => {
-                repo.destroy();
-            });
-
-            atom.workspace.getActivePane().destroy();
-
-            model = _db.mapper.get(this);
-
-            if (!model.projectPaths || model.projectPaths.length === 0) {
-                return;
-            }
-
-            serializationFile = atom.getStateKey(model.projectPaths);
-
-            if (serializationFile) {
-                serialization = atom.storageFolder.load(serializationFile);
-            }
-
-            if (serialization) {
-                _states.projectDeserialization(serialization.project);
-                _states.workspaceDeserialization(serialization.workspace);
-                _states.treeViewDeserialization(serialization.treeview);
-            } else {
-                atom.project.setPaths(model.projectPaths);
-            }
-
-            let selected = document.querySelector('project-viewer .active');
-            if (selected) {
-                selected.classList.remove('active');
-            }
-            this.classList.add('active');
-        });
-
-        this.addEventListener('dragstart', (evt) => {
-            evt.stopPropagation();
-            event.dataTransfer.setData('pv-dropview', this.getId());
-        });
-
-        this.addEventListener('dragover', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            return false;
-        });
-
-        this.addEventListener('dragenter', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            return false;
-        });
-
-        this.addEventListener('drop', (evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-
-            let dropNode = document.getElementById(evt.dataTransfer.getData('pv-dropview'));
-
-            if (!dropNode) {
-                _utils.notification('warning', 'nothing to add', {
-                    icon: 'horizontal-rule'
-                });
-                return;
-            }
-
-            let dropModel = _db.mapper.get(dropNode);
-            let thisModel = _db.mapper.get(this);
-
-            Object.setPrototypeOf(dropModel, Object.getPrototypeOf(thisModel));
-            this.parentElement.addNode(dropNode);
-
-            _db.save();
-
-            return false;
-        });
+        this.validate();
     },
     setText: function setText(text) {
         if (!text) {
@@ -164,12 +221,24 @@ const htmlMethods = {
     },
     getId: function getId() {
         return this.id;
+    },
+    validate: function validate() {
+        const model = _utility.getDB().mapper.get(this);
+        if (!model || !model.projectPaths) {
+            return;
+        }
+
+        if (model.projectPaths.length === 0) {
+            this.classList.add('disabled');
+        } else {
+            this.classList.remove('disabled');
+        }
     }
 };
 
 Object.setPrototypeOf(htmlMethods, HTMLElement);
 
 module.exports = {
-    component: component,
+    definition: definition,
     methods: htmlMethods
 };

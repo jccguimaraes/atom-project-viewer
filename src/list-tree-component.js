@@ -1,12 +1,22 @@
 'use strict';
 
+const _utility = require('./utilities');
 const _utils = require('./utils');
 const _db = require('./db');
 
-const component = {
+const definition = {
     custom: 'pv-list-tree',
     extends: 'ul'
 };
+
+const dragStartListener = function dragStartListener() {}
+const dragOverListener = function dragOverListener() {}
+const dragLeaveListener = function dragLeaveListener() {}
+const dragEnterListener = function dragEnterListener() {}
+const dragEndListener = function dragEndListener() {}
+const dropListener = function dropListener() {
+
+}
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -19,8 +29,18 @@ const htmlMethods = {
         this.addEventListener('dragover', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
+            evt.dataTransfer.dropEffect = 'move';
+            this.classList.add('over');
             return false;
         });
+
+        this.addEventListener('dragleave', (evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            this.classList.remove('over');
+            return false;
+        });
+
         this.addEventListener('dragenter', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
@@ -30,6 +50,7 @@ const htmlMethods = {
         this.addEventListener('drop', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
+            this.classList.remove('over');
 
             if (!this.classList.contains('has-collapsable-children')) {
                 return;
@@ -47,19 +68,25 @@ const htmlMethods = {
             let dropModel = _db.mapper.get(dropNode);
             let thisModel = _db.mapper.get(this);
 
-            // if (thisModel) {
-            //     Object.setPrototypeOf(dropModel, thisModel);
-            // }
+            if (thisModel) {
+                Object.setPrototypeOf(dropModel, thisModel);
+            } else {
+                Object.setPrototypeOf(dropModel, Object);
+            }
 
             this.addChild(dropNode);
 
-            _db.save();
+            _db.store();
+            _utility.updateStatusBar();
 
             return false;
         });
     },
     setAsRootLevel: function setAsRootLevel() {
         this.classList.add('has-collapsable-children');
+    },
+    setType: function setType(type) {
+        this.setAttribute('data-type', type);
     },
     addNode: function addNode(node, force) {
         if (!node) {
@@ -77,7 +104,7 @@ const htmlMethods = {
         this.appendChild(node);
     },
     addChild: function addChild(node) {
-        this.querySelector('ul').addNode(node);
+        this.addNode(node);
         // this.sortChildren();
     },
     hasNode: function hasNode(node) {
@@ -95,6 +122,6 @@ const htmlMethods = {
 Object.setPrototypeOf(htmlMethods, HTMLElement);
 
 module.exports = {
-    component: component,
+    definition: definition,
     methods: htmlMethods
 };

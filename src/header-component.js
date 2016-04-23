@@ -2,7 +2,7 @@
 
 const _utils = require('./utils');
 
-const component = {
+const definition = {
     custom: 'pv-header'
 };
 
@@ -15,6 +15,6 @@ const htmlMethods = {
 Object.setPrototypeOf(htmlMethods, HTMLElement);
 
 module.exports = {
-    component: component,
+    definition: definition,
     methods: htmlMethods
 };

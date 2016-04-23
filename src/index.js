@@ -2,69 +2,80 @@
 
 const CompositeDisposable = require('atom').CompositeDisposable;
 
-const _db = require('./db');
+const _utility = require('./utilities');
 const _config = require('./config');
-const _component = require('./component');
+
 const _mainComponent = require('./main-component');
+const _statusBarComponent = require('./status-bar-component');
 const _headerComponent = require('./header-component');
 const _listTreeComponent = require('./list-tree-component');
 const _listNestedItemComponent = require('./list-nested-item-component');
 const _listItemComponent = require('./list-item-component');
+const _modalComponent = require('./modal-component');
 
-const _mainConstructor = _component.register(
-    _mainComponent.component,
-    _mainComponent.methods
-);
+const _mainConstructor = _utility.registerComponent(_mainComponent);
+const _statusBarConstructor = _utility.registerComponent(_statusBarComponent);
+const _headerConstructor = _utility.registerComponent(_headerComponent);
+const _listTreeConstructor = _utility.registerComponent(_listTreeComponent);
+const _listNestedItemConstructor = _utility.registerComponent(_listNestedItemComponent);
+const _listItemConstructor = _utility.registerComponent(_listItemComponent);
+const _modalConstructor = _utility.registerComponent(_modalComponent);
 
-const _headerConstructor = _component.register(
-    _headerComponent.component,
-    _headerComponent.methods
-);
+function createListItem(candidate) {
+    let view = new _listItemConstructor();
 
-const _listTreeConstructor = _component.register(
-    _listTreeComponent.component,
-    _listTreeComponent.methods
-);
+    if (!candidate) {
+        return view;
+    }
 
-const _listNestedItemConstructor = _component.register(
-    _listNestedItemComponent.component,
-    _listNestedItemComponent.methods
-);
+    view.setText(candidate.name);
+    view.setIcon(candidate.icon);
+    view.setId(candidate.name);
 
-const _listItemConstructor = _component.register(
-    _listItemComponent.component,
-    _listItemComponent.methods
-);
+    return view;
+}
 
-let mainView = new _mainConstructor();
-let headerView = new _headerConstructor();
-let containerView = new _listTreeConstructor();
+function createProject(candidate) {
+    let view = createListItem(candidate);
+    return view;
+};
 
-containerView.setAsRootLevel();
-mainView.addNode(headerView);
-mainView.addNode(containerView);
+function createGroup() {
+    let view = createListItem(candidate);
+    return view;
+}
 
-function addProjects(mappedGroup, groupView) {
-    let projectsView = new _listTreeConstructor();
-    groupView.addNode(projectsView);
+function createClient() {
+    let view = createListItem(candidate);
+    return view;
+}
+
+function addProjects(mappedGroup, groupView, root) {
+    let projectsView;
+    if (!root) {
+        projectsView = new _listTreeConstructor();
+        groupView.addNode(projectsView);
+    }
+
     mappedGroup.projects.forEach(
         (mappedProject) => {
-            let projectView = new _listItemConstructor();
-            projectView.setText(mappedProject.name);
-            projectView.setIcon(mappedProject.icon);
-            projectView.setId(mappedProject.name);
-
+            let projectView = createProject(mappedProject);
 
             let isActive = false;
-            if (Array.isArray(mappedProject.paths) && mappedProject.paths.length > 0) {
+            if (atom.project.getPaths().length > 0 && Array.isArray(mappedProject.paths) && mappedProject.paths.length > 0) {
                 isActive = atom.project.getPaths().every((path) => {
                     return mappedProject.paths.indexOf(path) !== -1;
                 });
             }
             if (isActive) {
-                projectView.classList.add('active');
+                projectView.classList.add('active', 'selected');
             }
-            projectsView.addNode(projectView);
+
+            if (!root) {
+                projectsView.addNode(projectView);
+            } else {
+                groupView.addNode(projectView);
+            }
 
             let projectModel = {
                 type: 'project',
@@ -74,10 +85,13 @@ function addProjects(mappedGroup, groupView) {
                 projectPaths: mappedProject.paths || []
             };
 
-            let model = _db.mapper.get(groupView);
+            let model = _utility.getDB().mapper.get(groupView);
 
-            Object.setPrototypeOf(projectModel, model);
-            _db.mapper.set(projectView, projectModel);
+            if (model) {
+                Object.setPrototypeOf(projectModel, model);
+            }
+
+            _utility.getDB().mapper.set(projectView, projectModel);
         }
     );
 
@@ -86,9 +100,12 @@ function addProjects(mappedGroup, groupView) {
     }
 }
 
-function addGroups(mappedClient, clientView) {
-    let groupsView = new _listTreeConstructor();
-    clientView.addNode(groupsView);
+function addGroups(mappedClient, clientView, root) {
+    let groupsView;
+    if (!root) {
+        groupsView = new _listTreeConstructor();
+        clientView.addNode(groupsView);
+    }
 
     mappedClient.groups.forEach(
         (mappedGroup) => {
@@ -96,7 +113,11 @@ function addGroups(mappedClient, clientView) {
             groupView.setText(mappedGroup.name);
             groupView.setIcon(mappedGroup.icon);
             groupView.setId(mappedGroup.name);
-            groupsView.addNode(groupView);
+            if (!root) {
+                groupsView.addNode(groupView);
+            } else {
+                clientView.addNode(groupView);
+            }
 
             let groupModel = {
                 type: 'group',
@@ -106,13 +127,13 @@ function addGroups(mappedClient, clientView) {
                 groupExpanded: mappedGroup.expanded
             };
 
-            let clientModel = _db.mapper.get(clientView);
+            let clientModel = _utility.getDB().mapper.get(clientView);
 
             if (clientModel) {
                 Object.setPrototypeOf(groupModel, clientModel);
             }
 
-            _db.mapper.set(groupView, groupModel);
+            _utility.getDB().mapper.set(groupView, groupModel);
 
             if (mappedGroup.hasOwnProperty('projects') && Array.isArray(mappedGroup.projects)) {
                 addProjects(mappedGroup, groupView);
@@ -142,12 +163,11 @@ function addClients(mappedRoot, rootView) {
                 clientExpanded: mappedClient.expanded
             };
 
-            _db.mapper.set(clientView, clientModel);
+            _utility.getDB().mapper.set(clientView, clientModel);
 
             if (mappedClient.hasOwnProperty('groups') && Array.isArray(mappedClient.groups)) {
                 let clientGroupsView = new _listTreeConstructor();
                 clientView.addNode(clientGroupsView);
-
                 addGroups(mappedClient, clientView);
             }
 
@@ -162,6 +182,34 @@ function addClients(mappedRoot, rootView) {
     }
 };
 
+function removeFromStatusBar() {
+    _utility.clearStatusBar();
+    this.statusBarTile.destroy();
+}
+
+function addToStatusBar() {
+    let view;
+    let selected;
+    let selectedModel;
+    let context = '';
+
+    view = new _statusBarConstructor();
+
+    this.statusBarTile = this.statusBar.addRightTile({
+        item: view,
+        priority: 0
+    });
+
+    _utility.updateStatusBar();
+}
+
+function addModalAddClient () {
+    atom.workspace.addModalPanel({
+        item: new _modalConstructor(),
+        visible: true
+    });
+}
+
 const projectViewer = {
     config: _config,
     activate: function activate(state) {
@@ -171,28 +219,67 @@ const projectViewer = {
             // TODO
         }
 
-        if (_db.storage && _db.storage.hasOwnProperty('clients') && Array.isArray(_db.storage.clients)) {
-            addClients(_db.storage, containerView);
+        this.disposables.add(
+            atom.commands.add('atom-workspace', {
+                'project-viewer2:add-client': addModalAddClient
+            }
+        ));
+
+        let mainView = new _mainConstructor();
+        let headerView = new _headerConstructor();
+        let containerView = new _listTreeConstructor();
+
+        containerView.setAsRootLevel();
+        mainView.addNode(headerView);
+        mainView.addNode(containerView);
+
+        if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('clients') && Array.isArray(_utility.getDB().storage.clients)) {
+            addClients(_utility.getDB().storage, containerView);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            containerView.addNode(listTreeView, true);
         }
 
-        if (_db.storage && _db.storage.hasOwnProperty('groups') && Array.isArray(_db.storage.groups)) {
-            addGroups(_db.storage, containerView);
+        if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('groups') && Array.isArray(_utility.getDB().storage.groups)) {
+            addGroups(_utility.getDB().storage, containerView, true);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            containerView.addNode(listTreeView);
         }
 
-        if (_db.storage && _db.storage.hasOwnProperty('projects') && Array.isArray(_db.storage.projects)) {
-            addProjects(_db.storage, containerView);
+        if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('projects') && Array.isArray(_utility.getDB().storage.projects)) {
+            addProjects(_utility.getDB().storage, containerView, true);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            containerView.addNode(listTreeView);
         }
 
         this.panel = atom.workspace.addRightPanel({
             item: mainView,
-            visible: atom.config.get('project-viewer2.startupVisibility')
+            visible: atom.config.get(_utility.getConfig('startupVisibility'))
         });
 
-        atom.config.observe('project-viewer2.autohide', (value) => {
+        atom.config.observe(_utility.getConfig('autohide'), (value) => {
             if (value) {
                 this.panel.getItem().classList.add('autohide');
             } else {
                 this.panel.getItem().classList.remove('autohide');
+            }
+        });
+
+        atom.config.observe(_utility.getConfig('hideHeader'), (value) => {
+            if (value) {
+                headerView.classList.add('autohide');
+            } else {
+                headerView.classList.remove('autohide');
+            }
+        });
+
+        atom.config.onDidChange('project-viewer2.statusBarVisibility', (status) => {
+            if (status.newValue) {
+                addToStatusBar.call(this);
+            } else {
+                removeFromStatusBar.call(this);
             }
         });
     },
@@ -200,7 +287,15 @@ const projectViewer = {
     serialize: function serialize() {},
     deactivate: function deactivate() {
         this.panel.destroy();
-    }
+        this.statusBarTile.destroy();
+    },
+    consumeStatusBar: function consumeStatusBar(statusBar) {
+        this.statusBar = statusBar;
+
+        if (atom.config.get(_utility.getConfig('startupVisibility')) && atom.config.get(_utility.getConfig('statusBarVisibility'))) {
+            addToStatusBar.call(this);
+        }
+    },
 };
 
 module.exports = projectViewer;

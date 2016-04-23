@@ -1,22 +1,6 @@
 
 // =============================================================================
 
-let statusBarModel = {
-    createdCallback: function createdCallback() {
-        if (!this.children) {
-            this.children = {};
-        }
-
-        this.classList.add('inline-block');
-
-        this.children.span = document.createElement('span');
-        this.appendChild(this.children.span);
-    },
-    setText: function setText(text) {
-        this.children.span.textContent = text;
-    }
-};
-
 let statusInfoModel = {
     createdCallback: function createdCallback() {
         if (!this.children) {
@@ -186,7 +170,7 @@ const db = {
                 if (!sort) {
                     return;
                 }
-                
+
                 let children = Array.apply(null, view.childNodes);
                 let reverse = sort.includes('reverse') ? -1 : 1;
                 let results = children.sort((currentNode, nextNode) => {

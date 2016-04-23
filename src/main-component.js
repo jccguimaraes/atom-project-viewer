@@ -2,7 +2,7 @@
 
 const _utils = require('./utils');
 
-const component = {
+const definition = {
     custom: 'project-viewer'
 };
 
@@ -40,6 +40,6 @@ const htmlMethods = {
 Object.setPrototypeOf(htmlMethods, HTMLElement);
 
 module.exports = {
-    component: component,
+    definition: definition,
     methods: htmlMethods
 };

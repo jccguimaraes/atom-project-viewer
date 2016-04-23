@@ -18,6 +18,12 @@ const config = {
         type: 'boolean',
         default: false,
         order: 2
+    },
+    'hideHeader': {
+        description: 'Hide header (for more space).',
+        type: 'boolean',
+        default: false,
+        order: 3
     }
 };
 

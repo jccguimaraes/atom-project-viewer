@@ -1,9 +1,12 @@
 'use strict';
 
 const _utils = require('./utils');
+const _constructors = new WeakMap();
 
-const component = {
-    constructors: {},
+const _component = {
+    getConstructor: function getConstructor(definition) {
+        return _constructors.get(definition);
+    },
     register: function register(elementObj, model) {
         let customElement;
         let elementExtends;
@@ -24,8 +27,8 @@ const component = {
             elementExtends = elementObj.extends;
         }
 
-        if (this.constructors[customElement]) {
-            return this.constructors[customElement];
+        if (_constructors.has(elementObj)) {
+            return _constructors.get(elementObj);
         }
 
         let registers = {
@@ -36,15 +39,15 @@ const component = {
             registers.extends = elementExtends;
         }
 
-        this.constructors[customElement] = document.registerElement(
+        _constructors.set(elementObj, document.registerElement(
             customElement,
             registers
-        );
+        ));
 
         Object.setPrototypeOf(model, HTMLElement.prototype);
 
-        return this.constructors[customElement];
+        return _constructors.get(elementObj);
     }
 };
 
-module.exports = component;
+module.exports = _component;
