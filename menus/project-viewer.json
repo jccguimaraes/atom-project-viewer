@@ -1,34 +1,15 @@
 {
     "context-menu": {
-        "li[is='pv-group']": [
+        "li[is='pv-list-nested-item']": [
             {
-                "label": "Edit group..."
-            },
-            {
-                "label": "Remove group..."
+                "label": "Item - Remove",
+                "command": "project-viewer2:remove-quick-item"
             }
         ],
-        "li[is='pv-project']": [
+        "li[is='pv-list-item']": [
             {
-                "label": "Edit project..."
-            },
-            {
-                "label": "Remove project..."
-            },
-            {
-                "label": "Edit group..."
-            },
-            {
-                "label": "Remove group..."
-            }
-        ],
-        ".tree-view-resizer": [
-            {
-                "type": "separator"
-            },
-            {
-                "label": "Save as a project",
-                "command": "project-viewer2:elevate-project"
+                "label": "Item - Remove",
+                "command": "project-viewer2:remove-quick-item"
             }
         ]
     },
@@ -40,8 +21,34 @@
                 "label": "Project Viewer 2",
                 "submenu": [
                     {
-                        "label": "Client - Add",
-                        "command": "project-viewer2:add-client"
+                        "label": "Toggle Display",
+                        "command": "project-viewer2:toggle-display"
+                    },
+                    {
+                        "type": "separator"
+                    },
+                    {
+                        "label": "Item - Create",
+                        "command": "project-viewer2:create-item"
+                    },
+                    {
+                        "label": "Item - Update",
+                        "command": "project-viewer2:update-item"
+                    },
+                    {
+                        "label": "Item - Remove",
+                        "command": "project-viewer2:remove-item"
+                    },
+                    {
+                        "type": "separator"
+                    },
+                    {
+                        "label": "File - Backup",
+                        "command": "project-viewer2:file-backup"
+                    },
+                    {
+                        "label": "File - Import",
+                        "command": "project-viewer2:file-import"
                     }
                 ]
                 }

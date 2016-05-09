@@ -5,7 +5,6 @@ project-viewer {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	width: 100%;
 
 	width: @project-viewer-width;
 	background-color: @tree-view-background-color;
@@ -35,162 +34,113 @@ project-viewer {
 	&::selection {
 		background-color: transparent;
 	}
-}
 
-pv-header {
-	color: @project-viewer-topic-color;
-	font-size: @project-viewer-topic-size;
-	padding: @component-padding;
+	pv-header {
+		color: @project-viewer-topic-color;
+		font-size: @project-viewer-topic-size;
+		padding: @component-padding;
 
-	width: 100%;
+		width: 100%;
 
-	animation-duration: @project-viewer-animation-duration;
-	animation-name: fadeIn;
-	transition: all @project-viewer-transition-duration;
-
-	&::selection {
-		background-color: transparent;
-	}
-
-	&.autohide {
-		display: none;
-	}
-}
-
-// ul.list-tree.has-collapsable-children {
-// 	padding: 0 @component-padding;
-// }
-
-ul[is="pv-clients"],
-ul[is="pv-groups"] {
-	font-family: @font-family;
-
-	&::selection {
-		background-color: transparent;
-	}
-}
-
-ul.has-collapsable-children,
-ul[is="pv-clients"] {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	width: 100%;
-	overflow: auto;
-}
-
-// li[is="pv-client"] {
-// 	> .list-item {
-// 		padding: 0 @component-padding;
-// 	}
-// }
-
-li[is="pv-client"],
-li[is="pv-group"] {
-	pointer-events: all;
-	width: 100%;
-	cursor: pointer;
-	display: block;
-
-	span::selection {
-		background-color: transparent;
-	}
-}
-
-li.list-item[is="pv-client"]::before,
-li.list-item[is="pv-group"]::before {
-	&.expanded, &.collapsed {
+		animation-duration: @project-viewer-animation-duration;
+		animation-name: fadeIn;
 		transition: all @project-viewer-transition-duration;
-	}
-}
 
-project-viewer li.list-item[is="pv-project"] {
-	pointer-events: all;
-	width: 100%;
-	cursor: pointer;
-	display: block;
-	transition: color @project-viewer-transition-duration ease-in 0s;
-	position: relative;
-	// margin: 0;
+		&::selection {
+			background-color: transparent;
+		}
 
-	&::before {
-		content: "";
-		position: absolute;
-		width: 2px;
-		height: 100%;
-		bottom: 0;
-		left: 0;
-		background-color: @project-viewer-active-state;
-		visibility: hidden;
-		transform: scaleY(0);
-		transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+		&.autohide {
+			display: none;
+		}
 	}
 
-	&:hover::before {
-		visibility: visible;
-		transform: scaleY(1);
+	li[is="pv-list-nested-item"].list-nested-item {
+		cursor: pointer;
+
+		> .list-item {
+			pointer-events: none;
+		}
 	}
 
-	&:hover {
-		color: @project-viewer-selected-state;
-		transition: color @project-viewer-transition-duration ease-out 0s;
-	}
-
-	&.selected {
-		color: @project-viewer-selected-state;
-	}
-}
-
-project-viewer li.list-item[is="pv-list-item"] {
-	pointer-events: all;
-	width: 100%;
-	cursor: pointer;
-	display: block;
-	transition: color @project-viewer-transition-duration ease-in 0s;
-	position: relative;
-
-	&:hover {
-		color: @project-viewer-selected-state;
-		transition: color @project-viewer-transition-duration ease-out 0s;
-	}
-
-	&.active {
-		color: @project-viewer-selected-state;
-	}
-
-	&.disabled {
-		cursor: not-allowed;
-		color: @text-color-subtle;
-		text-decoration: line-through;
-	}
-}
-
-li[is="pv-list-nested-item"] {
-	cursor: pointer;
-}
-
-ul[is="pv-list-tree"].has-collapsable-children,
-li[is="pv-list-nested-item"] {
-	transition: all @project-viewer-transition-duration ease-out 0s;
-	&.over {
-		opacity: 0.5;
-	}
-}
-
-li[is="pv-list-item"] {
-	transition: all @project-viewer-transition-duration ease-out 0s;
-	&.over {
-		opacity: 0.5;
-	}
-}
-
-pv-modal {
-	.pv-btn-clients {
-		transition: all 0.3s;
+	li[is="pv-list-item"].list-item {
+		width: 100%;
+		cursor: pointer;
+		display: block;
+		transition: color @project-viewer-transition-duration ease-in 0s;
 
 		&:hover {
-			cursor: pointer;
-			background-color: @background-color-info;
+			color: @project-viewer-selected-state;
+			transition: color @project-viewer-transition-duration ease-out 0s;
 		}
+
+		&:hover::before {
+			visibility: visible;
+			transform: scaleY(1);
+		}
+
+		&::before {
+			position: absolute;
+			left: 0;
+			right: 0;
+			height: @component-line-height;
+			content: "";
+			width: 2px;
+			background-color: @project-viewer-active-state;
+			visibility: hidden;
+			transform: scaleY(0);
+			transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+		}
+
+		&.active {
+			color: @project-viewer-selected-state;
+		}
+
+		&.disabled {
+			cursor: not-allowed;
+			color: @text-color-subtle;
+			text-decoration: line-through;
+		}
+
+		span {
+			pointer-events: none;
+		}
+	}
+
+	ul[is="pv-list-tree"].has-collapsable-children {
+		padding: 0 @component-icon-padding;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		width: 100%;
+		overflow: auto;
+	}
+
+	ul[is="pv-list-tree"].has-collapsable-children,
+	li[is="pv-list-nested-item"],
+	li[is="pv-list-item"] {
+		transition: all @project-viewer-transition-duration ease-out 0s;
+		&.over {
+			opacity: 0.5;
+		}
+	}
+}
+
+pv-create-modal,
+pv-update-modal,
+pv-remove-modal,
+pv-remove-quick-modal {
+	hr {
+		border-color: @tool-panel-border-color;
+	    margin: 5px 0;
+	}
+
+	.pv-list-group,
+	.pv-icons {
+		cursor: pointer;
+		max-height: 100px;
+		overflow-y: scroll;
+		overflow-x: hidden;
 	}
 }

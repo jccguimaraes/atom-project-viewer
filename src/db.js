@@ -4,7 +4,7 @@ const _utils = require('./utils');
 const pkg = 'project-viewer2';
 const file = 'project-viewer2.json';
 // const storage = require('./file.json');
-const storage = atom.getStorageFolder().load(file) || {};
+let storage = atom.getStorageFolder().load(file) || {};
 const mapper = new WeakMap();
 
 const info = {
@@ -57,8 +57,7 @@ const store = function store() {
         } else if (model.projectName && model.type === 'project') {
             let project = {
                 name: model.projectName,
-                paths: model.projectPaths || [],
-                active: model.projectActive || false
+                paths: model.projectPaths || []
             };
             if (model.groupName && currentGroup && currentGroup.name === model.groupName) {
                 currentGroup.projects.push(project);
@@ -70,6 +69,7 @@ const store = function store() {
         }
     }
     atom.getStorageFolder().storeSync(file, data);
+    return data;
 };
 
 module.exports = {

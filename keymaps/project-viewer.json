@@ -1,12 +1,12 @@
 {
   ".platform-darwin": {
-      "alt-ctrl-p": "project-viewer2:toggleDisplay",
+      "alt-ctrl-v": "project-viewer2:toggle-display",
       "alt-ctrl-t": "project-viewer2:toggle",
-      "ctrl-9": "project-viewer2:toggleFocus"
+      "ctrl-9": "project-viewer2:toggle-focus"
   },
   ".platform-win32, .platform-linux": {
-      "alt-ctrl-p": "project-viewer2:toggleDisplay",
+      "alt-ctrl-v": "project-viewer2:toggle-display",
       "alt-ctrl-t": "project-viewer2:toggle",
-      "ctrl-9": "project-viewer2:toggleFocus"
+      "ctrl-9": "project-viewer2:toggle-focus"
   }
 }

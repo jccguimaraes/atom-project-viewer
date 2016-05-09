@@ -12,8 +12,8 @@ const definition = {
 function clickListener(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    this.classList.toggle('expanded');
-    this.classList.toggle('collapsed');
+    this.toggleExpand();
+    _utility.getDB().storage = _utility.getDB().store();
 }
 
 function dragStartListener(evt) {
@@ -82,7 +82,7 @@ const htmlMethods = {
         if (!this.nodes) {
             this.nodes = {};
         }
-        this.classList.add('list-nested-item', 'expanded');
+        this.classList.add('list-nested-item');
 
         this.nodes.listItem = document.createElement('div');
         this.nodes.listItem.classList.add('list-item');
@@ -172,6 +172,36 @@ const htmlMethods = {
             return;
         }
         this.nodes.listItemSpan.classList.add('icon', icon);
+    },
+    setExpanded: function setExpanded(state) {
+        let thisModel = _utility.getDB().mapper.get(this);
+
+        if (state) {
+            this.classList.add('expanded');
+            this.classList.remove('collapsed');
+        } else {
+            this.classList.remove('expanded');
+            this.classList.add('collapsed');
+        }
+
+        if (thisModel.hasOwnProperty('clientExpanded')) {
+            thisModel.clientExpanded = state;
+        } else if (thisModel.hasOwnProperty('groupExpanded')) {
+            thisModel.groupExpanded = state;
+        }
+    },
+    toggleExpand: function toggleExpand() {
+        this.classList.toggle('expanded');
+        this.classList.toggle('collapsed');
+
+        let thisModel = _utility.getDB().mapper.get(this);
+        let state = this.classList.contains('expanded');
+
+        if (thisModel.hasOwnProperty('clientExpanded')) {
+            thisModel.clientExpanded = state;
+        } else if (thisModel.hasOwnProperty('groupExpanded')) {
+            thisModel.groupExpanded = state;
+        }
     },
     setId: function setId(id) {
         if (!id) {

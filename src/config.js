@@ -24,6 +24,12 @@ const config = {
         type: 'boolean',
         default: false,
         order: 3
+    },
+    "githubToken": {
+        description: 'Your personal and private GitHub token',
+        type: 'string',
+        default: '',
+        order: 4
     }
 };
 

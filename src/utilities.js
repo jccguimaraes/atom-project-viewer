@@ -14,55 +14,264 @@ const utilities = {
     getConstructor: function getConstructor(definition) {
         return _component.getConstructor(definition);
     },
-    createClient: function createClient(candidate) {
+    createItem: function createItem(candidate) {
+        console.debug(candidate);
         const promise = new Promise((resolve, reject) => {
-            let safeClient = false;
+            let safeItem = false;
+
+            if (!candidate || !candidate.type) {
+                reject({
+                    type: 'warning',
+                    message: 'Please select a type to create'
+                });
+                return;
+            }
 
             if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
                 reject({
                     type: 'warning',
-                    message: 'Please define a name for the client'
+                    message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
                 });
+                return;
             }
 
-            safeClient = !this.getDB().storage.clients.some(
-                (clientStored) => {
-                    return clientStored.name === candidate.name;
-                }
-            );
+            let innerPromise;
 
-            if (!safeClient) {
+            switch (candidate.type) {
+                case 'client':
+                    innerPromise = this.createClient(candidate);
+                    break;
+                case 'group':
+                    innerPromise = this.createGroup(candidate);
+                    break;
+                case 'project':
+                    innerPromise = this.createProject(candidate);
+                    break;
+                default:
+            }
+
+            innerPromise.then((data) => {
+                this.getDB().storage = this.getDB().store();
+                resolve(data);
+            })
+            .catch(reject);
+        });
+        return promise;
+    },
+    createClient: function createClient(candidate) {
+        const promise = new Promise((resolve, reject) => {
+
+            // TODO change this to just createItem maybe
+            if (!candidate || !candidate.name) {
+                reject({
+                    type: 'warning',
+                    message: 'Client has no name defined'
+                });
+                return;
+            }
+
+            let hasIt = false;
+
+            if (this.getDB().storage.clients) {
+                hasIt = this.getDB().storage.clients.some(
+                    (clientStored) => {
+                        return clientStored.name === candidate.name;
+                    }
+                );
+            }
+
+            if (hasIt) {
                 reject({
                     type: 'info',
-                    message: 'Client already exists with that name'
+                    message: 'Client <strong>' + candidate.name + '</strong> already exists!'
                 });
+                return;
             }
 
-            let clientView = new candidate.viewConstructor();
-            clientView.setText(candidate.name);
+            candidate.view.setText(candidate.name);
+            candidate.view.setIcon(candidate.icon);
+            candidate.view.setId(candidate.name);
 
             let clientModel = {
-                type: 'client',
+                type: candidate.type,
                 sortBy: candidate.sortBy,
                 clientName: candidate.name,
                 clientIcon: candidate.icon,
                 clientExpanded: candidate.expanded
             };
-            this.getDB().mapper.set(clientView, clientModel);
 
-            console.debug(clientView);
+            this.getDB().mapper.set(candidate.view, clientModel);
 
-            document.querySelector('project-viewer .list-tree').appendChild(clientView);
+            // TODO change hack
+            document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
 
             resolve({
                 type: 'success',
-                message: 'client <strong>' + candidate.name + '</strong> was created'
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
             });
         });
         return promise;
     },
+    createGroup: function createGroup(candidate) {
+        const promise = new Promise((resolve, reject) => {
 
+            let client;
+            let groups;
 
+            // TODO change this to just createItem maybe
+            if (!candidate || !candidate.name) {
+                reject({
+                    type: 'warning',
+                    message: 'Group has no name defined'
+                });
+            }
+
+            if (candidate.client) {
+                client = this.getDB().storage.clients.filter((clientStored) => {
+                    return clientStored.name === candidate.client.name;
+                })[0];
+                groups = client.groups;
+            } else {
+                groups = this.getDB().storage.groups
+            }
+
+            let hasIt = false;
+
+            if (groups) {
+                hasIt = groups.some(
+                    (groupStored) => {
+                        return groupStored.name === candidate.name;
+                    }
+                );
+            }
+
+            if (hasIt) {
+                reject({
+                    type: 'info',
+                    message: 'Group <strong>' + candidate.name + '</strong> already exists!'
+                });
+            }
+
+            candidate.view.setText(candidate.name);
+            candidate.view.setIcon(candidate.icon);
+            candidate.view.setId(candidate.name);
+
+            let clientModel = {};
+            let groupModel = {
+                type: candidate.type,
+                sortBy: candidate.sortBy,
+                groupName: candidate.name,
+                groupIcon: candidate.icon,
+                groupExpanded: candidate.expanded
+            };
+
+            this.getDB().mapper.set(candidate.view, groupModel);
+
+            if (candidate.client) {
+                let clientView = document.getElementById(client.name);
+                clientModel = this.getDB().mapper.get(clientView);
+                Object.setPrototypeOf(groupModel, clientModel);
+                clientView.addChild(candidate.view);
+            } else {
+                // TODO change hack
+                document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
+            }
+
+            resolve({
+                type: 'success',
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+            });
+        });
+        return promise;
+    },
+    createProject: function createProject(candidate) {
+        const promise = new Promise((resolve, reject) => {
+
+            let client;
+            let group;
+            let projects;
+
+            // TODO change this to just createItem maybe
+            if (!candidate || !candidate.name) {
+                reject({
+                    type: 'warning',
+                    message: 'Project has no name defined'
+                });
+            }
+
+            if (candidate.client) {
+                client = this.getDB().storage.clients.filter((clientStored) => {
+                    return clientStored.name === candidate.client.name;
+                })[0];
+                projects = client.projects;
+            }
+
+            if (candidate.group) {
+                let context = client || this.getDB().storage;
+                group = context.groups.filter((groupStored) => {
+                    return groupStored.name === candidate.group.name;
+                })[0];
+                projects = group.projects;
+            }
+
+            if (!candidate.client && !candidate.group) {
+                projects = this.getDB().storage.projects
+            }
+
+            let hasIt = false;
+
+            if (projects) {
+                 hasIt = projects.some(
+                     (projectStored) => {
+                         return projectStored.name === candidate.name;
+                     }
+                 );
+            }
+
+            if (hasIt) {
+                reject({
+                    type: 'info',
+                    message: 'Project <strong>' + candidate.name + '</strong> already exists!'
+                });
+            }
+
+            candidate.view.setText(candidate.name);
+            candidate.view.setIcon(candidate.icon);
+            candidate.view.setId(candidate.name);
+
+            let clientModel = {};
+            let groupModel = {};
+            let projectModel = {
+                type: candidate.type,
+                projectName: candidate.name,
+                projectIcon: candidate.icon,
+                projectPaths: candidate.paths
+            };
+
+            this.getDB().mapper.set(candidate.view, projectModel);
+
+            if (candidate.group) {
+                let groupView = document.getElementById(group.name);
+                groupModel = this.getDB().mapper.get(groupView);
+                Object.setPrototypeOf(projectModel, groupModel);
+                groupView.addChild(candidate.view);
+            } else if (candidate.client) {
+                let clientView = document.getElementById(client.name);
+                clientModel = this.getDB().mapper.get(clientView);
+                Object.setPrototypeOf(projectModel, clientModel);
+                clientView.addChild(candidate.view);
+            } else {
+                // TODO change hack
+                document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
+            }
+
+            resolve({
+                type: 'success',
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+            });
+        });
+        return promise;
+    },
     getConfig: function getConfig(config) {
         return _db.info.name.concat('.', config);
     },

@@ -45,7 +45,9 @@ function clickListener(evt) {
     }
 
     atom.project.getRepositories().forEach((repo) => {
-        repo.destroy();
+        if (repo && typeof repo.destroy === 'function') {
+            repo.destroy();
+        }
     });
 
     atom.workspace.getActivePane().destroy();
@@ -137,7 +139,7 @@ function dropListener(evt) {
         Object.setPrototypeOf(dropModel, thisPrototype);
     }
 
-    _utility.getDB().store();
+    _utility.getDB().storage = _utility.getDB().store();
 
     _utility.updateStatusBar();
 
@@ -224,11 +226,7 @@ const htmlMethods = {
     },
     validate: function validate() {
         const model = _utility.getDB().mapper.get(this);
-        if (!model || !model.projectPaths) {
-            return;
-        }
-
-        if (model.projectPaths.length === 0) {
+        if (!model || !model.projectPaths || model.projectPaths.length === 0) {
             this.classList.add('disabled');
         } else {
             this.classList.remove('disabled');
