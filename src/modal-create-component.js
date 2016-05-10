@@ -63,9 +63,10 @@ function addIcons () {
     }
 
     views.icons = document.createElement('div');
-    views.icons.classList.add('block');
+    views.icons.classList.add('inset-panel', 'padded');
 
     let iconsDescription = document.createElement('label');
+    iconsDescription.classList.add('pv-label');
     iconsDescription.textContent = 'Choose if it will have an icon:';
 
     let iconsList = document.createElement('div');
@@ -90,6 +91,7 @@ function clearPaths () {
     const views = _views.get(this);
     if (views.paths) {
         views.paths.remove();
+        delete views.paths;
     }
 }
 
@@ -154,7 +156,7 @@ function addPaths () {
     }
 
     views.paths = document.createElement('div');
-    views.paths.classList.add('block');
+    views.paths.classList.add('inset-panel', 'padded');
 
     views.pathsContainer = document.createElement('div');
     views.pathsContainer.classList.add('block');
@@ -188,9 +190,9 @@ function addChoiceClickEvent (evt) {
 
     evt.target.classList.add('selected');
 
-    let type = evt.target.textContent;
+    let type = evt.target.textContent.toLowerCase();
 
-    if (type === 'Client') {
+    if (type === 'client') {
         model.type = 'client';
         clearListOfClients.call(this);
         clearListOfGroups.call(this);
@@ -198,7 +200,7 @@ function addChoiceClickEvent (evt) {
         addItemInput.call(this);
         addIcons.call(this);
     }
-    else if (type === 'Group') {
+    else if (type === 'group') {
         model.type = 'group';
         clearListOfGroups.call(this);
         clearPaths.call(this);
@@ -207,7 +209,7 @@ function addChoiceClickEvent (evt) {
         addListOfClients.call(this);
     }
 
-    else if (type === 'Project') {
+    else if (type === 'project') {
         model.type = 'project';
         addItemInput.call(this);
         addIcons.call(this);
@@ -290,7 +292,10 @@ function addItemInput () {
     }
 
     views.itemContainer = document.createElement('div');
+    views.itemContainer.classList.add('inset-panel', 'padded');
+
     views.inputDescription = document.createElement('label');
+    views.inputDescription.classList.add('pv-label');
     views.inputDescription.textContent = 'Choose a name:'
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
@@ -364,7 +369,7 @@ function clientViewClickEvent (client, evt) {
 
     if (model && model.client && model.type === 'project') {
         addListOfGroups.call(this, undefined, model.client.groups);
-        addIcons.call(this);
+        // addIcons.call(this);
     }
 }
 
@@ -372,6 +377,7 @@ function clearListOfClients () {
     const views = _views.get(this);
     if (views.clients) {
         views.clients.remove();
+        delete views.clients;
     }
 }
 
@@ -379,9 +385,6 @@ function addListOfClients (selected) {
     const views = _views.get(this);
     const clients = _utilities.getDB().storage.clients;
 
-    // if (views.clients) {
-    //     return;
-    // }
     clearListOfClients.call(this);
 
     if (!clients || !Array.isArray(clients)) {
@@ -389,9 +392,10 @@ function addListOfClients (selected) {
     }
 
     views.clients = document.createElement('div');
-    views.clients.classList.add('block');
+    views.clients.classList.add('inset-panel', 'padded');
 
     let clientsDescription = document.createElement('label');
+    clientsDescription.classList.add('pv-label');
     clientsDescription.textContent = 'Choose if it will belong to the following client:';
     views.clients.appendChild(clientsDescription);
 
@@ -448,16 +452,13 @@ function clearListOfGroups () {
     const views = _views.get(this);
     if (views.groups) {
         views.groups.remove();
+        delete views.groups;
     }
 }
 
 function addListOfGroups (selected, list) {
     const views = _views.get(this);
     const groups = list || _utilities.getDB().storage.groups;
-
-    // if (views.groups) {
-    //     return;
-    // }
 
     clearListOfGroups.call(this);
 
@@ -466,9 +467,10 @@ function addListOfGroups (selected, list) {
     }
 
     views.groups = document.createElement('div');
-    views.groups.classList.add('block');
+    views.groups.classList.add('inset-panel', 'padded');
 
     let groupsDescription = document.createElement('label');
+    groupsDescription.classList.add('pv-label');
     groupsDescription.textContent = 'Choose if it will belong to the following group:';
     views.groups.appendChild(groupsDescription);
 
