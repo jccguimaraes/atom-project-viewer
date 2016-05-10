@@ -27,14 +27,6 @@ function addTopic () {
     this.appendChild(views.topic);
 }
 
-function addSeparator () {
-    const views = _views.get(this);
-
-    views.separator = document.createElement('hr');
-
-    this.appendChild(views.separator);
-}
-
 function addIconClickEvent (evt) {
     const selected = evt.target.parentElement.querySelector('.btn-info');
     const model = _utilities.getDB().mapper.get(this);
@@ -84,7 +76,7 @@ function addIcons () {
 
     views.icons.appendChild(iconsDescription);
     views.icons.appendChild(iconsList);
-    this.insertBefore(views.icons, views.separator);
+    this.insertBefore(views.icons, views.buttonsContainer);
 }
 
 function clearPaths () {
@@ -109,6 +101,11 @@ function eachFolder (folder) {
     }
 
     model.paths.push(folder);
+
+    if (model.paths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
+        let name = folder.split('/').reverse()[0];
+        views.itemInput.getModel().buffer.setText(name);
+    }
 
     let pathViewIcon = document.createElement('span');
     pathViewIcon.classList.add('icon', 'icon-remove-close', 'status-removed');
@@ -173,7 +170,7 @@ function addPaths () {
     views.paths.appendChild(views.pathsList);
     views.paths.appendChild(views.pathsContainer);
 
-    this.insertBefore(views.paths, views.separator);
+    this.insertBefore(views.paths, views.buttonsContainer);
 }
 
 function addChoiceClickEvent (evt) {
@@ -303,11 +300,14 @@ function addItemInput () {
     views.itemContainer.appendChild(views.inputDescription);
     views.itemContainer.appendChild(views.itemInput);
 
-    this.insertBefore(views.itemContainer, views.separator);
+    this.insertBefore(views.itemContainer, views.buttonsContainer);
 }
 
-function addCreateButton () {
+function addButtons () {
     const views = _views.get(this);
+
+    views.buttonsContainer = document.createElement('div');
+    views.buttonsContainer.classList.add('block');
 
     views.createButton = document.createElement('div');
     views.createButton.classList.add('inline-block');
@@ -322,11 +322,6 @@ function addCreateButton () {
     );
 
     views.createButton.appendChild(views.createButtonText);
-    this.appendChild(views.createButton);
-}
-
-function addCancelButton () {
-    const views = _views.get(this);
 
     views.cancelButton = document.createElement('div');
     views.cancelButton.classList.add('inline-block');
@@ -342,7 +337,11 @@ function addCancelButton () {
     });
 
     views.cancelButton.appendChild(views.cancelButtonText);
-    this.appendChild(views.cancelButton);
+
+    views.buttonsContainer.appendChild(views.createButton);
+    views.buttonsContainer.appendChild(views.cancelButton);
+
+    this.appendChild(views.buttonsContainer);
 }
 
 function clientViewClickEvent (client, evt) {
@@ -422,7 +421,7 @@ function addListOfClients (selected) {
         return;
     }
 
-    this.insertBefore(views.clients, views.separator);
+    this.insertBefore(views.clients, views.buttonsContainer);
 }
 
 function groupViewClickEvent (group, evt) {
@@ -500,7 +499,7 @@ function addListOfGroups (selected, list) {
         return;
     }
 
-    this.insertBefore(views.groups, views.separator);
+    this.insertBefore(views.groups, views.buttonsContainer);
 }
 
 const htmlMethods = {
@@ -517,10 +516,7 @@ const htmlMethods = {
         addTopic.call(this);
         addChoice.call(this);
 
-        addSeparator.call(this);
-
-        addCreateButton.call(this);
-        addCancelButton.call(this);
+        addButtons.call(this);
     }
 };
 
