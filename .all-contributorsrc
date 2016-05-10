@@ -12,7 +12,10 @@
       "name": "João Guimarães",
       "avatar_url": "https://avatars.githubusercontent.com/u/14871650?v=3",
       "profile": "https://github.com/jccguimaraes",
-      "contributions": []
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ]
 }
