@@ -14,8 +14,55 @@ const utilities = {
     getConstructor: function getConstructor(definition) {
         return _component.getConstructor(definition);
     },
+    updateItem: function updateItem(item, changes) {
+        const promise = new Promise((resolve, reject) => {
+            let currentName = item.projectName || item.groupName || item.clientName;
+            let newParent;
+            let currentView = document.getElementById(currentName);
+
+            if (item.group) {
+                newParent = document.getElementById(item.group.name);
+            }
+            else if (item.client) {
+                newParent = document.getElementById(item.client.name);
+            }
+
+            if (!changes || !changes.name || typeof changes.name !== 'string') {
+                reject({
+                    type: 'warning',
+                    message: `Please give a new proper name for <strong>${currentName}</strong>!`
+                });
+                return;
+            }
+
+            if (!newParent || !currentView) {
+                return;
+            }
+
+            newParent.addChild(currentView, true);
+
+            let currentModel = this.getDB().mapper.get(currentView);
+            let parentModel = this.getDB().mapper.get(newParent);
+
+            Object.setPrototypeOf(currentModel, parentModel);
+
+            if (changes.name) {
+                currentView.setText(changes.name);
+                currentView.setId(changes.name);
+            }
+
+            currentView.setIcon(currentModel.projectIcon, true);
+
+            this.getDB().storage = this.getDB().store();
+
+            resolve({
+                type: 'success',
+                message: `Updates to <strong>${currentName}</strong> where applied!`
+            });
+        });
+        return promise;
+    },
     createItem: function createItem(candidate) {
-        console.debug(candidate);
         const promise = new Promise((resolve, reject) => {
             let safeItem = false;
 

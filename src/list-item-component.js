@@ -194,7 +194,7 @@ const htmlMethods = {
     getText: function getText() {
         return this.nodes.span.textContent;
     },
-    setIcon: function setIcon(icon) {
+    setIcon: function setIcon(icon, removeOld) {
         if (!icon) {
             return;
         }
@@ -204,10 +204,21 @@ const htmlMethods = {
             });
             return;
         }
+
+        if (removeOld) {
+            this.nodes.span.classList.remove(this.getIcon());
+        }
         this.nodes.span.classList.add('icon', icon);
     },
     getIcon: function getIcon() {
-        return '';
+        let filteredClasses;
+        this.nodes.span.classList.forEach(
+            (ownClass) => {
+                if (ownClass.startsWith('icon-')) {
+                    filteredClasses = ownClass;
+                }
+            })
+        return filteredClasses;
     },
     setId: function setId(id) {
         if (!id) {
@@ -226,6 +237,7 @@ const htmlMethods = {
     },
     validate: function validate() {
         const model = _utility.getDB().mapper.get(this);
+
         if (!model || !model.projectPaths || model.projectPaths.length === 0) {
             this.classList.add('disabled');
         } else {

@@ -2,13 +2,27 @@
     "context-menu": {
         "li[is='pv-list-nested-item']": [
             {
-                "label": "Item - Remove",
+                "label": "Add new Item here..."
+            },
+            {
+                "label": "Update...",
+                "command": "project-viewer2:update-item"
+            },
+            {
+                "label": "Remove...",
                 "command": "project-viewer2:remove-quick-item"
             }
         ],
         "li[is='pv-list-item']": [
             {
-                "label": "Item - Remove",
+                "label": "Add new Item here..."
+            },
+            {
+                "label": "Update...",
+                "command": "project-viewer2:update-item"
+            },
+            {
+                "label": "Remove...",
                 "command": "project-viewer2:remove-quick-item"
             }
         ]
@@ -30,10 +44,6 @@
                     {
                         "label": "Item - Create",
                         "command": "project-viewer2:create-item"
-                    },
-                    {
-                        "label": "Item - Update",
-                        "command": "project-viewer2:update-item"
                     },
                     {
                         "label": "Item - Remove",

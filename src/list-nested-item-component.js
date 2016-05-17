@@ -124,13 +124,15 @@ const htmlMethods = {
         }
         this.appendChild(node);
     },
-    addChild: function addChild(node, sort) {
+    addChild: function addChild(node, sort, force) {
         let parent = this.querySelector('ul');
 
         if (node.hasNode && (!parent || node.hasNode(parent))) {
             return;
         }
-        parent.addNode(node);
+        console.debug(parent);
+        console.debug(node);
+        parent.addNode(node, force);
         if (sort) {
             this.sortChildren();
         }

@@ -57,6 +57,7 @@ const store = function store() {
         } else if (model.projectName && model.type === 'project') {
             let project = {
                 name: model.projectName,
+                icon: model.projectIcon || '',
                 paths: model.projectPaths || []
             };
             if (model.groupName && currentGroup && currentGroup.name === model.groupName) {

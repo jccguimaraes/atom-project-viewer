@@ -94,14 +94,14 @@ function createClient () {
     return view;
 }
 
-function addProjects (mappedGroup, groupView, root) {
+function addProjects (parentMapper, parentView, atRootLevel) {
     let projectsView;
-    if (!root) {
+    if (!atRootLevel) {
         projectsView = new _listTreeConstructor();
-        groupView.addNode(projectsView);
+        parentView.addNode(projectsView);
     }
 
-    mappedGroup.projects.forEach(
+    parentMapper.projects.forEach(
         (mappedProject) => {
             let projectView = createProject(mappedProject);
 
@@ -115,32 +115,32 @@ function addProjects (mappedGroup, groupView, root) {
                 projectView.classList.add('active', 'selected');
             }
 
-            if (!root) {
+            if (!atRootLevel) {
                 projectsView.addNode(projectView);
             } else {
-                groupView.addNode(projectView);
+                parentView.addNode(projectView);
             }
 
             let projectModel = {
                 type: 'project',
                 projectName: mappedProject.name,
                 projectIcon: mappedProject.icon || 'icon',
-                projectActive: mappedProject.active || false,
                 projectPaths: mappedProject.paths || []
             };
 
-            let model = _utility.getDB().mapper.get(groupView);
+            let model = _utility.getDB().mapper.get(parentView);
 
             if (model) {
                 Object.setPrototypeOf(projectModel, model);
             }
 
             _utility.getDB().mapper.set(projectView, projectModel);
+            projectView.validate();
         }
     );
 
-    if (typeof groupView.sortChildren === 'function') {
-        groupView.sortChildren();
+    if (typeof parentView.sortChildren === 'function') {
+        parentView.sortChildren();
     }
 }
 
@@ -352,15 +352,9 @@ function removeModal () {
     });
 }
 
-function updateModal (evt, predefinedModel) {
-    if (!predefinedModel) {
-        predefinedModel = {};
-    }
+function updateModal (evt) {
 
-    const model = {
-        type: predefinedModel.type || '',
-        name: ''
-    };
+    let model = _utility.getDB().mapper.get(evt.target) || {};
 
     const view = new _modalUpdateConstructor();
 
@@ -401,7 +395,7 @@ function toggleFocus() {
     if (document.activeElement === views.mainPanel.getItem()) {
         atom.workspace.getActivePane().activate();
     } else {
-        this.setFocus();
+        setFocus.call(this);
     }
 }
 
@@ -413,7 +407,7 @@ const projectViewer = {
         const views = {};
 
         if (state) {
-            // TODO
+            // TODO maybe show a CHANGELOG
         }
 
         views.mainView = new _mainConstructor();

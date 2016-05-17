@@ -28,6 +28,9 @@ function addTopic () {
 }
 
 function addIconClickEvent (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
     const selected = evt.target.parentElement.querySelector('.btn-info');
     const model = _utilities.getDB().mapper.get(this);
     const view = evt.target;
@@ -123,6 +126,9 @@ function eachFolder (folder) {
 }
 
 function addPath (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
     atom.pickFolder((folders) => {
         if (!Array.isArray(folders)) {
             return;
@@ -132,6 +138,9 @@ function addPath (evt) {
 }
 
 function removePath (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
     const model = _utilities.getDB().mapper.get(this);
 
     if (model.paths && Array.isArray(model.paths)) {
@@ -174,6 +183,9 @@ function addPaths () {
 }
 
 function addChoiceClickEvent (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
     const current = evt.target.parentElement.querySelector('.selected');
     const model = _utilities.getDB().mapper.get(this);
 
@@ -364,11 +376,11 @@ function clientViewClickEvent (client, evt) {
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
         model.client = client;
+        selected = view;
     }
 
     if (model && model.client && model.type === 'project') {
         addListOfGroups.call(this, undefined, model.client.groups);
-        // addIcons.call(this);
     }
 }
 
@@ -503,12 +515,12 @@ function addListOfGroups (selected, list) {
 }
 
 const htmlMethods = {
-    createdCallback: function createdCallback() {
+    createdCallback: function createdCallback () {
         _views.set(this, {});
 
         this.classList.add('block');
     },
-    attachedCallback: function attachedCallback() {
+    attachedCallback: function attachedCallback () {
         const views = _views.get(this);
 
         const model = _utilities.getDB().mapper.get(this);
@@ -517,6 +529,25 @@ const htmlMethods = {
         addChoice.call(this);
 
         addButtons.call(this);
+    },
+    detachedCallback: function detachedCallback () {
+        const views = _views.get(this);
+
+        // entryIcon.removeEventListener('click', addIconClickEvent.bind(this));
+        // pathViewIcon.removeEventListener('click', removePath.bind(this));
+        views.pathAdd.removeEventListener('click', addPath.bind(this));
+        views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.createButton.removeEventListener('click', createButtonClickEvent.bind(this));
+        // views.cancelButton.removeEventListener('click', (evt) => {
+        //     evt.stopPropagation();
+        //     evt.preventDefault();
+        //
+        //     closeModal.call(this);
+        // });
+        // clientView.removeEventListener('click', clientViewClickEvent.bind(this, clientStored));
+        // groupView.removeEventListener('click', groupViewClickEvent.bind(this, groupStored));
     }
 };
 

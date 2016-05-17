@@ -5,8 +5,12 @@ const _utilities = require('./utilities');
 const _utils = require('./utils');
 const _octicons = require('./octicons');
 
+const _listNestedItemComponent = require('./list-nested-item-component');
+const _listItemComponent = require('./list-item-component');
+const _listTreeComponent = require('./list-tree-component');
+
 const definition = {
-    custom: 'pv-update-modal'
+    custom: 'pv-create-modal'
 };
 
 // TODO: this can be on the helper functions with an argument being the modal
@@ -16,19 +20,16 @@ function closeModal () {
 
 function addTopic () {
     const views = _views.get(this);
-    const model = _utilities.getDB().mapper.get(this);
-
-    let name = model.projectName || model.groupName || model.clientName;
 
     views.topic = document.createElement('h1');
-    views.topic.textContent = `This will update ${name}`;
+    views.topic.textContent = 'Choose what to add:';
 
     this.appendChild(views.topic);
 }
 
 function addIconClickEvent (evt) {
-    evt.stopPropagation();
     evt.preventDefault();
+    evt.stopPropagation();
 
     const selected = evt.target.parentElement.querySelector('.btn-info');
     const model = _utilities.getDB().mapper.get(this);
@@ -40,16 +41,16 @@ function addIconClickEvent (evt) {
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.projectIcon;
+        delete model.icon;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model.projectIcon = view.textContent;
+        model.icon = view.textContent;
     }
 }
 
-function addIcons (selectedIcon) {
+function addIcons () {
     const views = _views.get(this);
 
     if (views.icons) {
@@ -73,9 +74,6 @@ function addIcons (selectedIcon) {
             entryIcon.textContent = icon;
             entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
             iconsList.appendChild(entryIcon);
-            if (selectedIcon && selectedIcon === icon) {
-                entryIcon.classList.add('btn-info');
-            }
         }
     )
 
@@ -92,23 +90,22 @@ function clearPaths () {
     }
 }
 
-function eachFolder (evt, folder) {
+function eachFolder (folder) {
     const views = _views.get(this);
     const model = _utilities.getDB().mapper.get(this);
 
-    if (!model.projectPaths && !Array.isArray(model.projectPaths)) {
-        model.projectPaths = [];
+    if (!model.paths && !Array.isArray(model.paths)) {
+        model.paths = [];
     }
 
-    // because we are dispatching the event ourselves
-    if (evt.isTrusted && model.projectPaths.indexOf(folder) !== -1) {
+    if (model.paths.indexOf(folder) !== -1) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
     }
 
-    model.projectPaths.push(folder);
+    model.paths.push(folder);
 
-    if (model.projectPaths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
+    if (model.paths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
         let name = folder.split('/').reverse()[0];
         views.itemInput.getModel().buffer.setText(name);
     }
@@ -129,35 +126,35 @@ function eachFolder (evt, folder) {
 }
 
 function addPath (evt) {
-    evt.stopPropagation();
     evt.preventDefault();
+    evt.stopPropagation();
 
     atom.pickFolder((folders) => {
         if (!Array.isArray(folders)) {
             return;
         }
-        folders.forEach(eachFolder.bind(this, evt));
+        folders.forEach(eachFolder.bind(this));
     });
 }
 
 function removePath (evt) {
-    evt.stopPropagation();
     evt.preventDefault();
+    evt.stopPropagation();
 
     const model = _utilities.getDB().mapper.get(this);
 
-    if (model.projectPaths && Array.isArray(model.projectPaths)) {
+    if (model.model.paths && Array.isArray(model.model.paths)) {
 
-        const idx = model.projectPaths.indexOf(evt.target.nextSibling.textContent);
+        const idx = model.model.paths.indexOf(evt.target.nextSibling.textContent);
 
         if (idx !== -1) {
-            model.projectPaths.splice(idx, 1);
+            model.model.paths.splice(idx, 1);
             evt.target.parentElement.remove();
         }
     }
 }
 
-function addPaths (selectedPaths, evt) {
+function addPaths () {
     const views = _views.get(this);
 
     if (views.paths) {
@@ -178,10 +175,6 @@ function addPaths (selectedPaths, evt) {
     views.pathAdd.textContent = 'Add root paths:'
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
-    if (selectedPaths && Array.isArray(selectedPaths)) {
-        selectedPaths.forEach(eachFolder.bind(this, evt));
-    }
-
     views.paths.appendChild(views.pathAdd);
     views.paths.appendChild(views.pathsList);
     views.paths.appendChild(views.pathsContainer);
@@ -190,8 +183,8 @@ function addPaths (selectedPaths, evt) {
 }
 
 function addChoiceClickEvent (evt) {
-    evt.stopPropagation();
     evt.preventDefault();
+    evt.stopPropagation();
 
     const current = evt.target.parentElement.querySelector('.selected');
     const model = _utilities.getDB().mapper.get(this);
@@ -213,29 +206,29 @@ function addChoiceClickEvent (evt) {
         clearListOfClients.call(this);
         clearListOfGroups.call(this);
         clearPaths.call(this);
-        addItemInput.call(this, model.clientName);
-        addIcons.call(this, model.iconIcon);
+        addItemInput.call(this);
+        addIcons.call(this);
     }
     else if (type === 'group') {
         model.type = 'group';
         clearListOfGroups.call(this);
         clearPaths.call(this);
-        addItemInput.call(this, model.groupName);
-        addIcons.call(this, model.groupIcon);
-        addListOfClients.call(this, model.clientName);
+        addItemInput.call(this);
+        addIcons.call(this);
+        addListOfClients.call(this);
     }
 
     else if (type === 'project') {
         model.type = 'project';
-        addItemInput.call(this, model.projectName);
-        addIcons.call(this, model.projectIcon);
-        addPaths.call(this, model.projectPaths, evt);
-        addListOfClients.call(this, model.clientName);
-        addListOfGroups.call(this, model.groupName, model.client.groups);
+        addItemInput.call(this);
+        addIcons.call(this);
+        addPaths.call(this);
+        addListOfClients.call(this);
+        addListOfGroups.call(this);
     }
 }
 
-function addChoice (model) {
+function addChoice () {
     const views = _views.get(this);
 
     views.choiceOptions = document.createElement('div');
@@ -259,13 +252,19 @@ function addChoice (model) {
     views.choiceOptions.appendChild(views.choiseClient);
     views.choiceOptions.appendChild(views.choiseGroup);
     views.choiceOptions.appendChild(views.choiseProject);
+
+    this.appendChild(views.choiceOptions);
 }
 
-function updateButtonClickEvent (evt) {
+function createButtonClickEvent (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
     let name;
+    let listNestedItemConstructor = _utilities.getConstructor(_listNestedItemComponent.definition);
+    let listItemConstructor = _utilities.getConstructor(_listItemComponent.definition);
+    let listTreeConstructor = _utilities.getConstructor(_listTreeComponent.definition);
+    let view;
 
     const views = _views.get(this);
     const model = _utilities.getDB().mapper.get(this);
@@ -274,9 +273,17 @@ function updateButtonClickEvent (evt) {
         name = views.itemInput.getModel().buffer.getText();
     }
 
-    _utilities.updateItem(model, {
-        name: name
-    })
+    if (model.type === 'project') {
+        view = new listItemConstructor();
+    } else {
+        view = new listNestedItemConstructor();
+        view.addNode(new listTreeConstructor());
+    }
+
+    model.view = view;
+    model.name = name;
+
+    _utilities.createItem(model)
     .then((data) => {
         _utils.notification(data.type, data.message);
         closeModal.call(this);
@@ -286,7 +293,7 @@ function updateButtonClickEvent (evt) {
     });
 }
 
-function addItemInput (selectedInput) {
+function addItemInput () {
     const views = _views.get(this);
 
     if (views.itemContainer) {
@@ -302,10 +309,6 @@ function addItemInput (selectedInput) {
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
 
-    if (selectedInput) {
-        views.itemInput.getModel().buffer.setText(selectedInput);
-    }
-
     views.itemContainer.appendChild(views.inputDescription);
     views.itemContainer.appendChild(views.itemInput);
 
@@ -318,19 +321,19 @@ function addButtons () {
     views.buttonsContainer = document.createElement('div');
     views.buttonsContainer.classList.add('block');
 
-    views.updateButton = document.createElement('div');
-    views.updateButton.classList.add('inline-block');
-    views.updateButtonText = document.createElement('button');
-    views.updateButtonText.classList.add('btn', 'btn-sm', 'btn-success');
-    views.updateButtonText.textContent = 'update';
+    views.createButton = document.createElement('div');
+    views.createButton.classList.add('inline-block');
+    views.createButtonText = document.createElement('button');
+    views.createButtonText.classList.add('btn', 'btn-sm', 'btn-success');
+    views.createButtonText.textContent = 'create';
 
-    views.updateButton.addEventListener(
+    views.createButton.addEventListener(
         'click',
-        updateButtonClickEvent.bind(this),
+        createButtonClickEvent.bind(this),
         false
     );
 
-    views.updateButton.appendChild(views.updateButtonText);
+    views.createButton.appendChild(views.createButtonText);
 
     views.cancelButton = document.createElement('div');
     views.cancelButton.classList.add('inline-block');
@@ -347,7 +350,7 @@ function addButtons () {
 
     views.cancelButton.appendChild(views.cancelButtonText);
 
-    views.buttonsContainer.appendChild(views.updateButton);
+    views.buttonsContainer.appendChild(views.createButton);
     views.buttonsContainer.appendChild(views.cancelButton);
 
     this.appendChild(views.buttonsContainer);
@@ -363,19 +366,17 @@ function clientViewClickEvent (client, evt) {
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
-        model.client = client;
-        delete model.group;
     }
-    else if (selected && selected === view) {
+
+    if (selected && selected === view) {
         selected.classList.remove('btn-info');
         delete model.client;
-        delete model.group;
-        addListOfGroups.call(this);
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
         model.client = client;
+        selected = view;
     }
 
     if (model && model.client && model.type === 'project') {
@@ -391,7 +392,7 @@ function clearListOfClients () {
     }
 }
 
-function addListOfClients (selectedClient) {
+function addListOfClients (selected) {
     const views = _views.get(this);
     const clients = _utilities.getDB().storage.clients;
 
@@ -424,10 +425,6 @@ function addListOfClients (selectedClient) {
                 false
             );
             container.appendChild(clientView);
-            if (selectedClient && selectedClient === clientStored.name) {
-                const event = new MouseEvent('click');
-                clientView.dispatchEvent(event);
-            }
             return clientView;
         }
     );
@@ -445,20 +442,15 @@ function groupViewClickEvent (group, evt) {
 
     const model = _utilities.getDB().mapper.get(this);
     let view = evt.target;
-    let selected;
-
-    if (view.parentElement) {
-        selected = view.parentElement.querySelector('.btn-info');
-    }
+    let selected = view.parentElement.querySelector('.btn-info');
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
-        model.group = group;
     }
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.group;
+        delete model.client;
     }
 
     if (!selected || selected !== view) {
@@ -475,7 +467,7 @@ function clearListOfGroups () {
     }
 }
 
-function addListOfGroups (selectedGroup, list) {
+function addListOfGroups (selected, list) {
     const views = _views.get(this);
     const groups = list || _utilities.getDB().storage.groups;
 
@@ -507,9 +499,8 @@ function addListOfGroups (selectedGroup, list) {
                 groupViewClickEvent.bind(this, groupStored),
                 false
             );
-            if (selectedGroup && selectedGroup === groupStored.name) {
-                const event = new MouseEvent('click');
-                groupView.dispatchEvent(event);
+            if (selected === groupStored) {
+                groupView.classList.add('btn-info');
             }
             container.appendChild(groupView);
             return groupView;
@@ -524,47 +515,31 @@ function addListOfGroups (selectedGroup, list) {
 }
 
 const htmlMethods = {
-    createdCallback: function createdCallback() {
+    createdCallback: function createdCallback () {
         _views.set(this, {});
 
         this.classList.add('block');
     },
-    attachedCallback: function attachedCallback() {
+    attachedCallback: function attachedCallback () {
         const views = _views.get(this);
 
         const model = _utilities.getDB().mapper.get(this);
 
         addTopic.call(this);
-
         addChoice.call(this);
 
         addButtons.call(this);
-
-        if (!model) {
-            return;
-        }
-
-        const event = new MouseEvent('click');
-
-        if (model.type === 'client') {
-            views.choiseClient.dispatchEvent(event);
-        }
-        else if (model.type === 'group') {
-            views.choiseGroup.dispatchEvent(event);
-        }
-        else if (model.type === 'project') {
-            views.choiseProject.dispatchEvent(event);
-        }
     },
     detachedCallback: function detachedCallback () {
         const views = _views.get(this);
+
         // entryIcon.removeEventListener('click', addIconClickEvent.bind(this));
         // pathViewIcon.removeEventListener('click', removePath.bind(this));
         views.pathAdd.removeEventListener('click', addPath.bind(this));
         views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.updateButton.removeEventListener('click', updateButtonClickEvent.bind(this));
+        views.createButton.removeEventListener('click', createButtonClickEvent.bind(this));
         // views.cancelButton.removeEventListener('click', (evt) => {
         //     evt.stopPropagation();
         //     evt.preventDefault();
