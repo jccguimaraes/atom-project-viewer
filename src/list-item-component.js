@@ -180,22 +180,26 @@ const htmlMethods = {
         this.validate();
     },
     setText: function setText(text) {
-        if (!text) {
+
+        const sanitizedText = _utils.sanitizeString(text);
+
+        if (!sanitizedText) {
             return;
         }
-        if (typeof text !== 'string') {
+        if (typeof sanitizedText !== 'string') {
             _utils.notification('info', 'text is not valid', {
                 icon: 'code'
             });
             return;
         }
-        this.nodes.span.textContent = text;
+        this.nodes.span.textContent = sanitizedText;
     },
     getText: function getText() {
         return this.nodes.span.textContent;
     },
     setIcon: function setIcon(icon, removeOld) {
         if (!icon) {
+            this.nodes.span.classList.remove(this.getIcon());
             return;
         }
         if (typeof icon !== 'string') {
@@ -221,16 +225,18 @@ const htmlMethods = {
         return filteredClasses;
     },
     setId: function setId(id) {
-        if (!id) {
+        const sanitizedText = _utils.sanitizeString(id);
+
+        if (!sanitizedText) {
             return;
         }
-        if (typeof id !== 'string') {
+        if (typeof sanitizedText !== 'string') {
             _utils.notification('info', 'id is not valid', {
                 icon: 'code'
             });
             return;
         }
-        this.id = id
+        this.id = sanitizedText;
     },
     getId: function getId() {
         return this.id;

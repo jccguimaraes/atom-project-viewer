@@ -270,7 +270,7 @@ function createButtonClickEvent (evt) {
     const model = _utilities.getDB().mapper.get(this);
 
     if (views.itemInput) {
-        name = views.itemInput.getModel().buffer.getText();
+        name = _utils.sanitizeString(views.itemInput.getModel().buffer.getText());
     }
 
     if (model.type === 'project') {

@@ -31,8 +31,8 @@ const store = function store() {
 
         if (model.clientName && model.type === 'client') {
             let client = {
-                name: model.clientName,
-                icon: model.clientIcon || '',
+                name: _utils.sanitizeString(model.clientName),
+                icon: _utils.sanitizeString(model.clientIcon) || '',
                 expanded: model.clientExpanded || false,
                 sortBy: model.sortBy || 'position',
                 groups: [],
@@ -42,8 +42,8 @@ const store = function store() {
             currentClient = client;
         } else if (model.groupName && model.type === 'group') {
             let group = {
-                name: model.groupName,
-                icon: model.groupIcon || '',
+                name: _utils.sanitizeString(model.groupName),
+                icon: _utils.sanitizeString(model.groupIcon) || '',
                 expanded: model.groupExpanded || false,
                 sortBy: model.sortBy || 'position',
                 projects: []
@@ -56,8 +56,8 @@ const store = function store() {
             currentGroup = group;
         } else if (model.projectName && model.type === 'project') {
             let project = {
-                name: model.projectName,
-                icon: model.projectIcon || '',
+                name: _utils.sanitizeString(model.projectName),
+                icon: _utils.sanitizeString(model.projectIcon) || '',
                 paths: model.projectPaths || []
             };
             if (model.groupName && currentGroup && currentGroup.name === model.groupName) {

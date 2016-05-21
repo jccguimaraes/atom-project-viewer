@@ -2,7 +2,7 @@
     "context-menu": {
         "li[is='pv-list-nested-item']": [
             {
-                "label": "Add new Item here..."
+                "type": "separator"
             },
             {
                 "label": "Update...",
@@ -15,7 +15,7 @@
         ],
         "li[is='pv-list-item']": [
             {
-                "label": "Add new Item here..."
+                "type": "separator"
             },
             {
                 "label": "Update...",

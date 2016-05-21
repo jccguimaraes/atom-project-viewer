@@ -270,7 +270,7 @@ function createButtonClickEvent (evt) {
     const model = _utilities.getDB().mapper.get(this);
 
     if (views.itemInput) {
-        name = views.itemInput.getModel().buffer.getText();
+        name = _utils.sanitizeString(views.itemInput.getModel().buffer.getText());
     }
 
     if (model.type === 'project') {
@@ -281,7 +281,7 @@ function createButtonClickEvent (evt) {
     }
 
     model.view = view;
-    model.name = name;
+    model.name = _utils.sanitizeString(name);
 
     _utilities.createItem(model)
     .then((data) => {
@@ -535,11 +535,11 @@ const htmlMethods = {
 
         // entryIcon.removeEventListener('click', addIconClickEvent.bind(this));
         // pathViewIcon.removeEventListener('click', removePath.bind(this));
-        views.pathAdd.removeEventListener('click', addPath.bind(this));
-        views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.createButton.removeEventListener('click', createButtonClickEvent.bind(this));
+        views.pathAdd && views.pathAdd.removeEventListener('click', addPath.bind(this));
+        views.choiseClient && views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseGroup && views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseProject && views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.createButton && views.createButton.removeEventListener('click', createButtonClickEvent.bind(this));
         // views.cancelButton.removeEventListener('click', (evt) => {
         //     evt.stopPropagation();
         //     evt.preventDefault();

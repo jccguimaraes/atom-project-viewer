@@ -366,7 +366,9 @@ function updateModal (evt) {
     });
 }
 
-function createModal () {
+function createModal (evt) {
+
+    console.debug(_utility.getDB().mapper.get(evt.target) || {});
 
     const model = {};
 
@@ -448,6 +450,9 @@ const projectViewer = {
                 'project-viewer2:toggle-display': togglePanel.bind(this),
                 'project-viewer2:toggle-focus': toggleFocus.bind(this),
                 'project-viewer2:create-item': createModal,
+                'project-viewer2:create-client-item': createModal.bind(this),
+                'project-viewer2:create-group-item': createModal.bind(this),
+                'project-viewer2:create-project-item': createModal.bind(this),
                 'project-viewer2:update-item': updateModal,
                 'project-viewer2:remove-item': removeModal,
                 'project-viewer2:remove-quick-item': removeQuickModal,
@@ -455,6 +460,44 @@ const projectViewer = {
                 'project-viewer2:file-import': fileImport
             }
         ));
+
+        this.disposables.add(
+            atom.contextMenu.add({
+                'ul[is="pv-list-tree"]': [
+                    {
+                        label: 'Create Client',
+                        command: "project-viewer2:create-client-item",
+                        shouldDisplay: (event) => {
+                            const model = _utility.getDB().mapper.get(event.target);
+                            return !model;
+                        }
+                    },
+                    {
+                        label: 'Create Group',
+                        command: "project-viewer2:create-group-item",
+                        shouldDisplay: (event) => {
+
+                            const model = _utility.getDB().mapper.get(event.target);
+                            if (model && model.type !== 'client') {
+                                return false;
+                            }
+                            return true;
+                        }
+                    },
+                    {
+                        label: 'Create Project',
+                        command: "project-viewer2:create-project-item",
+                        shouldDisplay: (event) => {
+                            const model = _utility.getDB().mapper.get(event.target);
+                            if (model && model.type === 'project') {
+                                return false;
+                            }
+                            return true;
+                        }
+                    }
+                ]
+            })
+        );
 
         _views.set(this, views);
 

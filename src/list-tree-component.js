@@ -103,8 +103,16 @@ const htmlMethods = {
         }
         this.appendChild(node);
     },
-    addChild: function addChild(node) {
-        this.addNode(node);
+    addChild: function addChild(node, sort, force) {
+        if (node.hasNode) {
+            return;
+        }
+        parent.addNode(node, force);
+        if (sort) {
+            this.sortChildren();
+        }
+        return true;
+        // this.addNode(node);
         // this.sortChildren();
     },
     hasNode: function hasNode(node) {

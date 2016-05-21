@@ -3,6 +3,11 @@
 const Notification = require('atom').Notification;
 
 const methods = {
+    sanitizeString: function sanitizeString (str) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    },
     notification: function notification(type, title, options) {
         atom.notifications.addNotification(
             new Notification(

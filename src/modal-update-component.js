@@ -40,12 +40,14 @@ function addIconClickEvent (evt) {
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
+        delete model.clientIcon;
+        delete model.groupIcon;
         delete model.projectIcon;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model.projectIcon = view.textContent;
+        model[model.type + 'Icon'] = view.textContent;
     }
 }
 
@@ -106,7 +108,9 @@ function eachFolder (evt, folder) {
         return;
     }
 
-    model.projectPaths.push(folder);
+    if (evt.isTrusted) {
+        model.projectPaths.push(folder);
+    }
 
     if (model.projectPaths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
         let name = folder.split('/').reverse()[0];
@@ -231,7 +235,7 @@ function addChoiceClickEvent (evt) {
         addIcons.call(this, model.projectIcon);
         addPaths.call(this, model.projectPaths, evt);
         addListOfClients.call(this, model.clientName);
-        addListOfGroups.call(this, model.groupName, model.client.groups);
+        addListOfGroups.call(this, model.groupName, model.client && model.client.groups);
     }
 }
 
@@ -271,7 +275,7 @@ function updateButtonClickEvent (evt) {
     const model = _utilities.getDB().mapper.get(this);
 
     if (views.itemInput) {
-        name = views.itemInput.getModel().buffer.getText();
+        name = _utils.sanitizeString(views.itemInput.getModel().buffer.getText());
     }
 
     _utilities.updateItem(model, {
@@ -560,11 +564,11 @@ const htmlMethods = {
         const views = _views.get(this);
         // entryIcon.removeEventListener('click', addIconClickEvent.bind(this));
         // pathViewIcon.removeEventListener('click', removePath.bind(this));
-        views.pathAdd.removeEventListener('click', addPath.bind(this));
-        views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.updateButton.removeEventListener('click', updateButtonClickEvent.bind(this));
+        views.pathAdd && views.pathAdd.removeEventListener('click', addPath.bind(this));
+        views.choiseClient && views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseGroup && views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiseProject && views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.updateButton && views.updateButton.removeEventListener('click', updateButtonClickEvent.bind(this));
         // views.cancelButton.removeEventListener('click', (evt) => {
         //     evt.stopPropagation();
         //     evt.preventDefault();

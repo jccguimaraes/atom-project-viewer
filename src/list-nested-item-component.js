@@ -130,8 +130,6 @@ const htmlMethods = {
         if (node.hasNode && (!parent || node.hasNode(parent))) {
             return;
         }
-        console.debug(parent);
-        console.debug(node);
         parent.addNode(node, force);
         if (sort) {
             this.sortChildren();
@@ -149,22 +147,36 @@ const htmlMethods = {
         return has;
     },
     setText: function setText(text) {
-        if (!text) {
+
+        const sanitizedText = _utils.sanitizeString(text);
+
+        if (!sanitizedText) {
             return;
         }
-        if (typeof text !== 'string') {
+        if (typeof sanitizedText !== 'string') {
             _utils.notification('info', 'text is not valid', {
                 icon: 'code'
             });
             return;
         }
-        this.nodes.listItemSpan.textContent = text;
+        this.nodes.listItemSpan.textContent = sanitizedText;
     },
     getText: function getText() {
         return this.nodes.listItemSpan.textContent;
     },
-    setIcon: function setIcon(icon) {
+    getIcon: function getIcon() {
+        let filteredClasses;
+        this.nodes.listItemSpan.classList.forEach(
+            (ownClass) => {
+                if (ownClass.startsWith('icon-')) {
+                    filteredClasses = ownClass;
+                }
+            })
+        return filteredClasses;
+    },
+    setIcon: function setIcon(icon, removeOld) {
         if (!icon) {
+            this.nodes.listItemSpan.classList.remove(this.getIcon());
             return;
         }
         if (typeof icon !== 'string') {
@@ -172,6 +184,10 @@ const htmlMethods = {
                 icon: 'code'
             });
             return;
+        }
+
+        if (removeOld) {
+            this.nodes.listItemSpan.classList.remove(this.getIcon());
         }
         this.nodes.listItemSpan.classList.add('icon', icon);
     },
@@ -206,16 +222,19 @@ const htmlMethods = {
         }
     },
     setId: function setId(id) {
-        if (!id) {
+
+        const sanitizedText = _utils.sanitizeString(id);
+
+        if (!sanitizedText) {
             return;
         }
-        if (typeof id !== 'string') {
+        if (typeof sanitizedText !== 'string') {
             _utils.notification('info', 'id is not valid', {
                 icon: 'code'
             });
             return;
         }
-        this.id = id
+        this.id = sanitizedText;
     },
     getId: function getId() {
         return this.id;

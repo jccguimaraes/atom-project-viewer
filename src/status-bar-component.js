@@ -18,7 +18,13 @@ const htmlMethods = {
         this.appendChild(this.nodes.span);
     },
     setText: function setText(text) {
-        this.nodes.span.textContent = text;
+        const sanitizedText = _utils.sanitizeString(text);
+
+        if (!sanitizedText) {
+            return;
+        }
+
+        this.nodes.span.textContent = sanitizedText;
     },
     getText: function getText() {
         return this.nodes.span.textContent;

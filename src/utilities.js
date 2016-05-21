@@ -4,6 +4,7 @@ const Notification = require('atom').Notification;
 
 const _caches = require('./caches');
 const _db = require('./db');
+const _utils = require('./utils');
 
 const _component = require('./component');
 
@@ -16,7 +17,7 @@ const utilities = {
     },
     updateItem: function updateItem(item, changes) {
         const promise = new Promise((resolve, reject) => {
-            let currentName = item.projectName || item.groupName || item.clientName;
+            let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
             let newParent;
             let currentView = document.getElementById(currentName);
 
@@ -35,23 +36,42 @@ const utilities = {
                 return;
             }
 
-            if (!newParent || !currentView) {
-                return;
-            }
-
-            newParent.addChild(currentView, true);
-
             let currentModel = this.getDB().mapper.get(currentView);
-            let parentModel = this.getDB().mapper.get(newParent);
 
-            Object.setPrototypeOf(currentModel, parentModel);
+            // if (!newParent || !currentView) {
+            //     return;
+            // }
+
+            if (newParent) {
+                newParent.addChild(currentView, false, true);
+                let parentModel = this.getDB().mapper.get(newParent);
+                Object.setPrototypeOf(currentModel, parentModel);
+            }
 
             if (changes.name) {
                 currentView.setText(changes.name);
                 currentView.setId(changes.name);
             }
 
-            currentView.setIcon(currentModel.projectIcon, true);
+            if (changes.name && currentModel.type === 'client') {
+                currentModel.clientName = _utils.sanitizeString(changes.name);
+            }
+            else if (changes.name && currentModel.type === 'group') {
+                currentModel.groupName = _utils.sanitizeString(changes.name);
+            }
+            else if (changes.name && currentModel.type === 'project') {
+                currentModel.projectName = _utils.sanitizeString(changes.name);
+            }
+
+            if (currentModel.clientIcon && currentModel.type === 'client') {
+                currentView.setIcon(_utils.sanitizeString(currentModel.clientIcon), true);
+            }
+            else if (currentModel.groupIcon && currentModel.type === 'group') {
+                currentView.setIcon(_utils.sanitizeString(currentModel.groupIcon), true);
+            }
+            else if (currentModel.projectIcon && currentModel.type === 'project') {
+                currentView.setIcon(_utils.sanitizeString(currentModel.projectIcon), true);
+            }
 
             this.getDB().storage = this.getDB().store();
 
