@@ -5,4 +5,8 @@ notifications:
     on_success: never
     on_failure: change
 
+# whitelist
+branches:
+  only:
+      - refactor
 script: 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
