@@ -6,6 +6,7 @@ const _utils = require('./utils');
 const _utility = require('./utilities');
 const _config = require('./config');
 const githubWorker = new Worker(__dirname + '/github-web-worker.js');
+const _selectView = require('./select-view');
 
 const _mainComponent = require('./main-component');
 const _statusBarComponent = require('./status-bar-component');
@@ -504,6 +505,8 @@ const projectViewer = {
         updateProjectViewer.call(this);
 
         githubWorker.onmessage = githubWorkerOnMessage;
+
+        views.selectView = new _selectView();
     },
     serialize: function serialize() {},
     deactivate: function deactivate() {

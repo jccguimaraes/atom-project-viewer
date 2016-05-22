@@ -15,6 +15,15 @@ const utilities = {
     getConstructor: function getConstructor(definition) {
         return _component.getConstructor(definition);
     },
+    fetchProjects: function fetchProjects () {
+        const projectViews = document.querySelectorAll('li[is="pv-list-item"]');
+        const projectsArray = Array.apply(null, projectViews);
+        return projectsArray.map(
+            (projectView) => {
+                return this.getDB().mapper.get(projectView);
+            }
+        );
+    },
     updateItem: function updateItem(item, changes) {
         const promise = new Promise((resolve, reject) => {
             let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
