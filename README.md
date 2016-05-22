@@ -3,6 +3,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![travis](https://travis-ci.org/jccguimaraes/atom-project-viewer.svg?branch=refactor)](https://travis-ci.org/jccguimaraes/atom-project-viewer)
 
 This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
 
