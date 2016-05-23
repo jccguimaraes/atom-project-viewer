@@ -47,14 +47,12 @@ const utilities = {
 
             let currentModel = this.getDB().mapper.get(currentView);
 
-            // if (!newParent || !currentView) {
-            //     return;
-            // }
-
             if (newParent) {
                 newParent.addChild(currentView, false, true);
                 let parentModel = this.getDB().mapper.get(newParent);
                 Object.setPrototypeOf(currentModel, parentModel);
+            } else {
+                document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView);
             }
 
             if (changes.name) {
@@ -116,13 +114,13 @@ const utilities = {
             switch (candidate.type) {
                 case 'client':
                     innerPromise = this.createClient(candidate);
-                    break;
+                break;
                 case 'group':
                     innerPromise = this.createGroup(candidate);
-                    break;
+                break;
                 case 'project':
                     innerPromise = this.createProject(candidate);
-                    break;
+                break;
                 default:
             }
 
@@ -208,7 +206,7 @@ const utilities = {
                 })[0];
                 groups = client.groups;
             } else {
-                groups = this.getDB().storage.groups
+                groups = this.getDB().storage.groups;
             }
 
             let hasIt = false;
@@ -291,7 +289,7 @@ const utilities = {
             }
 
             if (!candidate.client && !candidate.group) {
-                projects = this.getDB().storage.projects
+                projects = this.getDB().storage.projects;
             }
 
             let hasIt = false;

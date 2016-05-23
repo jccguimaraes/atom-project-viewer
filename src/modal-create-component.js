@@ -75,7 +75,7 @@ function addIcons () {
             entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
             iconsList.appendChild(entryIcon);
         }
-    )
+    );
 
     views.icons.appendChild(iconsDescription);
     views.icons.appendChild(iconsList);
@@ -172,7 +172,7 @@ function addPaths () {
 
     views.pathAdd = document.createElement('button');
     views.pathAdd.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
-    views.pathAdd.textContent = 'Add root paths:'
+    views.pathAdd.textContent = 'Add root paths:';
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
     views.paths.appendChild(views.pathAdd);
@@ -305,7 +305,7 @@ function addItemInput () {
 
     views.inputDescription = document.createElement('label');
     views.inputDescription.classList.add('pv-label');
-    views.inputDescription.textContent = 'Choose a name:'
+    views.inputDescription.textContent = 'Choose a name:';
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
 

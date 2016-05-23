@@ -59,6 +59,12 @@ function dropListener(evt) {
     let dropModel = _db.mapper.get(dropNode);
     let thisModel = _db.mapper.get(this);
 
+    if (thisModel.type === dropModel.type) {
+        const child = dropNode.nextSibling === this ? this.nextSibling : this;
+        this.parentElement.insertBefore(dropNode, child);
+        return;
+    }
+
     if (dropModel.type === 'client') {
         return;
     }
@@ -171,7 +177,7 @@ const htmlMethods = {
                 if (ownClass.startsWith('icon-')) {
                     filteredClasses = ownClass;
                 }
-            })
+            });
         return filteredClasses;
     },
     setIcon: function setIcon(icon, removeOld) {

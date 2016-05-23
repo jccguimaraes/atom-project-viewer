@@ -93,13 +93,13 @@ function removeButtonClickEvent (evt) {
         }
     );
 
-    if (projects.length > 0 && typeof projectIdx === "number")  {
+    if (projects.length > 0 && typeof projectIdx === 'number')  {
         projectView = document.getElementById(projects[projectIdx].name);
     }
-    else if (groups.length > 0 && typeof groupIdx === "number")  {
+    else if (groups.length > 0 && typeof groupIdx === 'number')  {
         groupView = document.getElementById(groups[groupIdx].name);
     }
-    else if (clients.length > 0 && typeof clientIdx === "number")  {
+    else if (clients.length > 0 && typeof clientIdx === 'number')  {
         projectView = document.getElementById(clients[clientIdx].name);
     }
 

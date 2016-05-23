@@ -2,7 +2,6 @@
   "projectName": "atom-project-viewer",
   "projectOwner": "jccguimaraes",
   "files": [
-    "CONTRIBUTION.md",
     "README.md"
   ],
   "imageSize": 100,

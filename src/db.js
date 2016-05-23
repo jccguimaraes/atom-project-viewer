@@ -1,15 +1,15 @@
 'use strict';
 
 const _utils = require('./utils');
-const pkg = 'project-viewer2';
-const file = 'project-viewer2.json';
+const pkg = 'project-viewer';
+const file = 'project-viewer.json';
 // const storage = require('./file.json');
 let storage = atom.getStorageFolder().load(file) || {};
 const mapper = new WeakMap();
 
 const info = {
     version: '0.3.0',
-    name: 'project-viewer2'
+    name: 'project-viewer'
 };
 
 const getConfig = function getConfig(config) {

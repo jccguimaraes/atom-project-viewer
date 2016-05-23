@@ -25,7 +25,7 @@ const config = {
         default: false,
         order: 3
     },
-    "githubToken": {
+    'githubToken': {
         description: 'Your personal and private GitHub token',
         type: 'string',
         default: '',

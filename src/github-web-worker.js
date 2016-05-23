@@ -31,8 +31,8 @@ const api = {
                 return;
             }
 
-            headers.append("Accept", "application/vnd.github.v3+json");
-            headers.append("Authorization", "token " + this.token);
+            headers.append('Accept', 'application/vnd.github.v3+json');
+            headers.append('Authorization', 'token ' + this.token);
 
             fetch(this.url, parameters)
             .then(function(response) {
@@ -84,8 +84,8 @@ const api = {
                 return;
             }
 
-            headers.append("Accept", "application/vnd.github.v3+json");
-            headers.append("Authorization", "token " + this.token);
+            headers.append('Accept', 'application/vnd.github.v3+json');
+            headers.append('Authorization', 'token ' + this.token);
 
             url = this.url + '/' + this.gistId;
 
@@ -128,8 +128,8 @@ const api = {
 
             url = this.url + '/' + this.gistId;
 
-            headers.append("Accept", "application/vnd.github.v3+json");
-            headers.append("Authorization", "token " + this.token);
+            headers.append('Accept', 'application/vnd.github.v3+json');
+            headers.append('Authorization', 'token ' + this.token);
 
             fetch(url, parameters)
             .then(function(response) {
@@ -163,8 +163,8 @@ const api = {
                 return;
             }
 
-            headers.append("Accept", "application/vnd.github.v3+json");
-            headers.append("Authorization", "token " + this.token);
+            headers.append('Accept', 'application/vnd.github.v3+json');
+            headers.append('Authorization', 'token ' + this.token);
 
             let parameters = {
                 method: 'GET',
@@ -182,7 +182,7 @@ const api = {
                     let hasGist = data.some((gist) => {
                         let validation = gist.files.hasOwnProperty('project-viewer.json');
                         if (validation) {
-                            this.gistId = gist.id
+                            this.gistId = gist.id;
                         }
                         return validation;
                     });

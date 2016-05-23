@@ -11,7 +11,7 @@ class PVSelectListView extends SelectListView {
 
         atom.commands.add(
             'atom-workspace',
-            'project-viewer2:toggle-select-view',
+            'project-viewer:toggle-select-view',
             this.toggle.bind(this)
         );
         this.setLoading('loading projects');
@@ -28,17 +28,21 @@ class PVSelectListView extends SelectListView {
                 this.div({
                     class: 'primary-line no-icon'
                 }, () => {
-                    return this.text(item.projectName);
+                    return this.strong({}, () => {
+                        return this.text(item.projectName);
+                    });
                 });
                 this.div({
                     class: 'primary-secondary no-icon'
                 }, () => {
-                    return this.text(
-                        ''
-                        .concat(item.clientName || '')
-                        .concat(' / ')
-                        .concat(item.groupName)
-                    );
+                    let projectLine = '';
+                    if (item.clientName) {
+                        projectLine += item.clientName;
+                    }
+                    if (item.groupName) {
+                        projectLine += (projectLine.length ? ' / ': '') + item.groupName;
+                    }
+                    return this.text(projectLine);
                 });
                 return this;
             });
@@ -47,47 +51,12 @@ class PVSelectListView extends SelectListView {
 
     confirmed (item) {
         let serializationFile,
-        serialization,
-        project,
-        currentProject;
+            serialization,
+            project,
+            currentProject;
 
-        console.debug(item);
+        gateway.project.openOnTreeView(item);
 
-        // if (pv.selectedProject) {
-        //     currentProject = pv.searchProject(
-        //         pv.selectedProject.getProject()
-        //     )[0];
-        //
-        //     serializationFile = atom.getStateKey(
-        //         pv.selectedProject.getProject().paths
-        //     );
-        // }
-
-        // if (serializationFile) {
-        //     atom.storageFolder.store(
-        //         serializationFile,
-        //         {
-        //             project: pv.projectSerialization(),
-        //             workspace: pv.workspaceSerialization(),
-        //             treeview: pv.treeViewSerialization()
-        //         }
-        //     );
-        // }
-        //
-        // project = pv.searchProject(
-        //     item.getProject()
-        // )[0];
-        //
-        // if (!project) {
-        //     this.cancel();
-        // }
-        //
-        // pv.selectedProject = project;
-        //
-        // pv.selectedProject.openState();
-        //
-        // pv.storeDB();
-        //
         this.cancel();
     }
 
@@ -118,9 +87,10 @@ class PVSelectListView extends SelectListView {
                 item: this
             });
         }
-        this.setItems(gateway.project.fetchAllModels());
+        const projectViewer = document.querySelector('project-viewer');
+        this.setItems(gateway.project.fetchAllModels(projectViewer));
         this.panel.show();
-        // this.scrollToItemView(this.list.find('li:first'));
+        this.scrollToItemView(this.list.find('li:first'));
         this.focusFilterEditor();
     }
 

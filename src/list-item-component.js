@@ -126,8 +126,13 @@ function dropListener(evt) {
     let dropModel = _utility.getDB().mapper.get(dropNode);
     let thisModel = _utility.getDB().mapper.get(this);
 
+    if (dropModel.type === 'client' || dropModel.type === 'group') {
+        return;
+    }
+
     if (dropModel.type === thisModel.type && dropModel.type === 'project') {
-        this.parentElement.insertBefore(dropNode, this);
+        const child = dropNode.nextSibling === this ? this.nextSibling : this;
+        this.parentElement.insertBefore(dropNode, child);
     } else {
         this.parentElement.addNode(dropNode);
     }
@@ -221,7 +226,7 @@ const htmlMethods = {
                 if (ownClass.startsWith('icon-')) {
                     filteredClasses = ownClass;
                 }
-            })
+            });
         return filteredClasses;
     },
     setId: function setId(id) {

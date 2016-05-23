@@ -6,11 +6,11 @@
             },
             {
                 "label": "Update...",
-                "command": "project-viewer2:update-item"
+                "command": "project-viewer:update-item"
             },
             {
                 "label": "Remove...",
-                "command": "project-viewer2:remove-quick-item"
+                "command": "project-viewer:remove-quick-item"
             }
         ],
         "li[is='pv-list-item']": [
@@ -19,11 +19,11 @@
             },
             {
                 "label": "Update...",
-                "command": "project-viewer2:update-item"
+                "command": "project-viewer:update-item"
             },
             {
                 "label": "Remove...",
-                "command": "project-viewer2:remove-quick-item"
+                "command": "project-viewer:remove-quick-item"
             }
         ]
     },
@@ -32,33 +32,33 @@
             "label": "Packages",
             "submenu": [
                 {
-                "label": "Project Viewer 2",
+                "label": "Project Viewer",
                 "submenu": [
                     {
                         "label": "Toggle Display",
-                        "command": "project-viewer2:toggle-display"
+                        "command": "project-viewer:toggle-display"
                     },
                     {
                         "type": "separator"
                     },
                     {
                         "label": "Item - Create",
-                        "command": "project-viewer2:create-item"
+                        "command": "project-viewer:create-item"
                     },
                     {
                         "label": "Item - Remove",
-                        "command": "project-viewer2:remove-item"
+                        "command": "project-viewer:remove-item"
                     },
                     {
                         "type": "separator"
                     },
                     {
                         "label": "File - Backup",
-                        "command": "project-viewer2:file-backup"
+                        "command": "project-viewer:file-backup"
                     },
                     {
                         "label": "File - Import",
-                        "command": "project-viewer2:file-import"
+                        "command": "project-viewer:file-import"
                     }
                 ]
                 }

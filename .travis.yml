@@ -34,3 +34,6 @@ branches:
   only:
     - master
     - refactor
+
+after_sucess:
+  - bash <(curl -s https://codecov.io/bash)

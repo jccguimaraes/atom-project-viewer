@@ -79,7 +79,7 @@ function addIcons (selectedIcon) {
                 entryIcon.classList.add('btn-info');
             }
         }
-    )
+    );
 
     views.icons.appendChild(iconsDescription);
     views.icons.appendChild(iconsList);
@@ -302,7 +302,7 @@ function addItemInput (selectedInput) {
 
     views.inputDescription = document.createElement('label');
     views.inputDescription.classList.add('pv-label');
-    views.inputDescription.textContent = 'Choose a name:'
+    views.inputDescription.textContent = 'Choose a name:';
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
 

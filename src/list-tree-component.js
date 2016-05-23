@@ -9,14 +9,14 @@ const definition = {
     extends: 'ul'
 };
 
-const dragStartListener = function dragStartListener() {}
-const dragOverListener = function dragOverListener() {}
-const dragLeaveListener = function dragLeaveListener() {}
-const dragEnterListener = function dragEnterListener() {}
-const dragEndListener = function dragEndListener() {}
+const dragStartListener = function dragStartListener() {};
+const dragOverListener = function dragOverListener() {};
+const dragLeaveListener = function dragLeaveListener() {};
+const dragEnterListener = function dragEnterListener() {};
+const dragEndListener = function dragEndListener() {};
 const dropListener = function dropListener() {
-
-}
+    console.debug('here');
+};
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -104,10 +104,10 @@ const htmlMethods = {
         this.appendChild(node);
     },
     addChild: function addChild(node, sort, force) {
-        if (node.hasNode) {
+        if (node.hasNode && (!parent || node.hasNode(parent))) {
             return;
         }
-        parent.addNode(node, force);
+        this.addNode(node, force);
         if (sort) {
             this.sortChildren();
         }

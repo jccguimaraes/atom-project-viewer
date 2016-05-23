@@ -438,7 +438,7 @@ const projectViewer = {
             }
         });
 
-        atom.config.onDidChange('project-viewer2.statusBarVisibility', (status) => {
+        atom.config.onDidChange('project-viewer.statusBarVisibility', (status) => {
             if (status.newValue) {
                 addToStatusBar.call(this);
             } else {
@@ -448,17 +448,17 @@ const projectViewer = {
 
         this.disposables.add(
             atom.commands.add('atom-workspace', {
-                'project-viewer2:toggle-display': togglePanel.bind(this),
-                'project-viewer2:toggle-focus': toggleFocus.bind(this),
-                'project-viewer2:create-item': createModal,
-                'project-viewer2:create-client-item': createModal.bind(this),
-                'project-viewer2:create-group-item': createModal.bind(this),
-                'project-viewer2:create-project-item': createModal.bind(this),
-                'project-viewer2:update-item': updateModal,
-                'project-viewer2:remove-item': removeModal,
-                'project-viewer2:remove-quick-item': removeQuickModal,
-                'project-viewer2:file-backup': fileBackup,
-                'project-viewer2:file-import': fileImport
+                'project-viewer:toggle-display': togglePanel.bind(this),
+                'project-viewer:toggle-focus': toggleFocus.bind(this),
+                'project-viewer:create-item': createModal,
+                'project-viewer:create-client-item': createModal.bind(this),
+                'project-viewer:create-group-item': createModal.bind(this),
+                'project-viewer:create-project-item': createModal.bind(this),
+                'project-viewer:update-item': updateModal,
+                'project-viewer:remove-item': removeModal,
+                'project-viewer:remove-quick-item': removeQuickModal,
+                'project-viewer:file-backup': fileBackup,
+                'project-viewer:file-import': fileImport
             }
         ));
 
@@ -467,7 +467,7 @@ const projectViewer = {
                 'ul[is="pv-list-tree"]': [
                     {
                         label: 'Create Client',
-                        command: "project-viewer2:create-client-item",
+                        command: 'project-viewer:create-client-item',
                         shouldDisplay: (event) => {
                             const model = _utility.getDB().mapper.get(event.target);
                             return !model;
@@ -475,7 +475,7 @@ const projectViewer = {
                     },
                     {
                         label: 'Create Group',
-                        command: "project-viewer2:create-group-item",
+                        command: 'project-viewer:create-group-item',
                         shouldDisplay: (event) => {
 
                             const model = _utility.getDB().mapper.get(event.target);
@@ -487,7 +487,7 @@ const projectViewer = {
                     },
                     {
                         label: 'Create Project',
-                        command: "project-viewer2:create-project-item",
+                        command: 'project-viewer:create-project-item',
                         shouldDisplay: (event) => {
                             const model = _utility.getDB().mapper.get(event.target);
                             if (model && model.type === 'project') {
