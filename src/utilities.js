@@ -5,6 +5,7 @@ const Notification = require('atom').Notification;
 const _caches = require('./caches');
 const _db = require('./db');
 const _utils = require('./utils');
+const _gateway = require('./gateway');
 
 const _component = require('./component');
 
@@ -28,14 +29,14 @@ const utilities = {
         const promise = new Promise((resolve, reject) => {
             let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
             let newParent;
-            let currentView = document.getElementById(currentName);
+            let currentView = document.getElementById(item.projectId || item.groupId || item.clientId);
 
-            if (item.group) {
-                newParent = document.getElementById(item.group.name);
-            }
-            else if (item.client) {
-                newParent = document.getElementById(item.client.name);
-            }
+            // if (item.group) {
+            //     newParent = document.getElementById(item.groupId);
+            // }
+            // else if (item.client) {
+            //     newParent = document.getElementById(item.clientId);
+            // }
 
             if (!changes || !changes.name || typeof changes.name !== 'string') {
                 reject({
@@ -57,7 +58,6 @@ const utilities = {
 
             if (changes.name) {
                 currentView.setText(changes.name);
-                currentView.setId(changes.name);
             }
 
             if (changes.name && currentModel.type === 'client') {
@@ -80,7 +80,7 @@ const utilities = {
                 currentView.setIcon(_utils.sanitizeString(currentModel.projectIcon), true);
             }
 
-            this.getDB().storage = this.getDB().store();
+            // this.getDB().storage = this.getDB().store();
 
             resolve({
                 type: 'success',
@@ -164,17 +164,18 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {
                 type: candidate.type,
                 sortBy: candidate.sortBy,
                 clientName: candidate.name,
                 clientIcon: candidate.icon,
-                clientExpanded: candidate.expanded
+                clientExpanded: candidate.expanded,
+                clientId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, clientModel);
+            candidate.view.setId();
 
             // TODO change hack
             document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
@@ -228,7 +229,6 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {};
             let groupModel = {
@@ -236,10 +236,12 @@ const utilities = {
                 sortBy: candidate.sortBy,
                 groupName: candidate.name,
                 groupIcon: candidate.icon,
-                groupExpanded: candidate.expanded
+                groupExpanded: candidate.expanded,
+                groupId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, groupModel);
+            candidate.view.setId();
 
             if (candidate.client) {
                 let clientView = document.getElementById(client.name);
@@ -311,7 +313,6 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {};
             let groupModel = {};
@@ -319,10 +320,12 @@ const utilities = {
                 type: candidate.type,
                 projectName: candidate.name,
                 projectIcon: candidate.icon,
-                projectPaths: candidate.paths
+                projectPaths: candidate.paths,
+                projectId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, projectModel);
+            candidate.view.setId();
 
             if (candidate.group) {
                 let groupView = document.getElementById(group.name);

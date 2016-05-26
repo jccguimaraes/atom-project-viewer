@@ -14,9 +14,7 @@ const dragOverListener = function dragOverListener() {};
 const dragLeaveListener = function dragLeaveListener() {};
 const dragEnterListener = function dragEnterListener() {};
 const dragEndListener = function dragEndListener() {};
-const dropListener = function dropListener() {
-    console.debug('here');
-};
+const dropListener = function dropListener() {};
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -83,7 +81,7 @@ const htmlMethods = {
         });
     },
     setAsRootLevel: function setAsRootLevel() {
-        this.classList.add('has-collapsable-children');
+        this.classList.add('has-collapsable-children', 'padded');
     },
     setType: function setType(type) {
         this.setAttribute('data-type', type);

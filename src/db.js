@@ -125,7 +125,7 @@ const getConfig = function getConfig(config) {
     return pkg.concat('.', config);
 };
 
-const store = function store() {
+const buildData = function buildData () {
     let data = {
         clients: [],
         groups: [],
@@ -178,6 +178,11 @@ const store = function store() {
             }
         }
     }
+    return data;
+}
+
+const store = function store() {
+    let data = buildData();
     atom.getStorageFolder().storeSync(file, data);
     return data;
 };
@@ -209,6 +214,7 @@ const deleteOldFile = function deleteOldFile () {
 module.exports = {
     deleteOldFile: deleteOldFile,
     readData: readData,
+    buildData: buildData,
     info: info,
     mapper: mapper,
     storage: storage,

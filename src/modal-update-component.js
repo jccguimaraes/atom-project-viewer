@@ -365,6 +365,8 @@ function clientViewClickEvent (client, evt) {
     let view = evt.target;
     let selected = view.parentElement.querySelector('.btn-info');
 
+    console.debug(Object.getPrototypeOf(model));
+
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
         model.client = client;
@@ -398,6 +400,7 @@ function clearListOfClients () {
 function addListOfClients (selectedClient) {
     const views = _views.get(this);
     const clients = _utilities.getDB().getStorage().clients;
+    console.debug(_utilities.getDB().buildData());
 
     clearListOfClients.call(this);
 

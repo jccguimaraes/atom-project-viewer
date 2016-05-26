@@ -8,6 +8,7 @@ const definition = {
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
+        this.classList.add('padded');
         this.textContent = 'Project Viewer';
     }
 };

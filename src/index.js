@@ -2,6 +2,7 @@
 
 const CompositeDisposable = require('atom').CompositeDisposable;
 
+const _gateway = require('./gateway');
 const _utils = require('./utils');
 const _utility = require('./utilities');
 const _config = require('./config');
@@ -91,7 +92,6 @@ function createListItem (candidate) {
 
     view.setText(candidate.name);
     view.setIcon(candidate.icon);
-    view.setId(candidate.name);
 
     return view;
 }
@@ -142,7 +142,8 @@ function addProjects (parentMapper, parentView, atRootLevel) {
                 type: 'project',
                 projectName: mappedProject.name,
                 projectIcon: mappedProject.icon || 'icon',
-                projectPaths: mappedProject.paths || []
+                projectPaths: mappedProject.paths || [],
+                projectId: _gateway.helpers.generateUUID()
             };
 
             let model = _utility.getDB().mapper.get(parentView);
@@ -153,6 +154,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
 
             _utility.getDB().mapper.set(projectView, projectModel);
             projectView.validate();
+            projectView.setId();
         }
     );
 
@@ -177,7 +179,8 @@ function addGroups(mappedClient, clientView, root) {
                 sortBy: mappedGroup.sortBy,
                 groupName: mappedGroup.name,
                 groupIcon: mappedGroup.icon,
-                groupExpanded: mappedGroup.expanded
+                groupExpanded: mappedGroup.expanded,
+                groupId: _gateway.helpers.generateUUID()
             };
 
             let clientModel = _utility.getDB().mapper.get(clientView);
@@ -194,7 +197,7 @@ function addGroups(mappedClient, clientView, root) {
 
             groupView.setText(mappedGroup.name);
             groupView.setIcon(mappedGroup.icon);
-            groupView.setId(mappedGroup.name);
+            groupView.setId();
             groupView.setExpanded(mappedGroup.expanded);
             if (!root) {
                 groupsView.addNode(groupView);
@@ -219,7 +222,8 @@ function addClients(mappedRoot, rootView) {
                 sortBy: mappedClient.sortBy,
                 clientName: mappedClient.name,
                 clientIcon: mappedClient.icon,
-                clientExpanded: mappedClient.expanded
+                clientExpanded: mappedClient.expanded,
+                clientId: _gateway.helpers.generateUUID()
             };
 
             _utility.getDB().mapper.set(clientView, clientModel);
@@ -236,7 +240,7 @@ function addClients(mappedRoot, rootView) {
 
             clientView.setText(mappedClient.name);
             clientView.setIcon(mappedClient.icon);
-            clientView.setId(mappedClient.name);
+            clientView.setId();
             clientView.setExpanded(mappedClient.expanded);
             rootView.addNode(clientView);
         }
@@ -331,12 +335,12 @@ function removeQuickModal (evt) {
 
     if (chosenModel && chosenModel.type === 'project') {
         projectView = chosenView;
-        groupView = document.getElementById(chosenModel.groupName);
-        clientView = document.getElementById(chosenModel.clientName);
+        groupView = document.getElementById(chosenModel.groupId);
+        clientView = document.getElementById(chosenModel.clientId);
     }
     else if (chosenModel && chosenModel.type === 'group') {
         groupView = chosenView;
-        clientView = document.getElementById(chosenModel.clientName);
+        clientView = document.getElementById(chosenModel.clientId);
     }
     else if (chosenModel && chosenModel.type === 'client') {
         clientView = chosenView;

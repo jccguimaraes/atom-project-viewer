@@ -3,6 +3,7 @@
 const _utils = require('./utils');
 const _utility = require('./utilities');
 const _db = require('./db');
+const _gateway = require('./gateway');
 
 const definition = {
     custom: 'pv-list-nested-item',
@@ -227,20 +228,12 @@ const htmlMethods = {
             thisModel.groupExpanded = state;
         }
     },
-    setId: function setId(id) {
-
-        const sanitizedText = _utils.sanitizeString(id);
-
-        if (!sanitizedText) {
+    setId: function setId() {
+        let model = _utility.getDB().mapper.get(this);
+        if (!model) {
             return;
         }
-        if (typeof sanitizedText !== 'string') {
-            _utils.notification('info', 'id is not valid', {
-                icon: 'code'
-            });
-            return;
-        }
-        this.id = sanitizedText;
+        this.id = model.groupId || model.clientId;
     },
     getId: function getId() {
         return this.id;
