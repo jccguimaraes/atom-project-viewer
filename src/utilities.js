@@ -52,7 +52,7 @@ const utilities = {
                 let parentModel = this.getDB().mapper.get(newParent);
                 Object.setPrototypeOf(currentModel, parentModel);
             } else {
-                document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView);
+                document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView, true);
             }
 
             if (changes.name) {

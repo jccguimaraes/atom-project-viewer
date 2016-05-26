@@ -43,7 +43,7 @@ function removeButtonClickEvent (evt) {
         model.clientView.remove();
     }
 
-    _utilities.getDB().storage = _utilities.getDB().store();
+    _utilities.getDB().setStorage(_utilities.getDB().store());
 
     closeModal.call(this);
 }
@@ -58,7 +58,11 @@ function addItemToRemove () {
 
     views.itemDescription = document.createElement('span');
     views.itemDescription.classList.add('block');
-    views.itemDescription.textContent = 'You are about to remove the following ' + model.type;
+    views.itemDescription.innerHTML = `
+        You are about to remove the following ${model.type}.
+        <br>
+        Keep in mind that any inside will also be removed.
+    `;
 
     views.itemToRemove = document.createElement('span');
     views.itemToRemove.classList.add('inline-block', 'highlight');

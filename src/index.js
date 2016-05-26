@@ -40,30 +40,46 @@ function updateProjectViewer () {
         return;
     }
 
-    views.containerView.setAsRootLevel();
-    views.mainView.addNode(views.headerView);
-    views.mainView.addNode(views.containerView);
+    views.containerView.removeChildren();
 
-    if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('clients') && Array.isArray(_utility.getDB().storage.clients)) {
-        addClients(_utility.getDB().storage, views.containerView);
-    } else {
-        let listTreeView = new _listTreeConstructor();
-        views.containerView.addNode(listTreeView, true);
-    }
+    _utility.getDB().readData()
+    .then((data) => {
+        if (data) {
+            _utils.notification(
+                data.type,
+                data.message,
+                data.options
+            );
+        }
+        const storage = _utility.getDB().getStorage();
+        if (storage && storage.hasOwnProperty('clients') && Array.isArray(storage.clients)) {
+            addClients(storage, views.containerView);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            views.containerView.addNode(listTreeView, true);
+        }
 
-    if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('groups') && Array.isArray(_utility.getDB().storage.groups)) {
-        addGroups(_utility.getDB().storage, views.containerView, true);
-    } else {
-        let listTreeView = new _listTreeConstructor();
-        views.containerView.addNode(listTreeView);
-    }
+        if (storage && storage.hasOwnProperty('groups') && Array.isArray(storage.groups)) {
+            addGroups(storage, views.containerView, true);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            views.containerView.addNode(listTreeView);
+        }
 
-    if (_utility.getDB().storage && _utility.getDB().storage.hasOwnProperty('projects') && Array.isArray(_utility.getDB().storage.projects)) {
-        addProjects(_utility.getDB().storage, views.containerView, true);
-    } else {
-        let listTreeView = new _listTreeConstructor();
-        views.containerView.addNode(listTreeView);
-    }
+        if (storage && storage.hasOwnProperty('projects') && Array.isArray(storage.projects)) {
+            addProjects(storage, views.containerView, true);
+        } else {
+            let listTreeView = new _listTreeConstructor();
+            views.containerView.addNode(listTreeView);
+        }
+    })
+    .catch((data) => {
+        _utils.notification(
+            data.type,
+            data.message,
+            data.options
+        );
+    });
 }
 
 function createListItem (candidate) {
@@ -259,10 +275,15 @@ function githubWorkerOnMessage(event) {
     }
 
     if (event.data.value) {
-        _utility.getDB().storage = value;
+        _utility.getDB().getStorage() = value;
     }
 
-    _utils.notification(event.data.type, event.data.message);
+    if (event.data.db) {
+        _utility.getDB().setStorage(event.data.db);
+        updateProjectViewer.call(this);
+    }
+
+    _utils.notification(event.data.type, event.data.message, event.data.options);
 }
 
 function fileBackup () {
@@ -270,7 +291,7 @@ function fileBackup () {
         {
             action: 'update',
             token: atom.config.get(_utility.getConfig('githubToken')),
-            value: _utility.getDB().storage
+            value: _utility.getDB().getStorage()
         }
     ]);
 }
@@ -282,6 +303,10 @@ function fileImport () {
             token: atom.config.get(_utility.getConfig('githubToken'))
         }
     ]);
+}
+
+function fileDeleteOld () {
+    _utility.getDB().deleteOldFile();
 }
 
 function removeQuickModal (evt) {
@@ -367,11 +392,17 @@ function updateModal (evt) {
     });
 }
 
-function createModal (evt) {
-
-    console.debug(_utility.getDB().mapper.get(evt.target) || {});
-
+function createModal (type, evt) {
+    const modelParent = evt ? _utility.getDB().mapper.get(evt.target) : undefined;
     const model = {};
+
+    if (type) {
+        model.type = type;
+    }
+
+    if (modelParent) {
+        Object.setPrototypeOf(model, modelParent);
+    }
 
     const view = new _modalCreateConstructor();
 
@@ -405,6 +436,15 @@ function toggleFocus() {
 const projectViewer = {
     config: _config,
     activate: function activate(state) {
+
+        if (atom.config.getAll('project-viewer').length > 0) {
+            for (let config in atom.config.getAll('project-viewer')[0].value) {
+                if (!_config.hasOwnProperty(config)) {
+                    atom.config.unset(_utility.getConfig(config));
+                }
+            }
+        }
+
         this.disposables = new CompositeDisposable();
 
         const views = {};
@@ -450,15 +490,16 @@ const projectViewer = {
             atom.commands.add('atom-workspace', {
                 'project-viewer:toggle-display': togglePanel.bind(this),
                 'project-viewer:toggle-focus': toggleFocus.bind(this),
-                'project-viewer:create-item': createModal,
-                'project-viewer:create-client-item': createModal.bind(this),
-                'project-viewer:create-group-item': createModal.bind(this),
-                'project-viewer:create-project-item': createModal.bind(this),
+                'project-viewer:create-item': createModal.bind(this, undefined),
+                'project-viewer:create-client-item': createModal.bind(this, 'client'),
+                'project-viewer:create-group-item': createModal.bind(this, 'group'),
+                'project-viewer:create-project-item': createModal.bind(this, 'project'),
                 'project-viewer:update-item': updateModal,
                 'project-viewer:remove-item': removeModal,
                 'project-viewer:remove-quick-item': removeQuickModal,
                 'project-viewer:file-backup': fileBackup,
-                'project-viewer:file-import': fileImport
+                'project-viewer:file-import': fileImport,
+                'project-viewer:file-delete-old': fileDeleteOld
             }
         ));
 
@@ -502,9 +543,13 @@ const projectViewer = {
 
         _views.set(this, views);
 
+        views.containerView.setAsRootLevel();
+        views.mainView.addNode(views.headerView);
+        views.mainView.addNode(views.containerView);
+
         updateProjectViewer.call(this);
 
-        githubWorker.onmessage = githubWorkerOnMessage;
+        githubWorker.onmessage = githubWorkerOnMessage.bind(this);
 
         views.selectView = new _selectView();
     },

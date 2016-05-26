@@ -96,7 +96,7 @@ const htmlMethods = {
             return;
         }
         if (!force && this.hasNode(node)) {
-            _utils.notification('info', 'it\'s already here!', {
+            _utils.notification('info', 'it\'s already here!!', {
                 icon: 'code'
             });
             return;
@@ -124,6 +124,11 @@ const htmlMethods = {
             }
         }
         return has;
+    },
+    removeChildren: function removeChildren () {
+        while (this.firstChild) {
+            this.removeChild(this.firstChild);
+        }
     }
 };
 

@@ -2,28 +2,28 @@
     "context-menu": {
         "li[is='pv-list-nested-item']": [
             {
-                "type": "separator"
-            },
-            {
                 "label": "Update...",
                 "command": "project-viewer:update-item"
             },
             {
                 "label": "Remove...",
                 "command": "project-viewer:remove-quick-item"
+            },
+            {
+                "type": "separator"
             }
         ],
         "li[is='pv-list-item']": [
             {
-                "type": "separator"
-            },
-            {
                 "label": "Update...",
                 "command": "project-viewer:update-item"
             },
             {
                 "label": "Remove...",
                 "command": "project-viewer:remove-quick-item"
+            },
+            {
+                "type": "separator"
             }
         ]
     },
@@ -35,8 +35,12 @@
                 "label": "Project Viewer",
                 "submenu": [
                     {
-                        "label": "Toggle Display",
+                        "label": "Toggle sidebar",
                         "command": "project-viewer:toggle-display"
+                    },
+                    {
+                        "label": "Toggle selection view",
+                        "command": "project-viewer:toggle-select-view"
                     },
                     {
                         "type": "separator"
@@ -59,6 +63,10 @@
                     {
                         "label": "File - Import",
                         "command": "project-viewer:file-import"
+                    },
+                    {
+                        "label": "File - Delete old file",
+                        "command": "project-viewer:file-delete-old"
                     }
                 ]
                 }

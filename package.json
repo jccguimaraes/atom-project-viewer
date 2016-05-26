@@ -15,7 +15,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "atom-space-pen-views": "^2.2.0",
+    "atom-space-pen-views": "latest",
     "cz-conventional-changelog": "latest"
   },
   "config": {

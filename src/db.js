@@ -1,16 +1,125 @@
 'use strict';
 
+const Fs = require('fs');
+const Path = require('path');
 const _utils = require('./utils');
 const pkg = 'project-viewer';
-const file = 'project-viewer.json';
+const file = `${pkg}.json`;
+const oldFile = `${pkg}.json`;
 // const storage = require('./file.json');
-let storage = atom.getStorageFolder().load(file) || {};
+let storage;
 const mapper = new WeakMap();
-
 const info = {
     version: '0.3.0',
     name: 'project-viewer'
 };
+const defaultStorage = {
+    clients: [],
+    groups: [],
+    projects: []
+};
+const oldFilePath = Path.normalize(
+    Path.join(atom.getConfigDirPath(), oldFile)
+);
+
+const getContent = function getContent () {
+    return atom.getStorageFolder().load(file) || defaultStorage;
+};
+
+const readData = function readData () {
+    const promise = new Promise((resolve, reject) => {
+        if (!atom.config.get(getConfig('convertOldData'))) {
+            storage = getContent();
+            resolve();
+            return;
+        }
+
+        Fs.access(oldFilePath, Fs.R_OK, (error) => {
+            if (error) {
+                resolve({
+                    type: 'info',
+                    message: `Previous data file not found!<br>Please go to <code>Settings -> Packages -> Project-Viewer ->convertOldData</code> and set to <code>false</code>.`,
+                    options: {
+                        icon: 'database'
+                    }
+                });
+                storage = getContent();
+                return;
+            }
+
+            Fs.readFile(oldFilePath, 'utf8', (error, data) => {
+                if (error) {
+                    reject({
+                        type: 'error',
+                        message: 'There were problems reading old content :\\',
+                        options: {
+                            icon: 'database'
+                        }
+                    });
+                    return;
+                }
+
+                let content = '';
+
+                try {
+                    content = JSON.parse(data);
+                } catch (e) {
+                    reject({
+                        type: 'error',
+                        message: 'There were problems parsing old content :\\',
+                        options: {
+                            icon: 'database'
+                        }
+                    });
+                    return;
+                }
+
+                const converted = {
+                    clients: [],
+                    groups: [],
+                    projects: []
+                };
+
+                if (content.hasOwnProperty('groups')) {
+                    content.groups.forEach((storedGroup) => {
+                        const group = {
+                            'name': storedGroup.name || '',
+                            'icon': storedGroup.icon || '',
+                            'expanded': storedGroup.expanded || '',
+                            'sortBy': 'position',
+                            'projects': []
+                        }
+                        converted.groups.push(group);
+
+                        if (content.hasOwnProperty('projects')) {
+                            content.projects.forEach((storedProject) => {
+                                if (storedProject.group !== group.name) {
+                                    return;
+                                }
+                                const project = {
+                                    'name': storedProject.name || '',
+                                    'icon': '',
+                                    'paths': Object.keys(storedProject.paths) || []
+                                }
+                                group.projects.push(project);
+                            });
+                        }
+                    });
+                }
+                storage = converted;
+                atom.getStorageFolder().storeSync(file, storage);
+                resolve({
+                    type: 'success',
+                    message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please go to <code>Settings -> Packages -> Project-Viewer ->convertOldData</code> and set to <code>false</code>.`,
+                    options: {
+                        icon: 'database'
+                    }
+                });
+            });
+        });
+    });
+    return promise;
+}
 
 const getConfig = function getConfig(config) {
     return pkg.concat('.', config);
@@ -73,10 +182,38 @@ const store = function store() {
     return data;
 };
 
+const setStorage = function setStorage (data) {
+    atom.getStorageFolder().storeSync(file, data);
+}
+
+const getStorage = function getStorage () {
+    return storage;
+}
+
+const deleteOldFile = function deleteOldFile () {
+    Fs.unlink(oldFilePath, (error) => {
+        if (error) {
+            _utils.notification(
+                'info',
+                'Could not find old file!'
+            );
+            return;
+        }
+        _utils.notification(
+            'success',
+            '<strong>Successfully</strong> deleted old data file!'
+        );
+    });
+}
+
 module.exports = {
+    deleteOldFile: deleteOldFile,
+    readData: readData,
     info: info,
     mapper: mapper,
     storage: storage,
     store: store,
+    setStorage: setStorage,
+    getStorage: getStorage,
     getConfig: getConfig
 };

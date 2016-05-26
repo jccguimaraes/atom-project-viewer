@@ -199,10 +199,14 @@ function addChoiceClickEvent (evt) {
 
     evt.target.classList.add('selected');
 
-    let type = evt.target.textContent.toLowerCase();
+    if (evt.target.textContent) {
+        model.type = evt.target.textContent.toLowerCase();
+    }
+
+    let type = model.type;
 
     if (type === 'client') {
-        model.type = 'client';
+        model.type = type;
         clearListOfClients.call(this);
         clearListOfGroups.call(this);
         clearPaths.call(this);
@@ -210,21 +214,20 @@ function addChoiceClickEvent (evt) {
         addIcons.call(this);
     }
     else if (type === 'group') {
-        model.type = 'group';
+        model.type = type;
         clearListOfGroups.call(this);
         clearPaths.call(this);
         addItemInput.call(this);
         addIcons.call(this);
-        addListOfClients.call(this);
+        addListOfClients.call(this, model.clientName);
     }
-
     else if (type === 'project') {
-        model.type = 'project';
+        model.type = type;
         addItemInput.call(this);
         addIcons.call(this);
         addPaths.call(this);
-        addListOfClients.call(this);
-        addListOfGroups.call(this);
+        addListOfClients.call(this, model.clientName);
+        addListOfGroups.call(this, model.groupName, model.client && model.client.groups);
     }
 }
 
@@ -392,9 +395,9 @@ function clearListOfClients () {
     }
 }
 
-function addListOfClients (selected) {
+function addListOfClients (selectedClient) {
     const views = _views.get(this);
-    const clients = _utilities.getDB().storage.clients;
+    const clients = _utilities.getDB().getStorage().clients;
 
     clearListOfClients.call(this);
 
@@ -425,6 +428,10 @@ function addListOfClients (selected) {
                 false
             );
             container.appendChild(clientView);
+            if (selectedClient && selectedClient === clientStored.name) {
+                const event = new MouseEvent('click');
+                clientView.dispatchEvent(event);
+            }
             return clientView;
         }
     );
@@ -442,7 +449,7 @@ function groupViewClickEvent (group, evt) {
 
     const model = _utilities.getDB().mapper.get(this);
     let view = evt.target;
-    let selected = view.parentElement.querySelector('.btn-info');
+    let selected = view.parentElement ? view.parentElement.querySelector('.btn-info'): undefined;
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
@@ -467,9 +474,9 @@ function clearListOfGroups () {
     }
 }
 
-function addListOfGroups (selected, list) {
+function addListOfGroups (selectedGroup, list) {
     const views = _views.get(this);
-    const groups = list || _utilities.getDB().storage.groups;
+    const groups = list || _utilities.getDB().getStorage().groups;
 
     clearListOfGroups.call(this);
 
@@ -499,8 +506,9 @@ function addListOfGroups (selected, list) {
                 groupViewClickEvent.bind(this, groupStored),
                 false
             );
-            if (selected === groupStored) {
-                groupView.classList.add('btn-info');
+            if (selectedGroup && selectedGroup === groupStored.name) {
+                const event = new MouseEvent('click');
+                groupView.dispatchEvent(event);
             }
             container.appendChild(groupView);
             return groupView;
@@ -527,27 +535,32 @@ const htmlMethods = {
 
         addTopic.call(this);
         addChoice.call(this);
-
         addButtons.call(this);
+
+        if (!model) {
+            return;
+        }
+
+        const event = new MouseEvent('click');
+
+        if (model.type === 'client') {
+            views.choiseClient.dispatchEvent(event);
+        }
+        else if (model.type === 'group') {
+            views.choiseGroup.dispatchEvent(event);
+        }
+        else if (model.type === 'project') {
+            views.choiseProject.dispatchEvent(event);
+        }
     },
     detachedCallback: function detachedCallback () {
         const views = _views.get(this);
 
-        // entryIcon.removeEventListener('click', addIconClickEvent.bind(this));
-        // pathViewIcon.removeEventListener('click', removePath.bind(this));
         views.pathAdd && views.pathAdd.removeEventListener('click', addPath.bind(this));
         views.choiseClient && views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.choiseGroup && views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.choiseProject && views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.createButton && views.createButton.removeEventListener('click', createButtonClickEvent.bind(this));
-        // views.cancelButton.removeEventListener('click', (evt) => {
-        //     evt.stopPropagation();
-        //     evt.preventDefault();
-        //
-        //     closeModal.call(this);
-        // });
-        // clientView.removeEventListener('click', clientViewClickEvent.bind(this, clientStored));
-        // groupView.removeEventListener('click', groupViewClickEvent.bind(this, groupStored));
     }
 };
 

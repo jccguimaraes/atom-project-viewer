@@ -38,12 +38,12 @@ function removeButtonClickEvent (evt) {
 
     const model = _utilities.getDB().mapper.get(this);
 
-    if (!_utilities.getDB().storage) {
+    if (!_utilities.getDB().getStorage()) {
         return;
     }
 
-    if (model.client && _utilities.getDB().storage.clients) {
-        clients = _utilities.getDB().storage.clients;
+    if (model.client && _utilities.getDB().getStorage().clients) {
+        clients = _utilities.getDB().getStorage().clients;
     }
 
     clients.some(
@@ -60,8 +60,8 @@ function removeButtonClickEvent (evt) {
     if (clients[clientIdx] && clients[clientIdx].groups && model.group) {
         groups = clients[clientIdx].groups;
     }
-    else if (model.group && _utilities.getDB().storage.groups) {
-        groups = _utilities.getDB().storage.groups;
+    else if (model.group && _utilities.getDB().getStorage().groups) {
+        groups = _utilities.getDB().getStorage().groups;
     }
 
     groups.some(
@@ -78,8 +78,8 @@ function removeButtonClickEvent (evt) {
     if (clients[clientIdx] && clients[clientIdx].projects && model.project) {
         projects = clients[clientIdx].projects;
     }
-    else if (model.project && _utilities.getDB().storage.projects) {
-        projects = _utilities.getDB().storage.projects;
+    else if (model.project && _utilities.getDB().getStorage().projects) {
+        projects = _utilities.getDB().getStorage().projects;
     }
 
     projects.some(
@@ -118,7 +118,7 @@ function removeButtonClickEvent (evt) {
         clientView.remove();
     }
 
-    _utilities.getDB().storage = _utilities.getDB().store();
+    _utilities.getDB().setStorage(_utilities.getDB().store());
 
     closeModal.call(this);
 }
@@ -189,7 +189,7 @@ function clientViewClickEvent (client, evt) {
 
 function addListOfClients (selected) {
     const views = _views.get(this);
-    const clients = _utilities.getDB().storage.clients;
+    const clients = _utilities.getDB().getStorage().clients;
 
     if (!clients || !Array.isArray(clients)) {
         return;
@@ -254,7 +254,7 @@ function groupViewClickEvent (group, evt) {
 
 function addListOfGroups (selected, list) {
     const views = _views.get(this);
-    const groups = list || _utilities.getDB().storage.groups;
+    const groups = list || _utilities.getDB().getStorage().groups;
 
     if (!groups || !Array.isArray(groups)) {
         return;
@@ -321,7 +321,7 @@ function projectViewClickEvent (project, evt) {
 
 function addListOfProjects (selected, list) {
     const views = _views.get(this);
-    const projects = list || _utilities.getDB().storage.projects;
+    const projects = list || _utilities.getDB().getStorage().projects;
 
     if (!projects || !Array.isArray(projects)) {
         return;

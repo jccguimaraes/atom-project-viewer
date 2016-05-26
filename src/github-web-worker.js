@@ -26,7 +26,10 @@ const api = {
             if (!this.token) {
                 reject({
                     type: 'warning',
-                    message: 'no token'
+                    message: 'no <strong>Github</strong>\'s token was provided, please check the configuration.',
+                    options: {
+                        icon: 'mark-github'
+                    }
                 });
                 return;
             }
@@ -42,7 +45,10 @@ const api = {
                 if (!data || !data.id) {
                     reject({
                         type: 'warning',
-                        message: 'no gist was created'
+                        message: 'no gist was created',
+                        options: {
+                            icon: 'mark-github'
+                        }
                     });
                     return;
                 }
@@ -51,7 +57,10 @@ const api = {
 
                 resolve({
                     type: 'success',
-                    message: 'a new gist was created'
+                    message: 'a new gist was created',
+                    options: {
+                        icon: 'mark-github'
+                    }
                 });
             });
         });
@@ -79,7 +88,10 @@ const api = {
             if (!this.token || !this.gistId) {
                 reject({
                     type: 'warning',
-                    message: 'no token or gist id'
+                    message: 'no token or gist id',
+                    options: {
+                        icon: 'mark-github'
+                    }
                 });
                 return;
             }
@@ -97,7 +109,10 @@ const api = {
                 if (!data || !data.id) {
                     reject({
                         type: 'info',
-                        message: 'no gist found'
+                        message: 'no gist found',
+                        options: {
+                            icon: 'mark-github'
+                        }
                     });
                     return;
                 }
@@ -106,7 +121,10 @@ const api = {
 
                 resolve({
                     type: 'success',
-                    message: 'Successfully backedup the DB'
+                    message: 'Successfully backedup the DB',
+                    options: {
+                        icon: 'mark-github'
+                    }
                 });
             });
         });
@@ -139,15 +157,21 @@ const api = {
                 if (!data || !data.files || !data.files.hasOwnProperty('project-viewer.json')) {
                     reject({
                         type: 'warning',
-                        message: 'no gist found with id ' + this.gistId
+                        message: 'no gist found with id ' + this.gistId,
+                        options: {
+                            icon: 'mark-github'
+                        }
                     });
                     return;
                 }
 
                 resolve({
                     type: 'success',
-                    message: 'Retrieved DB from GitHub successfully',
-                    db: JSON.parse(data.files['project-viewer.json'].content)
+                    message: 'Retrieved DB from <strong>GitHub</strong> successfully',
+                    db: JSON.parse(data.files['project-viewer.json'].content),
+                    options: {
+                        icon: 'mark-github'
+                    }
                 });
             });
         });
@@ -159,7 +183,13 @@ const api = {
             let headers = new Headers();
 
             if (!this.token) {
-                reject('no token');
+                reject({
+                    type: 'warning',
+                    message: 'no <strong>Github</strong>\'s token was provided, please check the configuration.',
+                    options: {
+                        icon: 'mark-github'
+                    }
+                });
                 return;
             }
 
@@ -219,7 +249,8 @@ onmessage = function(e) {
             api.updatePrivateGist(e.data[0].value)
             .then(postMessage)
             .catch(postMessage);
-        });
+        })
+        .catch(postMessage);
     }
 
 
