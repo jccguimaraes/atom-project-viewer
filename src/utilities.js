@@ -25,8 +25,59 @@ const utilities = {
             }
         );
     },
-    updateItem: function updateItem(item, changes) {
+    getItemChain: function f_getItemChain (item) {
+        let parentPrototype;
+        let parentProto;
+        let rootPrototype;
+        let chain = {};
+
+        chain.current = item;
+
+        if (Object.getPrototypeOf(item) === Object.prototype) {
+            parentPrototype = undefined;
+        } else {
+            parentPrototype = Object.getPrototypeOf(item);
+            parentProto = Object.getPrototypeOf(parentPrototype);
+            chain.parent = parentPrototype;
+        }
+
+        if (parentProto === Object.prototype) {
+            rootPrototype = undefined;
+        } else {
+            rootPrototype = parentProto;
+            chain.root = rootPrototype;
+        }
+        return chain;
+    },
+    updateItem: function updateItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
+            console.debug(original);
+            console.debug(changes);
+
+            let isANewParent;
+
+            if (changes.name) {
+                original.current[original.current.type + 'Name'] = _utils.sanitizeString(changes.name);
+            }
+
+            if (changes.hasGroup) {
+                Object.setPrototypeOf(original.current, changes.group);
+                isANewParent = document.getElementById(changes.group.groupId);
+            } else if (changes.hasClient) {
+                Object.setPrototypeOf(original.current, changes.client);
+                isANewParent = document.getElementById(changes.client.clientId);
+            }
+
+            console.debug(isANewParent);
+
+            if (isANewParent) {
+
+            }
+
+            reject({});
+
+            return;
+
             let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
             let newParent;
             let currentView = document.getElementById(item.projectId || item.groupId || item.clientId);
@@ -52,7 +103,8 @@ const utilities = {
                 newParent.addChild(currentView, false, true);
                 let parentModel = this.getDB().mapper.get(newParent);
                 Object.setPrototypeOf(currentModel, parentModel);
-            } else {
+            }
+            else if (Object.getPrototypeOf(item) === Object.getPrototypeOf({})) {
                 document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView, true);
             }
 
@@ -126,6 +178,10 @@ const utilities = {
 
             innerPromise.then((data) => {
                 this.getDB().storage = this.getDB().store();
+                if (data.id) {
+                    this.views[candidate.type + 's'].push(data.id);
+                    console.debug(this.views);
+                }
                 resolve(data);
             })
             .catch(reject);
@@ -182,7 +238,8 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: clientModel.clientId
             });
         });
         return promise;
@@ -244,7 +301,7 @@ const utilities = {
             candidate.view.setId();
 
             if (candidate.client) {
-                let clientView = document.getElementById(client.name);
+                let clientView = document.getElementById(client.clientId);
                 clientModel = this.getDB().mapper.get(clientView);
                 Object.setPrototypeOf(groupModel, clientModel);
                 clientView.addChild(candidate.view);
@@ -255,7 +312,8 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: groupModel.groupId
             });
         });
         return promise;
@@ -328,12 +386,12 @@ const utilities = {
             candidate.view.setId();
 
             if (candidate.group) {
-                let groupView = document.getElementById(group.name);
+                let groupView = document.getElementById(group.groupId);
                 groupModel = this.getDB().mapper.get(groupView);
                 Object.setPrototypeOf(projectModel, groupModel);
                 groupView.addChild(candidate.view);
             } else if (candidate.client) {
-                let clientView = document.getElementById(client.name);
+                let clientView = document.getElementById(client.clientId);
                 clientModel = this.getDB().mapper.get(clientView);
                 Object.setPrototypeOf(projectModel, clientModel);
                 clientView.addChild(candidate.view);
@@ -344,7 +402,8 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: projectModel.projectId
             });
         });
         return promise;

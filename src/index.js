@@ -9,6 +9,7 @@ const _config = require('./config');
 const githubWorker = new Worker(__dirname + '/github-web-worker.js');
 const _selectView = require('./select-view');
 
+const _modal = require('./modal');
 const _mainComponent = require('./main-component');
 const _statusBarComponent = require('./status-bar-component');
 const _headerComponent = require('./header-component');
@@ -20,6 +21,7 @@ const _modalUpdateComponent = require('./modal-update-component');
 const _modalRemoveComponent = require('./modal-remove-component');
 const _modalRemoveQuickComponent = require('./modal-remove-quick-component');
 
+const _modalConstructor = _utility.registerComponent(_modal);
 const _mainConstructor = _utility.registerComponent(_mainComponent);
 const _statusBarConstructor = _utility.registerComponent(_statusBarComponent);
 const _headerConstructor = _utility.registerComponent(_headerComponent);
@@ -61,7 +63,7 @@ function updateProjectViewer () {
         }
 
         if (storage && storage.hasOwnProperty('groups') && Array.isArray(storage.groups)) {
-            addGroups(storage, views.containerView, true);
+            addGroups(undefined, views.containerView, storage.groups, true);
         } else {
             let listTreeView = new _listTreeConstructor();
             views.containerView.addNode(listTreeView);
@@ -155,6 +157,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
             _utility.getDB().mapper.set(projectView, projectModel);
             projectView.validate();
             projectView.setId();
+            _utility.getDB().views.projects.push(projectModel.projectId);
         }
     );
 
@@ -163,14 +166,14 @@ function addProjects (parentMapper, parentView, atRootLevel) {
     }
 }
 
-function addGroups(mappedClient, clientView, root) {
+function addGroups(mappedClient, clientView, list, root) {
     let groupsView;
     if (!root) {
         groupsView = new _listTreeConstructor();
         clientView.addNode(groupsView);
     }
 
-    mappedClient.groups.forEach(
+    list.forEach(
         (mappedGroup) => {
             let groupView = new _listNestedItemConstructor();
 
@@ -199,6 +202,7 @@ function addGroups(mappedClient, clientView, root) {
             groupView.setIcon(mappedGroup.icon);
             groupView.setId();
             groupView.setExpanded(mappedGroup.expanded);
+            _utility.getDB().views.groups.push(groupModel.groupId);
             if (!root) {
                 groupsView.addNode(groupView);
             } else {
@@ -231,7 +235,7 @@ function addClients(mappedRoot, rootView) {
             if (mappedClient.hasOwnProperty('groups') && Array.isArray(mappedClient.groups)) {
                 let clientGroupsView = new _listTreeConstructor();
                 clientView.addNode(clientGroupsView);
-                addGroups(mappedClient, clientView);
+                addGroups(clientModel, clientView, mappedClient.groups);
             }
 
             if (mappedClient.hasOwnProperty('projects') && Array.isArray(mappedClient.projects)) {
@@ -242,6 +246,7 @@ function addClients(mappedRoot, rootView) {
             clientView.setIcon(mappedClient.icon);
             clientView.setId();
             clientView.setExpanded(mappedClient.expanded);
+            _utility.getDB().views.clients.push(clientModel.clientId);
             rootView.addNode(clientView);
         }
     );
@@ -383,6 +388,19 @@ function removeModal () {
 }
 
 function updateModal (evt) {
+
+    // let modalX = new _modalConstructor();
+    // modalX.setItem();
+    // _gateway.native.openModal(modalX, true);
+    // _gateway.native.closeModal(modalX);
+    //
+    // modalX.setItem({
+    //     projectId: 1
+    // });
+    // _gateway.native.openModal(modalX, true);
+    // _gateway.native.closeModal(modalX);
+    //
+    // return;
 
     let model = _utility.getDB().mapper.get(evt.target) || {};
 

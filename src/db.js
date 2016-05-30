@@ -9,6 +9,11 @@ const oldFile = `${pkg}.json`;
 // const storage = require('./file.json');
 let storage;
 const mapper = new WeakMap();
+const views = {
+    clients: [],
+    groups: [],
+    projects: []
+};
 const info = {
     version: '0.3.0',
     name: 'project-viewer'
@@ -216,6 +221,7 @@ module.exports = {
     readData: readData,
     buildData: buildData,
     info: info,
+    views: views,
     mapper: mapper,
     storage: storage,
     store: store,
