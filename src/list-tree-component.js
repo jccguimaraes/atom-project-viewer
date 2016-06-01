@@ -127,6 +127,34 @@ const htmlMethods = {
         while (this.firstChild) {
             this.removeChild(this.firstChild);
         }
+    },
+    sortChildren: function sortChildren() {
+        let thisModel = _db.mapper.get(this);
+        let sort = thisModel ? thisModel.sortBy : 'alphabetic';
+
+        if (!sort) {
+            return;
+        }
+
+        let view = this;
+        let children = Array.apply(null, view.childNodes);
+        let reverse = sort.includes('reverse') ? -1 : 1;
+        let results = children.sort((currentNode, nextNode) => {
+            let result;
+
+            if (sort.includes('alphabetic')) {
+                result = reverse * new Intl.Collator().compare(
+                    currentNode.getText(),
+                    nextNode.getText()
+                );
+            } else if (sort.includes('position')) {
+                result = -reverse;
+            }
+            if (result === 1) {
+                view.insertBefore(nextNode, currentNode);
+            }
+            return result;
+        });
     }
 };
 

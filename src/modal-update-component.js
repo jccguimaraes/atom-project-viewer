@@ -390,7 +390,9 @@ function clientViewClickEvent (client, evt) {
     else if (selected && selected === view) {
         selected.classList.remove('btn-info');
         changesToItem.hasClient = false;
-        addListOfGroups.call(this);
+        changesToItem.hasGroup = false;
+        delete changesToItem.client;
+        delete changesToItem.group;
     }
 
     if (!selected || selected !== view) {
@@ -497,16 +499,8 @@ function groupViewClickEvent (group, evt) {
         view.classList.add('btn-info');
         changesToItem.hasGroup = true;
         changesToItem.group = group;
-    }
-
-    if (!changesToItem.hasGroup && changesToItem.hasClient) {
-        console.debug('prototype to client')
-    }
-    else if (!changesToItem.hasGroup && changesToItem.hasClient) {
-        console.debug('prototype to root')
-    }
-    else {
-        console.debug('BALLS')
+        changesToItem.hasClient = !!group.clientId;
+        changesToItem.client = changesToItem.hasClient ? Object.getPrototypeOf(changesToItem.group) : undefined;
     }
 }
 
@@ -528,19 +522,36 @@ function addListOfGroups () {
         }
     ).filter(
         (group) => {
-            if (changesToItem.hasClient) {
-                return group.clientId === changesToItem.client.clientId;
-            }
-            else if (originalItem.current.clientId) {
+            if (
+                !changesToItem.hasOwnProperty('hasClient')
+                && originalItem.current.clientId
+            ) {
                 return group.clientId === originalItem.current.clientId;
             }
-            else {
-                return group;
+            else if (
+                changesToItem.hasOwnProperty('hasClient')
+                && !changesToItem.hasClient
+            ) {
+                return !group.clientId;
             }
+            else {
+                return changesToItem.client ? group.clientId === changesToItem.client.clientId : !group.clientId;
+            }
+            // else {
+            //     return !group.clientId;
+            // }
+            // else if (!changesToItem.hasClient && originalItem.current.clientId) {
+            //     return group.clientId === originalItem.current.clientId;
+            // }
+
         }
     );
 
     clearListOfGroups.call(this);
+
+    if (groups.length === 0) {
+        return;
+    }
 
     views.groups = document.createElement('div');
     views.groups.classList.add('inset-panel', 'padded');
@@ -595,6 +606,7 @@ const htmlMethods = {
         }
 
         originalItem = _utilities.getItemChain(item);
+        console.debug(originalItem);
 
         addHeading.call(this);
         addItemInput.call(this);

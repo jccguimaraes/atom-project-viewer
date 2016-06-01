@@ -51,13 +51,14 @@ const utilities = {
     },
     updateItem: function updateItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
-            console.debug(original);
-            console.debug(changes);
-
             let isANewParent;
+            let currentName = original.current[original.current.type + 'Name'];
+            const itemView = document.getElementById(original.current[original.current.type + 'Id']);
 
             if (changes.name) {
-                original.current[original.current.type + 'Name'] = _utils.sanitizeString(changes.name);
+                const newName = _utils.sanitizeString(changes.name);
+                original.current[original.current.type + 'Name'] = newName;
+                itemView.setText(newName);
             }
 
             if (changes.hasGroup) {
@@ -66,36 +67,24 @@ const utilities = {
             } else if (changes.hasClient) {
                 Object.setPrototypeOf(original.current, changes.client);
                 isANewParent = document.getElementById(changes.client.clientId);
+            } else if (!changes.hasGroup && !original.parent && !original.root) {
+                Object.setPrototypeOf(original.current, Object.prototype);
+                isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children')
             }
-
-            console.debug(isANewParent);
 
             if (isANewParent) {
 
+                isANewParent.addChild(itemView, true, true);
             }
 
-            reject({});
+            this.getDB().store();
+
+            resolve({
+                type: 'success',
+                message: `Updates to <strong>${currentName}</strong> where applied!`
+            });
 
             return;
-
-            let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
-            let newParent;
-            let currentView = document.getElementById(item.projectId || item.groupId || item.clientId);
-
-            // if (item.group) {
-            //     newParent = document.getElementById(item.groupId);
-            // }
-            // else if (item.client) {
-            //     newParent = document.getElementById(item.clientId);
-            // }
-
-            if (!changes || !changes.name || typeof changes.name !== 'string') {
-                reject({
-                    type: 'warning',
-                    message: `Please give a new proper name for <strong>${currentName}</strong>!`
-                });
-                return;
-            }
 
             let currentModel = this.getDB().mapper.get(currentView);
 

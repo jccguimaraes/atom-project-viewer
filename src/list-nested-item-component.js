@@ -132,7 +132,7 @@ const htmlMethods = {
         this.appendChild(node);
     },
     addChild: function addChild(node, sort, force) {
-        let parent = this.querySelector('ul');
+        let parent = this.querySelector('ul[is="pv-list-tree"]');
 
         if (node.hasNode && (!parent || node.hasNode(parent))) {
             return;
