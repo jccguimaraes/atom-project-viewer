@@ -223,25 +223,18 @@ const htmlMethods = {
         let filteredClasses;
         this.nodes.span.classList.forEach(
             (ownClass) => {
-                if (ownClass.startsWith('icon-')) {
+                if (ownClass !== 'icon') {
                     filteredClasses = ownClass;
                 }
             });
         return filteredClasses;
     },
-    setId: function setId(id) {
-        const sanitizedText = _utils.sanitizeString(id);
-
-        if (!sanitizedText) {
+    setId: function setId() {
+        let model = _utility.getDB().mapper.get(this);
+        if (!model) {
             return;
         }
-        if (typeof sanitizedText !== 'string') {
-            _utils.notification('info', 'id is not valid', {
-                icon: 'code'
-            });
-            return;
-        }
-        this.id = sanitizedText;
+        this.id = model.projectId;
     },
     getId: function getId() {
         return this.id;

@@ -15,6 +15,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "all-contributors-cli": "latest",
     "atom-space-pen-views": "latest",
     "cz-conventional-changelog": "latest"
   },
@@ -29,5 +30,8 @@
         "^1.0.0": "consumeStatusBar"
       }
     }
+  },
+  "scripts": {
+     "generate": "all-contributors generate"
   }
 }

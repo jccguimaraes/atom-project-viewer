@@ -1,4 +1,5 @@
 @import "ui-variables";
+@import './devicon';
 @import "./helpers";
 
 project-viewer {
@@ -11,6 +12,8 @@ project-viewer {
 	font-size: @font-size;
 	font-family: @font-family;
 	box-sizing: content-box;
+
+	border-left: 1px @pane-item-border-color solid;
 
 	transition-property: width, opacity;
 	transition-duration: @project-viewer-transition-duration;
@@ -36,6 +39,10 @@ project-viewer {
 	}
 
 	pv-header {
+		background:  @pane-item-background-color;
+ 		border-bottom: 1px @pane-item-border-color solid;
+ 		margin-top: 0px;
+ 		margin-bottom: 5px;
 		color: @project-viewer-topic-color;
 		font-size: @project-viewer-topic-size;
 		padding: @component-padding;
@@ -140,9 +147,18 @@ pv-remove-quick-modal {
 	.pv-list-group,
 	.pv-icons {
 		cursor: pointer;
-		max-height: 100px;
+		max-height: 200px;
 		overflow-y: scroll;
 		overflow-x: hidden;
+
+		.btn{
+			width: 32%;
+			&:before{
+				float:left;
+				width:20px;
+			}
+		}
+
 	}
 
 	.pv-label {

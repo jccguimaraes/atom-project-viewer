@@ -4,26 +4,29 @@ const _views = require('./views');
 const _utilities = require('./utilities');
 const _utils = require('./utils');
 const _octicons = require('./octicons');
+const _devicons = require('./devicons');
 
 const definition = {
     custom: 'pv-update-modal'
 };
 
+let originalItem = {};
+let changesToItem = {};
+
 // TODO: this can be on the helper functions with an argument being the modal
 function closeModal () {
+    changesToItem = {};
     atom.workspace.panelForItem(this).destroy();
 }
 
-function addTopic () {
+function addHeading () {
     const views = _views.get(this);
-    const model = _utilities.getDB().mapper.get(this);
+    const itemName = originalItem.current[originalItem.current.type + 'Name'];
 
-    let name = model.projectName || model.groupName || model.clientName;
+    views.heading = document.createElement('h1');
+    views.heading.innerHTML = `This will update <strong>${itemName}</strong>`;
 
-    views.topic = document.createElement('h1');
-    views.topic.textContent = `This will update ${name}`;
-
-    this.appendChild(views.topic);
+    this.appendChild(views.heading);
 }
 
 function addIconClickEvent (evt) {
@@ -36,23 +39,27 @@ function addIconClickEvent (evt) {
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
+        changesToItem.hasIcon = false;
+        delete changesToItem.icon;
     }
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.clientIcon;
-        delete model.groupIcon;
-        delete model.projectIcon;
+        changesToItem.hasIcon = false;
+        delete changesToItem.icon;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model[model.type + 'Icon'] = view.textContent;
+        changesToItem.hasIcon = true;
+        changesToItem.icon = view.textContent;
     }
 }
 
-function addIcons (selectedIcon) {
+function addIcons () {
     const views = _views.get(this);
+
+    const itemIcon = originalItem.current[originalItem.current.type + 'Icon'];
 
     if (views.icons) {
         return;
@@ -63,22 +70,28 @@ function addIcons (selectedIcon) {
 
     let iconsDescription = document.createElement('label');
     iconsDescription.classList.add('pv-label');
-    iconsDescription.textContent = 'Choose if it will have an icon:';
+    iconsDescription.textContent = 'Select an icon:';
 
     let iconsList = document.createElement('div');
     iconsList.classList.add('inline-block', 'pv-icons');
 
-    _octicons.icons.forEach(
-        (icon) => {
-            let entryIcon = document.createElement('button');
-            entryIcon.classList.add('btn', 'btn-sm', 'inline-block-tight', 'text-subtle', 'icon', icon);
-            entryIcon.textContent = icon;
-            entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
-            iconsList.appendChild(entryIcon);
-            if (selectedIcon && selectedIcon === icon) {
-                entryIcon.classList.add('btn-info');
-            }
+    let loopIcons = ( function (icon) {
+        let entryIcon = document.createElement('button');
+        entryIcon.classList.add('btn', 'btn-sm', 'inline-block-tight', 'text-subtle', 'icon', icon);
+        entryIcon.textContent = icon;
+        entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
+        iconsList.appendChild(entryIcon);
+        if (itemIcon === icon) {
+            entryIcon.classList.add('btn-info');
         }
+    });
+
+    _octicons.icons.forEach(
+        (icon) => loopIcons(icon)
+    );
+
+    _devicons.icons.forEach(
+        (icon) => loopIcons(icon)
     );
 
     views.icons.appendChild(iconsDescription);
@@ -193,6 +206,8 @@ function addPaths (selectedPaths, evt) {
     this.insertBefore(views.paths, views.buttonsContainer);
 }
 
+
+
 function addChoiceClickEvent (evt) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -212,15 +227,21 @@ function addChoiceClickEvent (evt) {
 
     let type = evt.target.textContent.toLowerCase();
 
-    if (type === 'client') {
-        model.type = 'client';
+    if (originalItem.current.type === 'client') {
         clearListOfClients.call(this);
         clearListOfGroups.call(this);
         clearPaths.call(this);
-        addItemInput.call(this, model.clientName);
-        addIcons.call(this, model.iconIcon);
+        addItemInput.call(this);
+        addIcons.call(this);
     }
-    else if (type === 'group') {
+
+    else if (originalItem.current.type === 'group') {}
+
+    else if (originalItem.current.type === 'project') {}
+
+    return;
+
+    if (type === 'group') {
         model.type = 'group';
         clearListOfGroups.call(this);
         clearPaths.call(this);
@@ -234,8 +255,8 @@ function addChoiceClickEvent (evt) {
         addItemInput.call(this, model.projectName);
         addIcons.call(this, model.projectIcon);
         addPaths.call(this, model.projectPaths, evt);
-        addListOfClients.call(this, model.clientName);
-        addListOfGroups.call(this, model.groupName, model.client && model.client.groups);
+        addListOfGroups.call(this, model.groupId);
+        addListOfClients.call(this, model.clientId);
     }
 }
 
@@ -269,28 +290,31 @@ function updateButtonClickEvent (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
-    let name;
-
     const views = _views.get(this);
-    const model = _utilities.getDB().mapper.get(this);
+
+    let inputText;
 
     if (views.itemInput) {
-        name = _utils.sanitizeString(views.itemInput.getModel().buffer.getText());
+        inputText = views.itemInput.getModel().buffer.getText();
     }
 
-    _utilities.updateItem(model, {
-        name: name
-    })
+    if (inputText !== originalItem.current[originalItem.current.type + 'Name']) {
+        changesToItem.name = inputText;
+    } else {
+        delete changesToItem.name;
+    }
+
+    _utilities.updateItem(originalItem, changesToItem)
     .then((data) => {
-        _utils.notification(data.type, data.message);
         closeModal.call(this);
+        _utils.notification(data.type, data.message);
     })
     .catch((data) => {
         _utils.notification(data.type, data.message);
     });
 }
 
-function addItemInput (selectedInput) {
+function addItemInput () {
     const views = _views.get(this);
 
     if (views.itemContainer) {
@@ -302,12 +326,14 @@ function addItemInput (selectedInput) {
 
     views.inputDescription = document.createElement('label');
     views.inputDescription.classList.add('pv-label');
-    views.inputDescription.textContent = 'Choose a name:';
+    views.inputDescription.textContent = 'Set a new name:';
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
 
-    if (selectedInput) {
-        views.itemInput.getModel().buffer.setText(selectedInput);
+    const itemName = originalItem.current[originalItem.current.type + 'Name'];
+
+    if (itemName) {
+        views.itemInput.getModel().buffer.setText(itemName);
     }
 
     views.itemContainer.appendChild(views.inputDescription);
@@ -365,26 +391,28 @@ function clientViewClickEvent (client, evt) {
     let view = evt.target;
     let selected = view.parentElement.querySelector('.btn-info');
 
+    changesToItem.hasGroup = false;
+
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
-        model.client = client;
-        delete model.group;
+        changesToItem.hasClient = true;
+        changesToItem.client = client;
     }
     else if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.client;
-        delete model.group;
-        addListOfGroups.call(this);
+        changesToItem.hasClient = false;
+        changesToItem.hasGroup = false;
+        delete changesToItem.client;
+        delete changesToItem.group;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model.client = client;
+        changesToItem.hasClient = true;
+        changesToItem.client = client;
     }
 
-    if (model && model.client && model.type === 'project') {
-        addListOfGroups.call(this, undefined, model.client.groups);
-    }
+    addListOfGroups.call(this);
 }
 
 function clearListOfClients () {
@@ -395,9 +423,22 @@ function clearListOfClients () {
     }
 }
 
-function addListOfClients (selectedClient) {
+function addListOfClients () {
     const views = _views.get(this);
-    const clients = _utilities.getDB().getStorage().clients;
+    const clients = _utilities.getDB().views.clients.map(
+        (clientId) => {
+            return _utilities.getDB().mapper.get(
+                document.getElementById(clientId)
+            );
+        }
+    ).filter(
+        (client) => {
+            if (originalItem.current.type === 'client') {
+                return;
+            }
+            return client;
+        }
+    );
 
     clearListOfClients.call(this);
 
@@ -410,7 +451,7 @@ function addListOfClients (selectedClient) {
 
     let clientsDescription = document.createElement('label');
     clientsDescription.classList.add('pv-label');
-    clientsDescription.textContent = 'Choose if it will belong to the following client:';
+    clientsDescription.textContent = 'Set client:';
     views.clients.appendChild(clientsDescription);
 
     let container = document.createElement('div');
@@ -421,16 +462,17 @@ function addListOfClients (selectedClient) {
         (clientStored) => {
             let clientView = document.createElement('div');
             clientView.classList.add('pv-btn-clients', 'btn', 'btn-sm', 'inline-block-tight');
-            clientView.textContent = clientStored.name;
+            clientView.textContent = clientStored.clientName;
             clientView.addEventListener(
                 'click',
                 clientViewClickEvent.bind(this, clientStored),
                 false
             );
             container.appendChild(clientView);
-            if (selectedClient && selectedClient === clientStored.name) {
-                const event = new MouseEvent('click');
-                clientView.dispatchEvent(event);
+            if (originalItem.parent && originalItem.parent.clientId === clientStored.clientId) {
+                clientView.classList.add('btn-info');
+            } else if (originalItem.root && originalItem.root.clientId === clientStored.clientId) {
+                clientView.classList.add('btn-info');
             }
             return clientView;
         }
@@ -457,17 +499,22 @@ function groupViewClickEvent (group, evt) {
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
-        model.group = group;
+        changesToItem.hasGroup = true;
+        changesToItem.group = group;
     }
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.group;
+        changesToItem.hasGroup = false;
+        delete changesToItem.group;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model.group = group;
+        changesToItem.hasGroup = true;
+        changesToItem.group = group;
+        changesToItem.hasClient = !!group.clientId;
+        changesToItem.client = changesToItem.hasClient ? Object.getPrototypeOf(changesToItem.group) : undefined;
     }
 }
 
@@ -479,13 +526,47 @@ function clearListOfGroups () {
     }
 }
 
-function addListOfGroups (selectedGroup, list) {
+function addListOfGroups () {
     const views = _views.get(this);
-    const groups = list || _utilities.getDB().getStorage().groups;
+    const groups = _utilities.getDB().views.groups.map(
+        (groupId) => {
+            return _utilities.getDB().mapper.get(
+                document.getElementById(groupId)
+            );
+        }
+    ).filter(
+        (group) => {
+            if (originalItem.current.type !== 'project') {
+                return;
+            }
+            if (
+                !changesToItem.hasOwnProperty('hasClient')
+                && originalItem.current.clientId
+            ) {
+                return group.clientId === originalItem.current.clientId;
+            }
+            else if (
+                changesToItem.hasOwnProperty('hasClient')
+                && !changesToItem.hasClient
+            ) {
+                return !group.clientId;
+            }
+            else {
+                return changesToItem.client ? group.clientId === changesToItem.client.clientId : !group.clientId;
+            }
+            // else {
+            //     return !group.clientId;
+            // }
+            // else if (!changesToItem.hasClient && originalItem.current.clientId) {
+            //     return group.clientId === originalItem.current.clientId;
+            // }
+
+        }
+    );
 
     clearListOfGroups.call(this);
 
-    if (!groups || !Array.isArray(groups)) {
+    if (groups.length === 0) {
         return;
     }
 
@@ -494,7 +575,7 @@ function addListOfGroups (selectedGroup, list) {
 
     let groupsDescription = document.createElement('label');
     groupsDescription.classList.add('pv-label');
-    groupsDescription.textContent = 'Choose if it will belong to the following group:';
+    groupsDescription.textContent = 'Set group:';
     views.groups.appendChild(groupsDescription);
 
     let container = document.createElement('div');
@@ -505,15 +586,16 @@ function addListOfGroups (selectedGroup, list) {
         (groupStored) => {
             let groupView = document.createElement('div');
             groupView.classList.add('pv-btn-clients', 'btn', 'btn-sm', 'inline-block-tight');
-            groupView.textContent = groupStored.name;
+            groupView.textContent = groupStored.groupName;
             groupView.addEventListener(
                 'click',
                 groupViewClickEvent.bind(this, groupStored),
                 false
             );
-            if (selectedGroup && selectedGroup === groupStored.name) {
-                const event = new MouseEvent('click');
-                groupView.dispatchEvent(event);
+            if (originalItem.parent && originalItem.parent.groupId === groupStored.groupId) {
+                groupView.classList.add('btn-info');
+            } else if (originalItem.root && originalItem.root.groupId === groupStored.groupId) {
+                groupView.classList.add('btn-info');
             }
             container.appendChild(groupView);
             return groupView;
@@ -534,31 +616,21 @@ const htmlMethods = {
         this.classList.add('block');
     },
     attachedCallback: function attachedCallback() {
-        const views = _views.get(this);
+        const item = _utilities.getDB().mapper.get(this);
 
-        const model = _utilities.getDB().mapper.get(this);
+        if (!item) {
+            closeModal.call(this);
+        }
 
-        addTopic.call(this);
+        originalItem = _utilities.getItemChain(item);
+        console.debug(originalItem);
 
-        addChoice.call(this);
-
+        addHeading.call(this);
+        addItemInput.call(this);
+        addIcons.call(this);
+        addListOfClients.call(this);
+        addListOfGroups.call(this);
         addButtons.call(this);
-
-        if (!model) {
-            return;
-        }
-
-        const event = new MouseEvent('click');
-
-        if (model.type === 'client') {
-            views.choiseClient.dispatchEvent(event);
-        }
-        else if (model.type === 'group') {
-            views.choiseGroup.dispatchEvent(event);
-        }
-        else if (model.type === 'project') {
-            views.choiseProject.dispatchEvent(event);
-        }
     },
     detachedCallback: function detachedCallback () {
         const views = _views.get(this);

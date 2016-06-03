@@ -14,9 +14,7 @@ const dragOverListener = function dragOverListener() {};
 const dragLeaveListener = function dragLeaveListener() {};
 const dragEnterListener = function dragEnterListener() {};
 const dragEndListener = function dragEndListener() {};
-const dropListener = function dropListener() {
-    console.debug('here');
-};
+const dropListener = function dropListener() {};
 
 const htmlMethods = {
     createdCallback: function createdCallback() {
@@ -83,7 +81,7 @@ const htmlMethods = {
         });
     },
     setAsRootLevel: function setAsRootLevel() {
-        this.classList.add('has-collapsable-children');
+        this.classList.add('has-collapsable-children', 'padded');
     },
     setType: function setType(type) {
         this.setAttribute('data-type', type);
@@ -129,6 +127,34 @@ const htmlMethods = {
         while (this.firstChild) {
             this.removeChild(this.firstChild);
         }
+    },
+    sortChildren: function sortChildren() {
+        let thisModel = _db.mapper.get(this);
+        let sort = thisModel ? thisModel.sortBy : 'alphabetic';
+
+        if (!sort) {
+            return;
+        }
+
+        let view = this;
+        let children = Array.apply(null, view.childNodes);
+        let reverse = sort.includes('reverse') ? -1 : 1;
+        let results = children.sort((currentNode, nextNode) => {
+            let result;
+
+            if (sort.includes('alphabetic')) {
+                result = reverse * new Intl.Collator().compare(
+                    currentNode.getText(),
+                    nextNode.getText()
+                );
+            } else if (sort.includes('position')) {
+                result = -reverse;
+            }
+            if (result === 1) {
+                view.insertBefore(nextNode, currentNode);
+            }
+            return result;
+        });
     }
 };
 

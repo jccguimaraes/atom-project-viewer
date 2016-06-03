@@ -9,6 +9,11 @@ const oldFile = `${pkg}.json`;
 // const storage = require('./file.json');
 let storage;
 const mapper = new WeakMap();
+const views = {
+    clients: [],
+    groups: [],
+    projects: []
+};
 const info = {
     version: '0.3.0',
     name: 'project-viewer'
@@ -125,7 +130,7 @@ const getConfig = function getConfig(config) {
     return pkg.concat('.', config);
 };
 
-const store = function store() {
+const buildData = function buildData () {
     let data = {
         clients: [],
         groups: [],
@@ -178,6 +183,11 @@ const store = function store() {
             }
         }
     }
+    return data;
+}
+
+const store = function store() {
+    let data = buildData();
     atom.getStorageFolder().storeSync(file, data);
     return data;
 };
@@ -209,7 +219,9 @@ const deleteOldFile = function deleteOldFile () {
 module.exports = {
     deleteOldFile: deleteOldFile,
     readData: readData,
+    buildData: buildData,
     info: info,
+    views: views,
     mapper: mapper,
     storage: storage,
     store: store,

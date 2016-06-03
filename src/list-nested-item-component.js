@@ -3,6 +3,7 @@
 const _utils = require('./utils');
 const _utility = require('./utilities');
 const _db = require('./db');
+const _gateway = require('./gateway');
 
 const definition = {
     custom: 'pv-list-nested-item',
@@ -131,7 +132,7 @@ const htmlMethods = {
         this.appendChild(node);
     },
     addChild: function addChild(node, sort, force) {
-        let parent = this.querySelector('ul');
+        let parent = this.querySelector('ul[is="pv-list-tree"]');
 
         if (node.hasNode && (!parent || node.hasNode(parent))) {
             return;
@@ -174,7 +175,7 @@ const htmlMethods = {
         let filteredClasses;
         this.nodes.listItemSpan.classList.forEach(
             (ownClass) => {
-                if (ownClass.startsWith('icon-')) {
+                if (ownClass !== 'icon') {
                     filteredClasses = ownClass;
                 }
             });
@@ -227,20 +228,12 @@ const htmlMethods = {
             thisModel.groupExpanded = state;
         }
     },
-    setId: function setId(id) {
-
-        const sanitizedText = _utils.sanitizeString(id);
-
-        if (!sanitizedText) {
+    setId: function setId() {
+        let model = _utility.getDB().mapper.get(this);
+        if (!model) {
             return;
         }
-        if (typeof sanitizedText !== 'string') {
-            _utils.notification('info', 'id is not valid', {
-                icon: 'code'
-            });
-            return;
-        }
-        this.id = sanitizedText;
+        this.id = model.groupId || model.clientId;
     },
     getId: function getId() {
         return this.id;

@@ -5,6 +5,7 @@ const Notification = require('atom').Notification;
 const _caches = require('./caches');
 const _db = require('./db');
 const _utils = require('./utils');
+const _gateway = require('./gateway');
 
 const _component = require('./component');
 
@@ -24,63 +25,67 @@ const utilities = {
             }
         );
     },
-    updateItem: function updateItem(item, changes) {
+    getItemChain: function f_getItemChain (item) {
+        let parentPrototype;
+        let parentProto;
+        let rootPrototype;
+        let chain = {};
+
+        if (item && Object.keys(item).length > 0) {
+            chain.current = item;
+        }
+
+        if (Object.getPrototypeOf(item) === Object.prototype) {
+            parentPrototype = undefined;
+        } else {
+            parentPrototype = Object.getPrototypeOf(item);
+            parentProto = Object.getPrototypeOf(parentPrototype);
+            chain.parent = parentPrototype;
+        }
+
+        if (parentProto === Object.prototype) {
+            rootPrototype = undefined;
+        } else if (parentProto) {
+            rootPrototype = parentProto;
+            chain.root = rootPrototype;
+        }
+
+        return chain;
+    },
+    updateItem: function updateItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
-            let currentName = _utils.sanitizeString(item.projectName || item.groupName || item.clientName);
-            let newParent;
-            let currentView = document.getElementById(currentName);
-
-            if (item.group) {
-                newParent = document.getElementById(item.group.name);
-            }
-            else if (item.client) {
-                newParent = document.getElementById(item.client.name);
-            }
-
-            if (!changes || !changes.name || typeof changes.name !== 'string') {
-                reject({
-                    type: 'warning',
-                    message: `Please give a new proper name for <strong>${currentName}</strong>!`
-                });
-                return;
-            }
-
-            let currentModel = this.getDB().mapper.get(currentView);
-
-            if (newParent) {
-                newParent.addChild(currentView, false, true);
-                let parentModel = this.getDB().mapper.get(newParent);
-                Object.setPrototypeOf(currentModel, parentModel);
-            } else {
-                document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView, true);
-            }
+            let isANewParent;
+            let currentName = original.current[original.current.type + 'Name'];
+            const itemView = document.getElementById(original.current[original.current.type + 'Id']);
 
             if (changes.name) {
-                currentView.setText(changes.name);
-                currentView.setId(changes.name);
+                const newName = _utils.sanitizeString(changes.name);
+                original.current[original.current.type + 'Name'] = newName;
+                itemView.setText(newName);
             }
 
-            if (changes.name && currentModel.type === 'client') {
-                currentModel.clientName = _utils.sanitizeString(changes.name);
-            }
-            else if (changes.name && currentModel.type === 'group') {
-                currentModel.groupName = _utils.sanitizeString(changes.name);
-            }
-            else if (changes.name && currentModel.type === 'project') {
-                currentModel.projectName = _utils.sanitizeString(changes.name);
+            if (changes.icon) {
+                original.current[original.current.type + 'Icon'] = changes.icon;
+                itemView.setIcon(changes.icon, true);
             }
 
-            if (currentModel.clientIcon && currentModel.type === 'client') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.clientIcon), true);
-            }
-            else if (currentModel.groupIcon && currentModel.type === 'group') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.groupIcon), true);
-            }
-            else if (currentModel.projectIcon && currentModel.type === 'project') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.projectIcon), true);
+            if (changes.hasGroup) {
+                Object.setPrototypeOf(original.current, changes.group);
+                isANewParent = document.getElementById(changes.group.groupId);
+            } else if (changes.hasClient) {
+                Object.setPrototypeOf(original.current, changes.client);
+                isANewParent = document.getElementById(changes.client.clientId);
+            } else if (!changes.hasGroup && !original.parent && !original.root) {
+                Object.setPrototypeOf(original.current, Object.prototype);
+                isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children')
             }
 
-            this.getDB().storage = this.getDB().store();
+            if (isANewParent) {
+
+                isANewParent.addChild(itemView, true, true);
+            }
+
+            this.getDB().store();
 
             resolve({
                 type: 'success',
@@ -89,46 +94,96 @@ const utilities = {
         });
         return promise;
     },
-    createItem: function createItem(candidate) {
+    createItem: function createItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
-            let safeItem = false;
+            if (!original.current || !changes) {
+                reject({
+                    type: 'warning',
+                    message: 'Please provide the minimum parameters to create a new item'
+                });
+            }
 
-            if (!candidate || !candidate.type) {
+            if (!original.current.type) {
                 reject({
                     type: 'warning',
                     message: 'Please select a type to create'
                 });
-                return;
             }
 
-            if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
+            if (!changes.name) {
                 reject({
                     type: 'warning',
-                    message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
+                    message: 'Please define a valid name for the <strong>' + changes.type + '</strong>'
                 });
                 return;
             }
 
-            let innerPromise;
+            const newName = _utils.sanitizeString(changes.name);
 
-            switch (candidate.type) {
-                case 'client':
-                    innerPromise = this.createClient(candidate);
-                break;
-                case 'group':
-                    innerPromise = this.createGroup(candidate);
-                break;
-                case 'project':
-                    innerPromise = this.createProject(candidate);
-                break;
-                default:
+            let model = {
+                type: original.current.type
+            };
+
+            model.sortBy = changes.sortBy;
+            model[model.type + 'Id'] = _gateway.helpers.generateUUID();
+            model[model.type + 'Name'] = changes.name;
+            model[model.type + 'Icon'] = changes.icon;
+
+            if (model.type !== 'project') {
+                model[model.type + 'Expanded'] = false;
+            } else {
+                model[model.type + 'Paths'] = [];
             }
 
-            innerPromise.then((data) => {
-                this.getDB().storage = this.getDB().store();
-                resolve(data);
-            })
-            .catch(reject);
+            console.debug(model);
+
+            reject({
+                type: 'warning',
+                message: 'cenas'
+            });
+
+            // let safeItem = false;
+            //
+            // if (!candidate || !candidate.type) {
+            //     reject({
+            //         type: 'warning',
+            //         message: 'Please select a type to create'
+            //     });
+            //     return;
+            // }
+            //
+            // if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
+            //     reject({
+            //         type: 'warning',
+            //         message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
+            //     });
+            //     return;
+            // }
+            //
+            // let innerPromise;
+            //
+            // switch (candidate.type) {
+            //     case 'client':
+            //         innerPromise = this.createClient(candidate);
+            //     break;
+            //     case 'group':
+            //         innerPromise = this.createGroup(candidate);
+            //     break;
+            //     case 'project':
+            //         innerPromise = this.createProject(candidate);
+            //     break;
+            //     default:
+            // }
+            //
+            // innerPromise.then((data) => {
+            //     this.getDB().storage = this.getDB().store();
+            //     if (data.id) {
+            //         this.views[candidate.type + 's'].push(data.id);
+            //         console.debug(this.views);
+            //     }
+            //     resolve(data);
+            // })
+            // .catch(reject);
         });
         return promise;
     },
@@ -164,24 +219,26 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {
                 type: candidate.type,
                 sortBy: candidate.sortBy,
                 clientName: candidate.name,
                 clientIcon: candidate.icon,
-                clientExpanded: candidate.expanded
+                clientExpanded: candidate.expanded,
+                clientId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, clientModel);
+            candidate.view.setId();
 
             // TODO change hack
             document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: clientModel.clientId
             });
         });
         return promise;
@@ -228,7 +285,6 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {};
             let groupModel = {
@@ -236,13 +292,15 @@ const utilities = {
                 sortBy: candidate.sortBy,
                 groupName: candidate.name,
                 groupIcon: candidate.icon,
-                groupExpanded: candidate.expanded
+                groupExpanded: candidate.expanded,
+                groupId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, groupModel);
+            candidate.view.setId();
 
             if (candidate.client) {
-                let clientView = document.getElementById(client.name);
+                let clientView = document.getElementById(client.clientId);
                 clientModel = this.getDB().mapper.get(clientView);
                 Object.setPrototypeOf(groupModel, clientModel);
                 clientView.addChild(candidate.view);
@@ -253,7 +311,8 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: groupModel.groupId
             });
         });
         return promise;
@@ -311,7 +370,6 @@ const utilities = {
 
             candidate.view.setText(candidate.name);
             candidate.view.setIcon(candidate.icon);
-            candidate.view.setId(candidate.name);
 
             let clientModel = {};
             let groupModel = {};
@@ -319,18 +377,20 @@ const utilities = {
                 type: candidate.type,
                 projectName: candidate.name,
                 projectIcon: candidate.icon,
-                projectPaths: candidate.paths
+                projectPaths: candidate.paths,
+                projectId: _gateway.helpers.generateUUID()
             };
 
             this.getDB().mapper.set(candidate.view, projectModel);
+            candidate.view.setId();
 
             if (candidate.group) {
-                let groupView = document.getElementById(group.name);
+                let groupView = document.getElementById(group.groupId);
                 groupModel = this.getDB().mapper.get(groupView);
                 Object.setPrototypeOf(projectModel, groupModel);
                 groupView.addChild(candidate.view);
             } else if (candidate.client) {
-                let clientView = document.getElementById(client.name);
+                let clientView = document.getElementById(client.clientId);
                 clientModel = this.getDB().mapper.get(clientView);
                 Object.setPrototypeOf(projectModel, clientModel);
                 clientView.addChild(candidate.view);
@@ -341,7 +401,8 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`
+                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
+                id: projectModel.projectId
             });
         });
         return promise;
