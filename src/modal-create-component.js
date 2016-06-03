@@ -5,6 +5,10 @@ const _utilities = require('./utilities');
 const _utils = require('./utils');
 const _octicons = require('./octicons');
 
+const _listItemComponent = require('./list-item-component');
+const _listNestedItemComponent = require('./list-nested-item-component');
+const _listTreeComponent = require('./list-tree-component');
+
 const definition = {
     custom: 'pv-create-modal'
 };
@@ -106,23 +110,22 @@ function clearPaths () {
 
 function eachFolder (evt, folder) {
     const views = _views.get(this);
-    const model = _utilities.getDB().mapper.get(this);
 
-    if (!model.projectPaths && !Array.isArray(model.projectPaths)) {
-        model.projectPaths = [];
+    if (!changesToItem.paths) {
+        changesToItem.paths = [];
     }
 
     // because we are dispatching the event ourselves
-    if (evt.isTrusted && model.projectPaths.indexOf(folder) !== -1) {
+    if (evt.isTrusted && changesToItem.paths.indexOf(folder) !== -1) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
     }
 
     if (evt.isTrusted) {
-        model.projectPaths.push(folder);
+        changesToItem.paths.push(folder);
     }
 
-    if (model.projectPaths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
+    if (changesToItem.paths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
         let name = folder.split('/').reverse()[0];
         views.itemInput.getModel().buffer.setText(name);
     }
@@ -174,7 +177,9 @@ function removePath (evt) {
 function addPaths (selectedPaths, evt) {
     const views = _views.get(this);
 
-    if (views.paths) {
+    clearPaths.call(this);
+
+    if (originalItem.current && originalItem.current.type !== 'project') {
         return;
     }
 
@@ -224,40 +229,9 @@ function addChoiceClickEvent (evt) {
     };
 
     addIcons.call(this);
+    addPaths.call(this);
     addListOfClients.call(this);
     addListOfGroups.call(this);
-    //
-    // if (originalItem.current.type === 'client') {
-    //     clearListOfClients.call(this);
-    //     clearListOfGroups.call(this);
-    //     clearPaths.call(this);
-    //     addItemInput.call(this);
-    //     addIcons.call(this);
-    // }
-    //
-    // else if (originalItem.current.type === 'group') {}
-    //
-    // else if (originalItem.current.type === 'project') {}
-    //
-    // return;
-    //
-    // if (type === 'group') {
-    //     model.type = 'group';
-    //     clearListOfGroups.call(this);
-    //     clearPaths.call(this);
-    //     addItemInput.call(this, model.groupName);
-    //     addIcons.call(this, model.groupIcon);
-    //     addListOfClients.call(this, model.clientName);
-    // }
-    //
-    // else if (type === 'project') {
-    //     model.type = 'project';
-    //     addItemInput.call(this, model.projectName);
-    //     addIcons.call(this, model.projectIcon);
-    //     addPaths.call(this, model.projectPaths, evt);
-    //     addListOfGroups.call(this, model.groupId);
-    //     addListOfClients.call(this, model.clientId);
-    // }
 }
 
 function addChoice (model) {
@@ -315,8 +289,15 @@ function buttonClickEvent (evt) {
         delete changesToItem.name;
     }
 
-    console.debug(originalItem);
-    console.debug(changesToItem);
+    if (originalItem.current.type === 'project') {
+        let listItemConstructor = _utilities.getConstructor(_listItemComponent.definition);
+        changesToItem.view = new listItemConstructor();
+    } else {
+        let listTreeConstructor = _utilities.getConstructor(_listTreeComponent.definition);
+        let listNestedItemConstructor = _utilities.getConstructor(_listNestedItemComponent.definition);
+        changesToItem.view = new listNestedItemConstructor();
+        changesToItem.view.addNode(new listTreeConstructor());
+    }
 
     _utilities.createItem(originalItem, changesToItem)
     .then((data) => {

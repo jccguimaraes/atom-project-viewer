@@ -124,285 +124,43 @@ const utilities = {
                 type: original.current.type
             };
 
-            model.sortBy = changes.sortBy;
+            this.getDB().mapper.set(changes.view, model);
+
             model[model.type + 'Id'] = _gateway.helpers.generateUUID();
+            changes.view.setId(model[model.type + 'Id']);
             model[model.type + 'Name'] = changes.name;
+            changes.view.setText(model[model.type + 'Name']);
             model[model.type + 'Icon'] = changes.icon;
+            changes.view.setIcon(model[model.type + 'Icon']);
 
             if (model.type !== 'project') {
+                model.sortBy = changes.sortBy || 'position';
                 model[model.type + 'Expanded'] = false;
+                changes.view.setExpanded(false);
             } else {
-                model[model.type + 'Paths'] = [];
+                model[model.type + 'Paths'] = changes.paths || [];
             }
 
-            console.debug(model);
+            let parentView;
 
-            reject({
-                type: 'warning',
-                message: 'cenas'
-            });
-
-            // let safeItem = false;
-            //
-            // if (!candidate || !candidate.type) {
-            //     reject({
-            //         type: 'warning',
-            //         message: 'Please select a type to create'
-            //     });
-            //     return;
-            // }
-            //
-            // if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
-            //     reject({
-            //         type: 'warning',
-            //         message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
-            //     });
-            //     return;
-            // }
-            //
-            // let innerPromise;
-            //
-            // switch (candidate.type) {
-            //     case 'client':
-            //         innerPromise = this.createClient(candidate);
-            //     break;
-            //     case 'group':
-            //         innerPromise = this.createGroup(candidate);
-            //     break;
-            //     case 'project':
-            //         innerPromise = this.createProject(candidate);
-            //     break;
-            //     default:
-            // }
-            //
-            // innerPromise.then((data) => {
-            //     this.getDB().storage = this.getDB().store();
-            //     if (data.id) {
-            //         this.views[candidate.type + 's'].push(data.id);
-            //         console.debug(this.views);
-            //     }
-            //     resolve(data);
-            // })
-            // .catch(reject);
-        });
-        return promise;
-    },
-    createClient: function createClient(candidate) {
-        const promise = new Promise((resolve, reject) => {
-
-            // TODO change this to just createItem maybe
-            if (!candidate || !candidate.name) {
-                reject({
-                    type: 'warning',
-                    message: 'Client has no name defined'
-                });
-                return;
+            if (changes.hasGroup) {
+                parentView = document.getElementById(changes.group.groupId);
+                parentView.addChild(changes.view);
+            }
+            else if (changes.hasClient) {
+                parentView = document.getElementById(changes.client.clientId);
+                parentView.addChild(changes.view);
+            } else {
+                parentView = document.querySelector('project-viewer .list-tree.has-collapsable-children');
+                parentView.addNode(changes.view);
             }
 
-            let hasIt = false;
-
-            if (this.getDB().storage.clients) {
-                hasIt = this.getDB().storage.clients.some(
-                    (clientStored) => {
-                        return clientStored.name === candidate.name;
-                    }
-                );
-            }
-
-            if (hasIt) {
-                reject({
-                    type: 'info',
-                    message: 'Client <strong>' + candidate.name + '</strong> already exists!'
-                });
-                return;
-            }
-
-            candidate.view.setText(candidate.name);
-            candidate.view.setIcon(candidate.icon);
-
-            let clientModel = {
-                type: candidate.type,
-                sortBy: candidate.sortBy,
-                clientName: candidate.name,
-                clientIcon: candidate.icon,
-                clientExpanded: candidate.expanded,
-                clientId: _gateway.helpers.generateUUID()
-            };
-
-            this.getDB().mapper.set(candidate.view, clientModel);
-            candidate.view.setId();
-
-            // TODO change hack
-            document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
+            this.getDB().views[model.type + 's'].push(model[model.type + 'Id']);
+            this.getDB().setStorage(this.getDB().store());
 
             resolve({
                 type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
-                id: clientModel.clientId
-            });
-        });
-        return promise;
-    },
-    createGroup: function createGroup(candidate) {
-        const promise = new Promise((resolve, reject) => {
-
-            let client;
-            let groups;
-
-            // TODO change this to just createItem maybe
-            if (!candidate || !candidate.name) {
-                reject({
-                    type: 'warning',
-                    message: 'Group has no name defined'
-                });
-            }
-
-            if (candidate.client) {
-                client = this.getDB().storage.clients.filter((clientStored) => {
-                    return clientStored.name === candidate.client.name;
-                })[0];
-                groups = client.groups;
-            } else {
-                groups = this.getDB().storage.groups;
-            }
-
-            let hasIt = false;
-
-            if (groups) {
-                hasIt = groups.some(
-                    (groupStored) => {
-                        return groupStored.name === candidate.name;
-                    }
-                );
-            }
-
-            if (hasIt) {
-                reject({
-                    type: 'info',
-                    message: 'Group <strong>' + candidate.name + '</strong> already exists!'
-                });
-            }
-
-            candidate.view.setText(candidate.name);
-            candidate.view.setIcon(candidate.icon);
-
-            let clientModel = {};
-            let groupModel = {
-                type: candidate.type,
-                sortBy: candidate.sortBy,
-                groupName: candidate.name,
-                groupIcon: candidate.icon,
-                groupExpanded: candidate.expanded,
-                groupId: _gateway.helpers.generateUUID()
-            };
-
-            this.getDB().mapper.set(candidate.view, groupModel);
-            candidate.view.setId();
-
-            if (candidate.client) {
-                let clientView = document.getElementById(client.clientId);
-                clientModel = this.getDB().mapper.get(clientView);
-                Object.setPrototypeOf(groupModel, clientModel);
-                clientView.addChild(candidate.view);
-            } else {
-                // TODO change hack
-                document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
-            }
-
-            resolve({
-                type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
-                id: groupModel.groupId
-            });
-        });
-        return promise;
-    },
-    createProject: function createProject(candidate) {
-        const promise = new Promise((resolve, reject) => {
-
-            let client;
-            let group;
-            let projects;
-
-            // TODO change this to just createItem maybe
-            if (!candidate || !candidate.name) {
-                reject({
-                    type: 'warning',
-                    message: 'Project has no name defined'
-                });
-            }
-
-            if (candidate.client) {
-                client = this.getDB().storage.clients.filter((clientStored) => {
-                    return clientStored.name === candidate.client.name;
-                })[0];
-                projects = client.projects;
-            }
-
-            if (candidate.group) {
-                let context = client || this.getDB().storage;
-                group = context.groups.filter((groupStored) => {
-                    return groupStored.name === candidate.group.name;
-                })[0];
-                projects = group.projects;
-            }
-
-            if (!candidate.client && !candidate.group) {
-                projects = this.getDB().storage.projects;
-            }
-
-            let hasIt = false;
-
-            if (projects) {
-                 hasIt = projects.some(
-                     (projectStored) => {
-                         return projectStored.name === candidate.name;
-                     }
-                 );
-            }
-
-            if (hasIt) {
-                reject({
-                    type: 'info',
-                    message: 'Project <strong>' + candidate.name + '</strong> already exists!'
-                });
-            }
-
-            candidate.view.setText(candidate.name);
-            candidate.view.setIcon(candidate.icon);
-
-            let clientModel = {};
-            let groupModel = {};
-            let projectModel = {
-                type: candidate.type,
-                projectName: candidate.name,
-                projectIcon: candidate.icon,
-                projectPaths: candidate.paths,
-                projectId: _gateway.helpers.generateUUID()
-            };
-
-            this.getDB().mapper.set(candidate.view, projectModel);
-            candidate.view.setId();
-
-            if (candidate.group) {
-                let groupView = document.getElementById(group.groupId);
-                groupModel = this.getDB().mapper.get(groupView);
-                Object.setPrototypeOf(projectModel, groupModel);
-                groupView.addChild(candidate.view);
-            } else if (candidate.client) {
-                let clientView = document.getElementById(client.clientId);
-                clientModel = this.getDB().mapper.get(clientView);
-                Object.setPrototypeOf(projectModel, clientModel);
-                clientView.addChild(candidate.view);
-            } else {
-                // TODO change hack
-                document.querySelector('project-viewer .list-tree.has-collapsable-children').addNode(candidate.view);
-            }
-
-            resolve({
-                type: 'success',
-                message: `${candidate.type} <strong>${candidate.name}</strong> was created`,
-                id: projectModel.projectId
+                message: `${model.type} <strong>${newName}</strong> was created`
             });
         });
         return promise;
