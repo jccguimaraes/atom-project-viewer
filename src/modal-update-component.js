@@ -38,18 +38,20 @@ function addIconClickEvent (evt) {
 
     if (selected && selected !== view) {
         selected.classList.remove('btn-info');
+        changesToItem.hasIcon = false;
+        delete changesToItem.icon;
     }
 
     if (selected && selected === view) {
         selected.classList.remove('btn-info');
-        delete model.clientIcon;
-        delete model.groupIcon;
-        delete model.projectIcon;
+        changesToItem.hasIcon = false;
+        delete changesToItem.icon;
     }
 
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
-        model[model.type + 'Icon'] = view.textContent;
+        changesToItem.hasIcon = true;
+        changesToItem.icon = view.textContent;
     }
 }
 
@@ -315,7 +317,7 @@ function addItemInput () {
 
     views.inputDescription = document.createElement('label');
     views.inputDescription.classList.add('pv-label');
-    views.inputDescription.textContent = 'Choose a name:';
+    views.inputDescription.textContent = 'Set a new name:';
     views.itemInput = document.createElement('atom-text-editor');
     views.itemInput.setAttribute('mini', true);
 
@@ -422,6 +424,9 @@ function addListOfClients () {
         }
     ).filter(
         (client) => {
+            if (originalItem.current.type === 'client') {
+                return;
+            }
             return client;
         }
     );
@@ -522,6 +527,9 @@ function addListOfGroups () {
         }
     ).filter(
         (group) => {
+            if (originalItem.current.type !== 'project') {
+                return;
+            }
             if (
                 !changesToItem.hasOwnProperty('hasClient')
                 && originalItem.current.clientId
@@ -610,21 +618,10 @@ const htmlMethods = {
 
         addHeading.call(this);
         addItemInput.call(this);
+        addIcons.call(this);
         addListOfClients.call(this);
         addListOfGroups.call(this);
         addButtons.call(this);
-
-        // const event = new MouseEvent('click');
-        //
-        // if (model.type === 'client') {
-        //     views.choiseClient.dispatchEvent(event);
-        // }
-        // else if (model.type === 'group') {
-        //     views.choiseGroup.dispatchEvent(event);
-        // }
-        // else if (model.type === 'project') {
-        //     views.choiseProject.dispatchEvent(event);
-        // }
     },
     detachedCallback: function detachedCallback () {
         const views = _views.get(this);

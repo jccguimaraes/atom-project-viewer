@@ -31,7 +31,9 @@ const utilities = {
         let rootPrototype;
         let chain = {};
 
-        chain.current = item;
+        if (item && Object.keys(item).length > 0) {
+            chain.current = item;
+        }
 
         if (Object.getPrototypeOf(item) === Object.prototype) {
             parentPrototype = undefined;
@@ -43,10 +45,11 @@ const utilities = {
 
         if (parentProto === Object.prototype) {
             rootPrototype = undefined;
-        } else {
+        } else if (parentProto) {
             rootPrototype = parentProto;
             chain.root = rootPrototype;
         }
+
         return chain;
     },
     updateItem: function updateItem(original, changes) {
@@ -59,6 +62,11 @@ const utilities = {
                 const newName = _utils.sanitizeString(changes.name);
                 original.current[original.current.type + 'Name'] = newName;
                 itemView.setText(newName);
+            }
+
+            if (changes.icon) {
+                original.current[original.current.type + 'Icon'] = changes.icon;
+                itemView.setIcon(changes.icon, true);
             }
 
             if (changes.hasGroup) {
@@ -83,97 +91,99 @@ const utilities = {
                 type: 'success',
                 message: `Updates to <strong>${currentName}</strong> where applied!`
             });
-
-            return;
-
-            let currentModel = this.getDB().mapper.get(currentView);
-
-            if (newParent) {
-                newParent.addChild(currentView, false, true);
-                let parentModel = this.getDB().mapper.get(newParent);
-                Object.setPrototypeOf(currentModel, parentModel);
-            }
-            else if (Object.getPrototypeOf(item) === Object.getPrototypeOf({})) {
-                document.querySelector('project-viewer ul[is="pv-list-tree"]').addNode(currentView, true);
-            }
-
-            if (changes.name) {
-                currentView.setText(changes.name);
-            }
-
-            if (changes.name && currentModel.type === 'client') {
-                currentModel.clientName = _utils.sanitizeString(changes.name);
-            }
-            else if (changes.name && currentModel.type === 'group') {
-                currentModel.groupName = _utils.sanitizeString(changes.name);
-            }
-            else if (changes.name && currentModel.type === 'project') {
-                currentModel.projectName = _utils.sanitizeString(changes.name);
-            }
-
-            if (currentModel.clientIcon && currentModel.type === 'client') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.clientIcon), true);
-            }
-            else if (currentModel.groupIcon && currentModel.type === 'group') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.groupIcon), true);
-            }
-            else if (currentModel.projectIcon && currentModel.type === 'project') {
-                currentView.setIcon(_utils.sanitizeString(currentModel.projectIcon), true);
-            }
-
-            // this.getDB().storage = this.getDB().store();
-
-            resolve({
-                type: 'success',
-                message: `Updates to <strong>${currentName}</strong> where applied!`
-            });
         });
         return promise;
     },
-    createItem: function createItem(candidate) {
+    createItem: function createItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
-            let safeItem = false;
+            if (!original.current || !changes) {
+                reject({
+                    type: 'warning',
+                    message: 'Please provide the minimum parameters to create a new item'
+                });
+            }
 
-            if (!candidate || !candidate.type) {
+            if (!original.current.type) {
                 reject({
                     type: 'warning',
                     message: 'Please select a type to create'
                 });
-                return;
             }
 
-            if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
+            if (!changes.name) {
                 reject({
                     type: 'warning',
-                    message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
+                    message: 'Please define a valid name for the <strong>' + changes.type + '</strong>'
                 });
                 return;
             }
 
-            let innerPromise;
+            const newName = _utils.sanitizeString(changes.name);
 
-            switch (candidate.type) {
-                case 'client':
-                    innerPromise = this.createClient(candidate);
-                break;
-                case 'group':
-                    innerPromise = this.createGroup(candidate);
-                break;
-                case 'project':
-                    innerPromise = this.createProject(candidate);
-                break;
-                default:
+            let model = {
+                type: original.current.type
+            };
+
+            model.sortBy = changes.sortBy;
+            model[model.type + 'Id'] = _gateway.helpers.generateUUID();
+            model[model.type + 'Name'] = changes.name;
+            model[model.type + 'Icon'] = changes.icon;
+
+            if (model.type !== 'project') {
+                model[model.type + 'Expanded'] = false;
+            } else {
+                model[model.type + 'Paths'] = [];
             }
 
-            innerPromise.then((data) => {
-                this.getDB().storage = this.getDB().store();
-                if (data.id) {
-                    this.views[candidate.type + 's'].push(data.id);
-                    console.debug(this.views);
-                }
-                resolve(data);
-            })
-            .catch(reject);
+            console.debug(model);
+
+            reject({
+                type: 'warning',
+                message: 'cenas'
+            });
+
+            // let safeItem = false;
+            //
+            // if (!candidate || !candidate.type) {
+            //     reject({
+            //         type: 'warning',
+            //         message: 'Please select a type to create'
+            //     });
+            //     return;
+            // }
+            //
+            // if (!candidate || !candidate.name || typeof candidate.name !== 'string') {
+            //     reject({
+            //         type: 'warning',
+            //         message: 'Please define a name for the <strong>' + candidate.type + '</strong>'
+            //     });
+            //     return;
+            // }
+            //
+            // let innerPromise;
+            //
+            // switch (candidate.type) {
+            //     case 'client':
+            //         innerPromise = this.createClient(candidate);
+            //     break;
+            //     case 'group':
+            //         innerPromise = this.createGroup(candidate);
+            //     break;
+            //     case 'project':
+            //         innerPromise = this.createProject(candidate);
+            //     break;
+            //     default:
+            // }
+            //
+            // innerPromise.then((data) => {
+            //     this.getDB().storage = this.getDB().store();
+            //     if (data.id) {
+            //         this.views[candidate.type + 's'].push(data.id);
+            //         console.debug(this.views);
+            //     }
+            //     resolve(data);
+            // })
+            // .catch(reject);
         });
         return promise;
     },
