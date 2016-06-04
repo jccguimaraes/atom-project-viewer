@@ -4,8 +4,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 - Sort clients, groups and projects by natural position or alphabetically;
-- Add Clients, Groups and Projects (context-menu);
-- Change DOM id to a more unique identifier (maybe uuid);
 - Elevate current `atom.project.getPaths()` to a project;
 - Allow sidebar to be on left and right;
 - SelectView Component *(from atom-space-pen)* `ctrl-alt-t`;
@@ -26,12 +24,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Toggle PV state `ctrl-alt-v`;
 - Add Clients, Groups and Projects (menu and context-menu);
 - Remove Clients, Groups and Projects (menu and context-menu);
-- Edit Clients, Groups and Projects (context-menu only);
+- Update Clients, Groups and Projects (context-menu only);
 - Drag & Drop workflow;
 ### Deprecated
 - None;
 ### Removed
 - Groups/Projects Colors;
+- Update Clients, Groups and Projects from menu;
 ### Fixed
 - Project state (workspace / files, history and tree-view package);
 - Project configuration now lives on atom's internal storage folder;

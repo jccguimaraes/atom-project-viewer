@@ -430,6 +430,9 @@ function addListOfClients () {
         }
     ).filter(
         (client) => {
+            if (!client) {
+                return false;
+            }
             if (originalItem.current.type === 'client') {
                 return;
             }
@@ -533,6 +536,9 @@ function addListOfGroups () {
         }
     ).filter(
         (group) => {
+            if (!group) {
+                return false;
+            }
             if (originalItem.current.type !== 'project') {
                 return;
             }
@@ -620,7 +626,6 @@ const htmlMethods = {
         }
 
         originalItem = _utilities.getItemChain(item);
-        console.debug(originalItem);
 
         addHeading.call(this);
         addItemInput.call(this);

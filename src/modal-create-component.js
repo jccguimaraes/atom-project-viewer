@@ -185,7 +185,7 @@ function addPaths (selectedPaths, evt) {
 
     clearPaths.call(this);
 
-    if (originalItem.current && originalItem.current.type !== 'project') {
+    if (!originalItem.current || originalItem.current.type !== 'project') {
         return;
     }
 
@@ -428,6 +428,9 @@ function addListOfClients () {
         }
     ).filter(
         (client) => {
+            if (!client) {
+                return false;
+            }
             if (!originalItem.current || (originalItem.current && originalItem.current.type === 'client')) {
                 return;
             }
@@ -466,6 +469,8 @@ function addListOfClients () {
             container.appendChild(clientView);
             if (originalItem.parent && originalItem.parent.clientId === clientStored.clientId) {
                 clientView.classList.add('btn-info');
+                changesToItem.hasClient = true;
+                changesToItem.client = clientStored;
             } else if (originalItem.root && originalItem.root.clientId === clientStored.clientId) {
                 clientView.classList.add('btn-info');
             }
@@ -531,13 +536,15 @@ function addListOfGroups () {
         }
     ).filter(
         (group) => {
+            if (!group) {
+                return false;
+            }
             if (originalItem.current && originalItem.current.type !== 'project') {
                 return;
             }
             if (
                 !changesToItem.hasOwnProperty('hasClient')
-                && originalItem.current
-                && originalItem.current.clientId
+                && originalItem.current && originalItem.current.clientId
             ) {
                 return group.clientId === originalItem.current.clientId;
             }
@@ -590,6 +597,8 @@ function addListOfGroups () {
             );
             if (originalItem.parent && originalItem.parent.groupId === groupStored.groupId) {
                 groupView.classList.add('btn-info');
+                changesToItem.hasGroup = true;
+                changesToItem.group = groupStored;
             } else if (originalItem.root && originalItem.root.groupId === groupStored.groupId) {
                 groupView.classList.add('btn-info');
             }
@@ -624,6 +633,7 @@ const htmlMethods = {
         addChoice.call(this);
         addItemInput.call(this);
         addIcons.call(this);
+        addPaths.call(this);
         addListOfClients.call(this);
         addListOfGroups.call(this);
         addButtons.call(this);

@@ -67,6 +67,8 @@ const utilities = {
             if (changes.icon) {
                 original.current[original.current.type + 'Icon'] = changes.icon;
                 itemView.setIcon(changes.icon, true);
+            } else {
+                itemView.setIcon();
             }
 
             if (changes.hasGroup) {
@@ -120,25 +122,21 @@ const utilities = {
 
             const newName = _utils.sanitizeString(changes.name);
 
-            let model = {
-                type: original.current.type
-            };
+            this.getDB().mapper.set(changes.view, original.current);
 
-            this.getDB().mapper.set(changes.view, model);
+            original.current[original.current.type + 'Id'] = _gateway.helpers.generateUUID();
+            changes.view.setId(original.current[original.current.type + 'Id']);
+            original.current[original.current.type + 'Name'] = changes.name;
+            changes.view.setText(original.current[original.current.type + 'Name']);
+            original.current[original.current.type + 'Icon'] = changes.icon;
+            changes.view.setIcon(original.current[original.current.type + 'Icon']);
 
-            model[model.type + 'Id'] = _gateway.helpers.generateUUID();
-            changes.view.setId(model[model.type + 'Id']);
-            model[model.type + 'Name'] = changes.name;
-            changes.view.setText(model[model.type + 'Name']);
-            model[model.type + 'Icon'] = changes.icon;
-            changes.view.setIcon(model[model.type + 'Icon']);
-
-            if (model.type !== 'project') {
-                model.sortBy = changes.sortBy || 'position';
-                model[model.type + 'Expanded'] = false;
+            if (original.current.type !== 'project') {
+                original.current.sortBy = changes.sortBy || 'position';
+                original.current[original.current.type + 'Expanded'] = false;
                 changes.view.setExpanded(false);
             } else {
-                model[model.type + 'Paths'] = changes.paths || [];
+                original.current[original.current.type + 'Paths'] = changes.paths || [];
             }
 
             let parentView;
@@ -155,12 +153,16 @@ const utilities = {
                 parentView.addNode(changes.view);
             }
 
-            this.getDB().views[model.type + 's'].push(model[model.type + 'Id']);
+            console.debug(original.current);
+            console.debug(changes);
+            console.debug(parentView);
+
+            this.getDB().views[original.current.type + 's'].push(original.current[original.current.type + 'Id']);
             this.getDB().setStorage(this.getDB().store());
 
             resolve({
                 type: 'success',
-                message: `${model.type} <strong>${newName}</strong> was created`
+                message: `${original.current.type} <strong>${newName}</strong> was created`
             });
         });
         return promise;
