@@ -1,5 +1,5 @@
 @import "ui-variables";
-// @import 'devicons.css';
+@import './devicons';
 @import "./helpers";
 
 project-viewer {
@@ -150,6 +150,15 @@ pv-remove-quick-modal {
 		max-height: 100px;
 		overflow-y: scroll;
 		overflow-x: hidden;
+
+		.btn{
+			width: 32%;
+
+			&:before{
+				float: left;
+				width: 20px;
+			}
+		}
 	}
 
 	.pv-label {

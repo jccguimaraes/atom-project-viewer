@@ -4,6 +4,7 @@ const _views = require('./views');
 const _utilities = require('./utilities');
 const _utils = require('./utils');
 const _octicons = require('./octicons');
+const _devicons = require('./devicons');
 
 const _listNestedItemComponent = require('./list-nested-item-component');
 const _listItemComponent = require('./list-item-component');
@@ -67,7 +68,16 @@ function addIcons () {
     let iconsList = document.createElement('div');
     iconsList.classList.add('inline-block', 'pv-icons');
 
-    _octicons.icons.forEach(
+    loopIcons.call(this, _octicons, iconsList);
+    loopIcons.call(this, _devicons, iconsList);
+
+    views.icons.appendChild(iconsDescription);
+    views.icons.appendChild(iconsList);
+    this.insertBefore(views.icons, views.buttonsContainer);
+}
+
+function loopIcons (iconSet, iconsList) {
+    iconSet.icons.forEach(
         (icon) => {
             let entryIcon = document.createElement('button');
             entryIcon.classList.add('btn', 'btn-sm', 'inline-block-tight', 'text-subtle', 'icon', icon);
@@ -76,10 +86,6 @@ function addIcons () {
             iconsList.appendChild(entryIcon);
         }
     );
-
-    views.icons.appendChild(iconsDescription);
-    views.icons.appendChild(iconsList);
-    this.insertBefore(views.icons, views.buttonsContainer);
 }
 
 function clearPaths () {
