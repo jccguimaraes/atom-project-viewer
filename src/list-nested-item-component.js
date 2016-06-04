@@ -175,7 +175,7 @@ const htmlMethods = {
         let filteredClasses;
         this.nodes.listItemSpan.classList.forEach(
             (ownClass) => {
-                if (ownClass.startsWith('icon-')) {
+                if (ownClass !== 'icon') {
                     filteredClasses = ownClass;
                 }
             });

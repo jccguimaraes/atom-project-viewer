@@ -4,6 +4,7 @@ const _views = require('./views');
 const _utilities = require('./utilities');
 const _utils = require('./utils');
 const _octicons = require('./octicons');
+const _devicons = require('./devicons');
 
 const definition = {
     custom: 'pv-update-modal'
@@ -74,7 +75,16 @@ function addIcons () {
     let iconsList = document.createElement('div');
     iconsList.classList.add('inline-block', 'pv-icons');
 
-    _octicons.icons.forEach(
+    loopIcons.call(this, _octicons, iconsList, itemIcon);
+    loopIcons.call(this, _devicons, iconsList, itemIcon);
+
+    views.icons.appendChild(iconsDescription);
+    views.icons.appendChild(iconsList);
+    this.insertBefore(views.icons, views.buttonsContainer);
+}
+
+function loopIcons (iconSet, iconsList, itemIcon) {
+    iconSet.icons.forEach(
         (icon) => {
             let entryIcon = document.createElement('button');
             entryIcon.classList.add('btn', 'btn-sm', 'inline-block-tight', 'text-subtle', 'icon', icon);
@@ -86,10 +96,6 @@ function addIcons () {
             }
         }
     );
-
-    views.icons.appendChild(iconsDescription);
-    views.icons.appendChild(iconsList);
-    this.insertBefore(views.icons, views.buttonsContainer);
 }
 
 function clearPaths () {

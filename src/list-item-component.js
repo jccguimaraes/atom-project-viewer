@@ -223,7 +223,7 @@ const htmlMethods = {
         let filteredClasses;
         this.nodes.span.classList.forEach(
             (ownClass) => {
-                if (ownClass.startsWith('icon-')) {
+                if (ownClass !== 'icon') {
                     filteredClasses = ownClass;
                 }
             });
