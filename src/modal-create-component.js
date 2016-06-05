@@ -295,7 +295,7 @@ function buttonClickEvent (evt) {
         delete changesToItem.name;
     }
 
-    if (originalItem.current.type === 'project') {
+    if (originalItem.current && originalItem.current.type === 'project') {
         let listItemConstructor = _utilities.getConstructor(_listItemComponent.definition);
         changesToItem.view = new listItemConstructor();
     } else {

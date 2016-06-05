@@ -224,7 +224,7 @@ function addChoiceClickEvent (evt) {
 
     let type = evt.target.textContent.toLowerCase();
 
-    if (originalItem.current.type === 'client') {
+    if (originalItem.current && originalItem.current.type === 'client') {
         clearListOfClients.call(this);
         clearListOfGroups.call(this);
         clearPaths.call(this);
@@ -232,9 +232,9 @@ function addChoiceClickEvent (evt) {
         addIcons.call(this);
     }
 
-    else if (originalItem.current.type === 'group') {}
+    else if (originalItem.current && originalItem.current.type === 'group') {}
 
-    else if (originalItem.current.type === 'project') {}
+    else if (originalItem.current && originalItem.current.type === 'project') {}
 
     return;
 
@@ -433,7 +433,7 @@ function addListOfClients () {
             if (!client) {
                 return false;
             }
-            if (originalItem.current.type === 'client') {
+            if (originalItem.current && originalItem.current.type === 'client') {
                 return;
             }
             return client;
@@ -539,12 +539,12 @@ function addListOfGroups () {
             if (!group) {
                 return false;
             }
-            if (originalItem.current.type !== 'project') {
+            if (originalItem.current && originalItem.current.type !== 'project') {
                 return;
             }
             if (
                 !changesToItem.hasOwnProperty('hasClient')
-                && originalItem.current.clientId
+                && originalItem.current && originalItem.current.clientId
             ) {
                 return group.clientId === originalItem.current.clientId;
             }

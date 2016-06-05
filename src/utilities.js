@@ -52,6 +52,34 @@ const utilities = {
 
         return chain;
     },
+    removeItem: function removeItem(original) {
+        console.debug(this.getDB().views);
+        console.debug(original);
+        const promise = new Promise((resolve, reject) => {
+            this.getDB().store();
+            let currentName = original[original.type + 'Name'];
+
+            const idx = this.getDB().views[original.type + 's'].indexOf(original[original.type + 'Id']);
+            let view;
+            console.debug(idx);
+            if (idx !== -1) {
+                this.getDB().views[original.type + 's'].splice(idx, 1);
+                view = document.getElementById(original[original.type + 'Id']);
+            }
+
+            if (view) {
+                view.remove();
+            }
+
+            this.getDB().store();
+
+            resolve({
+                type: 'success',
+                message: `Removed <em>${original.type}</em> called <strong>${currentName}</strong>!`
+            });
+        });
+        return promise;
+    },
     updateItem: function updateItem(original, changes) {
         const promise = new Promise((resolve, reject) => {
             let isANewParent;
@@ -68,6 +96,7 @@ const utilities = {
                 original.current[original.current.type + 'Icon'] = changes.icon;
                 itemView.setIcon(changes.icon, true);
             } else {
+                original.current[original.current.type + 'Icon'] = undefined;
                 itemView.setIcon();
             }
 
@@ -83,7 +112,6 @@ const utilities = {
             }
 
             if (isANewParent) {
-
                 isANewParent.addChild(itemView, true, true);
             }
 
@@ -153,12 +181,8 @@ const utilities = {
                 parentView.addNode(changes.view);
             }
 
-            console.debug(original.current);
-            console.debug(changes);
-            console.debug(parentView);
-
             this.getDB().views[original.current.type + 's'].push(original.current[original.current.type + 'Id']);
-            this.getDB().setStorage(this.getDB().store());
+            this.getDB().store();
 
             resolve({
                 type: 'success',
