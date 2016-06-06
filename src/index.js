@@ -143,7 +143,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
             let projectModel = {
                 type: 'project',
                 projectName: mappedProject.name,
-                projectIcon: mappedProject.icon || 'icon',
+                projectIcon: mappedProject.icon || '',
                 projectPaths: mappedProject.paths || [],
                 projectId: _gateway.helpers.generateUUID()
             };
@@ -588,7 +588,7 @@ const projectViewer = {
         if (atom.config.get(_utility.getConfig('startupVisibility')) && atom.config.get(_utility.getConfig('statusBarVisibility'))) {
             addToStatusBar.call(this);
         }
-    },
+    }
 };
 
 module.exports = projectViewer;

@@ -6,7 +6,6 @@ const _utils = require('./utils');
 const pkg = 'project-viewer';
 const file = `${pkg}.json`;
 const oldFile = `${pkg}.json`;
-// const storage = require('./file.json');
 let storage;
 const mapper = new WeakMap();
 const views = {
@@ -103,7 +102,7 @@ const readData = function readData () {
                                 }
                                 const project = {
                                     'name': storedProject.name || '',
-                                    'icon': '',
+                                    'icon': storedProject.icon || '',
                                     'paths': Object.keys(storedProject.paths) || []
                                 }
                                 group.projects.push(project);
@@ -146,7 +145,7 @@ const buildData = function buildData () {
         if (model.clientName && model.type === 'client') {
             let client = {
                 name: _utils.sanitizeString(model.clientName),
-                icon: _utils.sanitizeString(model.clientIcon) || '',
+                icon: model.clientIcon || '',
                 expanded: model.clientExpanded || false,
                 sortBy: model.sortBy || 'position',
                 groups: [],
@@ -157,7 +156,7 @@ const buildData = function buildData () {
         } else if (model.groupName && model.type === 'group') {
             let group = {
                 name: _utils.sanitizeString(model.groupName),
-                icon: _utils.sanitizeString(model.groupIcon) || '',
+                icon: model.groupIcon || '',
                 expanded: model.groupExpanded || false,
                 sortBy: model.sortBy || 'position',
                 projects: []
@@ -171,7 +170,7 @@ const buildData = function buildData () {
         } else if (model.projectName && model.type === 'project') {
             let project = {
                 name: _utils.sanitizeString(model.projectName),
-                icon: _utils.sanitizeString(model.projectIcon) || '',
+                icon: model.projectIcon || '',
                 paths: model.projectPaths || []
             };
             if (model.groupName && currentGroup && currentGroup.name === model.groupName) {

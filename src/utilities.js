@@ -53,15 +53,12 @@ const utilities = {
         return chain;
     },
     removeItem: function removeItem(original) {
-        console.debug(this.getDB().views);
-        console.debug(original);
         const promise = new Promise((resolve, reject) => {
             this.getDB().store();
             let currentName = original[original.type + 'Name'];
 
             const idx = this.getDB().views[original.type + 's'].indexOf(original[original.type + 'Id']);
             let view;
-            console.debug(idx);
             if (idx !== -1) {
                 this.getDB().views[original.type + 's'].splice(idx, 1);
                 view = document.getElementById(original[original.type + 'Id']);
@@ -97,7 +94,7 @@ const utilities = {
                 itemView.setIcon(changes.icon, true);
             } else {
                 original.current[original.current.type + 'Icon'] = undefined;
-                itemView.setIcon();
+                itemView.setIcon('');
             }
 
             if (changes.hasGroup) {
@@ -156,7 +153,7 @@ const utilities = {
             changes.view.setId(original.current[original.current.type + 'Id']);
             original.current[original.current.type + 'Name'] = changes.name;
             changes.view.setText(original.current[original.current.type + 'Name']);
-            original.current[original.current.type + 'Icon'] = changes.icon;
+            original.current[original.current.type + 'Icon'] = changes.icon || '';
             changes.view.setIcon(original.current[original.current.type + 'Icon']);
 
             if (original.current.type !== 'project') {

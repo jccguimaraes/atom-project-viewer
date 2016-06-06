@@ -26,6 +26,23 @@ function fetchAllModels (rootView) {
         .map(fetchModelByView);
 }
 
+function fetchAll () {
+    return _db.views.projects.map(
+        (projectId) => {
+            return _db.mapper.get(
+                document.getElementById(projectId)
+            );
+        }
+    ).filter(
+        (project) => {
+            if (!project) {
+                return false;
+            }
+            return true;
+        }
+    );
+}
+
 function openOnTreeView (project) {
     console.debug(project);
     if (
@@ -37,6 +54,7 @@ function openOnTreeView (project) {
 }
 
 const project = {
+    fetchAll: fetchAll,
     fetchAllViews: fetchAllViews,
     fetchModelByView: fetchModelByView,
     fetchAllModels: fetchAllModels,
