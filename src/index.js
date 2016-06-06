@@ -35,6 +35,10 @@ const _modalRemoveQuickConstructor = _utility.registerComponent(_modalRemoveQuic
 
 const _views = new WeakMap();
 
+function elevateToProject () {
+    console.debug('#implement feature');
+}
+
 function updateProjectViewer () {
     const views = _views.get(this);
 
@@ -521,7 +525,8 @@ const projectViewer = {
                 'project-viewer:remove-quick-item': removeQuickModal,
                 'project-viewer:file-backup': fileBackup,
                 'project-viewer:file-import': fileImport,
-                'project-viewer:file-delete-old': fileDeleteOld
+                'project-viewer:file-delete-old': fileDeleteOld,
+                'project-viewer:elevate-project': elevateToProject.bind(this)
             }
         ));
 

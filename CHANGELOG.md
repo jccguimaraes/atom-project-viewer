@@ -6,13 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Sort clients, groups and projects by natural position or alphabetically;
 - Elevate current `atom.project.getPaths()` to a project;
 - Allow sidebar to be on left and right;
-- SelectView Component *(from atom-space-pen)* `ctrl-alt-t`;
 - Resizable panel (as a pane instead?) *(investigate)*;
 - Validate if root path is a git repository and initialize it;
 - Clear saved project state (this can get above 1Mb of size);
 
 ## [0.3.0] -2016-XX-XX
 ### Added
+- SelectView Component *(from atom-space-pen)* `ctrl-alt-t`;
 - Autohide sidebar component ([issue #]());
 - Visually disabled projects that have no paths;
 - Save database file into a private *GitHub* gist;

@@ -1,5 +1,14 @@
 {
     "context-menu": {
+        "ol.tree-view": [
+            {
+                "type": "separator"
+            },
+            {
+                "label": "Elevate to Project...",
+                "command": "project-viewer:elevate-project"
+            }
+        ],
         "li[is='pv-list-nested-item']": [
             {
                 "label": "Update...",
