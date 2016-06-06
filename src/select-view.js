@@ -18,14 +18,19 @@ class PVSelectListView extends SelectListView {
 
         this.disposables = new CompositeDisposable();
 
-        this.setError('frak');
         this.setLoading('loading projects...');
         this.getEmptyMessage('couldn\'t find any projects');
 
-        atom.commands.add(
-            'atom-workspace',
-            'project-viewer:toggle-select-view',
-            this.toggle.bind(this)
+        this.disposables.add(
+            atom.commands.add(
+                'atom-workspace', {
+                    'project-viewer:toggle-select-view': this.toggle.bind(this),
+                    'core:move-up': this.selectPreviousItemView.bind(this),
+                    'core:move-down': this.selectNextItemView.bind(this),
+                    'core:confirm': this.confirmSelection.bind(this),
+                    'core:cancel': this.cancelSelection.bind(this)
+                }
+            )
         );
     }
 
@@ -40,8 +45,25 @@ class PVSelectListView extends SelectListView {
         }
     }
 
+    cancelSelection () {
+        if (this.panel && this.panel.isVisible()) {
+            this.cancel();
+        }
+    }
+
+    confirmSelection () {
+        const item = this.getSelectedItem();
+        if (item) {
+            this.confirmed(item);
+        }
+        if (this.panel && this.panel.isVisible()) {
+            this.cancel();
+        }
+    }
+
     confirmed (item) {
-        console.debug(item);
+        const event = new MouseEvent('click');
+        document.getElementById(item.projectId).dispatchEvent(event);
         // gateway.project.openOnTreeView(item);
         this.cancel();
     }
@@ -85,7 +107,6 @@ class PVSelectListView extends SelectListView {
         if (this.panel) {
             this.list.empty();
             this.panel.hide();
-            this.disposables.dispose();
         }
     }
 
