@@ -35,9 +35,7 @@ const _modalRemoveQuickConstructor = _utility.registerComponent(_modalRemoveQuic
 
 const _views = new WeakMap();
 
-function elevateToProject () {
-    console.debug('#implement feature');
-}
+function elevateToProject () {}
 
 function updateProjectViewer () {
     const views = _views.get(this);
