@@ -70,6 +70,8 @@ const utilities = {
 
             this.getDB().store();
 
+            this.updateStatusBar();
+
             resolve({
                 type: 'success',
                 message: `Removed <em>${original.type}</em> called <strong>${currentName}</strong>!`
@@ -133,6 +135,8 @@ const utilities = {
             }
 
             this.getDB().store();
+
+            this.updateStatusBar();
 
             resolve({
                 type: 'success',
@@ -212,9 +216,6 @@ const utilities = {
         return _db.info.name.concat('.', config);
     },
     setSelectedProjectView: function setSelectedProjectView(view) {
-        if (!view) {
-            return;
-        }
         _caches.selectedProjectView = view;
         this.updateStatusBar();
     },
@@ -252,7 +253,13 @@ const utilities = {
         let model = this.getSelectedProjectModel();
         let context = '';
 
-        if (!statusBar || !model) {
+        if (!statusBar) {
+            return;
+        }
+
+        if (!model) {
+            context = 'No selected project';
+            statusBar.setText(context);
             return;
         }
 

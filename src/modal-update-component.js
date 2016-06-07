@@ -499,6 +499,8 @@ function addListOfClients () {
                 false
             );
             container.appendChild(clientView);
+            console.debug(changesToItem);
+            console.debug(originalItem);
             if (originalItem.parent && originalItem.parent.clientId === clientStored.clientId) {
                 clientView.classList.add('btn-info');
             } else if (originalItem.root && originalItem.root.clientId === clientStored.clientId) {

@@ -43,7 +43,9 @@ function removeButtonClickEvent (evt) {
         model.clientView.remove();
     }
 
-    _utilities.getDB().setStorage(_utilities.getDB().store());
+    _utilities.getDB().store();
+
+    _utilities.setSelectedProjectView();
 
     closeModal.call(this);
 }

@@ -8,7 +8,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
 - Validate if root path is a git repository and initialize it;
 - Clear saved project state (this can get above 1Mb of size);
-- Clear status bar if project is deleted;
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
 ## [0.3.0] -2016-XX-XX
