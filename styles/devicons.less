@@ -18,6 +18,11 @@
 }
 
 .devicon-{
+	&less {
+		&:before {
+			content: "\e853";
+		}
+	}
 	&ssh {
 		&:before {
 			content: "\e901";
@@ -69,7 +74,9 @@
 		}
 	}
 	&jetbrains {
-		content: "\e63d";
+		&:before {
+			content: "\e63d";
+		}
 	}
 	&django {
 		&:before {
@@ -112,7 +119,9 @@
 		}
 	}
 	&nginx {
-		content: "\e615";
+		&:before {
+			content: "\e615";
+		}
 	}
 	&erlang {
 		&:before {
