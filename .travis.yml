@@ -33,4 +33,3 @@ addons:
 branches:
   only:
     - master
-    - refactor
