@@ -11,9 +11,7 @@ function f_createdCallback () {
     locals.header.textContent = 'Choose what to add:';
 }
 
-function f_attachedCallback () {
-    console.debug(_gateway.local.get(this));
-}
+function f_attachedCallback () {}
 
 function f_detachedCallback () {}
 

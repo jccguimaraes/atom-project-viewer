@@ -106,25 +106,37 @@ function clearPaths () {
     }
 }
 
-function eachFolder (evt, folder) {
+function eachFolder (reading, folder) {
     const views = _views.get(this);
-    const model = _utilities.getDB().mapper.get(this);
 
-    if (!model.projectPaths && !Array.isArray(model.projectPaths)) {
-        model.projectPaths = [];
+    if (!changesToItem.paths) {
+        changesToItem.paths = {
+            add: [],
+            remove: []
+        }
     }
 
     // because we are dispatching the event ourselves
-    if (evt.isTrusted && model.projectPaths.indexOf(folder) !== -1) {
+    if (
+        !reading
+        && originalItem.current.projectPaths.indexOf(folder) !== -1
+        && changesToItem.paths.add.indexOf(folder) !== -1
+    ) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
     }
 
-    if (evt.isTrusted) {
-        model.projectPaths.push(folder);
+    let idxRemove = changesToItem.paths.remove.indexOf(folder);
+
+    if (!reading) {
+        changesToItem.paths.add.push(folder);
     }
 
-    if (model.projectPaths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
+    if (idxRemove !== -1) {
+        changesToItem.paths.remove.splice(idxRemove, 1);
+    }
+
+    if (changesToItem.paths.add.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
         let name = folder.split('/').reverse()[0];
         views.itemInput.getModel().buffer.setText(name);
     }
@@ -141,7 +153,10 @@ function eachFolder (evt, folder) {
 
     pathView.appendChild(pathViewIcon);
     pathView.appendChild(pathViewText);
-    views.pathsList.appendChild(pathView);
+
+    if (views.pathsList) {
+        views.pathsList.appendChild(pathView);
+    }
 }
 
 function addPath (evt) {
@@ -152,7 +167,7 @@ function addPath (evt) {
         if (!Array.isArray(folders)) {
             return;
         }
-        folders.forEach(eachFolder.bind(this, evt));
+        folders.forEach(eachFolder.bind(this, false));
     });
 }
 
@@ -160,20 +175,31 @@ function removePath (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
-    const model = _utilities.getDB().mapper.get(this);
+    let toRemove = false;
 
-    if (model.projectPaths && Array.isArray(model.projectPaths)) {
-
-        const idx = model.projectPaths.indexOf(evt.target.nextSibling.textContent);
-
-        if (idx !== -1) {
-            model.projectPaths.splice(idx, 1);
-            evt.target.parentElement.remove();
+    if (!changesToItem.paths) {
+        changesToItem.paths = {
+            add: [],
+            remove: []
         }
+    }
+
+    const newPath = evt.target.nextSibling.textContent;
+    const idxAdd = changesToItem.paths.add.indexOf(newPath);
+    const idxRemove = changesToItem.paths.remove.indexOf(newPath);
+
+    toRemove = !~idxRemove;
+
+    if (idxRemove === -1) {
+        changesToItem.paths.remove.push(newPath);
+    }
+
+    if (toRemove) {
+        evt.target.parentElement.remove();
     }
 }
 
-function addPaths (selectedPaths, evt) {
+function addPaths (evt) {
     const views = _views.get(this);
 
     if (views.paths) {
@@ -194,8 +220,12 @@ function addPaths (selectedPaths, evt) {
     views.pathAdd.textContent = 'Add root paths:'
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
-    if (selectedPaths && Array.isArray(selectedPaths)) {
-        selectedPaths.forEach(eachFolder.bind(this, evt));
+    if (originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
+        originalItem.current.projectPaths.forEach(
+            (path) => {
+                eachFolder.call(this, true, path);
+            }
+        );
     }
 
     views.paths.appendChild(views.pathAdd);
@@ -630,6 +660,7 @@ const htmlMethods = {
         addHeading.call(this);
         addItemInput.call(this);
         addIcons.call(this);
+        addPaths.call(this);
         addListOfClients.call(this);
         addListOfGroups.call(this);
         addButtons.call(this);

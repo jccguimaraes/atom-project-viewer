@@ -97,6 +97,26 @@ const utilities = {
                 itemView.setIcon('');
             }
 
+            if (changes.paths) {
+                const paths = original.current[original.current.type + 'Paths'];
+                changes.paths.remove.forEach(
+                    (path) => {
+                        if (paths.indexOf(path) !== -1) {
+                            original.current[original.current.type + 'Paths'].splice(paths.indexOf(path), 1);
+                            atom.project.removePath(path);
+                        }
+                    }
+                );
+                changes.paths.add.forEach(
+                    (path) => {
+                        if (paths.indexOf(path) === -1) {
+                            original.current[original.current.type + 'Paths'].push(path);
+                            atom.project.addPath(path);
+                        }
+                    }
+                );
+            }
+
             if (changes.hasGroup) {
                 Object.setPrototypeOf(original.current, changes.group);
                 isANewParent = document.getElementById(changes.group.groupId);

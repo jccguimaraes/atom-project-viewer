@@ -483,10 +483,14 @@ const projectViewer = {
         views.headerView = new _headerConstructor();
         views.containerView = new _listTreeConstructor();
 
-        views.mainPanel = atom.workspace.addRightPanel({
-            item: views.mainView,
-            visible: atom.config.get(_utility.getConfig('startupVisibility'))
+        atom.config.observe(_utility.getConfig('panelPosition'), (value) => {
+            views.mainPanel = atom.workspace['add' + value + 'Panel']({
+                item: views.mainView,
+                visible: atom.config.get(_utility.getConfig('startupVisibility'))
+            });
         });
+
+
 
         atom.config.observe(_utility.getConfig('autohide'), (value) => {
             if (value) {
@@ -520,12 +524,12 @@ const projectViewer = {
                 'project-viewer:create-client-item': createModal.bind(this, 'client'),
                 'project-viewer:create-group-item': createModal.bind(this, 'group'),
                 'project-viewer:create-project-item': createModal.bind(this, 'project'),
-                'project-viewer:update-item': updateModal,
-                'project-viewer:remove-item': removeModal,
-                'project-viewer:remove-quick-item': removeQuickModal,
-                'project-viewer:file-backup': fileBackup,
-                'project-viewer:file-import': fileImport,
-                'project-viewer:file-delete-old': fileDeleteOld,
+                'project-viewer:update-item': updateModal.bind(this),
+                'project-viewer:remove-item': removeModal.bind(this),
+                'project-viewer:remove-quick-item': removeQuickModal.bind(this),
+                'project-viewer:file-backup': fileBackup.bind(this),
+                'project-viewer:file-import': fileImport.bind(this),
+                'project-viewer:file-delete-old': fileDeleteOld.bind(this),
                 'project-viewer:elevate-project': elevateToProject.bind(this)
             }
         ));

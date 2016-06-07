@@ -1,10 +1,39 @@
 # README
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7bd7c81dafb4422caa765faa7d51bfc0)](https://www.codacy.com/app/jccguimaraes/atom-project-viewer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jccguimaraes/atom-project-viewer&amp;utm_campaign=Badge_Grade)
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
+[![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+
+This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
+
+### Projects that inspired me!
+* [tree-view](https://atom.io/packages/tree-view) from *atom*.
+* [project-manager](https://atom.io/packages/project-manager) from *danielbrodin*.
+* [project-sidebar](https://atom.io/packages/project-sidebar) from *bripkens*.
+
+### Installation
+Simply run the following command:
+```sh
+apm install project-viewer
+```
+Or find the package in **Atom → Settings → Install** and search for ***project-viewer***.
+
+### Settings
+Settings | Type | Description | Default
+---------|------|-------------|--------
+`startupVisibility` | `Boolean` | Define if you want **project-viewer** to be visible on startup. | `false`
+`statusBarVisibility` | `Boolean` | Define if you want **project-viewer** to show active *group* and *project*. | `false`
+`autohide` | `Boolean` | Ability to autohide project viewer. | `false`
+`panelPosition` | `String` | You can set the place of the viewer, to the most right position or to the most left position. | `Right`
+`hideHeader` | `Boolean` | Hide header (for more space). | `false`
+`githubToken` | `String` | Your personal and private GitHub token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string. | `''`
+`convertOldData` | `Boolean` | If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default it will always check on startup for this data and if the new does not exist, it will convert to the new data schema. | `true`
+
+## Features & Future Features
+Please read the `CHANGE LOG` to have a more insight on all the features existing and planned.
 
 ## Contributors
-
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -13,3 +42,6 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+
+### Other
+You can follow me on [Twitter](https://twitter.com/jccguimaraes)

@@ -167,14 +167,12 @@ function removePath (evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
-    const model = _utilities.getDB().mapper.get(this);
+    if (changesToItem.paths && Array.isArray(changesToItem.paths)) {
 
-    if (model.projectPaths && Array.isArray(model.projectPaths)) {
-
-        const idx = model.projectPaths.indexOf(evt.target.nextSibling.textContent);
+        const idx = changesToItem.paths.indexOf(evt.target.nextSibling.textContent);
 
         if (idx !== -1) {
-            model.projectPaths.splice(idx, 1);
+            changesToItem.paths.splice(idx, 1);
             evt.target.parentElement.remove();
         }
     }

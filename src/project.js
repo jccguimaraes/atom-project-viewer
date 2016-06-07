@@ -43,15 +43,7 @@ function fetchAll () {
     );
 }
 
-function openOnTreeView (project) {
-    console.debug(project);
-    if (
-        !project.hasOwnProperty('projectPaths')
-        || !Array.isArray(project.projectPaths)
-    ) {
-        return;
-    }
-}
+function openOnTreeView (project) {}
 
 const project = {
     fetchAll: fetchAll,
