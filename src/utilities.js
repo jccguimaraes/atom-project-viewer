@@ -258,7 +258,7 @@ const utilities = {
         }
 
         if (!model) {
-            context = 'No selected project';
+            context = 'No project selected';
             statusBar.setText(context);
             return;
         }
@@ -274,7 +274,7 @@ const utilities = {
         if (model.projectName) {
             context += model.projectName;
         } else {
-            context = 'No selected project';
+            context = 'No project selected';
         }
 
         statusBar.setText(context);
