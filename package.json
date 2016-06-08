@@ -1,7 +1,7 @@
 {
   "name": "project-viewer",
   "main": "./src/index",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Project viewer/manager that lets you add, edit and remove clients/groups/projects as well as switching between them.",
   "keywords": [
     "project",
@@ -14,7 +14,7 @@
     "atom": ">=1.7.4"
   },
   "dependencies": {
-      "atom-space-pen-views": "latest"
+    "atom-space-pen-views": "latest"
   },
   "devDependencies": {
     "all-contributors-cli": "latest",
