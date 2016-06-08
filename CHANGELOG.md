@@ -10,7 +10,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
-## [0.3.0] -2016-XX-XX
+## [0.3.2] -2016-07-08
+### Fixed
+- Fixed `SelectView` when no projects were available;
+
+## [0.3.1] -2016-07-08
+### Changed
+- Moved `atom-space-pen-views` from `devDependencies` to `dependencies`;
+
+## [0.3.0] -2016-07-08
 ### Added
 - SelectView Component *(from atom-space-pen)* `ctrl-alt-t`;
 - Autohide sidebar component ([#27](https://github.com/jccguimaraes/atom-project-viewer/issues/27));

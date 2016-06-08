@@ -64,7 +64,6 @@ class PVSelectListView extends SelectListView {
     confirmed (item) {
         const event = new MouseEvent('click');
         document.getElementById(item.projectId).dispatchEvent(event);
-        // gateway.project.openOnTreeView(item);
         this.cancel();
     }
 
@@ -99,7 +98,9 @@ class PVSelectListView extends SelectListView {
             this.filterEditorView.getModel().getBuffer().onDidStopChanging(this.onChange.bind(this))
         );
         this.panel.show();
-        this.scrollToItemView(this.list.find('li:first'));
+        if (this.items.length > 0) {
+            this.scrollToItemView(this.list.find('li:first'));
+        }
         this.focusFilterEditor();
     }
 
@@ -130,6 +131,10 @@ class PVSelectListView extends SelectListView {
 
     filterItems (query) {
         let list = gateway.project.fetchAll();
+
+        if (!list || list.length === 0) {
+            return [];
+        }
 
         if (!query) {
             return list;
