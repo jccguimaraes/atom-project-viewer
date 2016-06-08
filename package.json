@@ -13,10 +13,11 @@
   "engines": {
     "atom": ">=1.7.4"
   },
-  "dependencies": {},
+  "dependencies": {
+      "atom-space-pen-views": "latest"
+  },
   "devDependencies": {
     "all-contributors-cli": "latest",
-    "atom-space-pen-views": "latest",
     "cz-conventional-changelog": "latest"
   },
   "config": {
