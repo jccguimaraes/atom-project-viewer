@@ -10,13 +10,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
+## [0.3.3] -2016-07-11
+### Fixed
+- Fixed bad workflow on updating Clients/Groups/Projects ([#48](https://github.com/jccguimaraes/atom-project-viewer/issues/48));
+### Added
+- Possibility (through config option) to always open projects in a new window (default Atom\'s behavior), instead of opening in the same window. ([#46](https://github.com/jccguimaraes/atom-project-viewer/issues/46));
+
 ## [0.3.2] -2016-07-08
 ### Fixed
-- Fixed `SelectView` when no projects were available;
+- Fixed `SelectView` when no projects were available ([#45](https://github.com/jccguimaraes/atom-project-viewer/issues/45));
 
 ## [0.3.1] -2016-07-08
 ### Changed
-- Moved `atom-space-pen-views` from `devDependencies` to `dependencies`;
+- Moved `atom-space-pen-views` from `devDependencies` to `dependencies` available ([#45](https://github.com/jccguimaraes/atom-project-viewer/issues/45));
 
 ## [0.3.0] -2016-07-08
 ### Added

@@ -66,14 +66,24 @@ function clickListener(evt) {
         atom.project.setPaths(model.projectPaths);
     }
 
+    if (atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'))) {
+        atom.open({
+            pathsToOpen: model.projectPaths || [],
+            newWindow: true,
+            devMode: false,
+            safeMode: false
+        });
+        return;
+    }
+
+    _utility.setSelectedProjectView(this);
+
     if (selected) {
         selected.classList.remove('active');
         selected.classList.remove('selected');
     }
     this.classList.add('active');
     this.classList.add('selected');
-
-    _utility.setSelectedProjectView(this);
 };
 
 function dragStartListener(evt) {

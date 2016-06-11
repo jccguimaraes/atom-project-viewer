@@ -119,8 +119,15 @@ function eachFolder (reading, folder) {
     // because we are dispatching the event ourselves
     if (
         !reading
-        && originalItem.current.projectPaths.indexOf(folder) !== -1
-        && changesToItem.paths.add.indexOf(folder) !== -1
+        && originalItem.current
+        && Array.isArray(originalItem.current.projectPaths)
+        && (
+            (originalItem.current.projectPaths.indexOf(folder) !== -1
+            && changesToItem.paths.remove.indexOf(folder) === -1)
+            ||
+            (originalItem.current.projectPaths.indexOf(folder) === -1
+            && changesToItem.paths.add.indexOf(folder) !== -1)
+        )
     ) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
@@ -200,6 +207,11 @@ function removePath (evt) {
 }
 
 function addPaths (evt) {
+
+    if (originalItem.current.type !== 'project') {
+        return;
+    }
+
     const views = _views.get(this);
 
     if (views.paths) {
@@ -499,8 +511,6 @@ function addListOfClients () {
                 false
             );
             container.appendChild(clientView);
-            console.debug(changesToItem);
-            console.debug(originalItem);
             if (originalItem.parent && originalItem.parent.clientId === clientStored.clientId) {
                 clientView.classList.add('btn-info');
             } else if (originalItem.root && originalItem.root.clientId === clientStored.clientId) {

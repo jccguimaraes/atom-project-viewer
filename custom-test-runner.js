@@ -1,0 +1,65 @@
+'use strict';
+
+const Mocha = require('mocha');
+const fs = require('fs');
+const path = require('path');
+const allowUnsafeEval = require('loophole').allowUnsafeEval;
+const allowUnsafeNewFunction = require('loophole').allowUnsafeNewFunction;
+
+module.exports = function (args) {
+
+    allowUnsafeEval(() => {
+        return allowUnsafeNewFunction(() => {
+
+            let element = document.createElement('div');
+            element.id = 'mocha';
+            document.body.appendChild(element);
+
+            let fileref = document.createElement("link");
+            fileref.setAttribute("rel", "stylesheet");
+            fileref.setAttribute("type", "text/css");
+            fileref.setAttribute("href", path.join(__dirname, 'node_modules/mocha/mocha.css'));
+            document.getElementsByTagName("head")[0].appendChild(fileref);
+
+            let applicationDelegate = args.buildDefaultApplicationDelegate();
+
+            // Build atom global
+            window.atom = args.buildAtomEnvironment({
+                applicationDelegate: applicationDelegate,
+                window: window,
+                document: document,
+                configDirPath: process.env.ATOM_HOME,
+                enablePersistence: false
+            });
+
+            // Instantiate a Mocha instance.
+            var mocha = new Mocha({
+                reporter: 'html'
+            });
+
+            var testDir = path.join(__dirname, 'spec');
+
+            // Add each .js file to the mocha instance
+            fs.readdirSync(testDir).filter(function(file){
+                // Only keep the .js files
+                return file.substr(-3) === '.js';
+
+            }).forEach(function(file){
+                mocha.addFile(
+                    path.join(testDir, file)
+                );
+            });
+
+            mocha.checkLeaks();
+            // Run the tests.
+            mocha.run((failures, a) => {
+                process.on('exit', () => {
+                    process.exit(failures);  // exit with non-zero status if there were failures
+                });
+            });
+        });
+    });
+
+    // success
+    return Promise.resolve(0);
+};
