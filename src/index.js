@@ -260,7 +260,9 @@ function addClients(mappedRoot, rootView) {
 
 function removeFromStatusBar() {
     _utility.clearStatusBar();
-    this.statusBarTile.destroy();
+    if (this.statusBarTile) {
+        this.statusBarTile.destroy();
+    }
 }
 
 function addToStatusBar() {
@@ -591,7 +593,6 @@ const projectViewer = {
     },
     consumeStatusBar: function consumeStatusBar(statusBar) {
         this.statusBar = statusBar;
-
         if (atom.config.get(_utility.getConfig('startupVisibility')) && atom.config.get(_utility.getConfig('statusBarVisibility'))) {
             addToStatusBar.call(this);
         }

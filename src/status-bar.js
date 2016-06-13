@@ -1,15 +1,10 @@
 'use strict';
 
-const registryView = require('./view-registry');
+const viewRegistry = require('./view-registry');
 const statusBarView = require('./status-bar-view');
 
 const wm = new WeakMap();
 const statusBar = Object.create(null);
-
-/**
- *
- */
-statusBar.model = wm.get(this);
 
 /**
  *
@@ -34,6 +29,7 @@ statusBar.destroy = function f_destroy () {
         wm.delete(this);
         return undefined;
     }
+
     return null;
 };
 
@@ -79,12 +75,20 @@ statusBar.renderView = function _renderView () {
         return undefined;
     }
 
-    const constructorView = registryView.register(statusBarView.definition, statusBarView.methods);
+    const view = viewRegistry.renderView(statusBarView);
 
-    if (constructorView) {
-        statusBarObject._view = registryView.renderView(statusBarView.definition);
+    if (view) {
+        statusBarObject._view = view;
         return statusBarObject._view;
     }
+
+    const constructorView = viewRegistry.register(statusBarView);
+
+    if (constructorView) {
+        statusBarObject._view = viewRegistry.renderView(statusBarView);
+        return statusBarObject._view;
+    }
+
     return null;
 };
 
@@ -93,6 +97,7 @@ statusBar.renderView = function _renderView () {
  */
 statusBar.getView = function _getView () {
     const statusBarObject = wm.get(this);
+
     if (!statusBarObject) {
         return undefined;
     }

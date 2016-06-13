@@ -25,6 +25,11 @@ apm install project-viewer
 ```
 Or find the package in **Atom → Settings → Install** and search for ***project-viewer***.
 
+### Options
+- `ctrl-alt-cmd-v` open a select view for fast project opening;
+- `ctrl-alt-cmd-b` to toggle between sidebar visibility;
+- `ctrl-alt-cmd-n` to toggle focus on sidebar;
+
 ### Settings
 Settings | Type | Description | Default
 ---------|------|-------------|--------

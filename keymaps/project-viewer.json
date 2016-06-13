@@ -1,12 +1,7 @@
 {
-  ".platform-darwin": {
-      "alt-ctrl-v": "project-viewer:toggle-display",
-      "alt-ctrl-t": "project-viewer:toggle-select-view",
-      "ctrl-9": "project-viewer:toggle-focus"
-  },
-  ".platform-win32, .platform-linux": {
-      "alt-ctrl-v": "project-viewer:toggle-display",
-      "alt-ctrl-t": "project-viewer:toggle-select-view",
-      "ctrl-9": "project-viewer:toggle-focus"
+  ".platform-darwin, .platform-win32, .platform-linux": {
+      "ctrl-alt-cmd-v": "project-viewer:toggle-select-view",
+      "ctrl-alt-cmd-b": "project-viewer:toggle-display",
+      "ctrl-alt-cmd-n": "project-viewer:toggle-focus"
   }
 }

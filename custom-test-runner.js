@@ -50,7 +50,7 @@ module.exports = function (args) {
                 );
             });
 
-            mocha.checkLeaks();
+            // mocha.checkLeaks();
             // Run the tests.
             mocha.run((failures, a) => {
                 process.on('exit', () => {

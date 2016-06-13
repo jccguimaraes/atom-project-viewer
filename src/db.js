@@ -42,7 +42,7 @@ const readData = function readData () {
             if (error) {
                 resolve({
                     type: 'info',
-                    message: `Previous data file not found!<br>Please go to <code>Settings -> Packages -> Project-Viewer ->convertOldData</code> and set to <code>false</code>.`,
+                    message: `Previous data file not found!<br>Nothing to import...<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and set to <code>false</code>.`,
                     options: {
                         icon: 'database'
                     }
@@ -60,6 +60,7 @@ const readData = function readData () {
                             icon: 'database'
                         }
                     });
+                    storage = getContent();
                     return;
                 }
 
@@ -75,14 +76,11 @@ const readData = function readData () {
                             icon: 'database'
                         }
                     });
+                    storage = getContent();
                     return;
                 }
 
-                const converted = {
-                    clients: [],
-                    groups: [],
-                    projects: []
-                };
+                const converted = getContent();
 
                 if (content.hasOwnProperty('groups')) {
                     content.groups.forEach((storedGroup) => {
@@ -93,7 +91,14 @@ const readData = function readData () {
                             'sortBy': 'position',
                             'projects': []
                         }
-                        converted.groups.push(group);
+                        if (converted.groups.length === 0) {
+                            converted.groups.push(group);
+                        }
+                        else if(!converted.groups.some((groupAlreadyIn) => {
+                            return groupAlreadyIn.name === group.name;
+                        })) {
+                            converted.groups.push(group);
+                        }
 
                         if (content.hasOwnProperty('projects')) {
                             content.projects.forEach((storedProject) => {
@@ -105,7 +110,14 @@ const readData = function readData () {
                                     'icon': storedProject.icon || '',
                                     'paths': Object.keys(storedProject.paths) || []
                                 }
-                                group.projects.push(project);
+                                if (converted.projects.length === 0) {
+                                    group.projects.push(project);
+                                }
+                                else if (!converted.projects.some((projectAlreadyIn) => {
+                                    return projectAlreadyIn.name === project.name;
+                                })) {
+                                    group.projects.push(project);
+                                }
                             });
                         }
                     });
@@ -114,7 +126,7 @@ const readData = function readData () {
                 atom.getStorageFolder().storeSync(file, storage);
                 resolve({
                     type: 'success',
-                    message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please go to <code>Settings -> Packages -> Project-Viewer ->convertOldData</code> and set to <code>false</code>.`,
+                    message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and set to <code>false</code> or even <code>Packages -> Project-Viewer -> File - Delete old file</code>.`,
                     options: {
                         icon: 'database'
                     }
