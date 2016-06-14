@@ -42,7 +42,7 @@ const readData = function readData () {
             if (error) {
                 resolve({
                     type: 'info',
-                    message: `Previous data file not found!<br>Nothing to import...<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and set to <code>false</code>.`,
+                    message: `Previous data file not found!<br>Nothing to import...<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and setting it to <code>false</code>.`,
                     options: {
                         icon: 'database'
                     }
@@ -126,7 +126,7 @@ const readData = function readData () {
                 atom.getStorageFolder().storeSync(file, storage);
                 resolve({
                     type: 'success',
-                    message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and set to <code>false</code> or even <code>Packages -> Project-Viewer -> File - Delete old file</code>.`,
+                    message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and setting it to <code>false</code> or even <code>Packages -> Project-Viewer -> File - Delete old file</code>.`,
                     options: {
                         icon: 'database'
                     }

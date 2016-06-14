@@ -140,7 +140,7 @@ const utilities = {
 
             resolve({
                 type: 'success',
-                message: `Updates to <strong>${currentName}</strong> where applied!`
+                message: `Updates to <strong>${currentName}</strong> were applied!`
             });
         });
         return promise;

@@ -249,24 +249,24 @@ function addChoice (model) {
     views.choiceOptions = document.createElement('div');
     views.choiceOptions.classList.add('block', 'btn-group', 'btn-group-xs');
 
-    views.choiseClient = document.createElement('button');
-    views.choiseClient.classList.add('btn');
-    views.choiseClient.textContent = 'Client';
-    views.choiseClient.addEventListener('click', addChoiceClickEvent.bind(this), false);
+    views.choiceClient = document.createElement('button');
+    views.choiceClient.classList.add('btn');
+    views.choiceClient.textContent = 'Client';
+    views.choiceClient.addEventListener('click', addChoiceClickEvent.bind(this), false);
 
-    views.choiseGroup = document.createElement('button');
-    views.choiseGroup.classList.add('btn');
-    views.choiseGroup.textContent = 'Group';
-    views.choiseGroup.addEventListener('click', addChoiceClickEvent.bind(this), false);
+    views.choiceGroup = document.createElement('button');
+    views.choiceGroup.classList.add('btn');
+    views.choiceGroup.textContent = 'Group';
+    views.choiceGroup.addEventListener('click', addChoiceClickEvent.bind(this), false);
 
-    views.choiseProject = document.createElement('button');
-    views.choiseProject.classList.add('btn');
-    views.choiseProject.textContent = 'Project';
-    views.choiseProject.addEventListener('click', addChoiceClickEvent.bind(this), false);
+    views.choiceProject = document.createElement('button');
+    views.choiceProject.classList.add('btn');
+    views.choiceProject.textContent = 'Project';
+    views.choiceProject.addEventListener('click', addChoiceClickEvent.bind(this), false);
 
-    views.choiceOptions.appendChild(views.choiseClient);
-    views.choiceOptions.appendChild(views.choiseGroup);
-    views.choiceOptions.appendChild(views.choiseProject);
+    views.choiceOptions.appendChild(views.choiceClient);
+    views.choiceOptions.appendChild(views.choiceGroup);
+    views.choiceOptions.appendChild(views.choiceProject);
 
     this.appendChild(views.choiceOptions);
 }
@@ -640,9 +640,9 @@ const htmlMethods = {
         const views = _views.get(this);
         views.pathAdd && views.pathAdd.removeEventListener('click', addPath.bind(this));
 
-        views.choiseClient && views.choiseClient.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseGroup && views.choiseGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
-        views.choiseProject && views.choiseProject.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiceClient && views.choiceClient.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiceGroup && views.choiceGroup.removeEventListener('click', addChoiceClickEvent.bind(this));
+        views.choiceProject && views.choiceProject.removeEventListener('click', addChoiceClickEvent.bind(this));
         views.updateButton && views.updateButton.removeEventListener('click', buttonClickEvent.bind(this));
     }
 };

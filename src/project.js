@@ -1,13 +1,13 @@
 'use strict';
 
-// internal dependencies
+// Internal dependencies
 const _db = require('./db');
 
-// this is a hack for returning an empty NodeList element
+// This is a hack for returning an empty NodeList element
 const DUMMY_SELECTOR = 'DUMMY_SELECTOR';
 
-// a constant that acts like a query for fetching DOM elements
-// that representing projects
+// A constant that acts like a query for fetching DOM elements
+// that represent projects
 const PROJECTS_LIST_QUERY = 'li[is="pv-list-item"]';
 
 function fetchAllViews (rootView) {
