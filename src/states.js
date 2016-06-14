@@ -35,7 +35,7 @@ const methods = {
             return;
         }
 
-        if (!pkg || !pkg.mainModule) {
+        if (!pkg || !pkg.mainModule || pkg.mainModule.treeView === null) {
             return;
         }
 

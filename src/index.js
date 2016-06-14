@@ -322,6 +322,16 @@ function fileDeleteOld () {
     _utility.getDB().deleteOldFile();
 }
 
+function openProject (event, context) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const model = _utility.getDB().mapper.get(event.target);
+    const eventClick = new CustomEvent('click', { 'detail': context === 'new' ? true : false });
+
+    document.getElementById(model.projectId).dispatchEvent(eventClick);
+}
+
 function removeQuickModal (evt) {
 
     const view = new _modalRemoveQuickConstructor();
@@ -392,19 +402,6 @@ function removeModal () {
 }
 
 function updateModal (evt) {
-
-    // let modalX = new _modalConstructor();
-    // modalX.setItem();
-    // _gateway.native.openModal(modalX, true);
-    // _gateway.native.closeModal(modalX);
-    //
-    // modalX.setItem({
-    //     projectId: 1
-    // });
-    // _gateway.native.openModal(modalX, true);
-    // _gateway.native.closeModal(modalX);
-    //
-    // return;
 
     let model = _utility.getDB().mapper.get(evt.target) || {};
 
@@ -530,7 +527,9 @@ const projectViewer = {
                 'project-viewer:file-backup': fileBackup.bind(this),
                 'project-viewer:file-import': fileImport.bind(this),
                 'project-viewer:file-delete-old': fileDeleteOld.bind(this),
-                'project-viewer:elevate-project': elevateToProject.bind(this)
+                'project-viewer:elevate-project': elevateToProject.bind(this),
+                'project-viewer:open-new-window': openProject.bind('new'),
+                'project-viewer:open-same-window': openProject.bind('same')
             }
         ));
 
@@ -566,6 +565,22 @@ const projectViewer = {
                                 return false;
                             }
                             return true;
+                        }
+                    },
+                    {
+                        label: 'Open in a new window',
+                        command: 'project-viewer:open-new-window',
+                        shouldDisplay: (event) => {
+                            return !event.target.classList.contains('disabled')
+                                && !atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'));
+                        }
+                    },
+                    {
+                        label: 'Open in the same window',
+                        command: 'project-viewer:open-same-window',
+                        shouldDisplay: (event) => {
+                            return !event.target.classList.contains('disabled')
+                                && atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'));
                         }
                     }
                 ]

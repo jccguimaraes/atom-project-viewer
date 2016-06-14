@@ -18,15 +18,26 @@ function clickListener(evt) {
     evt.preventDefault();
     evt.stopPropagation();
 
-    serializationFile = atom.getStateKey(
-        atom.project.getPaths()
-    );
-
     selected = _utility.getSelectedProjectView();
 
     if (selected === this) {
         return;
     }
+
+    model = _utility.getDB().mapper.get(this);
+    if (/*(evt.detail !== null && evt.detail) || (!evt.detail === null && */(atom.config.get(_utility.getConfig('alwaysOpenInNewWindow')))) {
+        atom.open({
+            pathsToOpen: model.projectPaths || [],
+            newWindow: true,
+            devMode: false,
+            safeMode: false
+        });
+        return;
+    }
+
+    serializationFile = atom.getStateKey(
+        atom.project.getPaths()
+    );
 
     if (serializationFile && atom.storageFolder && typeof atom.storageFolder.storeSync === 'function') {
         let serializers = {
@@ -37,8 +48,6 @@ function clickListener(evt) {
 
         atom.storageFolder.storeSync(serializationFile, serializers);
     }
-
-    model = _utility.getDB().mapper.get(this);
 
     if (!model.projectPaths || model.projectPaths.length === 0) {
         return;
@@ -64,16 +73,6 @@ function clickListener(evt) {
         _states.treeViewDeserialization(serialization.treeview);
     } else {
         atom.project.setPaths(model.projectPaths);
-    }
-
-    if (atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'))) {
-        atom.open({
-            pathsToOpen: model.projectPaths || [],
-            newWindow: true,
-            devMode: false,
-            safeMode: false
-        });
-        return;
     }
 
     _utility.setSelectedProjectView(this);

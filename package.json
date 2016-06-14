@@ -35,8 +35,5 @@
       }
     }
   },
-  "scripts": {
-    "generate": "all-contributors generate"
-  },
   "atomTestRunner": "./custom-test-runner"
 }
