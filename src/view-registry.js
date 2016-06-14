@@ -44,7 +44,7 @@ viewRegistry.register = function _register (view) {
 };
 
 /**
- * @param definition an object that was previously registered with a given view constructor
+ * @param defines an object that was previously registered with a given view constructor
  * @returns a new view
  */
 viewRegistry.renderView = function _renderView (view) {

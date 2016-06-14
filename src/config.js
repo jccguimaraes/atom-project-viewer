@@ -21,7 +21,7 @@ const config = {
     },
     'panelPosition': {
         title: 'Position of the panel',
-        description: 'You can set the place of the viewer, to the most right position or to the most left position.',
+        description: 'You can set the position of the sidebar, to the right or the left side of the text editor.',
         type: 'string',
         default: 'Right',
         enum: ['Left', 'Right'],
@@ -46,7 +46,7 @@ const config = {
         order: 6
     },
     'convertOldData': {
-        description: 'If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default it will always check on startup for this data and if the new does not exist, it will convert to the new data schema.',
+        description: 'If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default, it will always check on startup for this data and if the new does not exist, it will convert to the new data schema.',
         type: 'boolean',
         default: true,
         order: 7
