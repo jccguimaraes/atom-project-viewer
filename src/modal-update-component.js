@@ -65,6 +65,11 @@ function addIcons () {
         return;
     }
 
+    if (itemIcon) {
+        changesToItem.hasIcon = true;
+        changesToItem.icon = itemIcon;
+    }
+
     views.icons = document.createElement('div');
     views.icons.classList.add('inset-panel', 'padded');
 
