@@ -6,7 +6,6 @@ const SelectListView = require('atom-space-pen-views').SelectListView,
     $$ = require('atom-space-pen-views').$$;
 
 const _utilities = require('./utilities');
-const gateway = require('./gateway');
 
 class PVSelectListView extends SelectListView {
 
@@ -130,7 +129,7 @@ class PVSelectListView extends SelectListView {
     }
 
     filterItems (query) {
-        let list = gateway.project.fetchAll();
+        let list = _utilities.fetchProjects();
 
         if (!list || list.length === 0) {
             return [];

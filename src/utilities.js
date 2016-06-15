@@ -17,11 +17,18 @@ const utilities = {
         return _component.getConstructor(definition);
     },
     fetchProjects: function fetchProjects () {
-        const projectViews = document.querySelectorAll('li[is="pv-list-item"]');
-        const projectsArray = Array.apply(null, projectViews);
-        return projectsArray.map(
-            (projectView) => {
-                return this.getDB().mapper.get(projectView);
+        return _db.views.projects.map(
+            (projectId) => {
+                return _db.mapper.get(
+                    document.getElementById(projectId)
+                );
+            }
+        ).filter(
+            (project) => {
+                if (!project) {
+                    return false;
+                }
+                return true;
             }
         );
     },

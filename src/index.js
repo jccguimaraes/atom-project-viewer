@@ -571,7 +571,8 @@ const projectViewer = {
                         label: 'Open in a new window',
                         command: 'project-viewer:open-new-window',
                         shouldDisplay: (event) => {
-                            return !event.target.classList.contains('disabled')
+                            const model = _utility.getDB().mapper.get(event.target);
+                            return model && model.type === 'project' && !event.target.classList.contains('disabled')
                                 && !atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'));
                         }
                     },
@@ -579,7 +580,8 @@ const projectViewer = {
                         label: 'Open in the same window',
                         command: 'project-viewer:open-same-window',
                         shouldDisplay: (event) => {
-                            return !event.target.classList.contains('disabled')
+                            const model = _utility.getDB().mapper.get(event.target);
+                            return model && model.type === 'project' && !event.target.classList.contains('disabled')
                                 && atom.config.get(_utility.getConfig('alwaysOpenInNewWindow'));
                         }
                     }
