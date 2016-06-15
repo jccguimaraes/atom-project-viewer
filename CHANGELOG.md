@@ -7,13 +7,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));
 - Reimplement colors ([#49](https://github.com/jccguimaraes/atom-project-viewer/issues/49));
-- Add context-menu option to open project in new/self window ([#46](https://github.com/jccguimaraes/atom-project-viewer/issues/46));
 - Sort clients, groups and projects by natural position or alphabetically ([#21](https://github.com/jccguimaraes/atom-project-viewer/issues/21));
 - Elevate current `atom.project.getPaths()` to a project ([#26](https://github.com/jccguimaraes/atom-project-viewer/issues/26));
 - Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
 - Validate if root path is a git repository and initialize it;
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
+
+## [0.3.6] - 2016-07-14
+
+### Added
+
+- Added a context-menu entry to open a project in a new window if `alwaysOpenInNewWindow` is enabled and the other way round ([#46](https://github.com/jccguimaraes/atom-project-viewer/issues/46#issuecomment-225396861));
+
+### Changed
+
+- Grammar and spelling fixes ([#54](https://github.com/jccguimaraes/atom-project-viewer/pull/54));
 
 ## [0.3.5] - 2016-07-14
 

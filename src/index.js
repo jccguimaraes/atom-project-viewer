@@ -322,12 +322,12 @@ function fileDeleteOld () {
     _utility.getDB().deleteOldFile();
 }
 
-function openProject (event, context) {
+function openProject (event) {
     event.stopPropagation();
     event.preventDefault();
 
     const model = _utility.getDB().mapper.get(event.target);
-    const eventClick = new CustomEvent('click', { 'detail': context === 'new' ? true : false });
+    const eventClick = new CustomEvent('click', { 'detail': this });
 
     document.getElementById(model.projectId).dispatchEvent(eventClick);
 }
@@ -528,8 +528,8 @@ const projectViewer = {
                 'project-viewer:file-import': fileImport.bind(this),
                 'project-viewer:file-delete-old': fileDeleteOld.bind(this),
                 'project-viewer:elevate-project': elevateToProject.bind(this),
-                'project-viewer:open-new-window': openProject.bind('new'),
-                'project-viewer:open-same-window': openProject.bind('same')
+                'project-viewer:open-new-window': openProject.bind(true),
+                'project-viewer:open-same-window': openProject.bind(false)
             }
         ));
 

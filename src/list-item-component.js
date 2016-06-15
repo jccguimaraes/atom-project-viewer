@@ -25,7 +25,11 @@ function clickListener(evt) {
     }
 
     model = _utility.getDB().mapper.get(this);
-    if (/*(evt.detail !== null && evt.detail) || (!evt.detail === null && */(atom.config.get(_utility.getConfig('alwaysOpenInNewWindow')))) {
+
+    if (
+        evt.detail === true ||
+        (evt.detail === 1 && atom.config.get(_utility.getConfig('alwaysOpenInNewWindow')))
+    ) {
         atom.open({
             pathsToOpen: model.projectPaths || [],
             newWindow: true,
