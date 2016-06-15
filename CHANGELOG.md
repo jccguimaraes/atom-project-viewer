@@ -14,13 +14,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
-## [0.3.7] - 2016-07-14
+## [0.3.8] - 2016-07-15
+
+### Fixed
+
+- Project status does not update on adding/removing paths ([#55](https://github.com/jccguimaraes/atom-project-viewer/issues/55));
+
+## [0.3.7] - 2016-07-15
 
 ### Fixed
 
 - Added extra validation in the context-menu for opening a project in a new/same window.
 
-## [0.3.6] - 2016-07-14
+## [0.3.6] - 2016-07-15
 
 ### Added
 

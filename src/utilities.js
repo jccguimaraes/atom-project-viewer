@@ -124,6 +124,7 @@ const utilities = {
                         }
                     }
                 );
+                itemView.validate();
             }
 
             if (changes.hasGroup) {
