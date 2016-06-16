@@ -8,11 +8,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));
 - Reimplement colors ([#49](https://github.com/jccguimaraes/atom-project-viewer/issues/49));
 - Sort clients, groups and projects by natural position or alphabetically ([#21](https://github.com/jccguimaraes/atom-project-viewer/issues/21));
-- Elevate current `atom.project.getPaths()` to a project ([#26](https://github.com/jccguimaraes/atom-project-viewer/issues/26));
 - Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
 - Validate if root path is a git repository and initialize it;
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
+
+## [0.3.10] - 2016-07-16
+
+### Added
+
+- Elevate current `tree-view` opened folders to project ([#26](https://github.com/jccguimaraes/atom-project-viewer/issues/26));
 
 ## [0.3.9] - 2016-07-16
 

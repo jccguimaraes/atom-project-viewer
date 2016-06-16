@@ -206,6 +206,7 @@ function addPaths (evt) {
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
     if (originalItem.current && originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
+        changesToItem.paths = originalItem.current.projectPaths;
         originalItem.current.projectPaths.forEach(eachFolder.bind(this, evt));
     }
 
