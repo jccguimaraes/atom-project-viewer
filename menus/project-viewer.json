@@ -7,6 +7,9 @@
             {
                 "label": "Elevate to Project...",
                 "command": "project-viewer:elevate-project"
+            },
+            {
+                "type": "separator"
             }
         ],
         "li[is='pv-list-nested-item']": [

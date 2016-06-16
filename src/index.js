@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const CompositeDisposable = require('atom').CompositeDisposable;
 
 const _gateway = require('./gateway');
@@ -35,7 +37,32 @@ const _modalRemoveQuickConstructor = _utility.registerComponent(_modalRemoveQuic
 
 const _views = new WeakMap();
 
-function elevateToProject () {}
+function elevateToProject () {
+    let paths = atom.project.getPaths();
+
+    if (paths.length === 0) {
+        _utils.notification(
+            'info',
+            'There is no paths available...'
+        );
+        return;
+    }
+
+    let model = {
+        type: 'project',
+        projectPaths: paths,
+        projectName: path.basename(paths[0])
+    };
+
+    const view = new _modalCreateConstructor();
+
+    _utility.getDB().mapper.set(view, model);
+
+    let modal = atom.workspace.addModalPanel({
+        item: view,
+        visible: true
+    });
+}
 
 function updateProjectViewer () {
     const views = _views.get(this);

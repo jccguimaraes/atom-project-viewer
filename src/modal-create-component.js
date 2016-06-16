@@ -122,12 +122,12 @@ function eachFolder (evt, folder) {
     }
 
     // because we are dispatching the event ourselves
-    if (evt.isTrusted && changesToItem.paths.indexOf(folder) !== -1) {
+    if (evt && evt.isTrusted && changesToItem.paths.indexOf(folder) !== -1) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
     }
 
-    if (evt.isTrusted) {
+    if (evt && evt.isTrusted) {
         changesToItem.paths.push(folder);
     }
 
@@ -178,12 +178,16 @@ function removePath (evt) {
     }
 }
 
-function addPaths (selectedPaths, evt) {
+function addPaths (evt) {
     const views = _views.get(this);
 
     clearPaths.call(this);
 
     if (!originalItem.current || originalItem.current.type !== 'project') {
+        return;
+    }
+
+    if (views.paths) {
         return;
     }
 
@@ -201,8 +205,8 @@ function addPaths (selectedPaths, evt) {
     views.pathAdd.textContent = 'Add root paths:'
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
-    if (selectedPaths && Array.isArray(selectedPaths)) {
-        selectedPaths.forEach(eachFolder.bind(this, evt));
+    if (originalItem.current && originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
+        originalItem.current.projectPaths.forEach(eachFolder.bind(this, evt));
     }
 
     views.paths.appendChild(views.pathAdd);
@@ -210,6 +214,39 @@ function addPaths (selectedPaths, evt) {
     views.paths.appendChild(views.pathsContainer);
 
     this.insertBefore(views.paths, views.buttonsContainer);
+    // const views = _views.get(this);
+    //
+    // clearPaths.call(this);
+    //
+    // console.debug(originalItem.current);
+    //
+    // if (!originalItem.current || originalItem.current.type !== 'project') {
+    //     return;
+    // }
+    //
+    // views.paths = document.createElement('div');
+    // views.paths.classList.add('inset-panel', 'padded');
+    //
+    // views.pathsContainer = document.createElement('div');
+    // views.pathsContainer.classList.add('block');
+    //
+    // views.pathsList = document.createElement('ul');
+    // views.pathsList.classList.add('list-group', 'pv-list-group');
+    //
+    // views.pathAdd = document.createElement('button');
+    // views.pathAdd.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
+    // views.pathAdd.textContent = 'Add root paths:'
+    // views.pathAdd.addEventListener('click', addPath.bind(this), false);
+    //
+    // if (selectedPaths && Array.isArray(selectedPaths)) {
+    //     selectedPaths.forEach(eachFolder.bind(this, evt));
+    // }
+    //
+    // views.paths.appendChild(views.pathAdd);
+    // views.paths.appendChild(views.pathsList);
+    // views.paths.appendChild(views.pathsContainer);
+    //
+    // this.insertBefore(views.paths, views.buttonsContainer);
 }
 
 function addChoiceClickEvent (evt) {
@@ -555,13 +592,6 @@ function addListOfGroups () {
             else {
                 return changesToItem.client ? group.clientId === changesToItem.client.clientId : !group.clientId;
             }
-            // else {
-            //     return !group.clientId;
-            // }
-            // else if (!changesToItem.hasClient && originalItem.current.clientId) {
-            //     return group.clientId === originalItem.current.clientId;
-            // }
-
         }
     );
 

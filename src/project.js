@@ -14,4 +14,8 @@ project.listByGroup = function _listByGroup () {
     return [];
 };
 
+project.listByName = function _listByName () {
+    return [];
+};
+
 module.exports = project;

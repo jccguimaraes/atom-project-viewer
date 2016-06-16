@@ -11,6 +11,7 @@ module.exports = function (args) {
     allowUnsafeEval(() => {
         return allowUnsafeNewFunction(() => {
 
+            document.body.style.overflowY = 'scroll';
             let element = document.createElement('div');
             element.id = 'mocha';
             document.body.appendChild(element);
@@ -33,20 +34,30 @@ module.exports = function (args) {
             });
 
             // Instantiate a Mocha instance.
-            var mocha = new Mocha({
+            let mocha = new Mocha({
                 reporter: 'html'
             });
 
-            var testDir = path.join(__dirname, 'spec');
+            let testDir = path.join(__dirname, 'spec');
 
             // Add each .js file to the mocha instance
-            fs.readdirSync(testDir).filter(function(file){
+            fs.readdirSync(path.join(testDir, 'unit')).filter(function(file){
                 // Only keep the .js files
                 return file.substr(-3) === '.js';
 
             }).forEach(function(file){
                 mocha.addFile(
-                    path.join(testDir, file)
+                    path.join(testDir, 'unit', file)
+                );
+            });
+
+            fs.readdirSync(path.join(testDir, 'functional')).filter(function(file){
+                // Only keep the .js files
+                return file.substr(-3) === '.js';
+
+            }).forEach(function(file){
+                mocha.addFile(
+                    path.join(testDir, 'functional', file)
                 );
             });
 
