@@ -164,10 +164,9 @@ class PVSelectListView extends SelectListView {
     viewForItem (item) {
         return $$(function() {
             return this.li({
-                class: 'two-lines'
+                class: 'two-lines pv-select-view-li'
             }, () => {
                 this.div({
-
                     class: 'status icon '.concat(item.projectIcon || item.groupIcon || item.clientIcon)
                 });
                 this.div({

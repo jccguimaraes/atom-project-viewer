@@ -13,11 +13,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
-## [0.3.10] - 2016-07-16
+## [0.3.10] - 2016-07-17
 
 ### Added
 
 - Elevate current `tree-view` opened folders to project ([#26](https://github.com/jccguimaraes/atom-project-viewer/issues/26));
+- Forcing all icons at font-size: `@component-icon-size` extension to `SelectView` ([#56](https://github.com/jccguimaraes/atom-project-viewer/pull/56));
 
 ## [0.3.9] - 2016-07-16
 
