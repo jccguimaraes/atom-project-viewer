@@ -1,6 +1,15 @@
-var style = document.createElement("style");
-style.appendChild(document.createTextNode(""));
-document.head.appendChild(style);
+// li#{ID} {
+//     color: {COLOR}
+// }
 
-style.sheet.insertRule('project-viewer {background-color: blue}');
-atom.styles.addStyleElement(style);
+'use strict';
+
+const aFile = require('atom').File;
+
+let file = new aFile(__dirname + '/fil2e.json');
+
+// file.create ()
+//     .then ((data) => {
+//         console.debug(data);
+//     })
+//     .catch ((error) => console.debug(error));

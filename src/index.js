@@ -174,6 +174,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
                 projectName: mappedProject.name,
                 projectIcon: mappedProject.icon || '',
                 projectPaths: mappedProject.paths || [],
+                projectColor: mappedProject.color || '',
                 projectId: _gateway.helpers.generateUUID()
             };
 

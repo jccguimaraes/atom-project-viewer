@@ -59,6 +59,27 @@ function addIconClickEvent (evt) {
     }
 }
 
+function addColor () {
+    if (!originalItem.current) {
+        return;
+    }
+
+    const views = _views.get(this);
+
+    const itemColor = originalItem.current[originalItem.current.type + 'Color'];
+
+    if (views.color) {
+        return;
+    }
+
+    views.color = document.createElement('div');
+    views.color.classList.add('inset-panel', 'padded');
+
+    let colorInput = document.createElement('input');
+    colorInput.classList.add('pv-label');
+    colorInput.textContent = 'Select a color (optional):';
+}
+
 function addIcons () {
 
     if (!originalItem.current) {
@@ -215,39 +236,6 @@ function addPaths (evt) {
     views.paths.appendChild(views.pathsContainer);
 
     this.insertBefore(views.paths, views.buttonsContainer);
-    // const views = _views.get(this);
-    //
-    // clearPaths.call(this);
-    //
-    // console.debug(originalItem.current);
-    //
-    // if (!originalItem.current || originalItem.current.type !== 'project') {
-    //     return;
-    // }
-    //
-    // views.paths = document.createElement('div');
-    // views.paths.classList.add('inset-panel', 'padded');
-    //
-    // views.pathsContainer = document.createElement('div');
-    // views.pathsContainer.classList.add('block');
-    //
-    // views.pathsList = document.createElement('ul');
-    // views.pathsList.classList.add('list-group', 'pv-list-group');
-    //
-    // views.pathAdd = document.createElement('button');
-    // views.pathAdd.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
-    // views.pathAdd.textContent = 'Add root paths:'
-    // views.pathAdd.addEventListener('click', addPath.bind(this), false);
-    //
-    // if (selectedPaths && Array.isArray(selectedPaths)) {
-    //     selectedPaths.forEach(eachFolder.bind(this, evt));
-    // }
-    //
-    // views.paths.appendChild(views.pathAdd);
-    // views.paths.appendChild(views.pathsList);
-    // views.paths.appendChild(views.pathsContainer);
-    //
-    // this.insertBefore(views.paths, views.buttonsContainer);
 }
 
 function addChoiceClickEvent (evt) {

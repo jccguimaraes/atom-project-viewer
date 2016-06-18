@@ -13,11 +13,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
 
-## [0.3.11] - 2016-07-xx
+## [0.3.11] - 2016-07-18
 
 ### Added
 
 - Added Travis CI and AppVeyor badges;
+
+### Fixed
+
+- The backup only saves once. Any other changes are not saved ([#58](https://github.com/jccguimaraes/atom-project-viewer/issues/58));
 
 ## [0.3.10] - 2016-07-17
 

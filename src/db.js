@@ -13,6 +13,7 @@ const views = {
     groups: [],
     projects: []
 };
+const cssRules = [];
 const info = {
     version: '0.3.0',
     name: 'project-viewer'
@@ -198,9 +199,9 @@ const buildData = function buildData () {
 }
 
 const store = function store() {
-    let data = buildData();
-    atom.getStorageFolder().storeSync(file, data);
-    return data;
+    storage = buildData();
+    atom.getStorageFolder().storeSync(file, storage);
+    return storage;
 };
 
 const setStorage = function setStorage (data) {
@@ -233,6 +234,7 @@ module.exports = {
     buildData: buildData,
     info: info,
     views: views,
+    cssRules: cssRules,
     mapper: mapper,
     storage: storage,
     store: store,
