@@ -183,6 +183,14 @@ function addPath (evt) {
     });
 }
 
+function addTreeView (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    let folders = atom.project.getPaths();
+    folders.forEach(eachFolder.bind(this, false));
+}
+
 function removePath (evt) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -237,6 +245,11 @@ function addPaths (evt) {
     views.pathAdd.textContent = 'Add root paths:'
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
+    views.pathAddAuto = document.createElement('button');
+    views.pathAddAuto.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
+    views.pathAddAuto.textContent = 'Add tree view contents'
+    views.pathAddAuto.addEventListener('click', addTreeView.bind(this), false);
+
     if (originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
         originalItem.current.projectPaths.forEach(
             (path) => {
@@ -246,6 +259,7 @@ function addPaths (evt) {
     }
 
     views.paths.appendChild(views.pathAdd);
+    views.paths.appendChild(views.pathAddAuto);
     views.paths.appendChild(views.pathsList);
     views.paths.appendChild(views.pathsContainer);
 
