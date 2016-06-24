@@ -142,7 +142,7 @@ function eachFolder (evt, folder) {
         changesToItem.paths = [];
     }
 
-    // because we are dispatching the event ourselves
+    // Because we are dispatching the event ourselves
     if (evt && evt.isTrusted && changesToItem.paths.indexOf(folder) !== -1) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
