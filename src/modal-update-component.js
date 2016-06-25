@@ -247,7 +247,7 @@ function addPaths (evt) {
 
     views.pathAddAuto = document.createElement('button');
     views.pathAddAuto.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
-    views.pathAddAuto.textContent = 'Add tree view contents'
+    views.pathAddAuto.textContent = 'Add tree view root folders'
     views.pathAddAuto.addEventListener('click', addTreeView.bind(this), false);
 
     if (originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
