@@ -142,7 +142,7 @@ function eachFolder (evt, folder) {
         changesToItem.paths = [];
     }
 
-    // because we are dispatching the event ourselves
+    // Because we are dispatching the event ourselves
     if (evt && evt.isTrusted && changesToItem.paths.indexOf(folder) !== -1) {
         _utils.notification('warning', `The path <strong>${folder}</strong> was already added!`);
         return;
@@ -182,6 +182,14 @@ function addPath (evt) {
         }
         folders.forEach(eachFolder.bind(this, evt));
     });
+}
+
+function addTreeView (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    let folders = atom.project.getPaths();
+    folders.forEach(eachFolder.bind(this, evt));
 }
 
 function removePath (evt) {
@@ -226,12 +234,18 @@ function addPaths (evt) {
     views.pathAdd.textContent = 'Add root paths:'
     views.pathAdd.addEventListener('click', addPath.bind(this), false);
 
+    views.pathAddAuto = document.createElement('button');
+    views.pathAddAuto.classList.add('inline-block', 'btn', 'btn-warning', 'btn-xs', 'icon', 'icon-file-add');
+    views.pathAddAuto.textContent = 'Add tree view root folders'
+    views.pathAddAuto.addEventListener('click', addTreeView.bind(this), false);
+
     if (originalItem.current && originalItem.current.projectPaths && Array.isArray(originalItem.current.projectPaths)) {
         changesToItem.paths = originalItem.current.projectPaths;
         originalItem.current.projectPaths.forEach(eachFolder.bind(this, evt));
     }
 
     views.paths.appendChild(views.pathAdd);
+    views.paths.appendChild(views.pathAddAuto);
     views.paths.appendChild(views.pathsList);
     views.paths.appendChild(views.pathsContainer);
 
