@@ -59,25 +59,87 @@ function addIconClickEvent (evt) {
     }
 }
 
-function addColor () {
-    if (!originalItem.current) {
-        return;
+function clearExtras () {
+    const views = _views.get(this);
+    if (views.extrasContainer) {
+        views.extrasContainer.remove();
+        delete views.extrasContainer;
     }
+}
+
+function addExtras () {
 
     const views = _views.get(this);
 
-    const itemColor = originalItem.current[originalItem.current.type + 'Color'];
+    clearExtras.call(this);
 
-    if (views.color) {
+    if (!originalItem.current || originalItem.current.type === 'project') {
         return;
     }
 
-    views.color = document.createElement('div');
-    views.color.classList.add('inset-panel', 'padded');
+    if (views.extrasContainer) {
+        return;
+    }
 
-    let colorInput = document.createElement('input');
-    colorInput.classList.add('pv-label');
-    colorInput.textContent = 'Select a color (optional):';
+    const classToggle = 'text-success';
+
+    views.extrasContainer = document.createElement('div');
+    views.extrasContainer.classList.add('inset-panel', 'padded');
+
+    views.colorCheck = document.createElement('span');
+    views.colorCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
+    views.colorCheck.style.cursor = 'pointer';
+    views.colorCheck.addEventListener('click', (evt) => {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        views.colorCheck.classList.toggle(classToggle);
+
+        if (!changesToItem.hasOwnProperty('hasColor')) {
+            changesToItem.hasColor = views.colorCheck.classList.contains(classToggle);
+        }
+        else {
+            changesToItem.hasColor = !changesToItem.hasColor;
+        }
+
+        if (changesToItem.hasColor) {
+            changesToItem.color = views.colorInput.value;
+        }
+        else {
+            views.colorInput.value = '#000000';
+            delete changesToItem.color;
+        }
+    }, false);
+
+    views.colorDescription = document.createElement('span');
+    views.colorDescription.classList.add('inline-block-tight');
+    views.colorDescription.textContent = 'set color';
+
+    views.colorInput = document.createElement('input');
+    views.colorInput.setAttribute('type', 'color');
+    views.colorInput.addEventListener('change', (evt) => {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        if (!changesToItem.hasColor) {
+            changesToItem.hasColor = true;
+        }
+        changesToItem.color = views.colorInput.value;
+        views.colorCheck.classList.add(classToggle);
+    }, false);
+
+    const itemColor = originalItem.current[originalItem.current.type + 'Color'];
+
+    if (itemColor) {
+        views.colorInput.value = itemColor;
+        views.colorCheck.classList.add(classToggle);
+    }
+
+    views.extrasContainer.appendChild(views.colorCheck);
+    views.extrasContainer.appendChild(views.colorDescription);
+    views.extrasContainer.appendChild(views.colorInput);
+
+    this.insertBefore(views.extrasContainer, views.buttonsContainer);
 }
 
 function addIcons () {
@@ -274,6 +336,7 @@ function addChoiceClickEvent (evt) {
 
     addIcons.call(this);
     addPaths.call(this);
+    addExtras.call(this);
     addListOfClients.call(this);
     addListOfGroups.call(this);
 }
@@ -665,6 +728,7 @@ const htmlMethods = {
         addItemInput.call(this);
         addIcons.call(this);
         addPaths.call(this);
+        addExtras.call(this);
         addListOfClients.call(this);
         addListOfGroups.call(this);
         addButtons.call(this);

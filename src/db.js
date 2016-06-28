@@ -13,7 +13,6 @@ const views = {
     groups: [],
     projects: []
 };
-const cssRules = [];
 const info = {
     version: '0.3.0',
     name: 'project-viewer'
@@ -28,7 +27,13 @@ const oldFilePath = Path.normalize(
 );
 
 const getContent = function getContent () {
-    return atom.getStorageFolder().load(file) || defaultStorage;
+    let content;
+    try {
+        content = atom.getStorageFolder().load(file);
+    } catch (e) {
+        content = defaultStorage;
+    }
+    return content;
 };
 
 const readData = function readData () {
@@ -88,6 +93,7 @@ const readData = function readData () {
                         const group = {
                             'name': storedGroup.name || '',
                             'icon': storedGroup.icon || '',
+                            'color': storedGroup.color || '',
                             'expanded': storedGroup.expanded || '',
                             'sortBy': 'position',
                             'projects': []
@@ -124,6 +130,7 @@ const readData = function readData () {
                     });
                 }
                 storage = converted;
+                console.debug(storage);
                 atom.getStorageFolder().storeSync(file, storage);
                 resolve({
                     type: 'success',
@@ -143,58 +150,76 @@ const getConfig = function getConfig(config) {
 };
 
 const buildData = function buildData () {
+    const listNestedTrees = document.querySelectorAll('project-viewer li');
+    let list = {};
     let data = {
         clients: [],
         groups: [],
         projects: []
     };
-    let views = document.querySelectorAll('project-viewer li');
-    let currentClient;
-    let currentGroup;
 
-    for (var idx = 0; idx < views.length; idx++) {
-        let model = mapper.get(views[idx]);
+    for (let nestedIdx = 0; nestedIdx < listNestedTrees.length; nestedIdx++) {
+        let itemDOM = listNestedTrees[nestedIdx];
+        let model = mapper.get(itemDOM);
 
-        if (model.clientName && model.type === 'client') {
-            let client = {
-                name: _utils.sanitizeString(model.clientName),
+        if (!model) {
+            return;
+        }
+
+        let item = {};
+
+        if (model.type === 'client') {
+            item = {
+                name: model.clientName,
                 icon: model.clientIcon || '',
+                color: model.clientColor || '',
                 expanded: model.clientExpanded || false,
                 sortBy: model.sortBy || 'position',
                 groups: [],
                 projects: []
             };
-            data.clients.push(client);
-            currentClient = client;
-        } else if (model.groupName && model.type === 'group') {
-            let group = {
-                name: _utils.sanitizeString(model.groupName),
+            list[model.clientId] = item;
+        }
+        else if (model.type === 'group') {
+            item = {
+                name: model.groupName,
                 icon: model.groupIcon || '',
+                color: model.groupColor || '',
                 expanded: model.groupExpanded || false,
                 sortBy: model.sortBy || 'position',
                 projects: []
             };
-            if (model.clientName && currentClient && currentClient.name === model.clientName) {
-                currentClient.groups.push(group);
-            } else {
-                data.groups.push(group);
-            }
-            currentGroup = group;
-        } else if (model.projectName && model.type === 'project') {
-            let project = {
-                name: _utils.sanitizeString(model.projectName),
+            list[model.groupId] = item;
+        }
+        else if (model.type === 'project') {
+            item = {
+                name: model.projectName,
                 icon: model.projectIcon || '',
                 paths: model.projectPaths || []
             };
-            if (model.groupName && currentGroup && currentGroup.name === model.groupName) {
-                currentGroup.projects.push(project);
-            } else if (model.clientName && currentClient && currentClient.name === model.clientName) {
-                currentClient.projects.push(project);
-            } else {
-                data.projects.push(project);
-            }
+            list[model.projectId] = item;
+        }
+
+        if (model.type === 'client') {
+            data.clients.push(item);
+        }
+        else if (model.type === 'group' && !model.clientName) {
+            data.groups.push(item);
+        }
+        else if (model.type === 'group' && model.clientName) {
+            list[model.clientId].groups.push(item);
+        }
+        else if (model.type === 'project' && !model.clientName && !model.groupName) {
+            data.projects.push(item);
+        }
+        else if (model.type === 'project' && model.groupName) {
+            list[model.groupId].projects.push(item);
+        }
+        else if (model.type === 'project' && model.clientName) {
+            list[model.clientId].projects.push(item);
         }
     }
+    console.debug(data);
     return data;
 }
 
@@ -234,7 +259,6 @@ module.exports = {
     buildData: buildData,
     info: info,
     views: views,
-    cssRules: cssRules,
     mapper: mapper,
     storage: storage,
     store: store,

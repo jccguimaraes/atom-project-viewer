@@ -17,7 +17,7 @@ const htmlMethods = {
         this.nodes.span = document.createElement('span');
         this.appendChild(this.nodes.span);
     },
-    setText: function setText(text) {
+    setText: function setText(text, id) {
         const sanitizedText = _utils.sanitizeString(text);
 
         if (!sanitizedText) {

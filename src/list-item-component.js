@@ -143,11 +143,11 @@ function dropListener(evt) {
         return;
     }
 
-    if (dropModel.type === thisModel.type && dropModel.type === 'project') {
+    if (dropModel.type === thisModel.type && dropModel.type === 'project' && this.nextSibling) {
         const child = dropNode.nextSibling === this ? this.nextSibling : this;
         this.parentElement.insertBefore(dropNode, child);
     } else {
-        this.parentElement.addNode(dropNode);
+        this.parentElement.addNode(dropNode, true);
     }
 
     let dropPrototype = Object.getPrototypeOf(dropModel);

@@ -5,13 +5,24 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Right a proper feature list on the README;
 - Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));
-- Reimplement colors ([#49](https://github.com/jccguimaraes/atom-project-viewer/issues/49));
-- Sort clients, groups and projects by natural position or alphabetically ([#21](https://github.com/jccguimaraes/atom-project-viewer/issues/21));
-- Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
-- Validate if root path is a git repository and initialize it;
-- Clear saved project state (this can get above 1Mb of size);
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
+- Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
+- Validate if root path is a git repository and initialize it *(investigate)*;
+- Clear saved project state (this can get above 1Mb of size) *(investigate)*;
+
+## [0.3.12] - 2016-07-25
+
+### Added
+
+- Reimplement colors ([#49](https://github.com/jccguimaraes/atom-project-viewer/issues/49));
+- Button to add the current tree view paths ([#59](https://github.com/jccguimaraes/atom-project-viewer/pull/59));
+- Sort clients, groups and projects by natural position or alphabetically ([#21](https://github.com/jccguimaraes/atom-project-viewer/issues/21));
+
+### Fixed
+
+- Removing a project path when updating behaves weirdly ([#60](https://github.com/jccguimaraes/atom-project-viewer/issues/60));
 
 ## [0.3.11] - 2016-07-18
 

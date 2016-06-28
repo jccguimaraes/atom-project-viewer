@@ -10,6 +10,7 @@ const _utility = require('./utilities');
 const _config = require('./config');
 const githubWorker = new Worker(__dirname + '/github-web-worker.js');
 const _selectView = require('./select-view');
+const _colors = require('./colors');
 
 const _modal = require('./modal');
 const _mainComponent = require('./main-component');
@@ -212,6 +213,7 @@ function addGroups(mappedClient, clientView, list, root) {
                 sortBy: mappedGroup.sortBy,
                 groupName: mappedGroup.name,
                 groupIcon: mappedGroup.icon,
+                groupColor: mappedGroup.color || '',
                 groupExpanded: mappedGroup.expanded,
                 groupId: _gateway.helpers.generateUUID()
             };
@@ -228,9 +230,10 @@ function addGroups(mappedClient, clientView, list, root) {
                 addProjects(mappedGroup, groupView);
             }
 
+            groupView.setId();
             groupView.setText(mappedGroup.name);
             groupView.setIcon(mappedGroup.icon);
-            groupView.setId();
+            groupView.setColor(mappedGroup.color);
             groupView.setExpanded(mappedGroup.expanded);
             _utility.getDB().views.groups.push(groupModel.groupId);
             if (!root) {
@@ -256,6 +259,7 @@ function addClients(mappedRoot, rootView) {
                 sortBy: mappedClient.sortBy,
                 clientName: mappedClient.name,
                 clientIcon: mappedClient.icon,
+                clientColor: mappedClient.color || '',
                 clientExpanded: mappedClient.expanded,
                 clientId: _gateway.helpers.generateUUID()
             };
@@ -272,9 +276,10 @@ function addClients(mappedRoot, rootView) {
                 addProjects(mappedClient, clientView);
             }
 
+            clientView.setId();
             clientView.setText(mappedClient.name);
             clientView.setIcon(mappedClient.icon);
-            clientView.setId();
+            clientView.setColor(mappedClient.color);
             clientView.setExpanded(mappedClient.expanded);
             _utility.getDB().views.clients.push(clientModel.clientId);
             rootView.addNode(clientView);
@@ -628,13 +633,20 @@ const projectViewer = {
         githubWorker.onmessage = githubWorkerOnMessage.bind(this);
 
         views.selectView = new _selectView();
+
+        views.atomSyle = _colors.initialize();
     },
     serialize: function serialize() {},
     deactivate: function deactivate() {
         const views = _views.get(this);
 
-        views.mainPanel.destroy();
-        this.statusBarTile.destroy();
+        if (!views) {
+            return;
+        }
+
+        views.mainPanel && views.mainPanel.destroy();
+        this.statusBarTile && this.statusBarTile.destroy();
+        _colors.destroy();
     },
     consumeStatusBar: function consumeStatusBar(statusBar) {
         this.statusBar = statusBar;

@@ -103,6 +103,138 @@ function loopIcons (iconSet, iconsList, itemIcon) {
     );
 }
 
+function colorCheckEventClick (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    const views = _views.get(this);
+
+    views.colorCheck.classList.toggle('text-success');
+
+    if (!changesToItem.hasOwnProperty('hasColor')) {
+        changesToItem.hasColor = views.colorCheck.classList.contains('text-success');
+    }
+    else {
+        changesToItem.hasColor = !changesToItem.hasColor;
+    }
+
+    if (changesToItem.hasColor) {
+        changesToItem.color = views.colorInput.value;
+    }
+    else {
+        views.colorInput.value = '#000000';
+        delete changesToItem.color;
+    }
+}
+
+function colorInputEventChange (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    const views = _views.get(this);
+
+    if (!changesToItem.hasColor) {
+        changesToItem.hasColor = true;
+    }
+    changesToItem.color = views.colorInput.value;
+    views.colorCheck.classList.add('text-success');
+}
+
+function sortByEventClick (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    const views = _views.get(this);
+
+    const sortingBy = evt.target.textContent.toLowerCase();
+
+    views.sortByPosition.classList.remove('selected');
+    views.sortByAlphabetically.classList.remove('selected');
+    evt.target.classList.toggle('selected');
+
+    if (originalItem.current.sortBy !== sortingBy) {
+        changesToItem.sortBy = sortingBy;
+    }
+}
+
+function addExtras () {
+
+    if (originalItem.current.type === 'project') {
+        return;
+    }
+
+    const views = _views.get(this);
+
+    if (views.extrasContainer) {
+        return;
+    }
+
+    views.extrasContainer = document.createElement('div');
+    views.extrasContainer.classList.add('inset-panel', 'padded');
+
+    views.colorContainer = document.createElement('div');
+    views.colorContainer.classList.add('block');
+
+    views.colorCheck = document.createElement('span');
+    views.colorCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
+    views.colorCheck.style.cursor = 'pointer';
+    views.colorCheck.addEventListener('click', colorCheckEventClick.bind(this), false);
+
+    views.colorDescription = document.createElement('span');
+    views.colorDescription.classList.add('inline-block-tight');
+    views.colorDescription.textContent = 'set color';
+
+    views.colorInput = document.createElement('input');
+    views.colorInput.setAttribute('type', 'color');
+    views.colorInput.addEventListener('change', colorInputEventChange.bind(this), false);
+
+    const itemColor = originalItem.current[originalItem.current.type + 'Color'];
+
+    if (itemColor) {
+        views.colorInput.value = itemColor;
+        views.colorCheck.classList.add('text-success');
+    }
+
+    views.sortByContainer = document.createElement('div');
+    views.sortByContainer.classList.add('block');
+
+    views.sortByDescription = document.createElement('span');
+    views.sortByDescription.classList.add('inline-block-tight');
+    views.sortByDescription.textContent = 'sort by:';
+
+    views.sortByGroup = document.createElement('div');
+    views.sortByGroup.classList.add('block', 'btn-group', 'btn-group-xs');
+
+    views.sortByPosition = document.createElement('button');
+    views.sortByPosition.classList.add('btn', 'btn-xs');
+    views.sortByPosition.textContent = 'Position';
+    views.sortByPosition.addEventListener('click', sortByEventClick.bind(this), false);
+
+    views.sortByAlphabetically = document.createElement('button');
+    views.sortByAlphabetically.classList.add('btn', 'btn-xs');
+    views.sortByAlphabetically.textContent = 'Alphabetically';
+    views.sortByAlphabetically.addEventListener('click', sortByEventClick.bind(this), false);
+
+    if (originalItem.current.sortBy === 'position') {
+        views.sortByPosition.classList.add('selected');
+    }
+    else {
+        views.sortByAlphabetically.classList.add('selected');
+    }
+
+    views.colorContainer.appendChild(views.colorCheck);
+    views.colorContainer.appendChild(views.colorDescription);
+    views.colorContainer.appendChild(views.colorInput);
+    views.extrasContainer.appendChild(views.colorContainer);
+
+    views.sortByContainer.appendChild(views.sortByDescription);
+    views.sortByContainer.appendChild(views.sortByPosition);
+    views.sortByContainer.appendChild(views.sortByAlphabetically);
+    views.extrasContainer.appendChild(views.sortByContainer);
+
+    this.insertBefore(views.extrasContainer, views.buttonsContainer);
+}
+
 function clearPaths () {
     const views = _views.get(this);
     if (views.paths) {
@@ -211,6 +343,7 @@ function removePath (evt) {
     toRemove = !~idxRemove;
 
     if (idxRemove === -1) {
+        changesToItem.paths.add.splice(idxAdd, 1);
         changesToItem.paths.remove.push(newPath);
     }
 
@@ -692,6 +825,7 @@ const htmlMethods = {
         addItemInput.call(this);
         addIcons.call(this);
         addPaths.call(this);
+        addExtras.call(this);
         addListOfClients.call(this);
         addListOfGroups.call(this);
         addButtons.call(this);

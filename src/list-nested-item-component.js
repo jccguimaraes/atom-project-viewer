@@ -4,6 +4,7 @@ const _utils = require('./utils');
 const _utility = require('./utilities');
 const _db = require('./db');
 const _gateway = require('./gateway');
+const _colors = require('./colors');
 
 const definition = {
     custom: 'pv-list-nested-item',
@@ -215,6 +216,18 @@ const htmlMethods = {
             thisModel.groupExpanded = state;
         }
     },
+    setColor: function setColor (color) {
+        let thisModel = _utility.getDB().mapper.get(this);
+
+        _colors.setRule(
+            this.getId(),
+            thisModel.type,
+            color
+        );
+    },
+    getColor: function getColor () {
+        return this.nodes.listItem.style.color;
+    },
     toggleExpand: function toggleExpand() {
         this.classList.toggle('expanded');
         this.classList.toggle('collapsed');
@@ -252,7 +265,7 @@ const htmlMethods = {
         let results = children.sort((currentNode, nextNode) => {
             let result;
 
-            if (sort.includes('alphabetic')) {
+            if (sort.includes('alphabetically')) {
                 result = reverse * new Intl.Collator().compare(
                     currentNode.getText(),
                     nextNode.getText()

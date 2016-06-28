@@ -46,6 +46,7 @@ project-viewer {
 		color: @project-viewer-topic-color;
 		font-size: @project-viewer-topic-size;
 		padding: @component-padding;
+		cursor: default;
 
 		width: 100%;
 
@@ -74,11 +75,15 @@ project-viewer {
 		width: 100%;
 		cursor: pointer;
 		display: block;
-		transition: color @project-viewer-transition-duration ease-in 0s;
+
+		span {
+			transition: color @project-viewer-transition-duration ease-in 0s;
+		}
 
 		&:hover {
-			color: @project-viewer-selected-state;
-			transition: color @project-viewer-transition-duration ease-out 0s;
+			span {
+				color: @project-viewer-selected-state !important;
+			}
 		}
 
 		&:hover::before {
@@ -188,6 +193,24 @@ pv-remove-quick-modal {
 	.inset-panel {
 		margin-bottom: @component-padding;
 	}
+
+	input[type="color"] {
+        border-radius: 50%;
+        width: 15px;
+        height: 15px;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+        border: none;
+    }
 }
 
 .pv-select-view-li {

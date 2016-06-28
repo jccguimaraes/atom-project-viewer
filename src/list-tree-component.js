@@ -130,7 +130,7 @@ const htmlMethods = {
     },
     sortChildren: function sortChildren() {
         let thisModel = _db.mapper.get(this);
-        let sort = thisModel ? thisModel.sortBy : 'alphabetic';
+        let sort = thisModel ? thisModel.sortBy : 'alphabetically';
 
         if (!sort) {
             return;
@@ -142,7 +142,7 @@ const htmlMethods = {
         let results = children.sort((currentNode, nextNode) => {
             let result;
 
-            if (sort.includes('alphabetic')) {
+            if (sort.includes('alphabetically')) {
                 result = reverse * new Intl.Collator().compare(
                     currentNode.getText(),
                     nextNode.getText()

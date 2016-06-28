@@ -90,6 +90,7 @@ const utilities = {
         const promise = new Promise((resolve, reject) => {
             let isANewParent;
             let currentName = original.current[original.current.type + 'Name'];
+            let activeModel = this.getSelectedProjectModel();
             const itemView = document.getElementById(original.current[original.current.type + 'Id']);
 
             if (changes.name) {
@@ -101,25 +102,45 @@ const utilities = {
             if (changes.icon) {
                 original.current[original.current.type + 'Icon'] = changes.icon;
                 itemView.setIcon(changes.icon, true);
-            } else {
+            }
+            else {
                 original.current[original.current.type + 'Icon'] = undefined;
                 itemView.setIcon('');
             }
 
+            if (changes.color && original.current.type !== 'project') {
+                original.current[original.current.type + 'Color'] = changes.color;
+                itemView.setColor(changes.color);
+            }
+            else if (!changes.color && original.current.type !== 'project') {
+                original.current[original.current.type + 'Color'] = undefined;
+                itemView.setColor();
+            }
+
+            if (changes.sortBy) {
+                original.current.sortBy = changes.sortBy;
+                itemView.sortChildren();
+            }
+
             if (changes.paths) {
-                const paths = original.current[original.current.type + 'Paths'];
                 changes.paths.remove.forEach(
                     (path) => {
-                        if (paths.indexOf(path) !== -1) {
-                            original.current[original.current.type + 'Paths'].splice(paths.indexOf(path), 1);
+                        const pathIdx = original.current.projectPaths.indexOf(path);
+                        if (pathIdx !== -1) {
+                            original.current.projectPaths.splice(pathIdx, 1);
+                        }
+                        if (pathIdx !== -1 && activeModel && activeModel.projectId === original.current.projectId) {
                             atom.project.removePath(path);
                         }
                     }
                 );
                 changes.paths.add.forEach(
                     (path) => {
-                        if (paths.indexOf(path) === -1) {
-                            original.current[original.current.type + 'Paths'].push(path);
+                        const pathIdx = original.current.projectPaths.indexOf(path);
+                        if (pathIdx === 1) {
+                            original.current.projectPaths.push(path);
+                        }
+                        if (pathNotInArray && activeModel && activeModel.projectId === original.current.projectId) {
                             atom.project.addPath(path);
                         }
                     }
@@ -130,10 +151,12 @@ const utilities = {
             if (changes.hasGroup) {
                 Object.setPrototypeOf(original.current, changes.group);
                 isANewParent = document.getElementById(changes.group.groupId);
-            } else if (changes.hasClient) {
+            }
+            else if (changes.hasClient) {
                 Object.setPrototypeOf(original.current, changes.client);
                 isANewParent = document.getElementById(changes.client.clientId);
-            } else if (!changes.hasGroup && !original.parent && !original.root) {
+            }
+            else if (!changes.hasGroup && !original.parent && !original.root) {
                 Object.setPrototypeOf(original.current, Object.prototype);
                 isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children')
             }
@@ -194,6 +217,15 @@ const utilities = {
                 changes.view.setExpanded(false);
             } else {
                 original.current[original.current.type + 'Paths'] = changes.paths || [];
+            }
+
+            if (changes.color && original.current.type !== 'project') {
+                original.current[original.current.type + 'Color'] = changes.color;
+                changes.view.setColor(changes.color);
+            }
+            else if (!changes.color && original.current.type !== 'project') {
+                original.current[original.current.type + 'Color'] = undefined;
+                changes.view.setColor();
             }
 
             let parentView;
