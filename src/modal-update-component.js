@@ -59,7 +59,9 @@ function addIconClickEvent (evt) {
 function addIcons () {
     const views = _views.get(this);
 
-    const itemIcon = originalItem.current[originalItem.current.type + 'Icon'];
+    let itemIcon = originalItem.current[originalItem.current.type + 'Icon'];
+
+    itemIcon = iconConvert.call(this, itemIcon);
 
     if (views.icons) {
         return;
@@ -87,6 +89,57 @@ function addIcons () {
     views.icons.appendChild(iconsList);
     this.insertBefore(views.icons, views.buttonsContainer);
 }
+
+/*
+  In the original implementation, there were quite a few octicons
+  that were visually identical to others. This function allows
+  us to remove the excess icons from the list while appearing to
+  behave exactly the same to the end user. To do this, it checks
+  for known duplicates and replaces them with the canonical versions.
+*/
+
+function iconConvert (itemIcon) {
+    const duplicates = {
+      "icon-comment-add": "icon-comment",
+      "icon-eye-watch": "icon-eye",
+      "icon-eye-unwatch": "icon-eye",
+      "icon-git-branch-create": "icon-git-branch",
+      "icon-git-branch-delete": "icon-git-branch",
+      "icon-git-pull-request-abandoned": "icon-git-pull-request",
+      "icon-gist-private": "icon-lock",
+      "icon-git-fork-private": "icon-lock",
+      "icon-mirror-private": "icon-lock",
+      "icon-file-binary": "icon-file-text",
+      "icon-person-add": "icon-person",
+      "icon-person-delete": "icon-person",
+      "icon-repo-create": "icon-plus",
+      "icon-file-add": "icon-plus",
+      "icon-repo-delete": "icon-repo",
+      "icon-gist-fork": "icon-repo-forked",
+      "icon-search-save": "icon-search",
+      "icon-star-add": "icon-star",
+      "icon-star-delete": "icon-star",
+      "icon-repo-sync": "icon-sync",
+    };
+
+    if (duplicates[itemIcon]) {
+      itemIcon = duplicates[itemIcon];
+    }
+
+    return itemIcon;
+}
+/*
+icon-git-pull-request -> icon-git-pull-request-abandoned
+icon-lock -> icon-gist-private, icon-git-fork-private, icon-mirror-private
+icon-file-binary, icon-file-text
+icon-person -> icon-person-add, icon-person-follow
+icon-plus -> icon-repo-create, icon-file-add
+icon-repo -> icon-repo-delete
+icon-repo-forked -> icon-gist-fork
+icon-search -> icon-search-save
+icon-star -> icon-star-add, icon-star-delete
+icon-sync -> icon-repo-sync
+*/
 
 function loopIcons (iconSet, iconsList, itemIcon) {
     iconSet.icons.forEach(
