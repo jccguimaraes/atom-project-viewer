@@ -12,7 +12,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
-## [0.3.12] - 2016-07-28
+## [0.3.13] - 2016-07-04
+
+### Fixed
+
+- Uncaught TypeError: Cannot read property 'groups' of undefined ([#62](https://github.com/jccguimaraes/atom-project-viewer/issues/62))
+
+### Added
+
+- Possible icon redundancy ([#63](https://github.com/jccguimaraes/atom-project-viewer/issues/63)) ([#64](https://github.com/jccguimaraes/atom-project-viewer/pull/64));
+
+## [0.3.12] - 2016-06-28
 
 ### Added
 
@@ -24,7 +34,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Removing a project path when updating behaves weirdly ([#60](https://github.com/jccguimaraes/atom-project-viewer/issues/60));
 
-## [0.3.11] - 2016-07-18
+## [0.3.11] - 2016-06-18
 
 ### Added
 
@@ -34,32 +44,32 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - The backup only saves once. Any other changes are not saved ([#58](https://github.com/jccguimaraes/atom-project-viewer/issues/58));
 
-## [0.3.10] - 2016-07-17
+## [0.3.10] - 2016-06-17
 
 ### Added
 
 - Elevate current `tree-view` opened folders to project ([#26](https://github.com/jccguimaraes/atom-project-viewer/issues/26));
 - Forcing all icons at font-size: `@component-icon-size` extension to `SelectView` ([#56](https://github.com/jccguimaraes/atom-project-viewer/pull/56));
 
-## [0.3.9] - 2016-07-16
+## [0.3.9] - 2016-06-16
 
 ### Fixed
 
 - Forcing all icons at font-size: `@component-icon-size` ([#56](https://github.com/jccguimaraes/atom-project-viewer/pull/56));
 
-## [0.3.8] - 2016-07-15
+## [0.3.8] - 2016-06-15
 
 ### Fixed
 
 - Project status does not update on adding/removing paths ([#55](https://github.com/jccguimaraes/atom-project-viewer/issues/55));
 
-## [0.3.7] - 2016-07-15
+## [0.3.7] - 2016-06-15
 
 ### Fixed
 
 - Added extra validation in the context-menu for opening a project in a new/same window.
 
-## [0.3.6] - 2016-07-15
+## [0.3.6] - 2016-06-15
 
 ### Added
 
@@ -69,7 +79,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Grammar and spelling fixes ([#54](https://github.com/jccguimaraes/atom-project-viewer/pull/54));
 
-## [0.3.5] - 2016-07-14
+## [0.3.5] - 2016-06-14
 
 ### Added
 
@@ -82,7 +92,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Added @DamnedScholar to contributors list;
 - This file structure;
 
-## [0.3.4] - 2016-07-13
+## [0.3.4] - 2016-06-13
 
 ### Added
 
@@ -96,7 +106,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Due to some key-bindings conflict between packages, have decided to change the project own key-bindings. ([#46](https://github.com/jccguimaraes/atom-project-viewer/issues/46));
 
-## [0.3.3] - 2016-07-11
+## [0.3.3] - 2016-06-11
 
 ### Fixed
 
@@ -106,19 +116,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Possibility (through config option) to always open projects in a new window (default Atom\'s behavior), instead of opening in the same window. ([#46](https://github.com/jccguimaraes/atom-project-viewer/issues/46));
 
-## [0.3.2] - 2016-07-08
+## [0.3.2] - 2016-06-08
 
 ### Fixed
 
 - Fixed `SelectView` when no projects were available ([#45](https://github.com/jccguimaraes/atom-project-viewer/issues/45));
 
-## [0.3.1] - 2016-07-08
+## [0.3.1] - 2016-06-08
 
 ### Changed
 
 - Moved `atom-space-pen-views` from `devDependencies` to `dependencies` available ([#45](https://github.com/jccguimaraes/atom-project-viewer/issues/45));
 
-## [0.3.0] - 2016-07-08
+## [0.3.0] - 2016-06-08
 
 ### Added
 

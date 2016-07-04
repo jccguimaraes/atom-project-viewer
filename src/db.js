@@ -27,13 +27,7 @@ const oldFilePath = Path.normalize(
 );
 
 const getContent = function getContent () {
-    let content;
-    try {
-        content = atom.getStorageFolder().load(file);
-    } catch (e) {
-        content = defaultStorage;
-    }
-    return content;
+    return atom.getStorageFolder().load(file) || defaultStorage;
 };
 
 const readData = function readData () {
@@ -86,7 +80,7 @@ const readData = function readData () {
                     return;
                 }
 
-                const converted = getContent();
+                let converted = getContent();
 
                 if (content.hasOwnProperty('groups')) {
                     content.groups.forEach((storedGroup) => {
@@ -97,6 +91,9 @@ const readData = function readData () {
                             'expanded': storedGroup.expanded || '',
                             'sortBy': 'position',
                             'projects': []
+                        }
+                        if (!converted) {
+                            converted = defaultStorage;
                         }
                         if (converted.groups.length === 0) {
                             converted.groups.push(group);
@@ -130,8 +127,9 @@ const readData = function readData () {
                     });
                 }
                 storage = converted;
-                console.debug(storage);
+
                 atom.getStorageFolder().storeSync(file, storage);
+
                 resolve({
                     type: 'success',
                     message: `<strong>Successfully</strong> converted old data to the new data schema!<br>Please consider going to <code>Settings -> Packages -> Project-Viewer -> convertOldData</code> and setting it to <code>false</code> or even <code>Packages -> Project-Viewer -> File - Delete old file</code>.`,
