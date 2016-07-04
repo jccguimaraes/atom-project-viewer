@@ -128,18 +128,6 @@ function iconConvert (itemIcon) {
 
     return itemIcon;
 }
-/*
-icon-git-pull-request -> icon-git-pull-request-abandoned
-icon-lock -> icon-gist-private, icon-git-fork-private, icon-mirror-private
-icon-file-binary, icon-file-text
-icon-person -> icon-person-add, icon-person-follow
-icon-plus -> icon-repo-create, icon-file-add
-icon-repo -> icon-repo-delete
-icon-repo-forked -> icon-gist-fork
-icon-search -> icon-search-save
-icon-star -> icon-star-add, icon-star-delete
-icon-sync -> icon-repo-sync
-*/
 
 function loopIcons (iconSet, iconsList, itemIcon) {
     iconSet.icons.forEach(
