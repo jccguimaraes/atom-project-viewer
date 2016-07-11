@@ -38,6 +38,8 @@ const _modalRemoveQuickConstructor = _utility.registerComponent(_modalRemoveQuic
 
 const _views = new WeakMap();
 
+let bypass = false;
+
 function elevateToProject () {
     let paths = atom.project.getPaths();
 
@@ -489,6 +491,75 @@ function toggleFocus() {
     }
 }
 
+function onDidActivateInitialPackages () {
+    bypass = true;
+    afterPackagesActivation.call(this);
+}
+
+function afterPackagesActivation (pack) {
+    const views = _views.get(this);
+
+    if (!bypass) {
+        return;
+    }
+
+    if (pack && pack.name !== 'project-viewer') {
+        return;
+    }
+
+    this.disposables.add(atom.config.observe(_utility.getConfig('panelPosition'), (value) => {
+        let priority = 0;
+
+        if (views.mainPanel && views.mainPanel.destroy) {
+            views.mainPanel.destroy();
+        }
+
+        // TODO: check if does it make sense to allow left of tree-view or
+        // right of the tree-view also.
+        // atom.workspace.getLeftPanels().forEach(
+        //     (panel) => {
+        //          priority = priority < panel.priority ? panel.priority - 1 : priority;
+        //      }
+        // );
+
+        views.mainPanel = atom.workspace['add' + value + 'Panel']({
+            item: views.mainView,
+            visible: atom.config.get(_utility.getConfig('startupVisibility')),
+            priority: priority
+        });
+    }));
+
+    this.disposables.add(atom.config.observe(_utility.getConfig('autohide'), (value) => {
+        if (!views.mainPanel) {
+            return;
+        }
+        if (value) {
+            views.mainPanel.getItem().classList.add('autohide');
+        } else {
+            views.mainPanel.getItem().classList.remove('autohide');
+        }
+    }));
+
+    this.disposables.add(atom.config.observe(_utility.getConfig('hideHeader'), (value) => {
+        if (!views.headerView) {
+            return;
+        }
+        if (value) {
+            views.headerView.classList.add('autohide');
+        } else {
+            views.headerView.classList.remove('autohide');
+        }
+    }));
+
+    this.disposables.add(atom.config.onDidChange(_utility.getConfig('statusBarVisibility'), (status) => {
+        if (status.newValue) {
+            addToStatusBar.call(this);
+        } else {
+            removeFromStatusBar.call(this);
+        }
+    }));
+}
+
 const projectViewer = {
     config: _config,
     activate: function activate(state) {
@@ -513,40 +584,13 @@ const projectViewer = {
         views.headerView = new _headerConstructor();
         views.containerView = new _listTreeConstructor();
 
-        atom.config.observe(_utility.getConfig('panelPosition'), (value) => {
-            views.mainPanel = atom.workspace['add' + value + 'Panel']({
-                item: views.mainView,
-                visible: atom.config.get(_utility.getConfig('startupVisibility'))
-            });
-        });
-
-
-
-        atom.config.observe(_utility.getConfig('autohide'), (value) => {
-            if (value) {
-                views.mainPanel.getItem().classList.add('autohide');
-            } else {
-                views.mainPanel.getItem().classList.remove('autohide');
-            }
-        });
-
-        atom.config.observe(_utility.getConfig('hideHeader'), (value) => {
-            if (value) {
-                views.headerView.classList.add('autohide');
-            } else {
-                views.headerView.classList.remove('autohide');
-            }
-        });
-
-        atom.config.onDidChange('project-viewer.statusBarVisibility', (status) => {
-            if (status.newValue) {
-                addToStatusBar.call(this);
-            } else {
-                removeFromStatusBar.call(this);
-            }
-        });
-
         this.disposables.add(
+            atom.packages.onDidActivateInitialPackages(
+                onDidActivateInitialPackages.bind(this)
+            ),
+            atom.packages.onDidActivatePackage(
+                afterPackagesActivation.bind(this)
+            ),
             atom.commands.add('atom-workspace', {
                 'project-viewer:toggle-display': togglePanel.bind(this),
                 'project-viewer:toggle-focus': toggleFocus.bind(this),
@@ -639,6 +683,8 @@ const projectViewer = {
     serialize: function serialize() {},
     deactivate: function deactivate() {
         const views = _views.get(this);
+
+        this.disposables.dispose();
 
         if (!views) {
             return;

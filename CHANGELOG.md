@@ -12,6 +12,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
+## [0.3.14] - 2016-xx-xx
+
+### Fixed
+
+- Possible icon redundancy ([#65](https://github.com/jccguimaraes/atom-project-viewer/pull/65));
+
 ## [0.3.13] - 2016-07-04
 
 ### Fixed
