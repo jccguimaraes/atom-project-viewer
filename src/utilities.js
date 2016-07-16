@@ -136,12 +136,8 @@ const utilities = {
                 );
                 changes.paths.add.forEach(
                     (path) => {
-                        const pathIdx = original.current.projectPaths.indexOf(path);
-                        if (pathIdx === 1) {
+                        if ( path !== undefined ) {
                             original.current.projectPaths.push(path);
-                        }
-                        if (pathNotInArray && activeModel && activeModel.projectId === original.current.projectId) {
-                            atom.project.addPath(path);
                         }
                     }
                 );
