@@ -75,19 +75,33 @@ function addIcons () {
     views.icons = document.createElement('div');
     views.icons.classList.add('inset-panel', 'padded');
 
-    let iconsDescription = document.createElement('label');
-    iconsDescription.classList.add('pv-label');
-    iconsDescription.textContent = 'Select an icon:';
+    let iconsListDescription = document.createElement('label');
+    iconsListDescription.classList.add('pv-label');
+    iconsListDescription.textContent = 'Select an icon:';
 
     let iconsList = document.createElement('div');
     iconsList.classList.add('inline-block', 'pv-icons');
 
+    let iconsFilterDescription = document.createElement('label');
+    iconsFilterDescription.classList.add('pv-label');
+    iconsFilterDescription.textContent = 'Filter:';
+
+    let iconsFilter = document.createElement('atom-text-editor');
+    iconsFilter.setAttribute('mini', true);
+    iconsFilter.addEventListener(
+        'keyup',
+        sortIcons.bind(this),
+        false
+    );
+
     loopIcons.call(this, _octicons, iconsList, itemIcon);
     loopIcons.call(this, _devicons, iconsList, itemIcon);
 
-    views.icons.appendChild(iconsDescription);
+    views.icons.appendChild(iconsListDescription);
     views.icons.appendChild(iconsList);
     this.insertBefore(views.icons, views.buttonsContainer);
+    views.icons.appendChild(iconsFilterDescription);
+    views.icons.appendChild(iconsFilter);
 }
 
 /*
@@ -127,6 +141,29 @@ function iconConvert (itemIcon) {
     }
 
     return itemIcon;
+}
+
+function sortIcons (evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    const view = evt.target;
+    const filterString = view.model.buffer.getText();
+    const iconList = document.getElementsByClassName("pv-icons")[0];
+    // Children are not of type array, so we convert them
+    const iconListArry = [].slice.call(iconList.children);
+
+    iconListArry.forEach(
+        (child) => {
+            // Removen the icon prefix for filter purpouse
+            const iconString = child.innerHTML.substring(child.innerHTML.indexOf('-')+1, child.innerHTML.lenght);
+            if(iconString.indexOf(filterString) > -1){
+                child.style.display = 'inline-block';
+            } else {
+                child.style.display = 'none';
+            }
+        }
+    );
 }
 
 function loopIcons (iconSet, iconsList, itemIcon) {
