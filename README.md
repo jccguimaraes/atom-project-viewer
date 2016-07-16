@@ -17,6 +17,7 @@ This package was driven by other packages that manage projects but didn't gave m
 
 ![pv_cgp_02](https://cloud.githubusercontent.com/assets/14871650/15876485/8c13a3b6-2d05-11e6-8f96-bb4ab8acfe9a.gif)
 
+![pv_cgp_03](https://cloud.githubusercontent.com/assets/1093709/16894913/be34c22a-4b65-11e6-8f95-8b8b314f40d5.gif)
 
 ### Projects that inspired me!
 * [tree-view](https://atom.io/packages/tree-view) from *atom*.
