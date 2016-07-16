@@ -181,12 +181,11 @@ function addIcons () {
     loopIcons.call(this, _octicons, iconsList, itemIcon);
     loopIcons.call(this, _devicons, iconsList, itemIcon);
 
-    views.icons.appendChild(iconsFilterDescription);
-    views.icons.appendChild(iconsFilter);
     views.icons.appendChild(iconsListDescription);
     views.icons.appendChild(iconsList);
-
     this.insertBefore(views.icons, views.buttonsContainer);
+    views.icons.appendChild(iconsFilterDescription);
+    views.icons.appendChild(iconsFilter);
 }
 
 function sortIcons (evt) {
@@ -196,11 +195,14 @@ function sortIcons (evt) {
     const view = evt.target;
     const filterString = view.model.buffer.getText();
     const iconList = document.getElementsByClassName("pv-icons")[0];
+    // Children are not of type array, so we convert them
     const iconListArry = [].slice.call(iconList.children);
 
     iconListArry.forEach(
         (child) => {
-            if(child.className.indexOf(filterString) > -1){
+            // Removen the icon prefix for filter purpouse
+            const iconString = child.innerHTML.substring(child.innerHTML.indexOf('-')+1, child.innerHTML.lenght);
+            if(iconString.indexOf(filterString) > -1){
                 child.style.display = 'inline-block';
             } else {
                 child.style.display = 'none';
