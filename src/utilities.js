@@ -265,13 +265,11 @@ const utilities = {
     },
     getSelectedProjectModel: function getSelectedProjectModel() {
         let selected = this.getSelectedProjectView();
-        let model;
 
         if (selected) {
-            model = _db.mapper.get(selected);
+            return _db.mapper.get(selected);
         }
-
-        return model;
+        return undefined;
     },
     clearStatusBar: function clearStatusBar() {
         _caches.statusBar = undefined;

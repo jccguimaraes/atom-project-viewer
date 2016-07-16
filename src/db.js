@@ -217,7 +217,6 @@ const buildData = function buildData () {
             list[model.clientId].projects.push(item);
         }
     }
-    console.debug(data);
     return data;
 }
 
