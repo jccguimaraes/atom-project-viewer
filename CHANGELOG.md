@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
-## [0.3.15] - 2016-07-xx
+## [0.3.15] - 2016-07-17
 
 ### Added
 
@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix pathNotInArray ([#72](https://github.com/jccguimaraes/atom-project-viewer/pull/72)), ([#71](https://github.com/jccguimaraes/atom-project-viewer/issues/71));
+- Cannot read property 'addNode' of null ([#69](https://github.com/jccguimaraes/atom-project-viewer/issues/69));
 - Cannot read property 'visible' of undefined ([#68](https://github.com/jccguimaraes/atom-project-viewer/issues/68));
 
 ## [0.3.14] - 2016-07-11
