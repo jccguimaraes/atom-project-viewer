@@ -40,6 +40,53 @@ const _views = new WeakMap();
 
 let bypass = false;
 
+function nextOrPreviousProject (index) {
+    // Generate an array of projects by selecting children of 'project-viewer > ul[is="pv-list-tree"]'. For each 'li[is="pv-list-nested-item"]', expand it into its children.
+    const sidebar = document.getElementsByTagName('project-viewer')[0];
+    let list = sidebar.getElementsByTagName('ul')[0].children;
+
+    var output = [];
+
+    var expandProjects = function (element) {
+        if (element.getAttribute('is') === "pv-list-nested-item") {
+            let nestedList = element.getElementsByTagName('ul')[0].children;
+
+            for (var i = 0; i < nestedList.length; i++) {
+                expandProjects(nestedList[i]);
+            }
+        }
+        else if (element.getAttribute('is') === "pv-list-item") {
+            output.push(element);
+        }
+    };
+
+    for (var i = 0; i < list.length; i++) {
+        expandProjects(list[i]);
+    }
+
+    for (var i = 0; i < output.length; i++) {
+        var txt = txt + output[i].children[0].innerHTML + "\n";
+    }
+
+    // Identify the target project and simulate a click event.
+    var target;
+
+    for (var i = 0; i < output.length; i++) {
+        if (output[i].classList.contains("active")) {
+          var current = i;
+          break;
+        }
+    }
+
+    if (current === output.length - 1 && index === 1) {  target = output[0];  }
+    else if (current === 0 && index === -1) {  target = output[output.length - 1];  }
+    else {  target = output[current + index]; }
+
+    const eventClick = new CustomEvent('click', { 'detail': false });
+
+    target.dispatchEvent(eventClick);
+}
+
 function elevateToProject () {
     let paths = atom.project.getPaths();
 
@@ -536,7 +583,9 @@ const projectViewer = {
                 'project-viewer:file-delete-old': fileDeleteOld.bind(this),
                 'project-viewer:elevate-project': elevateToProject.bind(this),
                 'project-viewer:open-new-window': openProject.bind(true),
-                'project-viewer:open-same-window': openProject.bind(false)
+                'project-viewer:open-same-window': openProject.bind(false),
+                'project-viewer:next-project': nextOrPreviousProject.bind(this, 1),
+                'project-viewer:previous-project': nextOrPreviousProject.bind(this, -1)
             }
         ));
 
