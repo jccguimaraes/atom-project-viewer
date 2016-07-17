@@ -156,6 +156,8 @@ const buildData = function buildData () {
         projects: []
     };
 
+    views.projects = [];
+
     for (let nestedIdx = 0; nestedIdx < listNestedTrees.length; nestedIdx++) {
         let itemDOM = listNestedTrees[nestedIdx];
         let model = mapper.get(itemDOM);
@@ -196,6 +198,7 @@ const buildData = function buildData () {
                 paths: model.projectPaths || []
             };
             list[model.projectId] = item;
+            views.projects.push(document.getElementById(model.projectId));
         }
 
         if (model.type === 'client') {
