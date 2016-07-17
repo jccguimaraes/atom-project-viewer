@@ -201,7 +201,7 @@ function sortIcons (evt) {
     iconListArry.forEach(
         (child) => {
             // Removen the icon prefix for filter purpouse
-            const iconString = child.innerHTML.substring(child.innerHTML.indexOf('-')+1, child.innerHTML.lenght);
+            const iconString = child.innerHTML.substring(child.innerHTML.indexOf('-')+1, child.innerHTML.length);
             if(iconString.indexOf(filterString) > -1){
                 child.style.display = 'inline-block';
             } else {
