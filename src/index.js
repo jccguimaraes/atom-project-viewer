@@ -78,9 +78,13 @@ function nextOrPreviousProject (index) {
         }
     }
 
+    if (!current) { console.log("Project Viewer Error: No project currently selected."); return; }
+
     if (current === output.length - 1 && index === 1) {  target = output[0];  }
     else if (current === 0 && index === -1) {  target = output[output.length - 1];  }
     else {  target = output[current + index]; }
+
+    if (!target) { console.log("Project Viewer Error: No valid target."); return; }
 
     const eventClick = new CustomEvent('click', { 'detail': false });
 
