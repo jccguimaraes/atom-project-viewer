@@ -198,7 +198,7 @@ const buildData = function buildData () {
                 paths: model.projectPaths || []
             };
             list[model.projectId] = item;
-            views.projects.push(document.getElementById(model.projectId));
+            views.projects.push(model.projectId);
         }
 
         if (model.type === 'client') {
