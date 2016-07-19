@@ -2,9 +2,9 @@
 
 const expect = require('chai').expect;
 
-const project = require('../../src/project');
+const project = require('../../src/_project');
 
-context ('unit-test :: project', function () {
+context.only ('unit-test :: project', function () {
 
   context ('api', function () {
 
@@ -12,6 +12,22 @@ context ('unit-test :: project', function () {
 
       it ('is a public method', function () {
         expect(project.createModel).to.be.a('function');
+      });
+
+      context ('.projectId', function () {
+
+        it ('should create an Id', function () {
+          let model = project.createModel();
+          expect(model.projectId).to.exist;
+        });
+
+        it ('should not allow to override the Id', function () {
+          let model = project.createModel();
+          const fn = function () {
+            model.projectId = 'pv_' + Date.now();
+          };
+          expect(fn).to.throw(TypeError);
+        });
       });
 
       context ('.projectName', function () {
@@ -116,6 +132,29 @@ context ('unit-test :: project', function () {
 
       });
 
+      context ('.projectPaths', function () {
+
+        it ('add if valid path string', function () {
+            let model = project.createModel();
+            let path = '/my/path/to/project';
+            expect(model.projectPaths).to.equal(null);
+            model.projectPaths = path;
+            expect(model.projectPaths).to.have.length(1);
+            expect(model.projectPaths[0]).to.equal(path);
+        });
+
+        it ('add if valid array of path strings', function () {
+            let model = project.createModel();
+            let path_1 = '/my/path/to/project_1';
+            let path_2 = '/my/path/to/project_2';
+            expect(model.projectPaths).to.equal(null);
+            model.projectPaths = [path_1, path_2];
+            expect(model.projectPaths).to.have.length(2);
+            expect(model.projectPaths[0]).to.equal(path_1);
+            expect(model.projectPaths[1]).to.equal(path_2);
+        });
+
+      });
     });
 
     context ('#createView', function () {

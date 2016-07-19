@@ -1,83 +1,91 @@
 'use strict';
 
-const expect = require('chai').expect;
+const wm = new WeakMap();
 
-const colors = require('../../src/colors');
+const sheet = {};
 
-context ('unit-test :: colors', () => {
+sheet.initialize = function _initialize () {
+    if (wm.get(this)) {
+        return undefined;
+    }
 
-    beforeEach (() => {
-        // this sets a clean state for each test
-        this.colors = colors;
-    });
+    const colorsObject = {
+        element: document.createElement('style'),
+        rules: {
+            project: {},
+            group: {},
+            client: {}
+        }
+    };
+    document.querySelector('head atom-styles').appendChild(colorsObject.element);
+    atom.styles.addStyleElement(colorsObject.element);
+    colorsObject.element.setAttribute('source-path', 'project-viewer-styles');
+    colorsObject.element.setAttribute('priority', 3);
 
-    afterEach (() => {
-        // this sets a clean state for each test
-        this.colors.destroy();
-        delete this.colors;
-    });
+    wm.set(this, colorsObject);
 
-    context ('#initialize', () => {
+    return colorsObject;
+};
 
-        it ('should be a method', () => {
-            let expected = 'function';
-            let result = this.colors.initialize;
-            expect(result).to.be.a(expected);
-        });
+sheet.destroy = function _destroy () {
+    if (wm.get(this)) {
+        wm.delete(this);
+        return undefined;
+    }
 
-        it ('should initialize only once', () => {
-            const init_1 = this.colors.initialize();
-            const init_2 = this.colors.initialize();
-            expect(init_1).to.be.an('object');
-            expect(init_2).to.be.a('undefined');
-            expect(init_1).not.to.be.equal(init_2);
-        });
-    });
+    return null;
+};
 
-    context ('#destroy', () => {
+sheet.setRule = function _setRule (itemId, itemType, color) {
+    const colorsObject = wm.get(this);
 
-        it ('should be a method', () => {
-            let expected = 'function';
-            let result = this.colors.destroy;
-            expect(result).to.be.a(expected);
-        });
+    if (!colorsObject) {
+        return undefined;
+    }
 
-        it ('should destroy the object', () => {
-            const init_1 = this.colors.initialize();
-            expect(init_1).to.be.an('object');
-            this.colors.destroy();
-            const init_2 = this.colors.initialize();
-            expect(init_2).to.be.a('object');
-        });
-    });
+    while (colorsObject.element.sheet.cssRules.length > 0) {
+        colorsObject.element.sheet.deleteRule(colorsObject.element.sheet.cssRules.length - 1);
+    }
 
-    context ('#setRule', () => {
+    let selectorText;
+    let rule;
 
-        it ('should be a method', () => {
-            let expected = 'function';
-            let result = this.colors.setRule;
-            expect(result).to.be.a(expected);
-        });
+    if (itemId) {
+        // selectorText = `#${itemId} .list-item span`;
+        selectorText = `#${itemId} .list-item`;
+    } else {
+        return;
+    }
 
-        it ('should set a new rule', () => {
-            let expected;
-            let result;
+    if (color) {
+        rule = `${selectorText} { color: ${color}}`;
 
-            this.colors.initialize();
+        colorsObject.rules[itemType][itemId] = rule;
+    }
+    else {
+        delete colorsObject.rules[itemType][itemId];
+    }
 
-            this.colors.setRule('pv_1', 'client', '#fff');
-            this.colors.setRule('pv_2', 'client', 'red');
-            this.colors.setRule('pv_3', 'group', 'pink');
-            this.colors.setRule('pv_1', 'client', '#ccc');
-            this.colors.setRule('pv_4', 'project', 'yellow');
+    Object.keys(colorsObject.rules.client).forEach(
+        (client, idx) => colorsObject.element.sheet.insertRule(
+            colorsObject.rules.client[client],
+            colorsObject.element.sheet.cssRules.length
+        )
+    );
 
-            expect(result).to.equal(expected);
-        });
+    Object.keys(colorsObject.rules.group).forEach(
+        (group, idx) => colorsObject.element.sheet.insertRule(
+            colorsObject.rules.group[group],
+            colorsObject.element.sheet.cssRules.length
+        )
+    );
 
-        it.skip ('should update an existing rule', () => {
-            let expected;
-            let result;
-            expect(result).to.equal(expected);
-        });
-    });
-});
+    Object.keys(colorsObject.rules.project).forEach(
+        (project, idx) => colorsObject.element.sheet.insertRule(
+            colorsObject.rules.project[project],
+            colorsObject.element.sheet.cssRules.length
+        )
+    );
+};
+
+module.exports = sheet;

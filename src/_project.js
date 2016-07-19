@@ -4,6 +4,12 @@ const projectMapper = new WeakMap();
 
 function createModel () {
   const project = Object.create(null, {
+    projectId: {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: 'pv_' + Date.now()
+    },
     projectName: {
       configurable: false,
       enumerable: false,
@@ -47,9 +53,51 @@ function createModel () {
         }
         return obj.projectIcon;
       }
+    },
+    projectPaths: {
+      configurable: false,
+      enumerable: false,
+      set: function (paths) {
+        let obj = projectMapper.get(this);
+        if (!obj) {
+          obj = {};
+          projectMapper.set(this, obj);
+        }
+        if (!paths) {
+          return;
+        }
+        if (!obj.hasOwnProperty('projectPaths')) {
+          obj.projectPaths = [];
+        }
+        if (Array.isArray(paths)) {
+          paths.forEach(
+            (path) => this.projectPaths = path
+          );
+          return;
+        }
+        if (typeof paths !== 'string') {
+          return;
+        }
+        // this regex is not well formed yet
+        let regex = /(^\/(?:[a-zA-z0-9-_.]*\/?)*)|(^\w:\\\\(?:[a-zA-z0-9-_.]*\\?)*)/;
+        if (paths.match(regex) === null) {
+          return;
+        }
+        if (obj.projectPaths.indexOf(paths) === -1) {
+          console.debug(paths);
+          obj.projectPaths.push(paths);
+        }
+      },
+      get: function () {
+        let obj = projectMapper.get(this);
+        if (!obj) {
+          return null;
+        }
+        return obj.projectPaths;
+      }
     }
   });
-  return Object.freeze(project);
+  return project;
 }
 
 const viewMethods = {
