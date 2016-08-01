@@ -1,7 +1,7 @@
 {
   "name": "project-viewer",
   "main": "./src/index",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "Project viewer/manager that lets you add, edit and remove clients/groups/projects as well as switching between them.",
   "keywords": [
     "project",
