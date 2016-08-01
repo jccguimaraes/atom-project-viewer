@@ -105,7 +105,9 @@ project-viewer {
 		}
 
 		&.active {
-			color: @project-viewer-selected-state;
+			span {
+				color: @project-viewer-selected-state !important;
+			}
 		}
 
 		&.disabled {

@@ -33,17 +33,17 @@ module.exports = function (args) {
                 enablePersistence: false
             });
 
-            // Instantiate a Mocha instance.
-            let mocha = new Mocha({
-                reporter: 'html'
-            });
+            const mocha = new Mocha;
+            mocha.reporter('html');
+            mocha.ui('bdd');
+            mocha.suite.emit('pre-require', window, null, mocha);
 
             let testDir = path.join(__dirname, 'spec');
 
             // Add each .js file to the mocha instance
             fs.readdirSync(path.join(testDir, 'unit')).filter(function(file){
                 // Only keep the .js files
-                return file.substr(-3) === '.js';
+                return file.substr(-8) === '-spec.js';
 
             }).forEach(function(file){
                 mocha.addFile(
@@ -51,21 +51,21 @@ module.exports = function (args) {
                 );
             });
 
-            fs.readdirSync(path.join(testDir, 'functional')).filter(function(file){
-                // Only keep the .js files
-                return file.substr(-3) === '.js';
-
-            }).forEach(function(file){
-                mocha.addFile(
-                    path.join(testDir, 'functional', file)
-                );
-            });
+            // fs.readdirSync(path.join(testDir, 'functional')).filter(function(file){
+            //     // Only keep the .js files
+            //     return file.substr(-8) === '-spec.js';
+            //
+            // }).forEach(function(file){
+            //     mocha.addFile(
+            //         path.join(testDir, 'functional', file)
+            //     );
+            // });
 
             // mocha.checkLeaks();
             // Run the tests.
             mocha.run((failures, a) => {
                 process.on('exit', () => {
-                    process.exit(failures);  // exit with non-zero status if there were failures
+                    process.exit(failures);
                 });
             });
         });

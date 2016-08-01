@@ -3,7 +3,7 @@
 const projectMapper = new WeakMap();
 
 function createModel () {
-  const project = Object.create(null, {
+  const model = Object.create(null, {
     projectId: {
       configurable: false,
       enumerable: false,
@@ -84,7 +84,6 @@ function createModel () {
           return;
         }
         if (obj.projectPaths.indexOf(paths) === -1) {
-          console.debug(paths);
           obj.projectPaths.push(paths);
         }
       },
@@ -97,26 +96,60 @@ function createModel () {
       }
     }
   });
-  return project;
+  return model;
 }
 
 const viewMethods = {
-  createdCallback: function createdCallback () {
-    let listItem = document.createElement('span');
-    listItem.classList.add('list-item');
-    this.appendChild(listItem);
-    console.debug(this);
+  createdCallback: function createdCallback () {},
+  attachedCallback: function attachedCallback () {},
+  detachedCallback: function detachedCallback () {},
+  initialize: function initialize () {
+    this.classList.add('list-item');
+  },
+  render: function render () {
+    const model = projectMapper.get(this);
+
+    if (!model) {
+      return;
+    }
+
+    let spanNode = this.querySelector('span');
+    let contentNode = this;
+
+    if (model.projectIcon && !spanNode) {
+      spanNode = document.createElement('span');
+      contentNode.appendChild(spanNode);
+    }
+
+    if (model.projectIcon) {
+      contentNode = spanNode;
+      contentNode.classList.add('icon', model.projectIcon);
+    }
+    else if (spanNode) {
+      contentNode.removeChild(spanNode);
+    }
+
+    if (model.projectName) {
+      contentNode.textContent = model.projectName;
+    }
+  },
+  sorting: function _sorting () {
+    const model = projectMapper.get(this);
+
+    if (!model) {
+      return;
+    }
+    return model.projectName;
   }
 };
 
 function createView (model) {
   const tagExtends = 'li';
   const tagIs = 'project-viewer-project';
-  let viewConstructor;
   let view;
 
   try {
-    viewConstructor = document.registerElement(
+    const viewConstructor = document.registerElement(
       tagIs,
       {
         prototype: viewMethods,
@@ -126,9 +159,13 @@ function createView (model) {
     Object.setPrototypeOf(viewMethods, HTMLElement.prototype);
     view = new viewConstructor();
   } catch (e) {
-    view =  document.createElement(tagIs, tagExtends);
+    view =  document.createElement(tagExtends, tagIs);
   }
-  projectMapper.set(view, model);
+
+  if (model) {
+    projectMapper.set(view, model);
+  }
+
   return view;
 }
 
@@ -142,5 +179,5 @@ module.exports = {
   createModel,
 
   /** Create a project view given a project model */
-  createView,
+  createView
 };

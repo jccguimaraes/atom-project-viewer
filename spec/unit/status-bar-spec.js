@@ -1,5 +1,7 @@
 'use strict';
 
+return;
+
 const expect = require('chai').expect;
 
 const statusBar = require('../../src/status-bar');

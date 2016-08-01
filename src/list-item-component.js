@@ -57,13 +57,13 @@ function clickListener(evt) {
         return;
     }
 
-    atom.project.getRepositories().forEach((repo) => {
-        if (repo && typeof repo.destroy === 'function') {
-            repo.destroy();
-        }
-    });
+    // atom.project.getRepositories().forEach((repo) => {
+    //     if (repo && typeof repo.destroy === 'function') {
+    //         repo.destroy();
+    //     }
+    // });
 
-    atom.workspace.getActivePane().destroy();
+    // atom.workspace.getActivePane().destroy();
 
     serializationFile = atom.getStateKey(model.projectPaths);
 
