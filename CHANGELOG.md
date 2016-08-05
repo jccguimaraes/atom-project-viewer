@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- (0.4.0) Fixed the `font-size` and centering for the icons in the tree-view;
+
 - Right a proper feature list on the README;
 - Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));
 - Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
@@ -12,11 +14,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
+## [0.3.17] - 2016-08-05
+
+### Fixed
+
+- Add root path in windows does not trim path as name([#78](https://github.com/jccguimaraes/atom-project-viewer/issues/78));
+
 ## [0.3.16] - 2016-08-01
 
 ### Fixed
 
-- After updating to 1.9.0 some errors occur when changing between projects (this is a workaround for now).
+- After updating to 1.9.0 some errors occur when changing between projects (this is a workaround for now);
+- Fixed selected / active project highlighted color;
+- Fixed AppVeyor link.
 
 ## [0.3.15] - 2016-07-17
 

@@ -1,5 +1,7 @@
 'use strict';
 
+const Path = require('path');
+
 const _views = require('./views');
 const _utilities = require('./utilities');
 const _utils = require('./utils');
@@ -252,7 +254,7 @@ function eachFolder (evt, folder) {
     }
 
     if (changesToItem.paths.length === 1 && views.itemInput.getModel().buffer.getText() === '') {
-        let name = folder.split('/').reverse()[0];
+        let name = Path.basename(folder);
         views.itemInput.getModel().buffer.setText(name);
     }
 
