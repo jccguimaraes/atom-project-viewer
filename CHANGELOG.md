@@ -14,6 +14,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
+## [0.3.18] - 2016-08-05
+
+### Fixed
+
+- Elevate to project would not check for the name;
+
 ## [0.3.17] - 2016-08-05
 
 ### Fixed

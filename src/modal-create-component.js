@@ -429,11 +429,11 @@ function buttonClickEvent (evt) {
         inputText = views.itemInput.getModel().buffer.getText();
     }
 
-    if (inputText !== originalItem.current[originalItem.current.type + 'Name']) {
+    // if (inputText !== originalItem.current[originalItem.current.type + 'Name']) {
         changesToItem.name = inputText;
-    } else {
-        delete changesToItem.name;
-    }
+    // } else {
+        // delete changesToItem.name;
+    // }
 
     if (originalItem.current && originalItem.current.type === 'project') {
         let listItemConstructor = _utilities.getConstructor(_listItemComponent.definition);
