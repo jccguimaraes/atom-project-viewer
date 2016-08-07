@@ -45,7 +45,9 @@ Settings | Type | Description | Default
 `panelPosition` | `String` | You can set the place of the viewer, to the most right position or to the most left position. | `Right`
 `alwaysOpenInNewWindow` | `Boolean` | If set to true, always open projects in a new window (default Atom's behavior), instead of opening in the same window. | `false`
 `hideHeader` | `Boolean` | Hide header (for more space). | `false`
-`githubToken` | `String` | Your personal and private GitHub token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string. | `''`
+`githubAccessToken` | `String` | Your personal and private GitHub access token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string. | `''`
+`gistId` | `String` | ID of the gist used as a backup storage. | `''`
+`setName` | `String` | Name of your working set, for example 'work' or 'home'. As each working set is backed up into a separate file in one gist, you can have multiple Client/Group/Project sets on different machines and have them all safely backed up on gist. | `default`
 `convertOldData` | `Boolean` | If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default it will always check on startup for this data and if the new does not exist, it will convert to the new data schema. | `true`
 
 ## Features & Future Features

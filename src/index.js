@@ -331,6 +331,10 @@ function githubWorkerOnMessage(event) {
         updateProjectViewer.call(this);
     }
 
+    if (event.data.gistId) {
+      atom.config.set(_utility.getConfig('gistId'), event.data.gistId);
+    }
+
     _utils.notification(event.data.type, event.data.message, event.data.options);
 }
 
@@ -338,7 +342,9 @@ function fileBackup () {
     githubWorker.postMessage([
         {
             action: 'update',
-            token: atom.config.get(_utility.getConfig('githubToken')),
+            token: atom.config.get(_utility.getConfig('githubAccessToken')),
+            gistId: atom.config.get(_utility.getConfig('gistId')),
+            setName: atom.config.get(_utility.getConfig('setName')),
             value: _utility.getDB().getStorage()
         }
     ]);
@@ -348,7 +354,9 @@ function fileImport () {
     githubWorker.postMessage([
         {
             action: 'fetch',
-            token: atom.config.get(_utility.getConfig('githubToken'))
+            token: atom.config.get(_utility.getConfig('githubAccessToken')),
+            gistId: atom.config.get(_utility.getConfig('gistId')),
+            setName: atom.config.get(_utility.getConfig('setName'))
         }
     ]);
 }

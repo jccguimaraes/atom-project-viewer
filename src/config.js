@@ -39,17 +39,31 @@ const config = {
         default: false,
         order: 5
     },
-    'githubToken': {
-        description: 'Your personal and private GitHub token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string.',
+    'githubAccessToken': {
+        title: 'GitHub Access Token',
+        description: 'Your personal and private GitHub access token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string.',
         type: 'string',
         default: '',
         order: 6
+    },
+    'gistId': {
+        title: 'Gist ID',
+        description: 'ID of the gist used as a backup storage.',
+        type: 'string',
+        default: '',
+        order: 7
+    },
+    'setName': {
+        description: 'Name of your working set, for example \'work\' or \'home\'. As each working set is backed up into a separate file in gist, you can have multiple Client/Group/Project sets on different machines and have them all safely backed up on gist.',
+        type: 'string',
+        default: 'default',
+        order: 8
     },
     'convertOldData': {
         description: 'If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default, it will always check on startup for this data and if the new does not exist, it will convert to the new data schema.',
         type: 'boolean',
         default: true,
-        order: 7
+        order: 9
     }
 };
 
