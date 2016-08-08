@@ -121,7 +121,7 @@ const api = {
               };
 
               let body = JSON.stringify({
-                description: 'this.gistDescription',
+                description: this.gistDescription,
                 public: false,
                 files: files
               });
@@ -176,7 +176,7 @@ const api = {
         };
 
         let body = JSON.stringify({
-          description: 'this.gistDescription',
+          description: this.gistDescription,
           public: false,
           files: files
         });
