@@ -7,6 +7,7 @@ const api = {
   get gistFileName() {
     return `project-viewer-${this.setName}.json`;
   },
+  oldBackupFileName: 'project-viewer.json',
   connectionError: function connectionError(error) {
     return {
       type: 'error',
@@ -53,16 +54,32 @@ const api = {
       fetch(url, parameters)
         .then(this.toJson.bind(null, 200))
         .then(data => {
-          if (data && data.files && data.files.hasOwnProperty(this.gistFileName)) {
+          if (data && data.files && (data.files.hasOwnProperty(this.gistFileName) || data.files.hasOwnProperty(this.oldBackupFileName))) {
+            let fileName;
+            let rename = false;
+            // if new backup file exists select it for import
+            if (data.files.hasOwnProperty(this.gistFileName)) {
+              fileName = this.gistFileName;
+            } else if (data.files.hasOwnProperty(this.oldBackupFileName)) {
+              // otherwise fallback to old backup file and queue rename operation
+              fileName = this.oldBackupFileName;
+              rename = true;
+            }
+
             // backup found, returning
             resolve({
               type: 'success',
               message: 'Retrieved DB from <strong>GitHub</strong> successfully.',
-              db: JSON.parse(data.files[this.gistFileName].content),
+              db: JSON.parse(data.files[fileName].content),
               options: {
                 icon: 'mark-github'
               }
             });
+
+            if (rename) {
+              // rename the file to conform with new backup system
+              this.renameBackupFile(this.oldBackupFileName, this.gistFileName).then(postMessage).catch(postMessage);
+            }
             return;
           }
 
@@ -74,6 +91,60 @@ const api = {
             options: {
               icon: 'mark-github',
               dismissable: true
+            }
+          });
+        }).catch(error => {
+          reject(this.connectionError(error));
+        });
+    });
+
+    return promise;
+  },
+  renameBackupFile: function renameBackupFile(oldValue, newValue) {
+    const promise = new Promise((resolve, reject) => {
+      let url = this.url + '/' + this.gistId;
+
+      let headers = new Headers();
+      headers.append('Accept', 'application/vnd.github.v3+json');
+      headers.append('Authorization', `token ${this.token}`);
+
+      let files = {};
+      files[oldValue] = {
+        filename: newValue
+      };
+
+      let body = JSON.stringify({
+        description: this.gistDescription,
+        public: false,
+        files: files
+      });
+
+      parameters = {
+        method: 'PATCH',
+        headers: headers,
+        body: body
+      };
+
+      fetch(url, parameters)
+        .then((response) => {
+          if (response.status == 200) {
+            // gist file successfully renamed
+            resolve({
+              type: 'success',
+              message: 'Successfully converted old backup file to a new one.',
+              options: {
+                icon: 'mark-github'
+              }
+            });
+            return;
+          }
+
+          // failed to update gist, reponse status code was not 200 OK
+          reject({
+            type: 'warning',
+            message: 'Failed to convert old backup file to a new one.',
+            options: {
+              icon: 'mark-github'
             }
           });
         }).catch(error => {
