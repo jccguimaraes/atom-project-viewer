@@ -1,11 +1,9 @@
-const setNamePlaceholder = '{set-name}';
 const api = {
   token: undefined,
   gistId: undefined,
   setName: 'default',
-  gistFilePattern: 'project-viewer-' + setNamePlaceholder + '.json',
   get gistFileName() {
-    return this.gistFilePattern.replace(setNamePlaceholder, this.setName);
+    return `project-viewer-${this.setName}.json`;
   },
   url: 'https://api.github.com/gists',
   gistDescription: 'atom.io project-viewer backup files',
@@ -54,7 +52,7 @@ const api = {
 
       let headers = new Headers();
       headers.append('Accept', 'application/vnd.github.v3+json');
-      headers.append('Authorization', 'token ' + this.token);
+      headers.append('Authorization', `token ${this.token}`);
 
       let parameters = {
         method: 'GET',
@@ -70,7 +68,7 @@ const api = {
             // backup not found, either gist with given ID doesnt exist (user hasnt created the gist yet or it has been deleted) or user has no existing backup
             reject({
               type: 'warning',
-              message: 'No backup found under gist ID [' + this.gistId + '] for set [' + this.setName + ']. Make sure that gist with given ID exists under your private gists and that you have an existing backup (call backup -> call import).',
+              message: `No backup found under gist ID [${this.gistId}] for set [${this.setName}]. Make sure that gist with given ID exists under your private gists and that you have an existing backup (call backup -> call import).`,
               options: {
                 icon: 'mark-github',
                 dismissable: true
@@ -99,7 +97,7 @@ const api = {
       // common headers
       let headers = new Headers();
       headers.append('Accept', 'application/vnd.github.v3+json');
-      headers.append('Authorization', 'token ' + this.token);
+      headers.append('Authorization', `token ${this.token}`);
 
       if (this.gistId) {
         // user provided gist id, check if gist exists (if yes update, otherwise reject)
@@ -159,7 +157,7 @@ const api = {
               // non-OK response from GET on /gists/{gistId} -> gist with user provided gist id doesnt exist
               reject({
                 type: 'warning',
-                message: 'No gist found with ID [' + this.gistId + ']. Specify valid gist ID or specify empty gist ID and we will create a gist for you.',
+                message: `No gist found with ID [${this.gistId}]. Specify valid gist ID or specify empty gist ID and we will create a gist for you.`,
                 options: {
                   icon: 'mark-github',
                   dismissable: true
@@ -198,7 +196,7 @@ const api = {
 
               resolve({
                 type: 'success',
-                message: 'Successfully created gist ID [' + data.id + '] and backed up the DB.',
+                message: `Successfully created gist ID [${data.id}] and backed up the DB.`,
                 options: {
                   icon: 'mark-github'
                 },
