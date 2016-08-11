@@ -154,7 +154,7 @@ const api = {
 
     return promise;
   },
-  updateGist: function updateGist(value) {
+  updateGist: function updateGist(value, currentFiles) {
     const promise = new Promise((resolve, reject) => {
       let url = this.url + '/' + this.gistId;
 
@@ -166,6 +166,11 @@ const api = {
       files[this.gistFileName] = {
         content: JSON.stringify(value)
       };
+
+      if (currentFiles && currentFiles.hasOwnProperty(this.oldBackupFileName)) {
+        // found old backup file, it will be deleted
+        files[this.oldBackupFileName] = null;
+      }
 
       let body = JSON.stringify({
         description: this.gistDescription,
@@ -222,10 +227,11 @@ const api = {
       };
 
       fetch(url, parameters)
-        .then(response => {
-          if (response.status == 200) {
+        .then(this.toJson.bind(null, 200))
+        .then(data => {
+          if (data) {
             // gist exists
-            resolve();
+            resolve(data);
             return;
           }
 
@@ -307,8 +313,8 @@ const api = {
       if (this.gistId) {
         // user provided gist id, check if gist exists (if yes update, otherwise reject)
         this.checkIfGistExists()
-          .then(() => {
-            this.updateGist(value).then(resolve).catch(reject);
+          .then(data => {
+            this.updateGist(value, data.files).then(resolve).catch(reject);
           }).catch(reject);
       } else {
         // user didnt specify gist id, create gist for him and set it in config
