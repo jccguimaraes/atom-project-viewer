@@ -4,7 +4,7 @@ const mainMapper = new WeakMap();
 
 const _helpers = require('./_helpers');
 
-function createModel () {
+function createGroup () {
   const model = Object.create(null, {
     mainSort: {
       configurable: false,
@@ -129,7 +129,7 @@ function createView (model) {
 
 module.exports = {
   /** Create a group model */
-  createModel,
+  createGroup,
 
   /** Create a group view given a group model */
   createView

@@ -9,7 +9,7 @@
 
 [![Travis CI](https://travis-ci.org/jccguimaraes/atom-project-viewer.svg?branch=master)](https://travis-ci.org/jccguimaraes/atom-project-viewer)
 [![AppVeyor CI](https://ci.appveyor.com/api/projects/status/2t91cemmpf635p2e?svg=true
-)](https://atom.io/packages/project-viewer/)
+)](https://ci.appveyor.com/project/jccguimaraes/atom-project-viewer)
 
 This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
 

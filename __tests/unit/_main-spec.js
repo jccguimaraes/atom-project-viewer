@@ -9,10 +9,10 @@ const project = require('../../src/_project');
 
 context ('unit-test :: main', function () {
 
-  context ('#createModel', function () {
+  context ('#createGroup', function () {
 
     it ('should be a public method', function () {
-      expect(main.createModel).to.be.a('function');
+      expect(main.createGroup).to.be.a('function');
     });
 
   });
@@ -24,12 +24,12 @@ context ('unit-test :: main', function () {
     });
 
     it ('should return a DOM Node', function () {
-      let view = main.createView(main.createModel());
+      let view = main.createView(main.createGroup());
       expect(view).to.be.an.instanceof(HTMLElement);
     });
 
     it ('should initialize', function () {
-      let mainModel = main.createModel();
+      let mainModel = main.createGroup();
       let mainView = main.createView(mainModel);
       mainView.initialize();
       let childNodes = mainView.childNodes;
@@ -39,7 +39,7 @@ context ('unit-test :: main', function () {
     });
 
     it ('should sort all children in the list', function () {
-      let mainModel = main.createModel();
+      let mainModel = main.createGroup();
       let mainView = main.createView(mainModel);
       mainView.initialize();
 
@@ -82,7 +82,7 @@ context ('unit-test :: main', function () {
     });
 
     it ('should detach a child', function () {
-      let mainModel = main.createModel();
+      let mainModel = main.createGroup();
       let mainView = main.createView(mainModel);
       mainView.initialize();
 

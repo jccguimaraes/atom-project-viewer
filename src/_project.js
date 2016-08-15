@@ -2,7 +2,7 @@
 
 const projectMapper = new WeakMap();
 
-function createModel () {
+function createGroup () {
   const model = Object.create(null, {
     projectId: {
       configurable: false,
@@ -176,7 +176,7 @@ function createView (model) {
 
 module.exports = {
   /** Create a project model */
-  createModel,
+  createGroup,
 
   /** Create a project view given a project model */
   createView

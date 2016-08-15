@@ -6,21 +6,21 @@ const project = require('../../src/_project');
 
 context ('unit-test :: project', function () {
 
-  context ('#createModel', function () {
+  context ('#createGroup', function () {
 
     it ('should be a public method', function () {
-      expect(project.createModel).to.be.a('function');
+      expect(project.createGroup).to.be.a('function');
     });
 
     context ('.projectId', function () {
 
       it ('should create an Id', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         expect(model.projectId).to.exist;
       });
 
       it ('should not allow to override the Id', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         const fn = function () {
           model.projectId = 'pv_' + Date.now();
         };
@@ -30,12 +30,12 @@ context ('unit-test :: project', function () {
 
     context ('.projectName', function () {
       it ('should return null if no parameter passed', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         expect(model.projectName).to.be.null;
       });
 
       it ('should return undefined if parameter is a Number', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectName = 0;
         expect(model.projectName).to.be.undefined;
         model.projectName = 1;
@@ -45,7 +45,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should define the name if parameter is a string', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectName = '';
         expect(model.projectName).to.equal('');
         model.projectName = 'project';
@@ -55,7 +55,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should redefine the name if already defined', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectName = 'project';
         expect(model.projectName).to.equal('project');
         model.projectName = '';
@@ -65,7 +65,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should not redefine the name if already defined', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectName = 'project';
         expect(model.projectName).to.equal('project');
         model.projectName = 10;
@@ -73,11 +73,11 @@ context ('unit-test :: project', function () {
       });
 
       it ('should define the names of multiple projects', function () {
-        let model_1 = project.createModel();
+        let model_1 = project.createGroup();
         model_1.projectName = 'project 1';
         expect(model_1.projectName).to.equal('project 1');
 
-        let model_2 = project.createModel();
+        let model_2 = project.createGroup();
         model_2.projectName = 'project 2';
         expect(model_2.projectName).to.equal('project 2');
       });
@@ -86,12 +86,12 @@ context ('unit-test :: project', function () {
 
     context ('.projectIcon', function () {
       it ('should return null if no parameter passed', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         expect(model.projectIcon).to.be.null;
       });
 
       it ('should return undefined if parameter is a Number', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectIcon = 0;
         expect(model.projectIcon).to.be.undefined;
         model.projectIcon = 1;
@@ -101,7 +101,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should set the name if parameter is a String', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectIcon = '';
         expect(model.projectIcon).to.equal('');
         model.projectIcon = 'icon';
@@ -111,7 +111,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should redefine the name if already defined', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectIcon = 'icon';
         expect(model.projectIcon).to.equal('icon');
         model.projectIcon = '';
@@ -121,7 +121,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should not redefine the name if already defined', function () {
-        let model = project.createModel();
+        let model = project.createGroup();
         model.projectIcon = 'icon';
         expect(model.projectIcon).to.equal('icon');
         model.projectIcon = 10;
@@ -133,7 +133,7 @@ context ('unit-test :: project', function () {
     context ('.projectPaths', function () {
 
       it ('should add if valid path string', function () {
-          let model = project.createModel();
+          let model = project.createGroup();
           let path = '/my/path/to/project';
           expect(model.projectPaths).to.equal(null);
           model.projectPaths = path;
@@ -142,7 +142,7 @@ context ('unit-test :: project', function () {
       });
 
       it ('should add if valid array of path strings', function () {
-          let model = project.createModel();
+          let model = project.createGroup();
           let path_1 = '/my/path/to/project_1';
           let path_2 = '/my/path/to/project_2';
           expect(model.projectPaths).to.equal(null);
@@ -162,12 +162,12 @@ context ('unit-test :: project', function () {
     });
 
     it ('should return a DOM Node', function () {
-      let view = project.createView(project.createModel());
+      let view = project.createView(project.createGroup());
       expect(view).to.be.an.instanceof(HTMLElement);
     });
 
     it ('should render the view with no name', function () {
-      let model = project.createModel();
+      let model = project.createGroup();
       let view = project.createView(model);
       view.initialize();
       view.render();
@@ -178,7 +178,7 @@ context ('unit-test :: project', function () {
     });
 
     it ('should render the view with a name', function () {
-      let model = project.createModel();
+      let model = project.createGroup();
       let view = project.createView(model);
       model.projectName = 'project #1';
       view.initialize();
@@ -190,7 +190,7 @@ context ('unit-test :: project', function () {
     });
 
     it ('should render the view with icon but no name', function () {
-      let model = project.createModel();
+      let model = project.createGroup();
       let view = project.createView(model);
       model.projectIcon = 'icon-github';
       view.initialize();
@@ -202,7 +202,7 @@ context ('unit-test :: project', function () {
     });
 
     it ('should render the view with an icon and name', function () {
-      let model = project.createModel();
+      let model = project.createGroup();
       let view = project.createView(model);
       model.projectName = 'project #1';
       model.projectIcon = 'icon-github';
