@@ -31,8 +31,10 @@ const groupMethods = {};
 
 const projectMethods = {
   clearPaths: function _clearPaths () {
-    const removedPaths = this.paths;
-    this.paths = [];
+    const removedPaths = this.paths.filter(
+      (path) => true
+    );
+    this.paths.length = 0;
     return removedPaths;
   },
   addPaths: function _addPaths (paths) {
@@ -52,15 +54,24 @@ const projectMethods = {
       this.paths.push(paths);
     }
   },
+  removePath: function _removePath (path) {
+    const idx = this.paths.indexOf(path);
+    if (idx === -1) {
+      return;
+    }
+    this.paths.splice(idx, 1);
+  },
   removePaths: function _removePaths (paths) {
-    paths.forEach(
-      (path) => {
-        console.log(path);
-        // const idx = this.paths.indexOf(path);
-        // if (idx !== -1) {
-        //   this.paths.splice(idx, 1);
-        // }
+    let idxsToRemove = [];
+    this.paths.forEach(
+      (path, idx) => {
+        if (paths.indexOf(path) !== -1) {
+          idxsToRemove.push(idx);
+        }
       }
+    );
+    idxsToRemove.sort().reverse().forEach(
+      (idxToRemove) => this.paths.splice(idxToRemove, 1)
     );
   }
 };
@@ -68,14 +79,19 @@ const projectMethods = {
 Object.assign(groupMethods, methods);
 Object.assign(projectMethods, methods);
 
+const fn_setPrototypeOf = function _setPrototypeOf (target, prototype) {
+  if (
+    (target.type === 'group' && target.type === prototype.type) ||
+    (prototype.type === 'group' && target.type === 'project')
+  ) {
+    Object.setPrototypeOf(target, prototype);
+    return true;
+  }
+  return false;
+};
+
 const handler = {
-  setPrototypeOf: function _setPrototypeOf (target, prototype) {
-    if (Object.getPrototypeOf(target) === Object.getPrototypeOf(prototype)) {
-      Object.setPrototypeOf(target, prototype);
-      return true;
-    }
-    return false;
-  },
+  setPrototypeOf: fn_setPrototypeOf,
   get: function _get (target, property) {
     if (target.hasOwnProperty(property)) {
       return target[property];
@@ -90,8 +106,7 @@ const handler = {
       'name',
       'sortBy',
       'icon',
-      'color',
-      'paths'
+      'color'
     ];
     if (allowedProps.indexOf(property) === -1) {
       return true;
@@ -141,10 +156,10 @@ const handler = {
       const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
       cleanValue = regEx.exec(value) !== null ? value : target[property];
     }
-    else if (property === 'paths' && Array.isArray(value) && !value.length) {
-      target[property] = [];
-      return true;
-    }
+    // else if (property === 'paths' && Array.isArray(value) && !value.length) {
+    //   target[property] = [];
+    //   return true;
+    // }
     target[property] = cleanValue;
     return true;
   }
@@ -153,11 +168,13 @@ const handler = {
 module.exports = {
   createGroup: function _createGroup () {
     let model = Object.assign({}, groupModel, groupMethods);
+    model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
   },
   createProject: function _createProject () {
     let model = Object.assign({}, projectModel, projectMethods);
+    model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
   }

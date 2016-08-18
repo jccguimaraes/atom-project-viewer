@@ -2,7 +2,7 @@
 
 const _group = require('../src/__model');
 
-describe ('group', function() {
+describe ('group-model', function() {
   it ('should not assign unknown properties', function() {
     const obj = {
       model: _group.createGroup(),
@@ -160,7 +160,7 @@ describe ('group', function() {
   it ('should set as prototype of another group model only', function() {
     const obj1 = _group.createGroup();
     const obj2 = _group.createGroup();
-    obj2.name = 'asd';
+    obj2.name = 'group #2';
 
     const setPrototype = function (target, proto) {
       return Object.setPrototypeOf(target, proto);

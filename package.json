@@ -11,17 +11,13 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.8.0"
+    "atom": ">=1.9.8"
   },
   "dependencies": {
     "atom-space-pen-views": "latest"
   },
   "devDependencies": {
-    "all-contributors-cli": "latest",
-    "chai": "latest",
-    "cz-conventional-changelog": "1.1.5",
-    "loophole": "latest",
-    "mocha": "latest"
+    "all-contributors-cli": "latest"
   },
   "config": {
     "commitizen": {

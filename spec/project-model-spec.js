@@ -2,7 +2,7 @@
 
 const _group = require('../src/__model');
 
-describe ('project', function() {
+describe ('project-model', function() {
   it ('should not assign unknown properties', function() {
     const obj = {
       model: _group.createProject(),
@@ -85,6 +85,9 @@ describe ('project', function() {
 
     obj.model.addPaths(obj.valOK3);
     expect(obj.model[obj.prop]).toEqual(obj.valOK3);
+
+    obj.model.removePaths(obj.valOK3);
+    expect(obj.model[obj.prop]).toEqual([]);
   });
 
   it ('should assign an icon', function() {
@@ -157,17 +160,17 @@ describe ('project', function() {
   it ('should set as prototype of another group model only', function() {
     const obj1 = _group.createProject();
     const obj2 = _group.createProject();
-    obj2.name = 'asd';
+    obj2.name = 'group #2';
 
     const setPrototype = function (target, proto) {
       return Object.setPrototypeOf(target, proto);
     };
 
-    expect(setPrototype.bind(null, obj1, obj2)).not.toThrow();
-    expect(Object.getPrototypeOf(obj1)).toEqual(obj2);
+    expect(setPrototype.bind(null, obj1, obj2)).toThrow();
+    expect(Object.getPrototypeOf(obj1)).toEqual(Object.prototype);
 
     expect(setPrototype.bind(null, obj1, {})).toThrow();
-    expect(Object.getPrototypeOf(obj1)).toEqual(obj2);
+    expect(Object.getPrototypeOf(obj1)).toEqual(Object.prototype);
   });
 
   it ('should get the group\'s breadcrumb', function() {
@@ -175,18 +178,25 @@ describe ('project', function() {
       model1: _group.createProject(),
       model2: _group.createProject(),
       valOK: 'unnamed',
-      valOK2: 'unnamed / unnamed',
-      valOK3: 'group #2 / group #1'
+      valOK2: 'project #1',
+      valOK3: 'group #1 / project #1'
+    };
+
+    const groupModel = {
+      uuid: 'pv_' + Math.ceil(Date.now() * Math.random()),
+      type: 'group',
+      name: 'group #1',
+      breadcrumb: function () {
+        return 'group #1'
+      }
     };
 
     expect(obj.model1.breadcrumb()).toEqual(obj.valOK);
 
-    Object.setPrototypeOf(obj.model1, obj.model2);
+    obj.model1.name = 'project #1';
     expect(obj.model1.breadcrumb()).toEqual(obj.valOK2);
 
-    obj.model1.name = 'group #1';
-    obj.model2.name = 'group #2';
-
+    Object.setPrototypeOf(obj.model1, groupModel);
     expect(obj.model1.breadcrumb()).toEqual(obj.valOK3);
   });
 });
