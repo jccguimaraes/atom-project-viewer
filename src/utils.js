@@ -1,40 +1,19 @@
 'use strict';
 
-const Notification = require('atom').Notification;
+const _caches = require('./caches');
 
-const methods = {
-    sanitizeString: function sanitizeString (str) {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    },
-    notification: function notification(type, title, options) {
-        atom.notifications.addNotification(
-            new Notification(
-                type,
-                `<strong>Project Viewer</strong><br>${title}`,
-                options
-            )
-        );
-    },
-    selectedProject: function selectedProject() {
-        return document.querySelector('project-viewer .active');
-    },
-    getStatusBar: function getStatusBar() {
-        return document.querySelector('pv-status-bar');
-    },
-    updateSelectedProject: function updateSelectedProject() {
-        let selected = methods.selectedProject();
-        let statusBar = methods.getStatusBar();
-
-        if (!selected) {
-            return;
-        }
-
-        if (!statusBar) {
-            return;
-        }
-    }
+const utils = {
+  toArray: function _toArray (list, fnMap) {
+    return Array.from(list, fnMap);
+  },
+  getModel: function _getModel (view) {
+    return _caches.get(view);
+  },
+  getView: function _getView (model) {
+    return document.body.querySelector(
+      `li[data-project-viewer-uuid="${model.uuid}"]`
+    );
+  }
 };
 
-module.exports = methods;
+module.exports = utils;

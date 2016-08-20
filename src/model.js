@@ -1,19 +1,27 @@
 'use strict';
 
-const groupModel = {
-  type: 'group',
+const defaults = {
   name: 'unnamed',
   sortBy: 'position',
   icon: '',
-  color: ''
-};
-
-const projectModel = {
-  type: 'project',
-  name: 'unnamed',
-  icon: '',
   color: '',
   paths: []
+};
+
+const groupModel = {
+  type: 'group',
+  name: defaults.name,
+  sortBy: defaults.sortBy,
+  icon: defaults.icon,
+  color: defaults.color
+};
+
+const itemModel = {
+  type: 'item',
+  name: defaults.name,
+  icon: defaults.icon,
+  color: defaults.color,
+  paths: defaults.paths
 };
 
 const methods = {
@@ -29,7 +37,7 @@ const methods = {
 
 const groupMethods = {};
 
-const projectMethods = {
+const itemMethods = {
   clearPaths: function _clearPaths () {
     const removedPaths = this.paths.filter(
       (path) => true
@@ -77,12 +85,12 @@ const projectMethods = {
 };
 
 Object.assign(groupMethods, methods);
-Object.assign(projectMethods, methods);
+Object.assign(itemMethods, methods);
 
 const fn_setPrototypeOf = function _setPrototypeOf (target, prototype) {
   if (
     (target.type === 'group' && target.type === prototype.type) ||
-    (prototype.type === 'group' && target.type === 'project')
+    (prototype.type === 'group' && target.type === 'item')
   ) {
     Object.setPrototypeOf(target, prototype);
     return true;
@@ -112,6 +120,11 @@ const handler = {
       return true;
     }
     let cleanValue;
+
+    if (value === undefined) {
+      target[property] = defaults[property];
+      return true;
+    }
     if (property === 'name') {
       // TODO: make this in a helper function?
       const UNSAFE_CHARS_PATTERN = /[<>\/\u2028\u2029]/g;
@@ -145,7 +158,7 @@ const handler = {
         'devicon-'
       ];
       cleanValue = allowed.map(
-        (val) => value.startsWith(val) ? value : undefined
+        (val) => value && value.startsWith(val) ? value : undefined
       ).filter(
         (val) => val !== undefined
       );
@@ -172,8 +185,8 @@ module.exports = {
     Object.preventExtensions();
     return new Proxy(model, handler);
   },
-  createProject: function _createProject () {
-    let model = Object.assign({}, projectModel, projectMethods);
+  createItem: function _createItem () {
+    let model = Object.assign({}, itemModel, itemMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
