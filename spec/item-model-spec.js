@@ -1,11 +1,11 @@
 'use strict';
 
-const _group = require('../src/__model');
+const _group = require('../src/model');
 
-describe ('project-model', function() {
+describe ('item-model', function() {
   it ('should not assign unknown properties', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'dummy',
       valNOK: 'dummy value'
     };
@@ -18,7 +18,7 @@ describe ('project-model', function() {
 
   it ('should assign a name', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'name',
       valOK: 'group #1'
     };
@@ -31,7 +31,7 @@ describe ('project-model', function() {
 
   it ('should keep the last name if setting an invalid', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'name',
       valOK: 'group #1',
       valOK2: '🍺',
@@ -54,8 +54,8 @@ describe ('project-model', function() {
   });
 
   it ('should not look in the prototype chain for the name', function() {
-    const model1 = _group.createProject();
-    const model2 = _group.createProject();
+    const model1 = _group.createItem();
+    const model2 = _group.createItem();
 
     model2.name = 'group #2';
     expect(model1.name).toBe('unnamed');
@@ -63,7 +63,7 @@ describe ('project-model', function() {
 
   it ('should assign a valid array of paths', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'paths',
       valOK: 'path/to/somewhere',
       valOK2: 'another/path/to/somewhere',
@@ -92,7 +92,7 @@ describe ('project-model', function() {
 
   it ('should assign an icon', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'icon',
       valOK: 'icon-mark-github',
       valOK2: 'devicon-angular'
@@ -109,7 +109,7 @@ describe ('project-model', function() {
 
   it ('should keep the last icon if setting an invalid', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'icon',
       valOK: 'icon-mark-github',
       valNOK: 'dummy'
@@ -125,7 +125,7 @@ describe ('project-model', function() {
 
   it ('should assign a color', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'color',
       valOK: '#fff000'
     };
@@ -142,7 +142,7 @@ describe ('project-model', function() {
 
   it ('should keep the last color if setting an invalid', function() {
     const obj = {
-      model: _group.createProject(),
+      model: _group.createItem(),
       prop: 'color',
       valOK: '#fff000',
       valNOK: 'dummy'
@@ -158,8 +158,8 @@ describe ('project-model', function() {
   });
 
   it ('should set as prototype of another group model only', function() {
-    const obj1 = _group.createProject();
-    const obj2 = _group.createProject();
+    const obj1 = _group.createItem();
+    const obj2 = _group.createItem();
     obj2.name = 'group #2';
 
     const setPrototype = function (target, proto) {
@@ -175,8 +175,8 @@ describe ('project-model', function() {
 
   it ('should get the group\'s breadcrumb', function() {
     const obj = {
-      model1: _group.createProject(),
-      model2: _group.createProject(),
+      model1: _group.createItem(),
+      model2: _group.createItem(),
       valOK: 'unnamed',
       valOK2: 'project #1',
       valOK3: 'group #1 / project #1'

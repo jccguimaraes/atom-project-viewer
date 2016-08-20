@@ -1,6 +1,6 @@
 'use strict';
 
-const _group = require('../src/__model');
+const _group = require('../src/model');
 
 describe ('group-model', function() {
   it ('should not assign unknown properties', function() {
