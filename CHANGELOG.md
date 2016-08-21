@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - (0.4.0) Fixed the `font-size` and centering for the icons in the tree-view;
+- (0.4.0) Changed Git Commit Messages to GitHub's styleguides;
+
 
 - Right a proper feature list on the README;
 - Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));

@@ -1,20 +1,38 @@
 'use strict';
 
+/* package */
 const _caches = require('./caches');
 const _constructor = require('./view-constructor');
-const _api = require('./api');
 
 const viewMethods = {
-  createdCallback: function createdCallback () {
-    let header = document.createElement('header');
-    header.textContent = 'Project Viewer';
-    this.appendChild(header);
+  initialize: function _initialize () {
+    let listTree = document.createElement('ul');
+    listTree.classList.add('list-tree', 'has-collapsable-children');
+    this.appendChild(listTree);
   },
-  attachedCallback: function attachedCallback () {},
-  detachedCallback: function detachedCallback () {},
-  initialize: function initialize () {},
-  render: function render () {},
-  sorting: function _sorting () {}
+  render: function _render () {},
+  attachChild: function _attachChild (node) {
+    let listTree = this.querySelector('.list-tree');
+    if (!listTree) {
+      return;
+    }
+    listTree.appendChild(node);
+  },
+  detachChild: function _detachChild (node) {
+    let listTree = this.querySelector('.list-tree');
+    if (!listTree) {
+      return;
+    }
+    listTree.removeChild(node);
+  },
+  sorting: function _sorting () {
+    const model = _caches.get(this);
+
+    if (!model) {
+      return;
+    }
+    return model.name;
+  }
 };
 
 const createView = function _createView (model) {

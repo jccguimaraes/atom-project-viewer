@@ -4,10 +4,20 @@ const _caches = require('./caches');
 const _constructor = require('./view-constructor');
 
 const viewMethods = {
-  createdCallback: function createdCallback () {},
-  attachedCallback: function attachedCallback () {},
-  detachedCallback: function detachedCallback () {},
-  initialize: function initialize () {
+  attachedCallback: function _attachedCallback () {
+    let contentNode = this.querySelector('.list-item');
+    contentNode.addEventListener('click', this.toggle.bind(this));
+  },
+  detachedCallback: function _detachedCallback () {
+    let contentNode = this.querySelector('.list-item');
+    contentNode.removeEventListener('click', this.toggle.bind(this));
+  },
+  toggle: function _toggle (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.classList.toggle('collapsed');
+  },
+  initialize: function _initialize () {
     const model = _caches.get(this);
 
     if (!model) {
@@ -19,8 +29,16 @@ const viewMethods = {
     this.classList.add('list-nested-item');
     this.setAttribute('data-project-viewer-uuid', model.uuid);
     this.appendChild(listItem);
+
+    atom.tooltips.add(
+      listItem,
+      {
+        title: 'This is a tooltip',
+        placement: 'left'
+      }
+    );
   },
-  render: function render () {
+  render: function _render () {
     const model = _caches.get(this);
 
     if (!model) {

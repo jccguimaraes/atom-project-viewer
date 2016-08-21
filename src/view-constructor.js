@@ -38,7 +38,6 @@ const createView = function _createView (element, methods, model) {
   }
 
   _caches.set(view, model);
-
   return view;
 };
 

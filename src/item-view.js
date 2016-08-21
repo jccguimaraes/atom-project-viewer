@@ -4,10 +4,7 @@ const _caches = require('./caches');
 const _constructor = require('./view-constructor');
 
 const viewMethods = {
-  createdCallback: function createdCallback () {},
-  attachedCallback: function attachedCallback () {},
-  detachedCallback: function detachedCallback () {},
-  initialize: function initialize () {
+  initialize: function _initialize () {
     const model = _caches.get(this);
 
     if (!model) {
@@ -17,7 +14,7 @@ const viewMethods = {
     this.classList.add('list-item');
     this.setAttribute('data-project-viewer-uuid', model.uuid);
   },
-  render: function render () {
+  render: function _render () {
     const model = _caches.get(this);
 
     if (!model) {
