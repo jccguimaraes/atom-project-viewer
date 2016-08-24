@@ -163,6 +163,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
                 });
             }
             if (isActive) {
+              atom.devMode = mappedProject.dev;
                 projectView.classList.add('active', 'selected');
             }
 
@@ -178,6 +179,7 @@ function addProjects (parentMapper, parentView, atRootLevel) {
                 projectIcon: mappedProject.icon || '',
                 projectPaths: mappedProject.paths || [],
                 projectColor: mappedProject.color || '',
+                projectDev: mappedProject.dev || false,
                 projectId: _gateway.helpers.generateUUID()
             };
 

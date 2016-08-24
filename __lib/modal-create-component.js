@@ -75,10 +75,6 @@ function addExtras () {
 
     clearExtras.call(this);
 
-    if (!originalItem.current || originalItem.current.type === 'project') {
-        return;
-    }
-
     if (views.extrasContainer) {
         return;
     }
@@ -88,58 +84,97 @@ function addExtras () {
     views.extrasContainer = document.createElement('div');
     views.extrasContainer.classList.add('inset-panel', 'padded');
 
-    views.colorCheck = document.createElement('span');
-    views.colorCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
-    views.colorCheck.style.cursor = 'pointer';
-    views.colorCheck.addEventListener('click', (evt) => {
+    if (!originalItem.current || originalItem.current.type === 'project') {
+      views.devContainer = document.createElement('div');
+      views.devContainer.classList.add('block');
+
+      views.devCheck = document.createElement('span');
+      views.devCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
+      views.devCheck.style.cursor = 'pointer';
+      views.devCheck.addEventListener('click', (evt) => {
         evt.stopPropagation();
         evt.preventDefault();
 
-        views.colorCheck.classList.toggle(classToggle);
+        const views = _views.get(this);
 
-        if (!changesToItem.hasOwnProperty('hasColor')) {
-            changesToItem.hasColor = views.colorCheck.classList.contains(classToggle);
+        views.devCheck.classList.toggle('text-success');
+
+        if (!changesToItem.hasOwnProperty('hasDev')) {
+            changesToItem.hasDev = views.devCheck.classList.contains('text-success');
         }
         else {
-            changesToItem.hasColor = !changesToItem.hasColor;
+            changesToItem.hasDev = !changesToItem.hasDev;
         }
+      }, false);
 
-        if (changesToItem.hasColor) {
-            changesToItem.color = views.colorInput.value;
-        }
-        else {
-            views.colorInput.value = '#000000';
-            delete changesToItem.color;
-        }
-    }, false);
+      views.devDescription = document.createElement('span');
+      views.devDescription.classList.add('inline-block-tight');
+      views.devDescription.textContent = 'dev mode';
 
-    views.colorDescription = document.createElement('span');
-    views.colorDescription.classList.add('inline-block-tight');
-    views.colorDescription.textContent = 'set color';
+      const itemDev = originalItem.current[originalItem.current.type + 'Dev'];
 
-    views.colorInput = document.createElement('input');
-    views.colorInput.setAttribute('type', 'color');
-    views.colorInput.addEventListener('change', (evt) => {
-        evt.stopPropagation();
-        evt.preventDefault();
+      if (itemDev) {
+        views.devCheck.classList.add('text-success');
+      }
 
-        if (!changesToItem.hasColor) {
-            changesToItem.hasColor = true;
-        }
-        changesToItem.color = views.colorInput.value;
-        views.colorCheck.classList.add(classToggle);
-    }, false);
-
-    const itemColor = originalItem.current[originalItem.current.type + 'Color'];
-
-    if (itemColor) {
-        views.colorInput.value = itemColor;
-        views.colorCheck.classList.add(classToggle);
+      views.devContainer.appendChild(views.devCheck);
+      views.devContainer.appendChild(views.devDescription);
+      views.extrasContainer.appendChild(views.devContainer);
     }
+    else {
+      views.colorCheck = document.createElement('span');
+      views.colorCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
+      views.colorCheck.style.cursor = 'pointer';
+      views.colorCheck.addEventListener('click', (evt) => {
+          evt.stopPropagation();
+          evt.preventDefault();
 
-    views.extrasContainer.appendChild(views.colorCheck);
-    views.extrasContainer.appendChild(views.colorDescription);
-    views.extrasContainer.appendChild(views.colorInput);
+          views.colorCheck.classList.toggle(classToggle);
+
+          if (!changesToItem.hasOwnProperty('hasColor')) {
+              changesToItem.hasColor = views.colorCheck.classList.contains(classToggle);
+          }
+          else {
+              changesToItem.hasColor = !changesToItem.hasColor;
+          }
+
+          if (changesToItem.hasColor) {
+              changesToItem.color = views.colorInput.value;
+          }
+          else {
+              views.colorInput.value = '#000000';
+              delete changesToItem.color;
+          }
+      }, false);
+
+      views.colorDescription = document.createElement('span');
+      views.colorDescription.classList.add('inline-block-tight');
+      views.colorDescription.textContent = 'set color';
+
+      views.colorInput = document.createElement('input');
+      views.colorInput.setAttribute('type', 'color');
+      views.colorInput.addEventListener('change', (evt) => {
+          evt.stopPropagation();
+          evt.preventDefault();
+
+          if (!changesToItem.hasColor) {
+              changesToItem.hasColor = true;
+          }
+          changesToItem.color = views.colorInput.value;
+          views.colorCheck.classList.add(classToggle);
+      }, false);
+
+      const itemColor = originalItem.current[originalItem.current.type + 'Color'];
+
+      if (itemColor) {
+          views.colorInput.value = itemColor;
+          views.colorCheck.classList.add(classToggle);
+      }
+
+      views.extrasContainer.appendChild(views.colorCheck);
+      views.extrasContainer.appendChild(views.colorDescription);
+      views.extrasContainer.appendChild(views.colorInput);
+    }
 
     this.insertBefore(views.extrasContainer, views.buttonsContainer);
 }

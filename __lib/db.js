@@ -112,6 +112,7 @@ const readData = function readData () {
                                 const project = {
                                     'name': storedProject.name || '',
                                     'icon': storedProject.icon || '',
+                                    'dev': storedProject.dev || false,
                                     'paths': Object.keys(storedProject.paths) || []
                                 }
                                 if (converted.projects.length === 0) {
@@ -195,7 +196,8 @@ const buildData = function buildData () {
             item = {
                 name: model.projectName,
                 icon: model.projectIcon || '',
-                paths: model.projectPaths || []
+                paths: model.projectPaths || [],
+                dev: model.projectDev || false
             };
             list[model.projectId] = item;
             views.projects.push(model.projectId);

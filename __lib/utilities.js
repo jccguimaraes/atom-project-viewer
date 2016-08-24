@@ -116,6 +116,10 @@ const utilities = {
                 original.current[original.current.type + 'Color'] = undefined;
                 itemView.setColor();
             }
+            if (changes.hasOwnProperty('hasDev') && original.current.type === 'project') {
+              original.current[original.current.type + 'Dev'] = changes.hasDev;
+              atom.devMode = changes.hasDev;
+            }
 
             if (changes.sortBy) {
                 original.current.sortBy = changes.sortBy;
@@ -213,6 +217,7 @@ const utilities = {
                 changes.view.setExpanded(false);
             } else {
                 original.current[original.current.type + 'Paths'] = changes.paths || [];
+                original.current[original.current.type + 'Dev'] = changes.hasDev || false;
             }
 
             if (changes.color && original.current.type !== 'project') {

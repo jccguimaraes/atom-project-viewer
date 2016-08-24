@@ -181,6 +181,22 @@ function loopIcons (iconSet, iconsList, itemIcon) {
     );
 }
 
+function devCheckEventClick (evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+
+  const views = _views.get(this);
+
+  views.devCheck.classList.toggle('text-success');
+
+  if (!changesToItem.hasOwnProperty('hasDev')) {
+      changesToItem.hasDev = views.devCheck.classList.contains('text-success');
+  }
+  else {
+      changesToItem.hasDev = !changesToItem.hasDev;
+  }
+}
+
 function colorCheckEventClick (evt) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -237,19 +253,39 @@ function sortByEventClick (evt) {
 
 function addExtras () {
 
-    if (originalItem.current.type === 'project') {
-        return;
+  const views = _views.get(this);
+
+  if (views.extrasContainer) {
+    return;
+  }
+
+  views.extrasContainer = document.createElement('div');
+  views.extrasContainer.classList.add('inset-panel', 'padded');
+
+  if (originalItem.current.type === 'project') {
+    views.devContainer = document.createElement('div');
+    views.devContainer.classList.add('block');
+
+    views.devCheck = document.createElement('span');
+    views.devCheck.classList.add('icon', 'icon-check', 'inline-block-tight');
+    views.devCheck.style.cursor = 'pointer';
+    views.devCheck.addEventListener('click', devCheckEventClick.bind(this), false);
+
+    views.devDescription = document.createElement('span');
+    views.devDescription.classList.add('inline-block-tight');
+    views.devDescription.textContent = 'dev mode';
+
+    const itemDev = originalItem.current[originalItem.current.type + 'Dev'];
+
+    if (itemDev) {
+      views.devCheck.classList.add('text-success');
     }
 
-    const views = _views.get(this);
-
-    if (views.extrasContainer) {
-        return;
-    }
-
-    views.extrasContainer = document.createElement('div');
-    views.extrasContainer.classList.add('inset-panel', 'padded');
-
+    views.devContainer.appendChild(views.devCheck);
+    views.devContainer.appendChild(views.devDescription);
+    views.extrasContainer.appendChild(views.devContainer);
+  }
+  else {
     views.colorContainer = document.createElement('div');
     views.colorContainer.classList.add('block');
 
@@ -309,8 +345,8 @@ function addExtras () {
     views.sortByContainer.appendChild(views.sortByPosition);
     views.sortByContainer.appendChild(views.sortByAlphabetically);
     views.extrasContainer.appendChild(views.sortByContainer);
-
-    this.insertBefore(views.extrasContainer, views.buttonsContainer);
+  }
+  this.insertBefore(views.extrasContainer, views.buttonsContainer);
 }
 
 function clearPaths () {
