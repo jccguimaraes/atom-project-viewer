@@ -111,7 +111,11 @@ function addExtras () {
       views.devDescription.classList.add('inline-block-tight');
       views.devDescription.textContent = 'dev mode';
 
-      const itemDev = originalItem.current[originalItem.current.type + 'Dev'];
+      let itemDev;
+
+      if (originalItem && originalItem.current && originalItem.current.type) {
+        itemDev = originalItem.current[originalItem.current.type + 'Dev'];
+      }
 
       if (itemDev) {
         views.devCheck.classList.add('text-success');

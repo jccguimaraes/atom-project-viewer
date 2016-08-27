@@ -16,6 +16,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Validate if root path is a git repository and initialize it *(investigate)*;
 - Clear saved project state (this can get above 1Mb of size) *(investigate)*;
 
+## [0.3.20] - 2016-08-24
+
+### Fixed
+
+- An issue with devMode on `Item - Create`.
+
+## [0.3.20] - 2016-08-24
+
+### Added
+
+- FEATURE: Open project in dev mode ([#77](https://github.com/jccguimaraes/atom-project-viewer/issues/77));
+
 ## [0.3.19] - 2016-08-14
 
 ### Changed

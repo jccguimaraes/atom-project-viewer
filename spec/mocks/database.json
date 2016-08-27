@@ -1,0 +1,40 @@
+[
+  {
+    "groups": [
+      {
+        "name": "group #1.1",
+        "groups": [
+          {
+            "name": "group #2.1",
+            "groups": [
+              {
+                "name": "group #3.1",
+                "groups": [],
+                "items": []
+              }
+            ],
+            "items": [
+              {
+                "name": "item #2.1"
+              }
+            ]
+          }
+        ],
+        "items": []
+      },
+      {
+        "name": "Atom",
+        "icon": "icon-mark-github",
+        "groups": [],
+        "items": [
+          {
+            "name": "atom-project-viewer",
+            "icon": "devicon-atom",
+            "paths": "/Users/guimaraesj/personal/devel/atom-project-viewer/"
+          }
+        ]
+      }
+    ],
+    "items": []
+  }
+]
