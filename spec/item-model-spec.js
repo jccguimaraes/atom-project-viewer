@@ -90,11 +90,27 @@ describe ('item-model', function() {
     expect(obj.model[obj.prop]).toEqual([]);
   });
 
+  it ('should assign a valid array of paths to each item', function() {
+    const obj = {
+      model1: _group.createItem(),
+      model2: _group.createItem(),
+      prop: 'paths',
+      valOK: 'path/to/somewhere',
+      valOK2: 'another/path/to/somewhere'
+    };
+
+    obj.model1.addPaths(obj.valOK);
+    obj.model2.addPaths(obj.valOK2);
+
+    expect(obj.model1.paths).toEqual([obj.valOK]);
+    expect(obj.model2.paths).toEqual([obj.valOK2]);
+  });
+
   it ('should assign an icon', function() {
     const obj = {
       model: _group.createItem(),
       prop: 'icon',
-      valOK: 'icon-mark-github',
+      valOK: 'octicon-mark-github',
       valOK2: 'devicon-angular'
     };
 
@@ -111,7 +127,7 @@ describe ('item-model', function() {
     const obj = {
       model: _group.createItem(),
       prop: 'icon',
-      valOK: 'icon-mark-github',
+      valOK: 'octicon-mark-github',
       valNOK: 'dummy'
     };
 

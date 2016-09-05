@@ -30,13 +30,13 @@ const viewMethods = {
     this.setAttribute('data-project-viewer-uuid', model.uuid);
     this.appendChild(listItem);
 
-    atom.tooltips.add(
-      listItem,
-      {
-        title: 'This is a tooltip',
-        placement: 'left'
-      }
-    );
+    // atom.tooltips.add(
+    //   listItem,
+    //   {
+    //     title: () => `Info:`,
+    //     placement: 'left'
+    //   }
+    // );
   },
   render: function _render () {
     const model = _caches.get(this);
@@ -89,14 +89,21 @@ const viewMethods = {
       this.appendChild(listTree);
     }
   },
-  attachChild: function _attachChild (nodeOrModel) {
+  attachChild: function _attachChild (node) {
     let listTree = this.querySelector('.list-tree');
     if (!listTree) {
-      this.render();
-      listTree = this.querySelector('.list-tree');
+      return;
     }
-    let node = nodeOrModel;
     listTree.appendChild(node);
+
+    let thisModel = _caches.get(this);
+    let nodeModel = _caches.get(node);
+
+    if (!nodeModel || !thisModel) {
+      return;
+    }
+    Object.setPrototypeOf(nodeModel, thisModel);
+    thisModel.addMetrics(nodeModel);
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

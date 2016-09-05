@@ -94,7 +94,7 @@ describe ('group-model', function() {
     const obj = {
       model: _group.createGroup(),
       prop: 'icon',
-      valOK: 'icon-mark-github',
+      valOK: 'octicon-mark-github',
       valOK2: 'devicon-angular'
     };
 
@@ -111,7 +111,7 @@ describe ('group-model', function() {
     const obj = {
       model: _group.createGroup(),
       prop: 'icon',
-      valOK: 'icon-mark-github',
+      valOK: 'octicon-mark-github',
       valNOK: 'dummy'
     };
 

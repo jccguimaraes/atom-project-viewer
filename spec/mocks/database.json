@@ -2,35 +2,58 @@
   {
     "groups": [
       {
-        "name": "group #1.1",
+        "name": "Blip",
         "groups": [
           {
-            "name": "group #2.1",
+            "name": "Betfair",
             "groups": [
               {
-                "name": "group #3.1",
-                "groups": [],
-                "items": []
+                "name": "FCN",
+                "items": [
+                  {
+                    "name": "fcn-core-inputs",
+                    "paths": "/Users/guimaraesj/devel/fcn-core-inputs/"
+                  },
+                  {
+                    "name": "fcn-core-buttons",
+                    "icon": "devicon-angularjs-plain",
+                    "paths": "/Users/guimaraesj/devel/fcn-core-buttons/"
+                  }
+                ]
               }
-            ],
+            ]
+          },
+          {
+            "name": "PaddyPower",
             "items": [
               {
-                "name": "item #2.1"
+                "name": "cms-vagrant-v8",
+                "icon": "devicon-drupal-plain",
+                "paths": "/Users/guimaraesj/devel/ppcms/cms-vagrant-v8/"
+              },
+              {
+                "name": "sportsbook_ipad",
+                "icon": "devicon-drupal-plain",
+                "paths": "/Users/guimaraesj/devel/ppcms/contentadmin/sportsbook_ipad/"
               }
             ]
           }
-        ],
-        "items": []
+        ]
       },
       {
         "name": "Atom",
-        "icon": "icon-mark-github",
+        "icon": "devicon-atom-plain",
         "groups": [],
         "items": [
           {
             "name": "atom-project-viewer",
-            "icon": "devicon-atom",
+            "icon": "octicon-package",
             "paths": "/Users/guimaraesj/personal/devel/atom-project-viewer/"
+          },
+          {
+            "name": "find-and-replace (fork)",
+            "icon": "octicon-package",
+            "paths": "/Users/guimaraesj/personal/devel/find-and-replace/"
           }
         ]
       }

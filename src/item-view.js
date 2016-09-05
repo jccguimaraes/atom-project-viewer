@@ -32,7 +32,12 @@ const viewMethods = {
 
     if (model.icon) {
       contentNode = spanNode;
-      contentNode.classList.add('icon', model.icon);
+      if (model.icon.startsWith('octicon-')) {
+        contentNode.classList.add('octicon', model.icon);
+      }
+      else {
+        contentNode.classList.add('icon', model.icon);
+      }
     }
     else if (spanNode) {
       contentNode.removeChild(spanNode);
@@ -41,6 +46,21 @@ const viewMethods = {
     if (model.name) {
       contentNode.textContent = model.name;
     }
+
+    contentNode.addEventListener(
+      'click',
+      (evt) => {
+        atom.open(
+          {
+            pathsToOpen: model.paths,
+            newWindow: false,
+            devMode: false,
+            safeMode: false
+          }
+        );
+      },
+      false
+    );
   },
   sorting: function _sorting () {
     const model = _caches.get(this);

@@ -78,7 +78,7 @@ describe ('item-view', function() {
     expect(itemView.childNodes.length).toBe(1);
     expect(itemView.childNodes[0].nodeName).toBe('#text');
 
-    itemModel.icon = 'icon-mark-github';
+    itemModel.icon = 'octicon-mark-github';
     itemView.render();
     name = itemView.querySelector('span').textContent;
 

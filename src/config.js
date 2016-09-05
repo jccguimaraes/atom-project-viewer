@@ -4,11 +4,11 @@ const config = {
     'startupVisibility': {
         description: 'Define if you want **project-viewer** to be visible on startup.',
         type: 'boolean',
-        default: false,
+        default: true,
         order: 0
     },
     'statusBarVisibility': {
-        description: 'Define if you want **project-viewer** to show active *group* and *project*.',
+        description: 'Define if you want **project-viewer** to show active *group* and *project* in the `status-bar`.',
         type: 'boolean',
         default: false,
         order: 1

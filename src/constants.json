@@ -1,0 +1,52 @@
+{
+  "form": {
+    "actions": {
+      "close": {
+        "description": "Close"
+      },
+      "add": {
+        "description": "Add"
+      },
+      "update": {
+        "description": "Update"
+      }
+    },
+    "title": {
+      "header": {
+        "description": "Name"
+      },
+      "label": {
+        "description": "Enter the name for the group / item"
+      }
+    },
+    "icons": {
+      "header": {
+        "description": "Icons"
+      },
+      "label": {
+        "description": "Search for an icon"
+      }
+    },
+    "settings": {
+      "header": {
+        "description": "Settings"
+      },
+      "devMode": {
+        "description": " Run in <span class=\"text-highlight\">DevMode</span>",
+        "details": "If true, it will open the item (project) in development mode"
+      },
+      "bulk": {
+        "description": " Bulk Operation",
+        "details": "If true, it will create an individual item (project) for each path added"
+      }
+    },
+    "paths": {
+      "header": {
+        "description": "Paths"
+      },
+      "add": {
+        "description": "Add project folder(s)"
+      }
+    }
+  }
+}

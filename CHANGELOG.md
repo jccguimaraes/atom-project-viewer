@@ -3,18 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.3.22] - 2016-09-05
 
-- (0.4.0) Fixed the `font-size` and centering for the icons in the tree-view;
-- (0.4.0) Changed Git Commit Messages to GitHub's styleguides;
+### Fixed
 
-
-- Right a proper feature list on the README;
-- Add bulk operation on project creation ([#50](https://github.com/jccguimaraes/atom-project-viewer/issues/50));
-- Keybindings for cycling between projects ([#22](https://github.com/jccguimaraes/atom-project-viewer/issues/22));
-- Resizable panel (as a pane instead?) *(investigate)* ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37));
-- Validate if root path is a git repository and initialize it *(investigate)*;
-- Clear saved project state (this can get above 1Mb of size) *(investigate)*;
+- Sidebar status is not remembered upon atom restart ([#83](https://github.com/jccguimaraes/atom-project-viewer/issues/83));
 
 ## [0.3.21] - 2016-08-27
 

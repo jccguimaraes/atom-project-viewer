@@ -1,10 +1,175 @@
 @import "ui-variables";
-@import './devicons';
-@import "./helpers";
+@import "./extras/helpers";
 
-li[is="project-viewer-list-nested-item"] > .list-item {
+// TODO this should not be doubled
+project-viewer2,
+div[is="project-viewer-form"] {
+
+	@import (less) "./../node_modules/octicons/build/font/octicons.css";
+	@import "./extras/octicons";
+
+	@import (less) "./../node_modules/devicon/devicon.css";
+	@import "./extras/devicon";
+
+	.octicon::before {
+		margin-right: @component-padding / 2;
+	}
+	
+	.octicon::before,
+	.icon::before {
+		// this fixes the devicon being smaller then the octicons
+		font-size: @component-icon-size;
+		// centers all icons that are width smaller then the average
+		text-align: center;
+		vertical-align: middle;
+	}
+}
+
+project-viewer2 {
+	font-size: @font-size;
+	font-family: @font-family;
+	display: flex;
+	flex-direction: column;
+	width: @project-viewer-width;
+
+	.panel-body {
+		overflow: scroll;
+		flex-grow: 1;
+
+		.loading-panel {
+			pointer-events: none;
+			position: absolute;
+			display: flex;
+			height: 100%;
+			width: 100%;
+			align-items: center;
+			justify-content: center;
+			transition: opacity 0.5s;
+			opacity: 0;
+
+			&.fade-in {
+				opacity: 1;
+			}
+		}
+
+		> .list-tree {
+			position: relative;
+			padding: @component-padding @component-padding/2;
+		}
+	}
+}
+li[is="project-viewer-list-nested-item"],
+li[is="project-viewer-list-item"] {
 	cursor: pointer;
 }
+
+li[is="project-viewer-list-item"].list-item {
+	transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
+
+	span {
+		pointer-events: none;
+	}
+
+	&:hover {
+		color: @project-viewer-selected-state !important;
+		padding-left: 0 !important;
+	}
+
+	&:hover::before {
+		visibility: visible;
+		transform: scaleY(1);
+	}
+
+	&::before {
+		position: absolute;
+		left: 0;
+		height: @component-line-height;
+		content: "";
+		width: 2px;
+		background-color: @project-viewer-active-state;
+		visibility: hidden;
+		transform: scaleY(0);
+		transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+	}
+
+	&.active {
+		color: @project-viewer-selected-state !important;
+	}
+
+	&.disabled {
+		display: inline-flex;
+		cursor: not-allowed;
+		color: @text-color-subtle;
+		text-decoration: line-through;
+	}
+}
+
+div[is="project-viewer-form"] {
+	background-color: @tab-background-color;
+	overflow: scroll;
+	padding: @component-padding * 2;
+
+	h1 {
+		color: @text-color-highlight;
+	}
+
+	.input-label {
+		display: block;
+		width: -webkit-max-content;
+
+		.text-info {
+			margin-left: @component-padding/2;
+		}
+	}
+
+	.icons-list {
+		margin-top: @component-padding;
+		height: 200px;
+		overflow: scroll;
+
+		padding: @component-padding;
+		background-color: @tool-panel-background-color;
+		position: relative;
+		flex: 1 1 300px;
+		min-width: 0;
+		border: 1px solid @tool-panel-border-color;
+		display: flex;
+		flex-wrap: wrap;
+		align-content: flex-start;
+
+		.icon {
+			flex: 1 0 200px;
+			padding: @component-padding/2 @component-padding;
+			transition: all @project-viewer-transition-duration;
+
+			&:hover {
+				cursor: pointer;
+				color: @text-color-highlight;
+				background-color: @button-background-color-hover;
+			}
+		}
+	}
+
+	.input-label {
+		cursor: pointer;
+	}
+
+	input[type="checkbox"] {
+		cursor: pointer;
+	}
+
+	.list-group {
+		margin-top: @component-padding;
+	}
+}
+
+
+
+
+
+
+
+
 
 project-viewer {
 	display: flex;
@@ -44,9 +209,9 @@ project-viewer {
 
 	pv-header {
 		background:  @pane-item-background-color;
- 		border-bottom: 1px @pane-item-border-color solid;
- 		margin-top: 0px;
- 		margin-bottom: 5px;
+		border-bottom: 1px @pane-item-border-color solid;
+		margin-top: 0px;
+		margin-bottom: 5px;
 		color: @project-viewer-topic-color;
 		font-size: @project-viewer-topic-size;
 		padding: @component-padding;
@@ -161,7 +326,7 @@ pv-remove-modal,
 pv-remove-quick-modal {
 	hr {
 		border-color: @tool-panel-border-color;
-	    margin: 5px 0;
+		margin: 5px 0;
 	}
 
 	span.icon {
@@ -207,22 +372,22 @@ pv-remove-quick-modal {
 	}
 
 	input[type="color"] {
-        border-radius: 50%;
-        width: 15px;
-        height: 15px;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-        position: relative;
-        top: 5px;
-        left: 5px;
-    }
-    input[type="color"]::-webkit-color-swatch-wrapper {
-        padding: 0;
-    }
-    input[type="color"]::-webkit-color-swatch {
-        border: none;
-    }
+		border-radius: 50%;
+		width: 15px;
+		height: 15px;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		position: relative;
+		top: 5px;
+		left: 5px;
+	}
+	input[type="color"]::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+	input[type="color"]::-webkit-color-swatch {
+		border: none;
+	}
 }
 
 .pv-select-view-li {

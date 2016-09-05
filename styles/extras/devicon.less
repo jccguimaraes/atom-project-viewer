@@ -1,0 +1,15 @@
+@font-face {
+	font-family: 'devicon';
+	//we only need the woff for atom to work
+	src: url('atom://project-viewer/node_modules/devicon/fonts/devicon.woff') format('woff');
+}
+[class^="devicon-"], [class*=" devicon-"] {
+	font-family: inherit;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+[class^="devicon-"]:before, [class*=" devicon-"]:before {
+	font-family: 'devicon';
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+}

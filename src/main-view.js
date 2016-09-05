@@ -6,11 +6,37 @@ const _constructor = require('./view-constructor');
 
 const viewMethods = {
   initialize: function _initialize () {
+    this.setAttribute('tabindex', -1);
+
+    let bodyPanel = document.createElement('div');
+    bodyPanel.classList.add('panel-body');
+
     let listTree = document.createElement('ul');
     listTree.classList.add('list-tree', 'has-collapsable-children');
-    this.appendChild(listTree);
+
+    let loadingPanel = document.createElement('div');
+    loadingPanel.classList.add('loading-panel');
+    let loadingSpan = document.createElement('span');
+    loadingSpan.classList.add('loading', 'loading-spinner-small');
+
+    loadingPanel.appendChild(loadingSpan);
+    bodyPanel.appendChild(loadingPanel);
+    bodyPanel.appendChild(listTree);
+
+    this.appendChild(bodyPanel);
   },
   render: function _render () {},
+  toggleEmptyList: function _toggleEmptyList () {
+
+    function _requestAnimationFrame (timestamp) {
+      let loadingSpan = this.querySelector('.loading-panel');
+      loadingSpan.classList.toggle('fade-in');
+    }
+
+    window.requestAnimationFrame(
+      _requestAnimationFrame.bind(this)
+    );
+  },
   attachChild: function _attachChild (node) {
     let listTree = this.querySelector('.list-tree');
     if (!listTree) {
@@ -37,7 +63,7 @@ const viewMethods = {
 
 const createView = function _createView (model) {
   let options = {
-    tagIs: 'project-viewer'
+    tagIs: 'project-viewer2'
   };
   return _constructor.createView(options, viewMethods, model);
 };

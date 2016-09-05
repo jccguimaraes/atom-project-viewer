@@ -5,7 +5,10 @@ const defaults = {
   sortBy: 'position',
   icon: '',
   color: '',
-  paths: []
+  group: 0,
+  item: 0,
+  expanded: false,
+  devMode: false
 };
 
 const groupModel = {
@@ -13,7 +16,8 @@ const groupModel = {
   name: defaults.name,
   sortBy: defaults.sortBy,
   icon: defaults.icon,
-  color: defaults.color
+  color: defaults.color,
+  expanded: defaults.expanded
 };
 
 const itemModel = {
@@ -21,7 +25,7 @@ const itemModel = {
   name: defaults.name,
   icon: defaults.icon,
   color: defaults.color,
-  paths: defaults.paths
+  devMode: defaults.devMode
 };
 
 const methods = {
@@ -35,7 +39,22 @@ const methods = {
   }
 };
 
-const groupMethods = {};
+const groupMethods = {
+  addMetrics: function _addMetrics (node) {
+    if (!this.metrics.hasOwnProperty(node.type)) {
+      this.metrics[node.type] = 0;
+    }
+    ++this.metrics[node.type];
+    const proto = Object.getPrototypeOf(this);
+    if (proto && proto.type === 'group') {
+      proto.addMetrics(node);
+    }
+    if (proto.type === 'item') {
+      console.log(this);
+      console.log(proto);
+    }
+  }
+};
 
 const itemMethods = {
   clearPaths: function _clearPaths () {
@@ -87,7 +106,7 @@ const itemMethods = {
 Object.assign(groupMethods, methods);
 Object.assign(itemMethods, methods);
 
-const fn_setPrototypeOf = function _setPrototypeOf (target, prototype) {
+const setPrototypeOf = function _setPrototypeOf (target, prototype) {
   if (
     (target.type === 'group' && target.type === prototype.type) ||
     (prototype.type === 'group' && target.type === 'item')
@@ -99,7 +118,7 @@ const fn_setPrototypeOf = function _setPrototypeOf (target, prototype) {
 };
 
 const handler = {
-  setPrototypeOf: fn_setPrototypeOf,
+  setPrototypeOf: setPrototypeOf,
   get: function _get (target, property) {
     if (target.hasOwnProperty(property)) {
       return target[property];
@@ -114,7 +133,9 @@ const handler = {
       'name',
       'sortBy',
       'icon',
-      'color'
+      'color',
+      'devMode',
+      'metrics'
     ];
     if (allowedProps.indexOf(property) === -1) {
       return true;
@@ -140,21 +161,18 @@ const handler = {
         function (unsafeChar) { return UNICODE_CHARS[unsafeChar];}
       ) === value ? value : target[property];
     }
-    else if (property === 'sortBy') {
+    else if (target.type ===  'group' && property === 'sortBy') {
       const allowed = [
         'position',
         'reverse-position',
         'alphabetically',
         'reverse-alphabetically'
       ];
-      if (target.type !== 'group') {
-        return null;
-      }
       cleanValue = allowed.indexOf(value) !== -1 ? value : target[property];
     }
     else if (property === 'icon') {
       const allowed = [
-        'icon-',
+        'octicon-',
         'devicon-'
       ];
       cleanValue = allowed.map(
@@ -169,10 +187,9 @@ const handler = {
       const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
       cleanValue = regEx.exec(value) !== null ? value : target[property];
     }
-    // else if (property === 'paths' && Array.isArray(value) && !value.length) {
-    //   target[property] = [];
-    //   return true;
-    // }
+    else if (target.type ===  'group' && property === 'metrics') {
+      target.metrics[value.type] += value.increment * 1;
+    }
     target[property] = cleanValue;
     return true;
   }
@@ -180,13 +197,17 @@ const handler = {
 
 module.exports = {
   createGroup: function _createGroup () {
-    let model = Object.assign({}, groupModel, groupMethods);
+    let group = Object.assign(groupModel);
+    group.metrics = [];
+    let model = Object.assign({}, group, groupMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
   },
   createItem: function _createItem () {
-    let model = Object.assign({}, itemModel, itemMethods);
+    let item = Object.assign(itemModel);
+    item.paths = [];
+    let model = Object.assign({}, item, itemMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);

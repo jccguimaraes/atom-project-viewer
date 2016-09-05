@@ -1,0 +1,19 @@
+@font-face {
+  font-family:"Octicons";
+  src: url('atom://project-viewer/node_modules/octicons/build/font/octicons.woff') format('woff');
+  font-weight:normal;
+  font-style:normal;
+}
+
+.octicon {
+  font: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+
+  &:before {
+    font-family: Octicons;
+    -webkit-font-smoothing: antialiased;
+  }
+}
