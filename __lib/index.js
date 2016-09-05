@@ -490,6 +490,11 @@ function togglePanel() {
     }
 
     views.mainPanel.visible ? views.mainPanel.hide() : views.mainPanel.show();
+
+    atom.config.set(
+      _utility.getConfig('startupVisibility'),
+      views.mainPanel.visible
+    );
 }
 
 function setFocus() {
