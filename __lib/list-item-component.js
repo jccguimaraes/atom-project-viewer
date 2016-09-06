@@ -30,7 +30,6 @@ function clickListener(evt) {
         evt.detail === true ||
         (evt.detail === 1 && atom.config.get(_utility.getConfig('alwaysOpenInNewWindow')))
     ) {
-        console.log(model.projectDev);
         atom.open({
             pathsToOpen: model.projectPaths || [],
             newWindow: true,

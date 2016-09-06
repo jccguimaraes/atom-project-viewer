@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.23] - 2016-09-06
+
+### Fixed
+
+- Sidebar status is not remembered upon atom restart ([#83](https://github.com/jccguimaraes/atom-project-viewer/issues/83));
+
 ## [0.3.22] - 2016-09-05
 
 ### Fixed

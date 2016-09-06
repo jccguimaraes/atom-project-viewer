@@ -491,10 +491,9 @@ function togglePanel() {
 
     views.mainPanel.visible ? views.mainPanel.hide() : views.mainPanel.show();
 
-    atom.config.set(
-      _utility.getConfig('startupVisibility'),
-      views.mainPanel.visible
-    );
+    if (atom.config.get('project-viewer.visibilityState') === 'Remember state') {
+      atom.config.set('project-viewer.visibilityAction', views.mainPanel.visible);
+    }
 }
 
 function setFocus() {
@@ -622,7 +621,7 @@ const projectViewer = {
 
             views.mainPanel = atom.workspace['add' + value + 'Panel']({
                 item: views.mainView,
-                visible: atom.config.get(_utility.getConfig('startupVisibility')),
+                visible: atom.config.get('project-viewer.visibilityAction'),
                 priority: priority
             });
         }));
@@ -656,6 +655,16 @@ const projectViewer = {
                 removeFromStatusBar.call(this);
             }
         }));
+
+        this.disposables.add(
+          atom.config.onDidChange('project-viewer.visibilityState', (newValue) => {
+            if (newValue === 'Remember state') {
+              let view = caches.get(this);
+              const panel = atom.workspace.panelForItem(view);
+              atom.config.set('project-viewer.visibilityAction', panel.visible);
+            }
+          })
+        );
 
         views.containerView.setAsRootLevel();
         views.mainView.addNode(views.headerView);

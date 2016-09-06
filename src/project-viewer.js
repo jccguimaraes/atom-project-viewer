@@ -53,16 +53,15 @@ const activate = function _active () {
           }
         ]
       }
-    )
+    ),
+    atom.config.onDidChange('project-viewer.visibilityState', (newValue) => {
+      if (newValue === 'Remember state') {
+        let view = caches.get(this);
+        const panel = atom.workspace.panelForItem(view);
+        atom.config.set('project-viewer.visibilityAction', panel.visible);
+      }
+    })
   );
-
-  atom.config.onDidChange('project-viewer.visibilityState', (newValue) => {
-    if (newValue === 'Remember state') {
-      let view = caches.get(this);
-      const panel = atom.workspace.panelForItem(view);
-      atom.config.set('project-viewer.visibilityAction', panel.visible);
-    }
-  });
 
   initialize.call(this);
   readDatabase.call(this);
