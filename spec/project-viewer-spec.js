@@ -3,7 +3,7 @@
 const _utils = require('../src/utils');
 const _api = require('../src/api');
 
-describe ('project-viewer', function() {
+xdescribe ('project-viewer', function() {
 
   let workspaceElement;
   let projectViewer;
