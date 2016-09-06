@@ -1,0 +1,43 @@
+{
+    "clients": [
+        {
+            "name": "client Z",
+            "icon": "icon-globe",
+            "groups": [
+                {
+                    "name": "group Y",
+                    "icon": "icon-person",
+                    "projects": [
+                        {
+                            "name": "project X"
+                        }
+                    ]
+                }
+            ],
+            "projects": [
+                {
+                    "name": "project W"
+                }
+            ]
+        }
+    ],
+    "groups": [
+        {
+            "name": "group A",
+            "icon": "icon-milestone",
+            "projects": [
+                {
+                    "name": "project B"
+                }
+            ]
+        }
+    ],
+    "projects": [
+        {
+            "name": "atom-project-viewer",
+            "paths": [
+                "/Users/guimaraesj/personal/atom-project-viewer"
+            ]
+        }
+    ]
+}
