@@ -1,7 +1,5 @@
 {
   ".platform-darwin, .platform-win32, .platform-linux": {
-      "ctrl-alt-cmd-v": "project-viewer:toggle-select-view",
-      "ctrl-alt-cmd-b": "project-viewer:toggle-display",
-      "ctrl-alt-cmd-n": "project-viewer:toggle-focus"
+      "ctrl-alt-cmd-b": "project-viewer:toggle-display"
   }
 }

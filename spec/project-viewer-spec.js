@@ -22,7 +22,7 @@ xdescribe ('project-viewer', function() {
     waitsForPromise (function () {
       return atom.packages.activatePackage('project-viewer')
         .then(function (_pack) {
-          projectViewer = workspaceElement.querySelector('project-viewer2');
+          projectViewer = workspaceElement.querySelector('');
           pack = _pack;
         });
     });
@@ -32,13 +32,13 @@ xdescribe ('project-viewer', function() {
 
     it ('should append only one project-viewer', function () {
       expect(
-        workspaceElement.querySelectorAll('project-viewer2').length
+        workspaceElement.querySelectorAll('').length
       ).toBe(1);
 
       atom.workspace.getActivePane().splitRight({copyActiveItem: true});
 
       expect(
-        workspaceElement.querySelectorAll('project-viewer2').length
+        workspaceElement.querySelectorAll('').length
       ).toBe(1);
     })
   });
@@ -46,7 +46,7 @@ xdescribe ('project-viewer', function() {
   describe ('deactivate', function () {
     it ('should remove project-viewer', function () {
       atom.packages.deactivatePackage('project-viewer');
-      expect(workspaceElement.querySelector('project-viewer2')).toBeNull();
+      expect(workspaceElement.querySelector('')).toBeNull();
     })
   });
 

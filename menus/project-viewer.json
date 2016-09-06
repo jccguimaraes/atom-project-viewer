@@ -1,44 +1,5 @@
 {
-    "context-menu": {
-        "ol.tree-view": [
-            {
-                "type": "separator"
-            },
-            {
-                "label": "Elevate to Project...",
-                "command": "project-viewer:elevate-project"
-            },
-            {
-                "type": "separator"
-            }
-        ],
-        "li[is='pv-list-nested-item']": [
-            {
-                "label": "Update...",
-                "command": "project-viewer:update-item"
-            },
-            {
-                "label": "Remove...",
-                "command": "project-viewer:remove-quick-item"
-            },
-            {
-                "type": "separator"
-            }
-        ],
-        "li[is='pv-list-item']": [
-            {
-                "label": "Update...",
-                "command": "project-viewer:update-item"
-            },
-            {
-                "label": "Remove...",
-                "command": "project-viewer:remove-quick-item"
-            },
-            {
-                "type": "separator"
-            }
-        ]
-    },
+    "context-menu": {},
     "menu": [
         {
             "label": "Packages",
@@ -49,36 +10,6 @@
                     {
                         "label": "Toggle sidebar",
                         "command": "project-viewer:toggle-display"
-                    },
-                    {
-                        "label": "Toggle selection view",
-                        "command": "project-viewer:toggle-select-view"
-                    },
-                    {
-                        "type": "separator"
-                    },
-                    {
-                        "label": "Item - Create",
-                        "command": "project-viewer:create-item"
-                    },
-                    {
-                        "label": "Item - Remove",
-                        "command": "project-viewer:remove-item"
-                    },
-                    {
-                        "type": "separator"
-                    },
-                    {
-                        "label": "File - Backup",
-                        "command": "project-viewer:file-backup"
-                    },
-                    {
-                        "label": "File - Import",
-                        "command": "project-viewer:file-import"
-                    },
-                    {
-                        "label": "File - Delete old file",
-                        "command": "project-viewer:file-delete-old"
                     }
                 ]
                 }

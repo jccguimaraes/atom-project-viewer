@@ -59,7 +59,7 @@ const viewMethods = {
 
 const createView = function _createView (model) {
   let options = {
-    tagIs: 'project-viewer2'
+    tagIs: 'project-viewer'
   };
   return _constructor.createView(options, viewMethods, model);
 };

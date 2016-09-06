@@ -29,7 +29,7 @@ const activate = function _active () {
     }),
     atom.contextMenu.add(
       {
-        'project-viewer2': [
+        'project-viewer': [
           {
             label: 'Create...',
             command: 'project-viewer:form-display',
