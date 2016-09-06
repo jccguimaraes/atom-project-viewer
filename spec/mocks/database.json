@@ -1,63 +1,63 @@
-[
-  {
-    "groups": [
-      {
-        "name": "Blip",
-        "groups": [
-          {
-            "name": "Betfair",
-            "groups": [
-              {
-                "name": "FCN",
-                "items": [
-                  {
-                    "name": "fcn-core-inputs",
-                    "paths": "/Users/guimaraesj/devel/fcn-core-inputs/"
-                  },
-                  {
-                    "name": "fcn-core-buttons",
-                    "icon": "devicon-angularjs-plain",
-                    "paths": "/Users/guimaraesj/devel/fcn-core-buttons/"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "PaddyPower",
-            "items": [
-              {
-                "name": "cms-vagrant-v8",
-                "icon": "devicon-drupal-plain",
-                "paths": "/Users/guimaraesj/devel/ppcms/cms-vagrant-v8/"
-              },
-              {
-                "name": "sportsbook_ipad",
-                "icon": "devicon-drupal-plain",
-                "paths": "/Users/guimaraesj/devel/ppcms/contentadmin/sportsbook_ipad/"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Atom",
-        "icon": "devicon-atom-plain",
-        "groups": [],
-        "items": [
-          {
-            "name": "atom-project-viewer",
-            "icon": "octicon-package",
-            "paths": "/Users/guimaraesj/personal/devel/atom-project-viewer/"
-          },
-          {
-            "name": "find-and-replace (fork)",
-            "icon": "octicon-package",
-            "paths": "/Users/guimaraesj/personal/devel/find-and-replace/"
-          }
-        ]
-      }
-    ],
-    "items": []
-  }
-]
+{
+  "state": {
+    "version": "0.4.0"
+  },
+  "structure": [
+    {
+      "groups": [
+        {
+          "name": "group #1.1",
+          "groups": [
+            {
+              "name": "group #2.1",
+              "groups": [
+                {
+                  "name": "group #3.1",
+                  "items": [
+                    {
+                      "name": "item #3.1",
+                      "paths": "/path/to/item/31"
+                    },
+                    {
+                      "name": "item #3.2",
+                      "icon": "devicon-angularjs-plain",
+                      "paths": "/path/to/item/32"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "group #2.2",
+              "items": [
+                {
+                  "name": "item #2.1",
+                  "icon": "devicon-drupal-plain",
+                  "paths": "/path/to/item/21"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "group #1.2",
+          "icon": "devicon-atom-plain",
+          "groups": [],
+          "items": [
+            {
+              "name": "item #1.1",
+              "icon": "octicon-package",
+              "paths": "/path/to/item/11"
+            },
+            {
+              "name": "item #1.2",
+              "icon": "octicon-package",
+              "paths": "/path/to/item/12"
+            }
+          ]
+        }
+      ],
+      "items": []
+    }
+  ]
+}

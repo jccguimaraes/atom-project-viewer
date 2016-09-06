@@ -14,7 +14,7 @@ div[is="project-viewer-form"] {
 	.octicon::before {
 		margin-right: @component-padding / 2;
 	}
-	
+
 	.octicon::before,
 	.icon::before {
 		// this fixes the devicon being smaller then the octicons
@@ -62,6 +62,10 @@ li[is="project-viewer-list-nested-item"],
 li[is="project-viewer-list-item"] {
 	cursor: pointer;
 }
+
+// li[is="project-viewer-list-nested-item"] > .list-item {
+// 		pointer-events: none;
+// }
 
 li[is="project-viewer-list-item"].list-item {
 	transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
@@ -111,6 +115,12 @@ div[is="project-viewer-form"] {
 
 	h1 {
 		color: @text-color-highlight;
+	}
+
+	.form-block-title .input-label {
+		display: inline;
+    width: -webkit-max-content;
+    margin: 0 1em 1em 0;
 	}
 
 	.input-label {

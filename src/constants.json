@@ -4,6 +4,9 @@
       "close": {
         "description": "Close"
       },
+      "delete": {
+        "description": "Delete"
+      },
       "add": {
         "description": "Add"
       },

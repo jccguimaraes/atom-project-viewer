@@ -29,14 +29,6 @@ const viewMethods = {
     this.classList.add('list-nested-item');
     this.setAttribute('data-project-viewer-uuid', model.uuid);
     this.appendChild(listItem);
-
-    // atom.tooltips.add(
-    //   listItem,
-    //   {
-    //     title: () => `Info:`,
-    //     placement: 'left'
-    //   }
-    // );
   },
   render: function _render () {
     const model = _caches.get(this);

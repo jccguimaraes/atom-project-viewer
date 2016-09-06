@@ -19,9 +19,17 @@ const viewMethods = {
     let actionsBlock = document.createElement('div');
     actionsBlock.classList.add('block', 'form-block-actions');
     let actionsCloseButton = document.createElement('button');
-    actionsCloseButton.classList.add('inline-block', 'btn', 'btn-error');
+    actionsCloseButton.classList.add('inline-block', 'btn', 'btn-warning');
     actionsCloseButton.textContent = _constants.form.actions.close.description;
     actionsCloseButton.addEventListener(
+      'click',
+      () => atom.workspace.getActivePane().destroyActiveItem(),
+      false
+    );
+    let actionsDeleteButton = document.createElement('button');
+    actionsDeleteButton.classList.add('inline-block', 'btn', 'btn-error');
+    actionsDeleteButton.textContent = _constants.form.actions.delete.description;
+    actionsDeleteButton.addEventListener(
       'click',
       () => atom.workspace.getActivePane().destroyActiveItem(),
       false
@@ -56,7 +64,6 @@ const viewMethods = {
           bulk: bulk.checked,
           paths: paths
         });
-        // atom.workspace.getActivePane().destroyActiveItem();
       },
       false
     );
@@ -64,6 +71,23 @@ const viewMethods = {
     // NAME
     let titleBlock = document.createElement('div');
     titleBlock.classList.add('block', 'form-block-title');
+
+    let titleOptionGroupLabel = document.createElement('label');
+    titleOptionGroupLabel.classList.add('pv-form-radio-group', 'input-label');
+    let titleOptionGroupInput = document.createElement('input');
+    titleOptionGroupInput.classList.add('input-radio');
+    titleOptionGroupInput.setAttribute('type', 'radio');
+    titleOptionGroupInput.setAttribute('name', 'radio');
+    titleOptionGroupLabel.textContent = 'Group';
+
+    let titleOptionItemLabel = document.createElement('label');
+    titleOptionItemLabel.classList.add('pv-form-radio-item', 'input-label');
+    let titleOptionItemInput = document.createElement('input');
+    titleOptionItemInput.classList.add('input-radio');
+    titleOptionItemInput.setAttribute('type', 'radio');
+    titleOptionItemInput.setAttribute('name', 'radio');
+    titleOptionItemLabel.textContent = 'Item';
+
     let titleHeader = document.createElement('h1');
     titleHeader.textContent = _constants.form.title.header.description;
     let titleLabel = document.createElement('label');
@@ -200,8 +224,19 @@ const viewMethods = {
     pathsList.classList.add('list-group');
 
     actionsBlock.appendChild(actionsCloseButton);
+    actionsBlock.appendChild(actionsDeleteButton);
     actionsBlock.appendChild(actionsSuccessButton);
 
+    titleOptionGroupLabel.insertBefore(
+      titleOptionGroupInput,
+      titleOptionGroupLabel.firstChild
+    );
+    titleOptionItemLabel.insertBefore(
+      titleOptionItemInput,
+      titleOptionItemLabel.firstChild
+    );
+    titleBlock.appendChild(titleOptionGroupLabel);
+    titleBlock.appendChild(titleOptionItemLabel);
     titleBlock.appendChild(titleHeader);
     titleBlock.appendChild(titleLabel);
     titleBlock.appendChild(titleInput);
@@ -251,6 +286,11 @@ const viewMethods = {
     if (model.current.hasOwnProperty('uuid')) {
       const actionsSuccessButton = this.querySelector('.pv-actions-success');
       actionsSuccessButton.textContent = _constants.form.actions.update.description;
+    }
+
+    if (model.current.hasOwnProperty('type')) {
+      const radioButton = this.querySelector(`.pv-form-radio-${model.current.type} input`);
+      radioButton.checked = true;
     }
 
     if (model.current.hasOwnProperty('name')) {
