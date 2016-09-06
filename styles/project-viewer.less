@@ -146,7 +146,16 @@ div[is="project-viewer-form"] {
 		display: flex;
 		flex-wrap: wrap;
 		align-content: flex-start;
-
+		&.only-icons{
+			.icon {
+				flex: 0 0 16px;
+				margin: 3px;
+				text-align: center;
+				&:before{
+					margin: 0;
+				}
+			}
+		}
 		.icon {
 			flex: 1 0 200px;
 			padding: @component-padding/2 @component-padding;

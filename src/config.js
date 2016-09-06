@@ -74,7 +74,13 @@ const config = {
         type: 'boolean',
         default: true,
         order: 10
-    }
+    },
+    'iconListStyle': {
+        description: 'Display only icons in update and create window (for more space).',
+        type: 'boolean',
+        default: false,
+        order: 11
+    },
 };
 
 module.exports = config;
