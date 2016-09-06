@@ -1,5 +1,8 @@
 'use strict';
 
-const caches = new WeakMap();
+const caches = {
+    selectedProjectView: undefined,
+    statusBar: undefined
+};
 
 module.exports = caches;
