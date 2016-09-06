@@ -109,7 +109,12 @@ const viewMethods = {
     let iconsInput = document.createElement('atom-text-editor');
     iconsInput.setAttribute('mini', true);
     let iconsList = document.createElement('div');
-    iconsList.classList.add('block', 'icons-list');
+    let iconsListStyle = atom.config.get('project-viewer.iconListStyle');
+    if (iconsListStyle) {
+      iconsList.classList.add('block', 'icons-list', 'only-icons');
+    } else {
+      iconsList.classList.add('block', 'icons-list');
+    }
     let octicons = require('./../node_modules/octicons/lib/keywords.json');
     let devicons = require('./../node_modules/devicon/devicon.json');
 
@@ -141,7 +146,14 @@ const viewMethods = {
         icon.pack,
         `${icon.prefix}${icon.name}${icon.suffix}`
       );
-      iconView.textContent = icon.description;
+
+      if (iconsListStyle) {
+        iconView.textContent = "";
+        this.disposables.add(atom.tooltips.add(iconView, {title: icon.description}));
+      } else {
+        iconView.textContent = icon.description;
+      }
+
       iconView.addEventListener('click', function () {
         let view = this.parentNode.querySelector('.icon.btn-success');
         if (view) {
