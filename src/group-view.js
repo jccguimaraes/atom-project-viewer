@@ -1,7 +1,8 @@
 'use strict';
 
-const _caches = require('./caches');
-const _constructor = require('./view-constructor');
+const caches = require('./caches');
+const constructor = require('./constructor');
+// const utils = require('./utils');
 
 const viewMethods = {
   attachedCallback: function _attachedCallback () {
@@ -18,7 +19,7 @@ const viewMethods = {
     this.classList.toggle('collapsed');
   },
   initialize: function _initialize () {
-    const model = _caches.get(this);
+    const model = caches.get(this);
 
     if (!model) {
       return;
@@ -31,7 +32,7 @@ const viewMethods = {
     this.appendChild(listItem);
   },
   render: function _render () {
-    const model = _caches.get(this);
+    const model = caches.get(this);
 
     if (!model) {
       return;
@@ -64,16 +65,16 @@ const viewMethods = {
 
     let listTree = this.querySelector('.list-tree');
 
-    if (listTree) {
-      let nodes = _helpers.castToArray(listTree.childNodes);
-      let sorted = nodes;
-      if (model.sortBy === 'alphabetically') {
-        sorted = _helpers.sortArray(nodes)
-      }
-      sorted.forEach(
-        (liView) => this.attachChild(liView)
-      );
-    }
+    // if (listTree) {
+    //   let nodes = utils.toArray(listTree.childNodes);
+    //   let sorted = nodes;
+    //   if (model.sortBy === 'alphabetically') {
+    //     sorted = _helpers.sortArray(nodes)
+    //   }
+    //   sorted.forEach(
+    //     (liView) => this.attachChild(liView)
+    //   );
+    // }
 
     if (!listTree) {
       listTree = document.createElement('ul');
@@ -88,8 +89,8 @@ const viewMethods = {
     }
     listTree.appendChild(node);
 
-    let thisModel = _caches.get(this);
-    let nodeModel = _caches.get(node);
+    let thisModel = caches.get(this);
+    let nodeModel = caches.get(node);
 
     if (!nodeModel || !thisModel) {
       return;
@@ -105,7 +106,7 @@ const viewMethods = {
     listTree.removeChild(node);
   },
   sorting: function _sorting () {
-    const model = _caches.get(this);
+    const model = caches.get(this);
 
     if (!model) {
       return;
@@ -119,7 +120,7 @@ const createView = function _createView (model) {
     tagExtends: 'li',
     tagIs: 'project-viewer-list-nested-item'
   };
-  return _constructor.createView(options, viewMethods, model);
+  return constructor.createView(options, viewMethods, model);
 };
 
 module.exports = {

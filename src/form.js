@@ -2,7 +2,7 @@
 
 const methods = {
   setters: function _setters (options) {
-    console.log(options);
+    this.current = options;
   }
 };
 

@@ -1,11 +1,11 @@
 'use strict';
 
 /* package */
-const _caches = require('./caches');
-const _constructor = require('./view-constructor');
+const caches = require('./caches');
+const constructor = require('./constructor');
 
 const viewMethods = {
-  destroy: function _destroy () {
+  reset: function _reset () {
     let listTree = this.querySelector('ul.list-tree');
     if (listTree) {
       while (listTree.firstChild) {
@@ -48,7 +48,7 @@ const viewMethods = {
     listTree.removeChild(node);
   },
   sorting: function _sorting () {
-    const model = _caches.get(this);
+    const model = caches.get(this);
 
     if (!model) {
       return;
@@ -61,7 +61,7 @@ const createView = function _createView (model) {
   let options = {
     tagIs: 'project-viewer'
   };
-  return _constructor.createView(options, viewMethods, model);
+  return constructor.createView(options, viewMethods, model);
 };
 
 module.exports = {

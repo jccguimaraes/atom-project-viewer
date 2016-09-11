@@ -1,5 +1,7 @@
 # Contributing
 
+:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
+
 There are two main ways to contribute to this package. Either open an issue on the [*github*]() page or **fork** the package and send a **Pull Request**.
 
 ## Opening Issues

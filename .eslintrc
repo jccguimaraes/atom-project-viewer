@@ -1,0 +1,17 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jasmine": true
+  },
+  "globals": {
+    "atom": true,
+    "waitsForPromise": true,
+    
+  },
+  "plugins": [
+    "jasmine"
+  ],
+  "extends": "eslint:recommended"
+}

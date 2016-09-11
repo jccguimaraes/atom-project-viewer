@@ -1,7 +1,7 @@
 'use strict';
 
 const _caches = require('./caches');
-const _constructor = require('./view-constructor');
+const _constructor = require('./constructor');
 
 const viewMethods = {
   initialize: function _initialize () {
@@ -49,7 +49,7 @@ const viewMethods = {
 
     contentNode.addEventListener(
       'click',
-      (evt) => {
+      () => {
         atom.open(
           {
             pathsToOpen: model.paths,

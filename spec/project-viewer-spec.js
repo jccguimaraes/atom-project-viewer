@@ -1,64 +1,97 @@
 'use strict';
 
-const _utils = require('../src/utils');
-const _api = require('../src/api');
-
-xdescribe ('project-viewer', function() {
+describe ('project-viewer', function() {
 
   let workspaceElement;
   let projectViewer;
-  let pack;
   // TODO: test with status-bar and/or tree-view active or not
 
   beforeEach (function () {
     workspaceElement = atom.views.getView(atom.workspace);
-
-    atom.config.set('project-viewer.startupVisibility', true);
-
-    expect(atom.packages.isPackageActive('tree-view')).toBe(false);
-    expect(atom.packages.isPackageActive('status-bar')).toBe(false);
-    expect(atom.packages.isPackageActive('project-viewer')).toBe(false);
-
-    waitsForPromise (function () {
-      return atom.packages.activatePackage('project-viewer')
-        .then(function (_pack) {
-          projectViewer = workspaceElement.querySelector('');
-          pack = _pack;
-        });
-    });
+    jasmine.attachToDOM(workspaceElement);
   });
 
   describe ('activate', function () {
 
+    beforeEach (function () {
+      waitsForPromise (function () {
+        return atom.packages.activatePackage('project-viewer')
+          .then(function () {
+            projectViewer = workspaceElement.querySelector('project-viewer');
+          });
+      });
+    });
+
     it ('should append only one project-viewer', function () {
+
       expect(
-        workspaceElement.querySelectorAll('').length
+        workspaceElement.querySelectorAll('project-viewer').length
       ).toBe(1);
 
       atom.workspace.getActivePane().splitRight({copyActiveItem: true});
 
       expect(
-        workspaceElement.querySelectorAll('').length
+        workspaceElement.querySelectorAll('project-viewer').length
       ).toBe(1);
     })
   });
 
   describe ('deactivate', function () {
+
+    beforeEach (function () {
+      waitsForPromise (function () {
+        return atom.packages.activatePackage('project-viewer')
+          .then(function () {
+            projectViewer = workspaceElement.querySelector('project-viewer');
+          });
+      });
+    });
+
     it ('should remove project-viewer', function () {
       atom.packages.deactivatePackage('project-viewer');
-      expect(workspaceElement.querySelector('')).toBeNull();
+      expect(workspaceElement.querySelector('project-viewer')).toBeNull();
     })
   });
 
-  describe ('when something', function () {
-    beforeEach (function () {
-      jasmine.attachToDOM(workspaceElement);
+  describe ('project-viwer:toggle is triggered', function () {
+
+    it ('should be visible', function () {
+      waitsFor (function () {
+        return atom.packages.activatePackage('project-viewer');
+      });
+
+      runs(function () {
+        projectViewer = workspaceElement.querySelector('project-viewer');
+        const parent = projectViewer.parentNode;
+        expect(parent).toBeVisible();
+        atom.commands.dispatch(workspaceElement, 'project-viewer:toggle');
+        expect(parent).not.toBeVisible();
+      });
     });
 
-    it ('stuff', function () {
-      console.log(pack.loadTime, pack.activateTime);
-      expect(pack.loadTime).toBeLessThan(5);
-      expect(pack.activateTime).toBeLessThan(15);
+    it ('should not be visible', function () {
+
+      waitsFor (function () {
+        atom.config.set('project-viewer.visibilityActive', false);
+        return atom.packages.activatePackage('project-viewer');
+      });
+
+      runs(function () {
+        projectViewer = workspaceElement.querySelector('project-viewer');
+        const parent = projectViewer.parentNode;
+        expect(parent).not.toBeVisible();
+        atom.commands.dispatch(workspaceElement, 'project-viewer:toggle');
+        expect(parent).toBeVisible();
+      });
     });
+  });
+
+  describe ('config changes', function () {
+
+    xdescribe ('changing visibilityOption');
+
+    xdescribe ('changing visibilityActive');
+
+    xdescribe ('changing panelPosition');
   });
 });

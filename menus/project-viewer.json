@@ -8,8 +8,42 @@
                 "label": "Project Viewer",
                 "submenu": [
                     {
-                        "label": "Toggle sidebar",
-                        "command": "project-viewer:toggle-display"
+                        "label": "Toggle View",
+                        "command": "project-viewer:toggle"
+                    },
+                    {
+                        "label": "Create...",
+                        "command": "project-viewer:editor"
+                    },
+                    {"type": "separator"},
+                    {
+                      "label": "Import / Export...",
+                      "submenu": [
+                        {
+                          "label": "Import from a private gist"
+                        },
+                        {
+                          "label": "Export to a private gist"
+                        },
+                        {"type": "separator"},
+                        {
+                          "label": "Import from Google Drive"
+                        },
+                        {
+                          "label": "Export to Google Drive"
+                        }
+                      ]
+                    },
+                    {
+                        "label": "Utilities...",
+                        "submenu": [
+                          {
+                              "label": "Convert database 0.2.x"
+                          },
+                          {
+                              "label": "Convert database 0.3.x"
+                          }
+                        ]
                     }
                 ]
                 }

@@ -49,17 +49,13 @@ const groupMethods = {
     if (proto && proto.type === 'group') {
       proto.addMetrics(node);
     }
-    if (proto.type === 'item') {
-      console.log(this);
-      console.log(proto);
-    }
   }
 };
 
 const itemMethods = {
   clearPaths: function _clearPaths () {
     const removedPaths = this.paths.filter(
-      (path) => true
+      () => true
     );
     this.paths.length = 0;
     return removedPaths;
@@ -128,7 +124,7 @@ const handler = {
     }
     return null;
   },
-  set: function _set (target, property, value, receiver) {
+  set: function _set (target, property, value) {
     const allowedProps = [
       'name',
       'sortBy',

@@ -5,10 +5,13 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 
 /* package */
 const _caches = require('./caches');
-const _constructor = require('./view-constructor');
-const _constants = require('./constants.json');
+const _constructor = require('./constructor');
+const constants = require('./constants.json');
 
 const viewMethods = {
+  detachedCallback: function _detachedCallback () {
+    this.disposables.dispose();
+  },
   attachedCallback: function _attachedCallback () {
     this.disposables = new CompositeDisposable();
 
@@ -18,27 +21,30 @@ const viewMethods = {
     // ACTIONS
     let actionsBlock = document.createElement('div');
     actionsBlock.classList.add('block', 'form-block-actions');
-    let actionsCloseButton = document.createElement('button');
-    actionsCloseButton.classList.add('inline-block', 'btn', 'btn-warning');
-    actionsCloseButton.textContent = _constants.form.actions.close.description;
-    actionsCloseButton.addEventListener(
+    let closeButton = document.createElement('button');
+    closeButton.classList.add('inline-block', 'btn', 'btn-warning');
+    closeButton.textContent = constants.form.actions.close.description;
+    closeButton.addEventListener(
       'click',
       () => atom.workspace.getActivePane().destroyActiveItem(),
       false
     );
-    let actionsDeleteButton = document.createElement('button');
-    actionsDeleteButton.classList.add('inline-block', 'btn', 'btn-error');
-    actionsDeleteButton.textContent = _constants.form.actions.delete.description;
-    actionsDeleteButton.addEventListener(
+    let deleteButton = document.createElement('button');
+    deleteButton.classList.add('inline-block', 'btn', 'btn-error');
+    deleteButton.textContent = constants.form.actions.delete.description;
+    deleteButton.addEventListener(
       'click',
       () => atom.workspace.getActivePane().destroyActiveItem(),
       false
     );
-    let actionsSuccessButton = document.createElement('button');
-    actionsSuccessButton.classList.add('pv-actions-success', 'inline-block', 'btn', 'btn-success');
-    actionsSuccessButton.textContent = _constants.form.actions.add.description;
+    let successButton = document.createElement('button');
+    successButton.classList.add(
+      'pv-actions-success',
+      'inline-block', 'btn', 'btn-success'
+    );
+    successButton.textContent = constants.form.actions.add.description;
 
-    actionsSuccessButton.addEventListener(
+    successButton.addEventListener(
       'click',
       () => {
         let name = this.querySelector('.pv-input-name');
@@ -58,7 +64,7 @@ const viewMethods = {
         const model = _caches.get(this);
 
         model.setters({
-          name: name.getModel().buffer.getText(),
+          name: name.getModel().getBuffer().getText(),
           icon: icon.textContent,
           devMode: devMode.checked,
           bulk: bulk.checked,
@@ -89,22 +95,23 @@ const viewMethods = {
     titleOptionItemLabel.textContent = 'Item';
 
     let titleHeader = document.createElement('h1');
-    titleHeader.textContent = _constants.form.title.header.description;
+    titleHeader.textContent = constants.form.title.header.description;
     let titleLabel = document.createElement('label');
-    titleLabel.textContent = _constants.form.title.label.description;
+    titleLabel.textContent = constants.form.title.label.description;
     titleLabel.classList.add('text-subtle');
-    let titleInput = document.createElement('atom-text-editor');
-    titleInput.setAttribute('mini', true);
-    titleInput.classList.add('pv-input-name');
-    titleInput.getModel().placeholderText = _constants.form.title.label.description;
+    let nameInput = document.createElement('atom-text-editor');
+    nameInput.setAttribute('mini', true);
+    nameInput.classList.add('pv-input-name');
+    nameInput.getModel()
+      .placeholderText = constants.form.title.label.description;
 
     // ICONS
     let iconsBlock = document.createElement('div');
     iconsBlock.classList.add('block', 'form-block-icons');
     let iconsHeader = document.createElement('h1');
-    iconsHeader.textContent = _constants.form.icons.header.description;
+    iconsHeader.textContent = constants.form.icons.header.description;
     let iconsLabel = document.createElement('label');
-    iconsLabel.textContent = _constants.form.icons.label.description;
+    iconsLabel.textContent = constants.form.icons.label.description;
     iconsLabel.classList.add('text-subtle');
     let iconsInput = document.createElement('atom-text-editor');
     iconsInput.setAttribute('mini', true);
@@ -136,13 +143,11 @@ const viewMethods = {
     icons.forEach((icon) => {
       let iconView = document.createElement('span');
       iconView.classList.add(
-        'inline-block-tight',
-        'icon',
-        icon.pack,
+        'inline-block-tight', 'icon', icon.pack,
         `${icon.prefix}${icon.name}${icon.suffix}`
       );
       iconView.textContent = icon.description;
-      iconView.addEventListener('click', function () {
+      iconView.addEventListener('click', () => {
         let view = this.parentNode.querySelector('.icon.btn-success');
         if (view) {
           view.classList.remove('btn-success');
@@ -156,43 +161,44 @@ const viewMethods = {
     let settingsBlock = document.createElement('div');
     settingsBlock.classList.add('block', 'form-block-settings');
     let settingsHeader = document.createElement('h1');
-    settingsHeader.textContent = _constants.form.settings.header.description;
+    settingsHeader.textContent = constants.form.settings.header.description;
     let settingsCheckList = document.createElement('div');
     settingsCheckList.classList.add('block');
-    let settingsDevModeLabel = document.createElement('label');
-    settingsDevModeLabel.classList.add('input-label');
-    settingsDevModeLabel.innerHTML = _constants.form.settings.devMode.description;
-    let settingsDevModeCheckBox = document.createElement('input');
-    settingsDevModeCheckBox.classList.add('pv-checkbox-devmode', 'input-checkbox');
-    settingsDevModeCheckBox.setAttribute('type', 'checkbox');
-    let settingsDevModeInfo = document.createElement('span');
-    settingsDevModeInfo.classList.add('icon', 'octicon', 'octicon-question', 'inline-block', 'text-info');
+    let devModeLabel = document.createElement('label');
+    devModeLabel.classList.add('input-label');
+    devModeLabel.innerHTML = constants.form.settings.devMode.description;
+    let devModeCheckBox = document.createElement('input');
+    devModeCheckBox.classList.add('pv-checkbox-devmode', 'input-checkbox');
+    devModeCheckBox.setAttribute('type', 'checkbox');
+    let devModeInfo = document.createElement('span');
+    devModeInfo.classList.add(
+      'icon', 'octicon', 'octicon-question', 'inline-block', 'text-info'
+    );
     atom.tooltips.add(
-      settingsDevModeInfo,
+      devModeInfo,
       {
-        title: _constants.form.settings.devMode.details,
+        title: constants.form.settings.devMode.details,
         delay: {
           show: 100,
           hide: 100
         }
       }
     )
-    let settingsBulkLabel = document.createElement('label');
-    settingsBulkLabel.classList.add('input-label');
-    settingsBulkLabel.innerHTML = _constants.form.settings.bulk.description;
-    let settingsBulkCheckBox = document.createElement('input');
-    settingsBulkCheckBox.classList.add('pv-checkbox-bulk', 'input-checkbox');
-    settingsBulkCheckBox.setAttribute('type', 'checkbox');
-    let settingsBulkInfo = document.createElement('span');
-    settingsBulkInfo.classList.add('icon', 'octicon', 'octicon-question', 'inline-block', 'text-info');
+    let bulkLabel = document.createElement('label');
+    bulkLabel.classList.add('input-label');
+    bulkLabel.innerHTML = constants.form.settings.bulk.description;
+    let bulkCheckBox = document.createElement('input');
+    bulkCheckBox.classList.add('pv-checkbox-bulk', 'input-checkbox');
+    bulkCheckBox.setAttribute('type', 'checkbox');
+    let bulkInfo = document.createElement('span');
+    bulkInfo.classList.add(
+      'icon', 'octicon', 'octicon-question', 'inline-block', 'text-info'
+    );
     atom.tooltips.add(
-      settingsBulkInfo,
+      bulkInfo,
       {
-        title: _constants.form.settings.bulk.details,
-        delay: {
-          show: 100,
-          hide: 100
-        }
+        title: constants.form.settings.bulk.details,
+        delay: { show: 100, hide: 100 }
       }
     )
 
@@ -200,32 +206,34 @@ const viewMethods = {
     let pathsBlock = document.createElement('div');
     pathsBlock.classList.add('block', 'form-block-paths');
     let pathsHeader = document.createElement('h1');
-    pathsHeader.textContent = _constants.form.paths.header.description;
+    pathsHeader.textContent = constants.form.paths.header.description;
     let pathsAddButton = document.createElement('button');
-    pathsAddButton.classList.add('btn', 'btn-primary', 'icon', 'icon-file-directory');
-    pathsAddButton.textContent = _constants.form.paths.add.description;
+    pathsAddButton.classList.add(
+      'btn', 'btn-primary', 'icon', 'icon-file-directory'
+    );
+    pathsAddButton.textContent = constants.form.paths.add.description;
     pathsAddButton.addEventListener('click', () => {
       atom.pickFolder((folders) => {
-          const pathsList = this.querySelector('.list-group');
-          if (!Array.isArray(folders)) {
-              return;
+        const pathsList = this.querySelector('.list-group');
+        if (!Array.isArray(folders)) {
+          return;
+        }
+        folders.forEach(
+          (folder) => {
+            let listItem = document.createElement('li');
+            listItem.classList.add('list-item', 'text-info');
+            listItem.textContent = folder;
+            pathsList.appendChild(listItem);
           }
-          folders.forEach(
-            (folder) => {
-              let listItem = document.createElement('li');
-              listItem.classList.add('list-item', 'text-info');
-              listItem.textContent = folder;
-              pathsList.appendChild(listItem);
-            }
-          );
+        );
       });
     }, false);
     let pathsList = document.createElement('ul');
     pathsList.classList.add('list-group');
 
-    actionsBlock.appendChild(actionsCloseButton);
-    actionsBlock.appendChild(actionsDeleteButton);
-    actionsBlock.appendChild(actionsSuccessButton);
+    actionsBlock.appendChild(closeButton);
+    actionsBlock.appendChild(deleteButton);
+    actionsBlock.appendChild(successButton);
 
     titleOptionGroupLabel.insertBefore(
       titleOptionGroupInput,
@@ -239,25 +247,25 @@ const viewMethods = {
     titleBlock.appendChild(titleOptionItemLabel);
     titleBlock.appendChild(titleHeader);
     titleBlock.appendChild(titleLabel);
-    titleBlock.appendChild(titleInput);
+    titleBlock.appendChild(nameInput);
 
     iconsBlock.appendChild(iconsHeader);
     iconsBlock.appendChild(iconsLabel);
     iconsBlock.appendChild(iconsInput);
     iconsBlock.appendChild(iconsList);
 
-    settingsDevModeLabel.insertBefore(
-      settingsDevModeCheckBox,
-      settingsDevModeLabel.firstChild
+    devModeLabel.insertBefore(
+      devModeCheckBox,
+      devModeLabel.firstChild
     );
-    settingsBulkLabel.insertBefore(
-      settingsBulkCheckBox,
-      settingsBulkLabel.firstChild
+    bulkLabel.insertBefore(
+      bulkCheckBox,
+      bulkLabel.firstChild
     );
-    settingsDevModeLabel.appendChild(settingsDevModeInfo);
-    settingsBulkLabel.appendChild(settingsBulkInfo);
-    settingsCheckList.appendChild(settingsDevModeLabel);
-    settingsCheckList.appendChild(settingsBulkLabel);
+    devModeLabel.appendChild(devModeInfo);
+    bulkLabel.appendChild(bulkInfo);
+    settingsCheckList.appendChild(devModeLabel);
+    settingsCheckList.appendChild(bulkLabel);
     settingsBlock.appendChild(settingsHeader);
     settingsBlock.appendChild(settingsCheckList);
 
@@ -274,28 +282,28 @@ const viewMethods = {
     this.appendChild(panelBody);
   },
   getTitle: function _getTitle () {
-    return 'Project Viewer Creator'
+    return 'Project Viewer Creator';
   },
   render: function _render () {
     let model = _caches.get(this);
 
-    if (!model || !model.current) {
-      return;
-    }
+    if (!model || !model.current) { return; }
 
     if (model.current.hasOwnProperty('uuid')) {
-      const actionsSuccessButton = this.querySelector('.pv-actions-success');
-      actionsSuccessButton.textContent = _constants.form.actions.update.description;
+      const successButton = this.querySelector('.pv-actions-success');
+      successButton.textContent = constants.form.actions.update.description;
     }
 
     if (model.current.hasOwnProperty('type')) {
-      const radioButton = this.querySelector(`.pv-form-radio-${model.current.type} input`);
+      const radioButton = this.querySelector(
+        `.pv-form-radio-${model.current.type} input`
+      );
       radioButton.checked = true;
     }
 
     if (model.current.hasOwnProperty('name')) {
-      const titleInput = this.querySelector('.pv-input-name');
-      titleInput.getModel().buffer.setText(model.current.name);
+      const nameInput = this.querySelector('.pv-input-name');
+      nameInput.getModel().getBuffer().setText(model.current.name);
     }
 
     if (model.current.hasOwnProperty('icon') && model.current.icon.length > 0) {
@@ -308,7 +316,7 @@ const viewMethods = {
       iconList.scrollTop = icon.offsetTop;
     }
 
-    if (model.current.hasOwnProperty('color')) {}
+    // if (model.current.hasOwnProperty('color')) {}
 
     if (model.current.hasOwnProperty('devMode')) {
       const devModeheckBox = this.querySelector('.pv-checkbox-devmode');

@@ -1,16 +1,12 @@
 'use strict';
 
-const _caches = require('./caches');
+const caches = require('./caches');
 
 const createView = function _createView (element, methods, model) {
   const tagExtends = element.tagExtends;
   const tagIs = element.tagIs;
   let view;
   let options = {};
-
-  if (!model) {
-    return;
-  }
 
   if (methods) {
     options.prototype = methods;
@@ -37,7 +33,9 @@ const createView = function _createView (element, methods, model) {
     }
   }
 
-  _caches.set(view, model);
+  if (model) {
+    caches.set(view, model);
+  }
   return view;
 };
 

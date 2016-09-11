@@ -1,4 +1,9 @@
 {
+  "database": {
+    "rejected": {
+      "message": "No database found"
+    }
+  },
   "form": {
     "actions": {
       "close": {

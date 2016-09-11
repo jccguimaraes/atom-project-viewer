@@ -63,10 +63,6 @@ li[is="project-viewer-list-item"] {
 	cursor: pointer;
 }
 
-// li[is="project-viewer-list-nested-item"] > .list-item {
-// 		pointer-events: none;
-// }
-
 li[is="project-viewer-list-item"].list-item {
 	transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
 
@@ -170,5 +166,18 @@ div[is="project-viewer-form"] {
 
 	.list-group {
 		margin-top: @component-padding;
+	}
+}
+
+li[is="project-viewer-list-nested-item"] {
+	&:hover {
+		color: @text-color-highlight !important;
+	}
+	> .list-item {
+		transition: color @project-viewer-transition-duration;
+
+		&:hover {
+			color: @project-viewer-selected-state !important;
+		}
 	}
 }

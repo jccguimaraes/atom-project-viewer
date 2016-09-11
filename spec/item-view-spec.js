@@ -2,7 +2,8 @@
 
 const _view = require('../src/item-view');
 const _model = require('../src/model');
-const _utils = require('../src/utils');
+const getModel = require('../src/utils').getModel;
+const getView = require('../src/utils').getView;
 
 describe ('item-view', function() {
 
@@ -16,21 +17,6 @@ describe ('item-view', function() {
     document.body.removeChild(sandBoxView);
   });
 
-  it ('if no valid model is passed it will throw errors', function() {
-    const view = _view.createView();
-
-    const fnInitialize = function _fnInitialize () {
-      return view.initialize;
-    }
-    const fnRender = function _fnRender () {
-      return view.render;
-    }
-
-    expect(view).toBeUndefined();
-    expect(fnInitialize).toThrow();
-    expect(fnRender).toThrow();
-  });
-
   it ('should return an HTMLElement', function() {
     const itemModel = _model.createItem();
     const itemView = _view.createView(itemModel);
@@ -41,7 +27,7 @@ describe ('item-view', function() {
   it ('should fetch the model associated with the view', function () {
     const itemModel = _model.createItem();
     const itemView = _view.createView(itemModel);
-    const fetchedModel = _utils.getModel(itemView);
+    const fetchedModel = getModel(itemView);
 
     expect(itemModel).toBe(fetchedModel);
   });
@@ -53,7 +39,7 @@ describe ('item-view', function() {
     itemView.initialize();
     sandBoxView.appendChild(itemView);
 
-    const fetchedView = _utils.getView(itemModel);
+    const fetchedView = getView(itemModel);
 
     expect(itemView).toBe(fetchedView);
   });
