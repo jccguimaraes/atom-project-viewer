@@ -5,8 +5,9 @@
   "description": "Project viewer/manager that lets you add, edit and remove clients/groups/projects as well as switching between them.",
   "keywords": [
     "project",
-    "manager",
-    "viewer"
+    "productivity",
+    "settings",
+    "workflow"
   ],
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
@@ -34,7 +35,7 @@
     "project-viewer": {
       "description": "Provides an API service for managing outside groups and items",
       "versions": {
-        "1.0.0": "projectViewerAPIService"
+        "0.4.0": "projectViewerService"
       }
     }
   },

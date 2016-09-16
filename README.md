@@ -6,34 +6,38 @@
 [![atom version](https://img.shields.io/badge/atom-1.10.0-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
-
 [![Travis CI CI](https://travis-ci.org/jccguimaraes/atom-project-viewer.svg?branch=master)](https://travis-ci.org/jccguimaraes/atom-project-viewer)
 [![AppVeyor CI](https://ci.appveyor.com/api/projects/status/2t91cemmpf635p2e?svg=true
 )](https://ci.appveyor.com/project/jccguimaraes/atom-project-viewer)
 [![CircleCI CI](https://circleci.com/gh/jccguimaraes/atom-project-viewer/tree/master.svg?style=shield&circle-token=c2215983920e08d193a80b5775760792c5d2e883
 )](https://circleci.com/gh/jccguimaraes/atom-project-viewer)
 
-This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
-
 ## Table Of Contents
 
+* [Introduction](#introduction)
 * [Installation](#installation)
 * [Options](#options)
 * [Settings](#settings)
 * [Contributors](#contributors)
-* [Others](#others)
-* [Projects that inspired me](#projects-that-inspired-me)
+* [Contacts](#contacts)
+
+## Introduction
+
+This is a package built for and by the Atom community. For contribution read [below](#contributors).
 
 ## Installation
 
-Simply run the following command:
+In a terminal / command line write the following line:
+
 ```sh
 apm install project-viewer
 ```
-Or find the package in **Atom → Settings → Install** and search for ***project-viewer***.
+
+Or simply find the package by accessing the menu **Atom → Preferences... → Install** and search for ***project-viewer***.
 
 ## Options
 
+- `ctrl-alt-cmd-v` toggles sidebar autohide;
 - `ctrl-alt-cmd-b` toggles sidebar visibility;
 - `ctrl-alt-cmd-n` open the editor tab;
 
@@ -41,6 +45,7 @@ Or find the package in **Atom → Settings → Install** and search for ***proje
 
 Settings | Type | Description | Default
 ---------|------|-------------|--------
+... | ... | ... | ...
 
 ## Contributors
 
@@ -53,10 +58,6 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
 
-## Others
+## Contacts
 
 You can follow me on [Twitter](https://twitter.com/jccguimaraes)
-
-## Projects that inspired me
-
-...

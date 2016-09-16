@@ -4,9 +4,38 @@
 const CompositeDisposable = require('atom').CompositeDisposable;
 
 /* package */
-const _caches = require('./caches');
+const caches = require('./caches');
 const _constructor = require('./constructor');
 const constants = require('./constants.json');
+
+const onSuccessButton = function _onSuccessButton () {
+  let type = this.querySelectorAll('.form-block-title input');
+  let name = this.querySelector('.pv-input-name');
+  let icon = this.querySelector('.icons-list .btn-success');
+  let devMode = this.querySelector('.pv-checkbox-devmode');
+  let bulk = this.querySelector('.pv-checkbox-bulk');
+  let paths = this.querySelectorAll('.list-group li');
+
+  const model = caches.get(this);
+
+  model.setters({
+    type,
+    name,
+    icon,
+    devMode,
+    bulk,
+    paths
+  });
+};
+
+const groups = function _groups (viewParent) {
+  const groupsView = document.createElement('div');
+  viewParent.appendChild(groupsView);
+
+  const model = caches.get(this);
+
+  model.getGroups();
+};
 
 const viewMethods = {
   detachedCallback: function _detachedCallback () {
@@ -46,31 +75,7 @@ const viewMethods = {
 
     successButton.addEventListener(
       'click',
-      () => {
-        let name = this.querySelector('.pv-input-name');
-        let icon = this.querySelector('.icons-list .btn-success');
-        let devMode = this.querySelector('.pv-checkbox-devmode');
-        let bulk = this.querySelector('.pv-checkbox-bulk');
-        let paths = this.querySelectorAll('.list-group li');
-
-        if (paths) {
-          paths = Array.from(paths).map(function (path) {
-            return path.textContent;
-          });
-        } else {
-          paths = [];
-        }
-
-        const model = _caches.get(this);
-
-        model.setters({
-          name: name.getModel().getBuffer().getText(),
-          icon: icon.textContent,
-          devMode: devMode.checked,
-          bulk: bulk.checked,
-          paths: paths
-        });
-      },
+      () => onSuccessButton.bind(this),
       false
     );
 
@@ -231,6 +236,9 @@ const viewMethods = {
     let pathsList = document.createElement('ul');
     pathsList.classList.add('list-group');
 
+    // GROUPS
+    groups.call(this, panelBody);
+
     actionsBlock.appendChild(closeButton);
     actionsBlock.appendChild(deleteButton);
     actionsBlock.appendChild(successButton);
@@ -285,7 +293,7 @@ const viewMethods = {
     return 'Project Viewer Creator';
   },
   render: function _render () {
-    let model = _caches.get(this);
+    let model = caches.get(this);
 
     if (!model || !model.current) { return; }
 

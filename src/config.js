@@ -29,6 +29,13 @@ const config = {
       'Right'
     ],
     order: 2
+  },
+  'autoHide': {
+    title: 'Sidebar auto hidding',
+    description: 'Panel has auto hide with hover behaviour.',
+    type: 'boolean',
+    default: false,
+    order: 3
   }
 };
 

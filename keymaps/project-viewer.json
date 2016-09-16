@@ -1,6 +1,7 @@
 {
   ".platform-darwin, .platform-win32, .platform-linux": {
-      "ctrl-alt-cmd-b": "project-viewer:toggle",
-      "ctrl-alt-cmd-n": "project-viewer:editor"
+    "ctrl-alt-cmd-v": "project-viewer:autohide",
+    "ctrl-alt-cmd-b": "project-viewer:toggle",
+    "ctrl-alt-cmd-n": "project-viewer:editor"
   }
 }

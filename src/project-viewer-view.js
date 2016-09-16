@@ -4,6 +4,22 @@
 const caches = require('./caches');
 const constructor = require('./constructor');
 
+const cycleViews = function _cycleViews (parent, views) {
+  if (views.view && parent && parent.attachChild) {
+    parent.attachChild(views.view);
+  }
+  if (views.hasOwnProperty('groups')) {
+    buildStructure(views.groups, views.view || parent);
+  }
+  if (views.hasOwnProperty('items')) {
+    buildStructure(views.items, views.view || parent);
+  }
+};
+
+const buildStructure = function _cycleStructure (list, parent) {
+  list.forEach(cycleViews.bind(this, parent));
+};
+
 const viewMethods = {
   reset: function _reset () {
     let listTree = this.querySelector('ul.list-tree');
@@ -13,8 +29,18 @@ const viewMethods = {
       }
     }
   },
+  populate: function _populate (structure) {
+    if (!structure) {
+      return;
+    }
+    this.reset();
+    buildStructure(structure, this);
+  },
   initialize: function _initialize () {
     this.setAttribute('tabindex', -1);
+
+    let autohider = document.createElement('div');
+    autohider.classList.add('autohider');
 
     let bodyPanel = document.createElement('div');
     bodyPanel.classList.add('panel-body');
@@ -22,15 +48,9 @@ const viewMethods = {
     let listTree = document.createElement('ul');
     listTree.classList.add('list-tree', 'has-collapsable-children');
 
-    let loadingPanel = document.createElement('div');
-    loadingPanel.classList.add('loading-panel');
-    let loadingSpan = document.createElement('span');
-    loadingSpan.classList.add('loading', 'loading-spinner-small');
-
-    loadingPanel.appendChild(loadingSpan);
-    bodyPanel.appendChild(loadingPanel);
     bodyPanel.appendChild(listTree);
 
+    this.appendChild(autohider);
     this.appendChild(bodyPanel);
   },
   attachChild: function _attachChild (node) {
@@ -54,6 +74,15 @@ const viewMethods = {
       return;
     }
     return model.name;
+  },
+  autohide: function _autohide (force) {
+    let method = 'toggle';
+    if (force) {
+      method = 'remove';
+    }
+    var isHidden = this.classList[method]('autohide');
+    let sidebar = this.querySelector('.autohider');
+    sidebar.classList[method]('visible', isHidden);
   }
 };
 

@@ -1,13 +1,14 @@
 'use strict';
 
-const _caches = require('./caches');
+const caches = require('./caches');
+const database = require('./database');
 
 const toArray = function _toArray (list, fnMap) {
   return Array.from(list, fnMap);
 };
 
 const getModel = function _getModel (view) {
-  return _caches.get(view);
+  return caches.get(view);
 };
 
 const getView = function _getView (model) {
@@ -19,3 +20,4 @@ const getView = function _getView (model) {
 exports.toArray = toArray;
 exports.getModel = getModel;
 exports.getView = getView;
+exports.database = database;

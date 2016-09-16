@@ -7,8 +7,22 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 const config = require('./config');
 const projectViewerView = require('./project-viewer-view');
 const caches = require('./caches');
-const api = require('./api');
-const constants = require('./constants');
+const form = require('./form');
+const formView = require('./form-view');
+const database = require('./utils').database;
+
+// TODO remove?
+const searchForModel = function _searchForModel (element) {
+  let view = element;
+  let model = caches.get(view);
+  if (!model && view.parentNode.nodeName === 'LI') {
+    model = caches.get(view.parentNode);
+  }
+  if (!model && view.parentNode.parentNode.nodeName === 'LI') {
+    model = caches.get(view.parentNode.parentNode);
+  }
+  return model;
+};
 
 const deactivate = function _deactivate () {
   this.disposables.dispose();
@@ -24,6 +38,7 @@ const activate = function _activate () {
   this.disposables = new CompositeDisposable(
     atom.commands.add('atom-workspace', {
       'project-viewer:toggle': toggle.bind(this),
+      'project-viewer:autohide': commandAutohide.bind(this),
       'project-viewer:editor': editor.bind(this)
     }),
     atom.contextMenu.add(
@@ -64,6 +79,10 @@ const activate = function _activate () {
     atom.config.observe(
       'project-viewer.panelPosition',
       observePanelPosition.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.autoHide',
+      observeAutoHide.bind(this)
     )
   );
 };
@@ -92,8 +111,9 @@ const observePanelPosition = function _observePanelPosition (option) {
   if (!view) {
     view = projectViewerView.createView();
     view.initialize();
-    readDatabase.call(this);
     caches.set(this, view);
+    database.refresh();
+    view.populate(database.retrieve());
   } else {
     panel = atom.workspace.panelForItem(view);
   }
@@ -105,6 +125,12 @@ const observePanelPosition = function _observePanelPosition (option) {
       item: view,
       visible: atom.config.get('project-viewer.visibilityActive')
     });
+  }
+};
+
+const observeAutoHide = function _observeAutoHide (option) {
+  if (option) {
+    autoHide.call(this);
   }
 };
 
@@ -123,11 +149,25 @@ const toggle = function _toggle () {
   }
 };
 
+const commandAutohide = function _commandAutohide () {
+  autoHide.call(this);
+};
+
+const autoHide = function _autohide () {
+  let view = caches.get(this);
+
+  if (!view) {
+    return;
+  }
+
+  view.autohide();
+};
+
 const editor = function _editor (evt) {
   let activePane = atom.workspace.getActivePane();
-  let formModel = api.model.createForm();
+  let formModel = form.createModel();
   formModel.current = searchForModel(evt.target);
-  let formItem = api.view.createForm(formModel);
+  let formItem = formView.createView(formModel);
 
   activePane.addItem(formItem);
   activePane.activateItem(formItem);
@@ -141,106 +181,8 @@ const editor = function _editor (evt) {
   });
 };
 
-const databaseThen = function _databaseThen (data) {
-  let view = caches.get(this);
-  if (!view) {
-    return;
-  }
-  cycleEntries(data.structure, null, view);
-};
-
-const databaseCatch = function _databaseCatch (data) {
-  atom.notifications.addWarning('Database', {
-    description: data,
-    icon: 'database'
-  });
-};
-
-const databasePromise = function _databasePromise (resolve, reject) {
-  const database = atom.getStorageFolder().load('pv040.json');
-  database ?
-    resolve(JSON.parse(database)) :
-    reject(constants.database.rejected.message);
-};
-
-const readDatabase = function _readDatabase () {
-  return new Promise(databasePromise.bind(this))
-    .then(databaseThen.bind(this))
-    .catch(databaseCatch.bind(this));
-};
-
-
-
-
-
-
-
-
-const searchForModel = function _searchForModel (element) {
-  let view = element;
-  let model = caches.get(view);
-  if (!model && view.parentNode.nodeName === 'LI') {
-    model = caches.get(view.parentNode);
-  }
-  if (!model && view.parentNode.parentNode.nodeName === 'LI') {
-    model = caches.get(view.parentNode.parentNode);
-  }
-  return model;
-};
-
-const buildGroup = function _buildGroup (entry) {
-  let groupModel = api.model.createGroup();
-
-  Object.assign(groupModel, entry);
-
-  let groupView = api.view.createGroup(groupModel);
-  groupView.initialize();
-  groupView.render();
-  return groupView;
-};
-
-const buildItem = function _buildItem (entry) {
-  let itemModel = api.model.createItem();
-
-  Object.assign(itemModel, entry);
-  itemModel.addPaths(entry.paths);
-
-  let itemView = api.view.createItem(itemModel);
-  itemView.initialize();
-  itemView.render();
-  return itemView;
-};
-
-const filterEntries = function _filterEntries (type, parent, entry) {
-  if (!parent) {
-    return;
-  }
-  let nextParent = parent;
-  if (type === 'group') {
-    nextParent = buildGroup(entry);
-    api.ui.attach(nextParent, parent);
-  }
-  if (type === 'item') {
-    let item = buildItem(entry);
-    api.ui.attach(item, parent);
-  }
-  if (entry.hasOwnProperty('groups')) {
-    cycleEntries(entry.groups, 'group', nextParent);
-  }
-  if (entry.hasOwnProperty('items')) {
-    cycleEntries(entry.items, 'item', nextParent);
-  }
-};
-
-const cycleEntries = function _cycleEntries (entries, type, parent) {
-  entries.forEach(filterEntries.bind(this, type, parent));
-};
-
 const projectViewerService = function _projectViewerService () {
-  return {
-    addGroup: function () {},
-    addItem: function () {},
-  };
+  return {};
 };
 
 const provideStatusBar = function _provideStatusBar (/*service*/) {};

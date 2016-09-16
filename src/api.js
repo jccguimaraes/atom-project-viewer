@@ -3,19 +3,15 @@
 const model = require('./model');
 const group = require('./group-view');
 const item = require('./item-view');
-const form = require('./form');
-const formView = require('./form-view');
 
 module.exports = {
   model: {
     createGroup: model.createGroup,
-    createItem: model.createItem,
-    createForm: form.createModel
+    createItem: model.createItem
   },
   view: {
     createGroup: group.createView,
-    createItem: item.createView,
-    createForm: formView.createView
+    createItem: item.createView
   },
   ui: {
     attach: function _attach (childNode, parentNode) {

@@ -86,12 +86,18 @@ describe ('project-viewer', function() {
     });
   });
 
-  describe ('config changes', function () {
+  xdescribe ('project-viwer:editor is triggered', function () {});
 
-    xdescribe ('changing visibilityOption');
+  xdescribe ('project-viwer:autohide is triggered', function () {});
 
-    xdescribe ('changing visibilityActive');
+  xdescribe ('config changes', function () {
 
-    xdescribe ('changing panelPosition');
+    describe ('changing visibilityOption');
+
+    describe ('changing visibilityActive');
+
+    describe ('changing panelPosition');
+
+    describe ('changing autoHide');
   });
 });

@@ -3,6 +3,18 @@
 const _caches = require('./caches');
 const _constructor = require('./constructor');
 
+const onClickEvent = function _onClickEvent (model, evt) {
+  console.log(evt.target);
+  // atom.open(
+  //   {
+  //     pathsToOpen: model.paths,
+  //     newWindow: false,
+  //     devMode: false,
+  //     safeMode: false
+  //   }
+  // );
+};
+
 const viewMethods = {
   initialize: function _initialize () {
     const model = _caches.get(this);
@@ -13,6 +25,11 @@ const viewMethods = {
 
     this.classList.add('list-item');
     this.setAttribute('data-project-viewer-uuid', model.uuid);
+
+    this.addEventListener(
+      'click',
+      onClickEvent.bind(this, model)
+    );
   },
   render: function _render () {
     const model = _caches.get(this);
@@ -46,21 +63,6 @@ const viewMethods = {
     if (model.name) {
       contentNode.textContent = model.name;
     }
-
-    contentNode.addEventListener(
-      'click',
-      () => {
-        atom.open(
-          {
-            pathsToOpen: model.paths,
-            newWindow: false,
-            devMode: false,
-            safeMode: false
-          }
-        );
-      },
-      false
-    );
   },
   sorting: function _sorting () {
     const model = _caches.get(this);

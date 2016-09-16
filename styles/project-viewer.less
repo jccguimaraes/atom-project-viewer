@@ -1,6 +1,50 @@
 @import "ui-variables";
 @import "./extras/helpers";
 
+@project-viewer_main_width-max: 180px;
+@project-viewer_main_width-min: 20px;
+
+project-viewer {
+	transition: width 0.5s;
+	width: @project-viewer_main_width-max;
+
+	&.autohide {
+		width: @project-viewer_main_width-min;
+
+		&:hover {
+			width: @project-viewer_main_width-max;
+
+      .autohider {
+        opacity: 0;
+      }
+		}
+	}
+
+  .autohider {
+      background-color: @tool-panel-background-color;
+      pointer-events: none;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      opacity: 0;
+			transition: opacity 0.5s;
+
+      &.visible {
+        opacity: 1;
+      }
+  }
+
+	li[is="project-viewer-list-item"] {
+		cursor: pointer;
+	}
+}
+
+
+
+
+
+
 // TODO this should not be doubled
 project-viewer,
 div[is="project-viewer-form"] {
@@ -24,7 +68,7 @@ div[is="project-viewer-form"] {
 		vertical-align: middle;
 	}
 }
-
+/*
 project-viewer {
 	font-size: @font-size;
 	font-family: @font-family;
@@ -65,10 +109,6 @@ li[is="project-viewer-list-item"] {
 
 li[is="project-viewer-list-item"].list-item {
 	transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
-
-	span {
-		pointer-events: none;
-	}
 
 	&:hover {
 		color: @project-viewer-selected-state !important;
@@ -181,3 +221,4 @@ li[is="project-viewer-list-nested-item"] {
 		}
 	}
 }
+*/

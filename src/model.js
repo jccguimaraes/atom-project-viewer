@@ -154,7 +154,7 @@ const handler = {
       };
       cleanValue = value.replace && value.replace(
         UNSAFE_CHARS_PATTERN,
-        function (unsafeChar) { return UNICODE_CHARS[unsafeChar];}
+        function (unsafeChar) { return UNICODE_CHARS[unsafeChar]; }
       ) === value ? value : target[property];
     }
     else if (target.type ===  'group' && property === 'sortBy') {
