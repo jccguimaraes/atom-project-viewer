@@ -1,8 +1,5 @@
 @import "ui-variables";
-@import "./extras/helpers";
-
-@project-viewer_main_width-max: 180px;
-@project-viewer_main_width-min: 20px;
+@import "./extras/variables";
 
 project-viewer {
 	transition: width 0.5s;
@@ -14,13 +11,13 @@ project-viewer {
 		&:hover {
 			width: @project-viewer_main_width-max;
 
-      .autohider {
+      .hidden-block {
         opacity: 0;
       }
 		}
 	}
 
-  .autohider {
+  .hidden-block {
       background-color: @tool-panel-background-color;
       pointer-events: none;
       position: absolute;
@@ -35,8 +32,53 @@ project-viewer {
       }
   }
 
-	li[is="project-viewer-list-item"] {
+	li[is="project-viewer-list-nested-item"].list-nested-item {
+		-webkit-user-drag: element;
+    -webkit-user-select: none;
 		cursor: pointer;
+		pointer-events: none;
+
+		> .list-item {
+			pointer-events: all;
+		}
+
+		.list-tree {
+			pointer-events: none;
+		}
+
+		li[is="project-viewer-list-item"].list-item {
+			-webkit-user-drag: element;
+	    -webkit-user-select: none;
+			cursor: pointer;
+			transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
+			pointer-events: all;
+
+			span {
+				pointer-events: none;
+			}
+
+			&:hover {
+				color: @project-viewer-selected-state;
+				padding-left: 0;
+			}
+
+			&:hover::before {
+				visibility: visible;
+				transform: scaleY(1);
+			}
+
+			&::before {
+				position: absolute;
+				left: 0;
+				height: @component-line-height;
+				content: "";
+				width: 2px;
+				background-color: @project-viewer-active-state;
+				visibility: hidden;
+				transform: scaleY(0);
+				transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+			}
+		}
 	}
 }
 

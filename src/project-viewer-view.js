@@ -39,8 +39,8 @@ const viewMethods = {
   initialize: function _initialize () {
     this.setAttribute('tabindex', -1);
 
-    let autohider = document.createElement('div');
-    autohider.classList.add('autohider');
+    let hiddenBlock = document.createElement('div');
+    hiddenBlock.classList.add('hidden-block');
 
     let bodyPanel = document.createElement('div');
     bodyPanel.classList.add('panel-body');
@@ -50,7 +50,7 @@ const viewMethods = {
 
     bodyPanel.appendChild(listTree);
 
-    this.appendChild(autohider);
+    this.appendChild(hiddenBlock);
     this.appendChild(bodyPanel);
   },
   attachChild: function _attachChild (node) {
@@ -81,7 +81,7 @@ const viewMethods = {
       method = 'remove';
     }
     var isHidden = this.classList[method]('autohide');
-    let sidebar = this.querySelector('.autohider');
+    let sidebar = this.querySelector('.hidden-block');
     sidebar.classList[method]('visible', isHidden);
   }
 };

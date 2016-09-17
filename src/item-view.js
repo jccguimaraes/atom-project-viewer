@@ -24,6 +24,8 @@ const viewMethods = {
     }
 
     this.classList.add('list-item');
+
+    // TODO do we need this?
     this.setAttribute('data-project-viewer-uuid', model.uuid);
 
     this.addEventListener(
