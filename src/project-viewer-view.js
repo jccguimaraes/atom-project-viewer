@@ -46,7 +46,11 @@ const viewMethods = {
     bodyPanel.classList.add('panel-body');
 
     let listTree = document.createElement('ul');
-    listTree.classList.add('list-tree', 'has-collapsable-children');
+    listTree.classList.add(
+      'list-tree',
+      'has-collapsable-children',
+      'pv-has-custom-icons'
+    );
 
     bodyPanel.appendChild(listTree);
 

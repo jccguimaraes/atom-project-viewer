@@ -2,6 +2,10 @@
 @import "./extras/variables";
 
 project-viewer {
+	font-size: @font-size;
+	font-family: @font-family;
+	display: flex;
+	flex-direction: column;
 	transition: width 0.5s;
 	width: @project-viewer_main_width-max;
 
@@ -32,14 +36,29 @@ project-viewer {
       }
   }
 
+	.panel-body {
+		overflow: scroll;
+		flex-grow: 1;
+	}
+
+	> .list-tree {
+		position: relative;
+		padding: @component-padding @component-padding/2;
+	}
+
 	li[is="project-viewer-list-nested-item"].list-nested-item {
 		-webkit-user-drag: element;
     -webkit-user-select: none;
-		cursor: pointer;
 		pointer-events: none;
+		transition: color @project-viewer-transition-duration ease-in 0s;
 
 		> .list-item {
 			pointer-events: all;
+			cursor: pointer;
+
+			&:hover {
+				color: @project-viewer-selected-state;
+			}
 		}
 
 		.list-tree {
@@ -53,8 +72,16 @@ project-viewer {
 			transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
 			pointer-events: all;
 
-			span {
-				pointer-events: none;
+			&::before {
+				position: absolute;
+				left: 0;
+				height: @component-line-height;
+				content: "";
+				width: 2px;
+				background-color: @project-viewer-active-state;
+				visibility: hidden;
+				transform: scaleY(0);
+				transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
 			}
 
 			&:hover {
@@ -67,29 +94,14 @@ project-viewer {
 				transform: scaleY(1);
 			}
 
-			&::before {
-				position: absolute;
-				left: 0;
-				height: @component-line-height;
-				content: "";
-				width: 2px;
-				background-color: @project-viewer-active-state;
-				visibility: hidden;
-				transform: scaleY(0);
-				transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+			span {
+				pointer-events: none;
 			}
 		}
 	}
 }
 
-
-
-
-
-
-// TODO this should not be doubled
-project-viewer,
-div[is="project-viewer-form"] {
+.pv-has-custom-icons {
 
 	@import (less) "./../node_modules/octicons/build/font/octicons.css";
 	@import "./extras/octicons";
@@ -110,83 +122,8 @@ div[is="project-viewer-form"] {
 		vertical-align: middle;
 	}
 }
-/*
-project-viewer {
-	font-size: @font-size;
-	font-family: @font-family;
-	display: flex;
-	flex-direction: column;
-	width: @project-viewer-width;
 
-	.panel-body {
-		overflow: scroll;
-		flex-grow: 1;
-
-		.loading-panel {
-			pointer-events: none;
-			position: absolute;
-			display: flex;
-			height: 100%;
-			width: 100%;
-			align-items: center;
-			justify-content: center;
-			transition: opacity 0.5s;
-			opacity: 0;
-
-			&.fade-in {
-				opacity: 1;
-			}
-		}
-
-		> .list-tree {
-			position: relative;
-			padding: @component-padding @component-padding/2;
-		}
-	}
-}
-li[is="project-viewer-list-nested-item"],
-li[is="project-viewer-list-item"] {
-	cursor: pointer;
-}
-
-li[is="project-viewer-list-item"].list-item {
-	transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
-
-	&:hover {
-		color: @project-viewer-selected-state !important;
-		padding-left: 0 !important;
-	}
-
-	&:hover::before {
-		visibility: visible;
-		transform: scaleY(1);
-	}
-
-	&::before {
-		position: absolute;
-		left: 0;
-		height: @component-line-height;
-		content: "";
-		width: 2px;
-		background-color: @project-viewer-active-state;
-		visibility: hidden;
-		transform: scaleY(0);
-		transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
-	}
-
-	&.active {
-		color: @project-viewer-selected-state !important;
-	}
-
-	&.disabled {
-		display: inline-flex;
-		cursor: not-allowed;
-		color: @text-color-subtle;
-		text-decoration: line-through;
-	}
-}
-
-div[is="project-viewer-form"] {
+project-viewer-form {
 	background-color: @tab-background-color;
 	overflow: scroll;
 	padding: @component-padding * 2;
@@ -250,17 +187,3 @@ div[is="project-viewer-form"] {
 		margin-top: @component-padding;
 	}
 }
-
-li[is="project-viewer-list-nested-item"] {
-	&:hover {
-		color: @text-color-highlight !important;
-	}
-	> .list-item {
-		transition: color @project-viewer-transition-duration;
-
-		&:hover {
-			color: @project-viewer-selected-state !important;
-		}
-	}
-}
-*/

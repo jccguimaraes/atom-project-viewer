@@ -9,20 +9,8 @@ const projectViewerView = require('./project-viewer-view');
 const caches = require('./caches');
 const form = require('./form');
 const formView = require('./form-view');
+const getModel = require('./utils').getModel;
 const database = require('./utils').database;
-
-// TODO remove?
-const searchForModel = function _searchForModel (element) {
-  let view = element;
-  let model = caches.get(view);
-  if (!model && view.parentNode.nodeName === 'LI') {
-    model = caches.get(view.parentNode);
-  }
-  if (!model && view.parentNode.parentNode.nodeName === 'LI') {
-    model = caches.get(view.parentNode.parentNode);
-  }
-  return model;
-};
 
 const deactivate = function _deactivate () {
   this.disposables.dispose();
@@ -46,22 +34,29 @@ const activate = function _activate () {
         'project-viewer': [
           {
             command: 'project-viewer:editor',
-            label: 'Create...',
+            created: function (evt) {
+              let model = getModel(evt.target);
+              if (model) {
+                this.label = `Create in ${model.name}...`
+              }
+            },
             shouldDisplay: function (evt) {
-              const model = searchForModel(evt.target);
-              return (model && model.type === 'item') ? false : true;
+              let model = getModel(evt.target);
+              if (!model) { return false; }
+              return model.type === 'item' ? false : true;
             }
           },
           {
             command: 'project-viewer:editor',
             created: function (evt) {
-              let model = searchForModel(evt.target);
+              let model = getModel(evt.target);
               if (model) {
                 this.label = `Update ${model.name}...`
               }
             },
             shouldDisplay: function (evt) {
-              let model = searchForModel(evt.target);
+              let model = getModel(evt.target);
+              if (!model) { return false; }
               return model ? true : false;
             }
           }
@@ -166,7 +161,7 @@ const autoHide = function _autohide () {
 const editor = function _editor (evt) {
   let activePane = atom.workspace.getActivePane();
   let formModel = form.createModel();
-  formModel.current = searchForModel(evt.target);
+  formModel.current = getModel(evt.target);
   let formItem = formView.createView(formModel);
 
   activePane.addItem(formItem);

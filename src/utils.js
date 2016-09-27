@@ -8,7 +8,14 @@ const toArray = function _toArray (list, fnMap) {
 };
 
 const getModel = function _getModel (view) {
-  return caches.get(view);
+  let model = caches.get(view);
+  let safeCycle = 0;
+  while (!model && safeCycle < 3) {
+    view = view.parentNode;
+    model = caches.get(view);
+    safeCycle++;
+  }
+  return model;
 };
 
 const getView = function _getView (model) {

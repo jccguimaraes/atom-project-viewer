@@ -44,6 +44,8 @@ const viewMethods = {
   attachedCallback: function _attachedCallback () {
     this.disposables = new CompositeDisposable();
 
+    this.classList.add('pv-has-custom-icons');
+
     let panelBody = document.createElement('div');
     panelBody.classList.add('panel-body');
 
@@ -349,7 +351,6 @@ const viewMethods = {
 
 const createView = function _createView (model) {
   let options = {
-    tagExtends: 'div',
     tagIs: 'project-viewer-form'
   };
   return _constructor.createView(options, viewMethods, model);

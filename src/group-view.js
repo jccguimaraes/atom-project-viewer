@@ -2,7 +2,6 @@
 
 const caches = require('./caches');
 const constructor = require('./constructor');
-// const utils = require('./utils');
 
 const viewMethods = {
   attachedCallback: function _attachedCallback () {
@@ -65,17 +64,6 @@ const viewMethods = {
 
     let listTree = this.querySelector('.list-tree');
 
-    // if (listTree) {
-    //   let nodes = utils.toArray(listTree.childNodes);
-    //   let sorted = nodes;
-    //   if (model.sortBy === 'alphabetically') {
-    //     sorted = _helpers.sortArray(nodes)
-    //   }
-    //   sorted.forEach(
-    //     (liView) => this.attachChild(liView)
-    //   );
-    // }
-
     if (!listTree) {
       listTree = document.createElement('ul');
       listTree.classList.add('list-tree');
@@ -108,9 +96,8 @@ const viewMethods = {
   sorting: function _sorting () {
     const model = caches.get(this);
 
-    if (!model) {
-      return;
-    }
+    if (!model) { return; }
+
     return model.name;
   }
 };
