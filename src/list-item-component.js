@@ -79,7 +79,7 @@ function clickListener(evt) {
         atom.project.setPaths(model.projectPaths);
     }
 
-    atom.devMode = model.projectDev
+    // atom.devMode = model.projectDev
 
     _utility.setSelectedProjectView(this);
 

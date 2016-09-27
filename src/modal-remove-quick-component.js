@@ -30,7 +30,7 @@ function removeButtonClickEvent (evt) {
 
     if (model.project && model.projectView) {
         delete model.project;
-        atom.devMode = false;
+        // atom.devMode = false;
         model.projectView.remove();
     }
 

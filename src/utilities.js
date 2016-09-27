@@ -118,7 +118,7 @@ const utilities = {
             }
             if (changes.hasOwnProperty('hasDev') && original.current.type === 'project') {
               original.current[original.current.type + 'Dev'] = changes.hasDev;
-              atom.devMode = changes.hasDev;
+              // atom.devMode = changes.hasDev;
             }
 
             if (changes.sortBy) {

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.24] - 2016-09-27
+
+### Removed
+
+- FEATURE: Open project in dev mode ([#77](https://github.com/jccguimaraes/atom-project-viewer/issues/77));
+  - For this reason check ([#87](https://github.com/jccguimaraes/atom-project-viewer/issues/87))
+
 ## [0.3.23] - 2016-09-06
 
 ### Fixed

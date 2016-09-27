@@ -163,8 +163,8 @@ function addProjects (parentMapper, parentView, atRootLevel) {
                 });
             }
             if (isActive) {
-              atom.devMode = mappedProject.dev;
-                projectView.classList.add('active', 'selected');
+              // atom.devMode = mappedProject.dev;
+              projectView.classList.add('active', 'selected');
             }
 
             if (!atRootLevel) {
