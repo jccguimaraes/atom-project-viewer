@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.25] - 2016-10-07
+
+### Fixed
+
+- ISSUE: Create project modal can't click create button if window height is not enough ([#85](https://github.com/jccguimaraes/atom-project-viewer/issues/85))
+
 ## [0.3.24] - 2016-09-27
 
 ### Removed
