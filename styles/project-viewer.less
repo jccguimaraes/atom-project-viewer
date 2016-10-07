@@ -1,5 +1,5 @@
 @import "ui-variables";
-@import "./extras/variables";
+@import "./extras/pv-variables";
 
 project-viewer {
 	font-size: @font-size;
@@ -15,26 +15,26 @@ project-viewer {
 		&:hover {
 			width: @project-viewer_main_width-max;
 
-      .hidden-block {
-        opacity: 0;
-      }
+			.hidden-block {
+				opacity: 0;
+			}
 		}
 	}
 
-  .hidden-block {
-      background-color: @tool-panel-background-color;
-      pointer-events: none;
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      z-index: 1;
-      opacity: 0;
-			transition: opacity 0.5s;
+	.hidden-block {
+		background-color: @tool-panel-background-color;
+		pointer-events: none;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		z-index: 1;
+		opacity: 0;
+		transition: opacity 0.5s;
 
-      &.visible {
-        opacity: 1;
-      }
-  }
+		&.visible {
+			opacity: 1;
+		}
+	}
 
 	.panel-body {
 		overflow: scroll;
@@ -46,18 +46,63 @@ project-viewer {
 		padding: @component-padding @component-padding/2;
 	}
 
+	.has-collapsable-children {
+		margin-left: 10px;
+	}
+
+	&:focus {
+		li[is="project-viewer-list-nested-item"].list-nested-item,
+		li[is="project-viewer-list-item"].list-item {
+
+			&::before {
+				position: absolute;
+				left: 0;
+				height: @component-line-height;
+				content: "";
+				width: 2px;
+				background-color: @project-viewer_item_background-color;
+				visibility: hidden;
+				transform: scaleY(0);
+				color: @project-viewer_item_color;
+				transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
+				padding-left: 0;
+			}
+
+			&.active {
+				color: @project-viewer_item_color;
+
+				> .list-item {
+					color: @project-viewer_item_color;
+				}
+
+				// .list-tree {
+				// 	background-color: rgba(0, 0, 0, 0.1);
+				//
+				// 	& + .list-item {
+				// 		background-color: rgba(0, 0, 0, 0.1);
+				// 	}
+				// }
+			}
+
+			&.active::before {
+				visibility: visible;
+				transform: scaleY(1);
+			}
+		}
+	}
+
 	li[is="project-viewer-list-nested-item"].list-nested-item {
 		-webkit-user-drag: element;
-    -webkit-user-select: none;
+		-webkit-user-select: none;
 		pointer-events: none;
-		transition: color @project-viewer-transition-duration ease-in 0s;
+		transition: color @pv_transition-duration-default ease-in 0s;
 
 		> .list-item {
 			pointer-events: all;
 			cursor: pointer;
 
 			&:hover {
-				color: @project-viewer-selected-state;
+				color: @project-viewer_item_color;
 			}
 		}
 
@@ -67,29 +112,36 @@ project-viewer {
 
 		li[is="project-viewer-list-item"].list-item {
 			-webkit-user-drag: element;
-	    -webkit-user-select: none;
+			-webkit-user-select: none;
 			cursor: pointer;
-			transition: color @project-viewer-transition-duration ease-in 0s, padding 0.1s ease-in 0s;
+			transition: color @pv_transition-duration-default ease-in 0s, background-color @pv_transition-duration-default ease-in 0s, padding @pv_transition-duration-fast ease-in 0s;
 			pointer-events: all;
 
-			&::before {
+			&.no-paths,
+			&.no-paths span {
+				text-decoration: line-through;
+				color: @text-color-subtle;
+				cursor: not-allowed;
+			}
+
+			&:not(.selected):not(.no-paths)::before {
 				position: absolute;
 				left: 0;
 				height: @component-line-height;
 				content: "";
 				width: 2px;
-				background-color: @project-viewer-active-state;
+				background-color: @project-viewer_item_background-color;
 				visibility: hidden;
 				transform: scaleY(0);
-				transition: transform @project-viewer-transition-duration, visibility @project-viewer-transition-duration;
+				transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
 			}
 
-			&:hover {
-				color: @project-viewer-selected-state;
+			&:hover:not(.selected):not(.no-paths) {
+				color: @project-viewer_item_color;
 				padding-left: 0;
 			}
 
-			&:hover::before {
+			&:hover:not(.selected)::before {
 				visibility: visible;
 				transform: scaleY(1);
 			}
@@ -128,14 +180,24 @@ project-viewer-form {
 	overflow: scroll;
 	padding: @component-padding * 2;
 
+	.panel-body {
+		width: 80%;
+	  margin: 0 auto;
+	}
+
 	h1 {
 		color: @text-color-highlight;
 	}
 
+	div[class*="form-block"] {
+		border-bottom: 1px solid @pane-item-border-color;
+		padding-bottom: @component-padding;
+	}
+
 	.form-block-title .input-label {
 		display: inline;
-    width: -webkit-max-content;
-    margin: 0 1em 1em 0;
+		width: -webkit-max-content;
+		margin: 0 1em 1em 0;
 	}
 
 	.input-label {
@@ -147,17 +209,32 @@ project-viewer-form {
 		}
 	}
 
+	.list-group {
+		.pv-path-remove::before {
+			color: @text-color-error;
+		}
+		.pv-path-redo::before {
+			color: @text-color-warning;
+		}
+
+		.pv-path-name {
+			&.remove-existing {
+				text-decoration: line-through;
+				color: @text-color-subtle;
+			}
+		}
+	}
+
 	.icons-list {
 		margin-top: @component-padding;
 		height: 200px;
 		overflow: scroll;
-
 		padding: @component-padding;
 		background-color: @tool-panel-background-color;
 		position: relative;
 		flex: 1 1 300px;
 		min-width: 0;
-		border: 1px solid @tool-panel-border-color;
+		// border: 1px solid @tool-panel-border-color;
 		display: flex;
 		flex-wrap: wrap;
 		align-content: flex-start;
@@ -165,7 +242,7 @@ project-viewer-form {
 		.icon {
 			flex: 1 0 200px;
 			padding: @component-padding/2 @component-padding;
-			transition: all @project-viewer-transition-duration;
+			transition: all @pv_transition-duration-default;
 
 			&:hover {
 				cursor: pointer;
@@ -185,5 +262,28 @@ project-viewer-form {
 
 	.list-group {
 		margin-top: @component-padding;
+	}
+
+	.form-block-groups {
+		position: relative;
+
+		.list-nested-item {
+			-webkit-user-select: none;
+			pointer-events: none;
+			transition: color @pv_transition-duration-default ease-in 0s;
+
+			> .list-item {
+				pointer-events: all;
+				cursor: pointer;
+
+				&:hover {
+					color: @project-viewer_item_color;
+				}
+			}
+
+			.list-tree {
+				pointer-events: none;
+			}
+		}
 	}
 }

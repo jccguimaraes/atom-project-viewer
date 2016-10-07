@@ -37,9 +37,10 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
 
 ## Options
 
-- `ctrl-alt-cmd-v` toggles sidebar autohide;
-- `ctrl-alt-cmd-b` toggles sidebar visibility;
-- `ctrl-alt-cmd-n` open the editor tab;
+- `shift-ctrl-alt-c` toggles sidebar autohide;
+- `shift-ctrl-alt-v` toggles sidebar visibility;
+- `shift-ctrl-alt-n` open the editor tab;
+- `shift-ctrl-alt-m` toggle focus from active panel and the sidebar;
 
 ## Settings
 

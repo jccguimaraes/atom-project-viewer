@@ -14,6 +14,9 @@ const generateModel = function _generateModel (list, root, method, candidate) {
   if (!root) {
     entry.model = api.model[method]();
     Object.assign(entry.model, candidate);
+    if (candidate.hasOwnProperty('paths')) {
+      entry.model.addPaths(candidate.paths);
+    }
     entry.view = api.view[method](entry.model);
     entry.view.initialize();
     entry.view.render();

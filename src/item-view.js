@@ -3,16 +3,18 @@
 const _caches = require('./caches');
 const _constructor = require('./constructor');
 
-const onClickEvent = function _onClickEvent (model, evt) {
-  console.log(evt.target);
-  // atom.open(
-  //   {
-  //     pathsToOpen: model.paths,
-  //     newWindow: false,
-  //     devMode: false,
-  //     safeMode: false
-  //   }
-  // );
+const onClickEvent = function _onClickEvent (model) {
+  if (!model) { return null; }
+  let selected = document.querySelector(
+    'project-viewer .has-collapsable-children .selected'
+  );
+  if (selected && selected !== this) {
+    selected.classList.remove('selected');
+  }
+  if (selected !== this) {
+    this.classList.add('selected');
+  }
+  this.openOnWorkspace();
 };
 
 const viewMethods = {
@@ -65,6 +67,8 @@ const viewMethods = {
     if (model.name) {
       contentNode.textContent = model.name;
     }
+
+    this.classList.toggle('no-paths', model.paths.length === 0);
   },
   sorting: function _sorting () {
     const model = _caches.get(this);
@@ -73,6 +77,20 @@ const viewMethods = {
       return;
     }
     return model.name;
+  },
+  openOnWorkspace: function _openOnWorkspace () {
+    const model = _caches.get(this);
+
+    if (!model) { return false; }
+
+    atom.open(
+      {
+        pathsToOpen: model.paths,
+        newWindow: false,
+        devMode: model.devMode,
+        safeMode: false
+      }
+    );
   }
 };
 

@@ -1,7 +1,8 @@
 {
   ".platform-darwin, .platform-win32, .platform-linux": {
-    "ctrl-alt-cmd-v": "project-viewer:autohide",
-    "ctrl-alt-cmd-b": "project-viewer:toggle",
-    "ctrl-alt-cmd-n": "project-viewer:editor"
+    "shift-ctrl-alt-c": "project-viewer:autohide",
+    "shift-ctrl-alt-v": "project-viewer:toggle",
+    "shift-ctrl-alt-n": "project-viewer:editor",
+    "shift-ctrl-alt-m": "project-viewer:focus"
   }
 }

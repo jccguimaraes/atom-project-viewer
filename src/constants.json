@@ -1,7 +1,7 @@
 {
   "database": {
     "rejected": {
-      "message": "No database found"
+      "message": "No local database found"
     }
   },
   "form": {
@@ -24,7 +24,7 @@
         "description": "Name"
       },
       "label": {
-        "description": "Enter the name for the group / item"
+        "description": "Enter the name (optional)..."
       }
     },
     "icons": {
@@ -32,7 +32,7 @@
         "description": "Icons"
       },
       "label": {
-        "description": "Search for an icon"
+        "description": "Search for an icon (optional)..."
       }
     },
     "settings": {
@@ -40,8 +40,8 @@
         "description": "Settings"
       },
       "devMode": {
-        "description": " Run in <span class=\"text-highlight\">DevMode</span>.",
-        "details": "If true, it will open the item (project) in development mode.<br><span class=\"text-highlight\">Due to the nature of Atom itself, a project with DevMode active will open in a new window.</span>"
+        "description": " Run in <span class=\"text-highlight\">DevMode</span>",
+        "details": "If true, it will open the item (project) in development mode.<br><span class=\"text-highlight\">Due to the nature of Atom itself, a project with DevMode active will open in a new window</span>"
       },
       "bulk": {
         "description": " Bulk Operation",
@@ -54,6 +54,11 @@
       },
       "add": {
         "description": "Add project folder(s)"
+      }
+    },
+    "groups": {
+      "header": {
+        "description": "Groups"
       }
     }
   }

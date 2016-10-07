@@ -183,6 +183,9 @@ const handler = {
       const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
       cleanValue = regEx.exec(value) !== null ? value : target[property];
     }
+    else if (property === 'devMode') {
+      cleanValue = value;
+    }
     else if (target.type ===  'group' && property === 'metrics') {
       target.metrics[value.type] += value.increment * 1;
     }
