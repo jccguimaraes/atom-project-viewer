@@ -12,7 +12,7 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.10.0"
+    "atom": ">=1.11.1"
   },
   "dependencies": {
     "atom-space-pen-views": "latest",

@@ -5,7 +5,7 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 
 /* package */
 const caches = require('./caches');
-const _constructor = require('./constructor');
+const constructor = require('./constructor');
 const constants = require('./constants.json');
 
 const onCloseButton = function _onCloseButton () {
@@ -507,7 +507,7 @@ const createView = function _createView (model) {
   let options = {
     tagIs: 'project-viewer-form'
   };
-  return _constructor.createView(options, viewMethods, model);
+  return constructor.createView(options, viewMethods, model);
 };
 
 module.exports = {

@@ -1,6 +1,6 @@
 'use strict';
 
-const database = require('./utils').database;
+const database = require('./database');
 
 const retrieveOnlyGroups = function _retrieveOnlyGroups (entries, list) {
   if (!Array.isArray(entries)) { return []; }

@@ -37,6 +37,25 @@ const cycleEntries = function _cycleEntries (entries, list, root, method) {
   entries.forEach(generateModel.bind(this, list, root, method));
 };
 
+const fetchOnlyTypes = function _fetchOnlyTypes (type, entries, list, nested) {
+  Array.prototype.concat(entries.groups, entries.items).forEach(
+    entry => {
+      let obj = {
+        model: entry.model,
+        view: entry.view
+      };
+      let subList = [];
+      if ((entry.model.type + 's') === type) {
+        list.push(obj);
+      }
+      fetchOnlyTypes(type, entry, nested ? subList : list, nested);
+      if (nested && subList.length > 0) {
+        list.push(subList);
+      }
+    }
+  );
+};
+
 const database = {
   getComponentForId: function _getComponentForId (uuid) {
     const component = {
@@ -68,6 +87,13 @@ const database = {
   },
   update: function _update (changes) {
     if (!changes) { return; }
+  },
+  getListOf: function _getListOf (listType, nested) {
+    if (['groups', 'items'].indexOf(listType) === -1) { return null; }
+    let db = this.retrieve();
+    let list = [];
+    fetchOnlyTypes(listType, db[0], list, nested);
+    return list;
   }
 };
 

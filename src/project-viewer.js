@@ -10,7 +10,9 @@ const caches = require('./caches');
 const form = require('./form');
 const formView = require('./form-view');
 const getModel = require('./utils').getModel;
-const database = require('./utils').database;
+const database = require('./database');
+const _clearAllItemsState = require('./utils').clearAllItemsState;
+const _updateStatusBar = require('./utils').updateStatusBar;
 
 const deactivate = function _deactivate () {
   this.disposables.dispose();
@@ -50,6 +52,14 @@ const activate = function _activate () {
     atom.config.observe(
       'project-viewer.autoHide',
       observeAutoHide.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.hideTitle',
+      observeHideTitle.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.statusBar',
+      observeStatusBar.bind(this)
     )
   );
 };
@@ -64,7 +74,7 @@ const traverse = function _traverse (direction) {
     selection => {
       let isVisible = true;
       let parent = selection.parentNode;
-      while(!parent.classList.contains('panel-body')) {
+      while(!parent.classList.contains('body-content')) {
         parent = parent.parentNode;
         if (!parent || parent.classList.contains('collapsed')) {
           selection.classList.remove('active');
@@ -165,7 +175,9 @@ const workspaceCommands = function _workspaceCommands () {
     'project-viewer:toggle': toggle.bind(this),
     'project-viewer:autohide': commandAutohide.bind(this),
     'project-viewer:editor': editor.bind(this),
-    'project-viewer:focus': commandFocus.bind(this)
+    'project-viewer:focus': commandFocus.bind(this),
+    'project-viewer:clearAllItemsState': clearAllItemsStateConfirm.bind(this),
+    'project-viewer:clearItemState': clearItemState.bind(this)
   }
 };
 
@@ -202,6 +214,20 @@ const contextMenu = function _contextMenu () {
           if (!model) { return false; }
           return model ? true : false;
         }
+      },
+      {
+        command: 'project-viewer:clearItemState',
+        created: function (evt) {
+          let model = getModel(evt.target);
+          if (model) {
+            this.label = `Clear state...`
+          }
+        },
+        shouldDisplay: function (evt) {
+          let model = getModel(evt.target);
+          if (!model) { return false; }
+          return model.type === 'item' ? true : false;
+        }
       }
     ]
   };
@@ -234,6 +260,9 @@ const observePanelPosition = function _observePanelPosition (option) {
     caches.set(this, view);
     database.refresh();
     view.populate(database.retrieve());
+    if (!view.onblur) {
+      view.onblur = clearActives.bind(null, view);
+    }
   } else {
     panel = atom.workspace.panelForItem(view);
   }
@@ -252,6 +281,22 @@ const observeAutoHide = function _observeAutoHide (option) {
   if (option) {
     autoHide.call(this);
   }
+};
+
+const observeHideTitle = function _observeHideTitle (option) {
+  let view = caches.get(this);
+
+  if (!view) { return; }
+
+  let title = view.querySelector('.heading');
+
+  if (!title) { return; }
+
+  title.classList.toggle('hidden', option);
+};
+
+const observeStatusBar = function _observeStatusBar () {
+  _updateStatusBar();
 };
 
 const toggle = function _toggle () {
@@ -303,9 +348,13 @@ const commandFocus = function _commandFocus () {
   if (!panel) { return false; }
   const item = panel.getItem();
   if (!item) { return false; }
-  item.focus();
 
-  clearActives(item);
+  if (document.activeElement === item) {
+    atom.workspace.getActivePane().activate();
+    return;
+  }
+
+  item.focus();
 
   const selectedView = item.querySelector(
     `li[is="project-viewer-list-nested-item"].selected,
@@ -317,8 +366,6 @@ const commandFocus = function _commandFocus () {
   else {
     traverse.call(view);
   }
-
-  item.onblur = clearActives.bind(null, item);
 };
 
 const editor = function _editor (evt) {
@@ -339,11 +386,51 @@ const editor = function _editor (evt) {
   });
 };
 
+const showConfirmDialog = function _showConfirmDialog (options) {
+  atom.confirm({
+    message: options.message,
+    detailedMessage: options.detailedMessage,
+    buttons: options.buttons
+  });
+};
+
+const clearItemState = function _clearItemState (evt) {
+  showConfirmDialog({
+    message: 'Clear items state',
+    detailedMessage: 'If you CONFIRM you will loose the context of the selected item. If selected item is the current item, it will also clear the workspace.',
+    buttons: {
+      'Yes': _clearAllItemsState.bind(null, [
+        {
+          model: caches.get(evt.target),
+          view: evt.target
+        }
+      ]),
+      'No': null
+    }
+  });
+};
+
+const clearAllItemsStateConfirm = function _clearAllItemsStateConfirm () {
+  showConfirmDialog({
+    message: 'Clear all items states',
+    detailedMessage: 'If you CONFIRM you will loose all context of individual items, as well as the current!',
+    buttons: {
+      'Yes': _clearAllItemsState,
+      'No': null
+    }
+  });
+};
+
 const projectViewerService = function _projectViewerService () {
   return {};
 };
 
-const provideStatusBar = function _provideStatusBar (/*service*/) {};
+const provideStatusBar = function _provideStatusBar (service) {
+  const statusBar = document.querySelector('status-bar');
+  if (!statusBar) { return; }
+  caches.set(statusBar, service);
+  _updateStatusBar();
+};
 
 module.exports = {
   config,

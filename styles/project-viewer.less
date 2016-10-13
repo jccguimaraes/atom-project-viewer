@@ -9,6 +9,15 @@ project-viewer {
 	transition: width 0.5s;
 	width: @project-viewer_main_width-max;
 
+	.heading {
+		color: @project-viewer_item_color;
+		padding-left: @component-padding;
+
+		&.hidden {
+			visibility: hidden;
+		}
+	}
+
 	&.autohide {
 		width: @project-viewer_main_width-min;
 
@@ -36,7 +45,7 @@ project-viewer {
 		}
 	}
 
-	.panel-body {
+	.body-content {
 		overflow: scroll;
 		flex-grow: 1;
 	}
@@ -50,43 +59,46 @@ project-viewer {
 		margin-left: 10px;
 	}
 
-	&:focus {
-		li[is="project-viewer-list-nested-item"].list-nested-item,
-		li[is="project-viewer-list-item"].list-item {
+	li[is="project-viewer-list-nested-item"].list-nested-item,
+	li[is="project-viewer-list-item"].list-item {
+		transition: opacity @pv_transition-duration-default;
 
-			&::before {
-				position: absolute;
-				left: 0;
-				height: @component-line-height;
-				content: "";
-				width: 2px;
-				background-color: @project-viewer_item_background-color;
-				visibility: hidden;
-				transform: scaleY(0);
-				color: @project-viewer_item_color;
-				transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
-				padding-left: 0;
+		&.dragged {
+			opacity: 0.5;
+
+			> .list-item {
+				color: @project-viewer_item_color_dragged !important;
 			}
 
-			&.active {
+			.list-tree {
+				display: none;
+			}
+		}
+
+		&:not(.selected)::before {
+			position: absolute;
+			left: 0;
+			height: @component-line-height;
+			content: "";
+			width: 2px;
+			background-color: @project-viewer_item_background-color;
+			visibility: hidden;
+			transform: scaleY(0);
+			color: @project-viewer_item_color;
+			transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
+			padding-left: 0;
+		}
+
+		&.active {
+			color: @project-viewer_item_color;
+
+			> .list-item {
 				color: @project-viewer_item_color;
-
-				> .list-item {
-					color: @project-viewer_item_color;
-				}
-
-				// .list-tree {
-				// 	background-color: rgba(0, 0, 0, 0.1);
-				//
-				// 	& + .list-item {
-				// 		background-color: rgba(0, 0, 0, 0.1);
-				// 	}
-				// }
 			}
 
-			&.active::before {
-				visibility: visible;
-				transform: scaleY(1);
+			&:not(.selected):not(.no-paths)::before {
+				visibility: visible !important;
+				transform: scaleY(1) !important;
 			}
 		}
 	}
@@ -136,12 +148,12 @@ project-viewer {
 				transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
 			}
 
-			&:hover:not(.selected):not(.no-paths) {
+			&:not(.selected):not(.no-paths):hover {
 				color: @project-viewer_item_color;
 				padding-left: 0;
 			}
 
-			&:hover:not(.selected)::before {
+			&:not(.selected):hover::before {
 				visibility: visible;
 				transform: scaleY(1);
 			}

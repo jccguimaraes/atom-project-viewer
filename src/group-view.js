@@ -2,12 +2,11 @@
 
 const caches = require('./caches');
 const constructor = require('./constructor');
+const getModel = require('./utils').getModel;
+const getView = require('./utils').getView;
 
 const viewMethods = {
-  attachedCallback: function _attachedCallback () {
-    let contentNode = this.querySelector('.list-item');
-    contentNode.addEventListener('click', this.toggle.bind(this));
-  },
+  // attachedCallback: function _attachedCallback () {},
   detachedCallback: function _detachedCallback () {
     let contentNode = this.querySelector('.list-item');
     contentNode.removeEventListener('click', this.toggle.bind(this));
@@ -26,8 +25,66 @@ const viewMethods = {
 
     let listItem = document.createElement('div');
     listItem.classList.add('list-item');
+
     this.classList.add('list-nested-item');
     this.setAttribute('data-project-viewer-uuid', model.uuid);
+    this.setAttribute('draggable', 'true');
+
+    listItem.addEventListener('click', this.toggle.bind(this));
+
+    this.addEventListener('dragstart', (evt) => {
+      evt.dataTransfer.setData(
+        "text/plain",
+        getModel(evt.target).uuid
+      );
+      evt.dataTransfer.dropEffect = "move";
+      evt.target.classList.add('dragged');
+      evt.stopPropagation();
+    }, true);
+
+    this.addEventListener('dragover', (evt) => {
+      evt.preventDefault();
+    }, true);
+
+    this.addEventListener('dragleave', (evt) => {
+      evt.stopPropagation();
+    }, true);
+
+    this.addEventListener('dragenter', (evt) => {
+      evt.stopPropagation();
+    }, true);
+
+    this.addEventListener('dragend', (evt) => {
+      evt.target.classList.remove('dragged');
+      evt.stopPropagation();
+    }, true);
+
+    this.addEventListener('drop', (evt) => {
+      evt.stopPropagation();
+      const uuid = evt.dataTransfer.getData("text/plain");
+      const view = document.querySelector(
+        `project-viewer li[data-project-viewer-uuid="${uuid}"]`
+      );
+
+      if (!view) { return; }
+
+      const deadzone = getModel(evt.target);
+      const landingView = getView(deadzone);
+
+      if (deadzone.type !== 'group') { return; }
+
+      if (landingView === view) { return; }
+
+      try {
+        landingView.attachChild(view);
+      }
+      catch (e) {
+        atom.notifications.addError('drag&drop error', {
+          description: 'trying to add a parent to a child!'
+        });
+      }
+    }, true);
+
     this.appendChild(listItem);
   },
   render: function _render () {
