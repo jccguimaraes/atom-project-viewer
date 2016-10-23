@@ -6,7 +6,7 @@ const defaults = {
   icon: '',
   color: '',
   group: 0,
-  item: 0,
+  project: 0,
   expanded: false,
   devMode: false
 };
@@ -20,13 +20,12 @@ const groupModel = {
   expanded: defaults.expanded
 };
 
-const itemModel = {
-  type: 'item',
+const projectModel = {
+  type: 'project',
   name: defaults.name,
   icon: defaults.icon,
   color: defaults.color,
-  devMode: defaults.devMode,
-  paths: []
+  devMode: defaults.devMode
 };
 
 const methods = {
@@ -40,20 +39,9 @@ const methods = {
   }
 };
 
-const groupMethods = {
-  addMetrics: function _addMetrics (node) {
-    if (!this.metrics.hasOwnProperty(node.type)) {
-      this.metrics[node.type] = 0;
-    }
-    ++this.metrics[node.type];
-    const proto = Object.getPrototypeOf(this);
-    if (proto && proto.type === 'group') {
-      proto.addMetrics(node);
-    }
-  }
-};
+const groupMethods = {};
 
-const itemMethods = {
+const projectMethods = {
   clearPaths: function _clearPaths () {
     const removedPaths = this.paths.filter(
       () => true
@@ -101,12 +89,12 @@ const itemMethods = {
 };
 
 Object.assign(groupMethods, methods);
-Object.assign(itemMethods, methods);
+Object.assign(projectMethods, methods);
 
 const setPrototypeOf = function _setPrototypeOf (target, prototype) {
   if (
     (target.type === 'group' && target.type === prototype.type) ||
-    (prototype.type === 'group' && target.type === 'item')
+    (prototype.type === 'group' && target.type === 'project')
   ) {
     Object.setPrototypeOf(target, prototype);
     return true;
@@ -129,10 +117,10 @@ const handler = {
     const allowedProps = [
       'name',
       'sortBy',
+      'expanded',
       'icon',
       'color',
-      'devMode',
-      'metrics'
+      'devMode'
     ];
     if (allowedProps.indexOf(property) === -1) {
       return true;
@@ -187,8 +175,8 @@ const handler = {
     else if (property === 'devMode') {
       cleanValue = value;
     }
-    else if (target.type ===  'group' && property === 'metrics') {
-      target.metrics[value.type] += value.increment * 1;
+    else if (property === 'expanded') {
+      cleanValue = value;
     }
     target[property] = cleanValue;
     return true;
@@ -198,18 +186,39 @@ const handler = {
 module.exports = {
   createGroup: function _createGroup () {
     let group = Object.assign(groupModel);
-    group.metrics = [];
     let model = Object.assign({}, group, groupMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
   },
-  createItem: function _createItem () {
-    let item = Object.assign(itemModel);
-    item.paths = [];
-    let model = Object.assign({}, item, itemMethods);
+  createProject: function _createproject () {
+    let project = Object.assign(projectModel);
+    project.paths = [];
+    let model = Object.assign({}, project, projectMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();
     return new Proxy(model, handler);
+  },
+  createGroupSchema: function _createGroupSchema (
+    {
+      name = groupModel.name,
+      sortBy = groupModel.sortBy,
+      icon = groupModel.icon,
+      color = groupModel.color,
+      expanded = groupModel.expanded
+    } = {}
+  ) {
+    return { name, sortBy, icon, color, expanded };
+  },
+  createProjectSchema: function _createProjectSchema (
+    {
+      name = projectModel.name,
+      icon = projectModel.icon,
+      color = projectModel.color,
+      devMode = projectModel.devMode,
+      paths = []
+    } = {}
+  ) {
+    return { name, icon, color, devMode, paths };
   }
 };

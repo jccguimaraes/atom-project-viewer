@@ -2,9 +2,7 @@
 
 const caches = require('./caches');
 const constructor = require('./constructor');
-const updateStatusBar = require('./utils').updateStatusBar;
-const getModel = require('./utils').getModel;
-// const getView = require('./utils').getView;
+const utils = require('./common').utils;
 
 const onClickEvent = function _onClickEvent (model) {
   if (!model) { return null; }
@@ -44,7 +42,7 @@ const viewMethods = {
     this.addEventListener('dragstart', (evt) => {
       evt.dataTransfer.setData(
         "text/plain",
-        getModel(evt.target).uuid
+        utils.getModel(evt.target).uuid
       );
       evt.dataTransfer.dropEffect = "move";
       evt.target.classList.add('dragged');
@@ -77,7 +75,7 @@ const viewMethods = {
 
       if (!view) { return; }
 
-    //   const deadzone = getModel(evt.target);
+    //   const deadzone = utils.getModel(evt.target);
     //   const landingView = getView(deadzone);
 
       // if (deadzone.type !== 'group') { return; }
@@ -217,7 +215,7 @@ const viewMethods = {
     }
 
     atom.project.deserialize(serialization.project, atom.deserializers);
-    updateStatusBar(model.breadcrumb());
+    utils.updateStatusBar(model.breadcrumb());
 
     if (serialization.treeView && tV.mainModule.treeView) {
       tV.mainModule.treeView.updateRoots(serialization.treeView.directoryExpansionStates);

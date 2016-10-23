@@ -8,12 +8,12 @@
           "label": "Project Viewer",
           "submenu": [
             {
-              "label": "Toggle View",
-              "command": "project-viewer:toggle"
+              "label": "Toggle Panel",
+              "command": "project-viewer:togglePanel"
             },
             {
-              "label": "Create...",
-              "command": "project-viewer:editor"
+              "label": "Open Form...",
+              "command": "project-viewer:openForm"
             },
             {"type": "separator"},
             {
@@ -38,8 +38,8 @@
               "label": "Utilities...",
               "submenu": [
                 {
-                  "label": "Clear all items stored states",
-                  "command": "project-viewer:clearAllItemsState"
+                  "label": "Clear all projects stored states",
+                  "command": "project-viewer:clearStates"
                 },
                 {
                   "label": "Convert database 0.2.x"

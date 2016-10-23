@@ -18,9 +18,10 @@
 ## Working on Feature
 
 - [ ] Drag & Drop groups and items;
-  - [x] Drag and drop a group or item into a group will add it as a child.
-  - [ ] Drag and drop a group or item into an item will add it as sibling of the dropped item.
-  - [x] Drag and drop a group or item into a clear space in the panel will add it as a root child.
+  - [ ] Drag and drop a group or item into a group will add it as a child;
+  - [ ] Drag and drop a group or item into an item will add it as sibling of the dropped item;
+  - [ ] Drag and drop a group or item into a clear space in the panel will add it as a root child;
+  - [ ] Order dragged group / item accordingly with dropped group sorting.
 
 ## Not implemented yet
 
@@ -28,6 +29,7 @@
   - [ ] Bulk operation on items creation;
     * > Ability to create items when more than one path is provided.
   - [ ] Custom colors for groups and items;
+  - [ ] Sorting children;
   - [ ] List of icons in editor as *only icons* or *icon and description*;
     * > This is available through a config option, default is *icon and description*.
 - [ ] Context Menu option to open item in a new window or vice versa;

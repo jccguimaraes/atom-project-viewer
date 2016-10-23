@@ -5,12 +5,13 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 
 /** package */
 const config = require('./config');
-const projectViewerView = require('./project-viewer-view');
 const caches = require('./caches');
+const projectViewerView = require('./project-viewer-view');
 const form = require('./form');
 const formView = require('./form-view');
 const getModel = require('./utils').getModel;
-const database = require('./database');
+const refreshDB = require('./utils').refreshDB;
+const retrieveDB = require('./utils').retrieveDB;
 const _clearAllItemsState = require('./utils').clearAllItemsState;
 const _updateStatusBar = require('./utils').updateStatusBar;
 
@@ -258,8 +259,8 @@ const observePanelPosition = function _observePanelPosition (option) {
     view = projectViewerView.createView();
     view.initialize();
     caches.set(this, view);
-    database.refresh();
-    view.populate(database.retrieve());
+    refreshDB();
+    view.populate(retrieveDB());
     if (!view.onblur) {
       view.onblur = clearActives.bind(null, view);
     }

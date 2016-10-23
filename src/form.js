@@ -1,6 +1,8 @@
 'use strict';
 
-const database = require('./database');
+const getComponentForId = require('./utils').getComponentForId;
+const retrieveDB = require('./utils').retrieveDB;
+const utils = require('./common').utils;
 
 const retrieveOnlyGroups = function _retrieveOnlyGroups (entries, list) {
   if (!Array.isArray(entries)) { return []; }
@@ -21,21 +23,18 @@ const retrieveOnlyGroups = function _retrieveOnlyGroups (entries, list) {
 
 const methods = {
   getGroups: function _getGroups () {
-    let db = database.retrieve();
+    let db = retrieveDB();
     let groupsList = [];
     retrieveOnlyGroups(db[0].groups, groupsList);
     return groupsList;
   },
   submitter: function _submitter (options) {
-    console.log(options);
-
-    if (options.groups) {
-      console.log(
-        database.getComponentForId(
-          options.groupView.getAttribute('data-pv-uuid')
-        ).model
-      );
-    }
+    utils.updateDB({
+           currentModel: options.model.current,
+           currentParentModel: Object.getPrototypeOf(options.model.current),
+           currentChanges: options.updates,
+           newParentModel: getComponentForId(options.updates.parentUuid),
+       });
   }
 };
 

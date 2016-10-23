@@ -56,6 +56,16 @@ const fetchOnlyTypes = function _fetchOnlyTypes (type, entries, list, nested) {
   );
 };
 
+const lookUpEntries = function _lookUpEntries (list, uuid, entries) {
+    if (entries.model && entries.model.uuid === uuid) {
+        list.push(entries);
+        return true;
+    }
+    Array.prototype.concat(entries.groups, entries.items).forEach(
+        lookUpEntries.bind(null, list, uuid)
+    );
+};
+
 const database = {
   getComponentForId: function _getComponentForId (uuid) {
     const component = {
@@ -85,8 +95,14 @@ const database = {
   retrieve: function _retrieve () {
     return caches.get(this);
   },
-  update: function _update (changes) {
-    if (!changes) { return; }
+  update: function _update (mutator) {
+    console.log(mutator);
+    const db = this.retrieve();
+    const list = [];
+    db.some(lookUpEntries.bind(null, list, mutator.currentModel.uuid));
+    console.log(list);
+    // console.log(changes);
+      // atom.getStorageFolder().storeSync('pv040.json', model);
   },
   getListOf: function _getListOf (listType, nested) {
     if (['groups', 'items'].indexOf(listType) === -1) { return null; }

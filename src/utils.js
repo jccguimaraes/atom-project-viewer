@@ -92,8 +92,40 @@ const updateStatusBar = function _updateStatusBar (text) {
   statusBarView.textContent = text;
 };
 
+const refreshDB = function _refreshDB () {
+    if (!database || typeof database.refresh !== 'function') {
+        return [];
+    }
+    return database.refresh();
+};
+
+const updateDB = function _updateDB (changes) {
+    if (!database || typeof database.update !== 'function') {
+        return [];
+    }
+    database.update(changes);
+};
+
+const retrieveDB = function _retrieveDB () {
+    if (!database || typeof database.retrieve !== 'function') {
+        return [];
+    }
+    return database.retrieve();
+};
+
+const getComponentForId = function _getComponentForId (uuid) {
+    if (!database || typeof database.getComponentForId !== 'function') {
+        return [];
+    }
+    return database.getComponentForId(uuid);
+};
+
 exports.toArray = toArray;
 exports.getModel = getModel;
 exports.getView = getView;
 exports.clearAllItemsState = clearAllItemsState;
 exports.updateStatusBar = updateStatusBar;
+exports.refreshDB = refreshDB;
+exports.updateDB = updateDB;
+exports.retrieveDB = retrieveDB;
+exports.getComponentForId = getComponentForId;

@@ -2,6 +2,7 @@
 @import "./extras/pv-variables";
 
 project-viewer {
+  -webkit-user-select: none;
 	font-size: @font-size;
 	font-family: @font-family;
 	display: flex;
@@ -12,6 +13,7 @@ project-viewer {
 	.heading {
 		color: @project-viewer_item_color;
 		padding-left: @component-padding;
+    white-space: nowrap;
 
 		&.hidden {
 			visibility: hidden;
@@ -21,11 +23,15 @@ project-viewer {
 	&.autohide {
 		width: @project-viewer_main_width-min;
 
+    .hidden-block {
+      opacity: 0;
+    }
+
 		&:hover {
 			width: @project-viewer_main_width-max;
 
 			.hidden-block {
-				opacity: 0;
+				opacity: 1;
 			}
 		}
 	}
@@ -37,12 +43,7 @@ project-viewer {
 		height: 100%;
 		width: 100%;
 		z-index: 1;
-		opacity: 0;
 		transition: opacity 0.5s;
-
-		&.visible {
-			opacity: 1;
-		}
 	}
 
 	.body-content {
@@ -105,7 +106,6 @@ project-viewer {
 
 	li[is="project-viewer-list-nested-item"].list-nested-item {
 		-webkit-user-drag: element;
-		-webkit-user-select: none;
 		pointer-events: none;
 		transition: color @pv_transition-duration-default ease-in 0s;
 

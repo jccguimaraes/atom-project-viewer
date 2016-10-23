@@ -1,9 +1,8 @@
 'use strict';
 
-const caches = require('./caches');
-const constructor = require('./constructor');
-const getModel = require('./utils').getModel;
-const getView = require('./utils').getView;
+const caches = require('./common').caches;
+const constructor = require('./common').constructor;
+const utils = require('./common').utils;
 
 const viewMethods = {
   // attachedCallback: function _attachedCallback () {},
@@ -35,7 +34,7 @@ const viewMethods = {
     this.addEventListener('dragstart', (evt) => {
       evt.dataTransfer.setData(
         "text/plain",
-        getModel(evt.target).uuid
+        utils.getModel(evt.target).uuid
       );
       evt.dataTransfer.dropEffect = "move";
       evt.target.classList.add('dragged');
@@ -68,21 +67,25 @@ const viewMethods = {
 
       if (!view) { return; }
 
-      const deadzone = getModel(evt.target);
-      const landingView = getView(deadzone);
+      const droppedModel = utils.getModel(evt.target);
+      const draggedModel = utils.getModel(view);
 
-      if (deadzone.type !== 'group') { return; }
+      const droppedView = utils.getView(droppedModel);
 
-      if (landingView === view) { return; }
+      if (droppedModel.type !== 'group') { return; }
 
-      try {
-        landingView.attachChild(view);
-      }
-      catch (e) {
-        atom.notifications.addError('drag&drop error', {
-          description: 'trying to add a parent to a child!'
-        });
-      }
+      if (droppedView === view) { return; }
+
+      droppedView.attachChild(view);
+      const currentParentModel = Object.getPrototypeOf(draggedModel);
+      Object.setPrototypeOf(draggedModel, droppedModel);
+
+      utils.updateDB({
+          currentModel: draggedModel,
+          currentParentModel,
+          currentChanges: null,
+          newParentModel: droppedModel,
+      });
     }, true);
 
     this.appendChild(listItem);

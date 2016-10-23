@@ -5,7 +5,7 @@ const _model = require('../src/model');
 const getModel = require('../src/utils').getModel;
 const getView = require('../src/utils').getView;
 
-describe ('item-view', function() {
+xdescribe ('item-view', function() {
 
   const sandBoxView = document.createElement('div');
 
