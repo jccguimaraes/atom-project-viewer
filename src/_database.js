@@ -1,106 +1,51 @@
 'use strict';
 
-/**
- *
- */
 const model = require('./_model');
 
-/**
- *
- */
-let store = [];
-
-/**
- *
- */
-const filename = 'pv040.json';
+const filename = 'pv040';
 const version = '0.4.0';
-
-/**
- *
- */
 const database = Object.create(null);
+const store = [];
 
 /**
- *
- */
-const processRawGroup = function _processRawGroup (list, protoModel, data) {
-  if (!data) { return; }
-
-  let groupModel = model.createGroup();
-  Object.assign(groupModel, data);
-  if (protoModel) {
-    Object.setPrototypeOf(groupModel, protoModel);
-  }
-  list.push(groupModel);
-
-  Array.prototype.concat(data.groups).forEach(
-    processRawGroup.bind(null, list, groupModel)
-  );
-  Array.prototype.concat(data.projects).forEach(
-    processRawProject.bind(null, list, groupModel)
-  );
-};
-
-/**
- *
- */
-const processRawProject = function _processRawProject (list, protoModel, data) {
-  if (!data) { return; }
-
-  let projectModel = model.createProject();
-  Object.assign(projectModel, data);
-  projectModel.addPaths(data.paths);
-
-  if (protoModel) {
-    Object.setPrototypeOf(projectModel, protoModel);
-  }
-
-  list.push(projectModel);
-};
-
-/**
- *
- */
-const processRawDatabase = function _processRawDatabase (list, data) {
-  if (!data) { return; }
-  Array.prototype.concat(data.groups).forEach(
-    processRawGroup.bind(null, list, undefined)
-  );
-  Array.prototype.concat(data.projects).forEach(
-    processRawProject.bind(null, list, undefined)
-  );
-};
-
-/**
- *
+ * Maps each model to it's schema object
+ * @returns {Undefined} cancel if entry has no type or type is not allowed
  */
 const processStorageEntry = function _processStorageEntry (reference, entry) {
-  let parentOf = Object.getPrototypeOf(entry);
+  let prototypeOf = Object.getPrototypeOf(entry);
   let obj = {};
+
+  if (!entry.hasOwnProperty('type')) {
+      return;
+  }
 
   if (entry.type === 'group') {
     obj = model.createGroupSchema(entry);
     obj.groups = [];
     obj.projects = [];
   }
-  else {
+  else if (entry.type === 'project') {
     obj = model.createProjectSchema(entry);
+  }
+  else {
+    return;
   }
 
   reference[entry.uuid] = obj;
 
-  if (parentOf === Object.prototype) {
+  if (prototypeOf === Object.prototype) {
     this[`${entry.type}s`].push(obj);
   }
   else {
-    let parentObj = reference[parentOf.uuid];
-    parentObj[`${entry.type}s`].push(obj);
+    let prototypeOfObj = reference[prototypeOf.uuid];
+    prototypeOfObj[`${entry.type}s`].push(obj);
   }
 };
 
 /**
- *
+ * Changes the current store to be an array with depth depending on each
+ * entry model's prototype
+ * @returns {Array} the storage array to be saved locally
  */
 const processStore = function _processStore () {
   let storage = {
@@ -113,14 +58,69 @@ const processStore = function _processStore () {
 };
 
 /**
+ * Creates a group model from an object data
  *
+ * @param {Object} protoModel - if exists, it's a referente to a group model
+ * @param {Object} data - an object with a candidate to become a group
+ */
+const processRawGroup = function _processRawGroup (protoModel, data) {
+  if (!data) { return; }
+
+  let groupModel = model.createGroup();
+  Object.assign(groupModel, data);
+
+  addTo(groupModel, protoModel);
+
+  Array.prototype.concat(data.groups).forEach(
+    processRawGroup.bind(null, groupModel)
+  );
+  Array.prototype.concat(data.projects).forEach(
+    processRawProject.bind(null, groupModel)
+  );
+};
+
+/**
+ * Creates a project model from an object data
+ *
+ * @param {Object} protoModel - if exists, it's a referente to a group model
+ * @param {Object} data - an object with a candidate to become a project
+ */
+const processRawProject = function _processRawProject (protoModel, data) {
+  if (!data) { return; }
+
+  let projectModel = model.createProject();
+  Object.assign(projectModel, data);
+  projectModel.addPaths(data.paths);
+
+  addTo(projectModel, protoModel);
+};
+
+/**
+ * Start point to process the database object
+ *
+ * @param {Object} data - an object with the database object
+ */
+const processRawDatabase = function _processRawDatabase (data) {
+  if (!data) { return; }
+  Array.prototype.concat(data.groups).forEach(
+    processRawGroup.bind(null, undefined)
+  );
+  Array.prototype.concat(data.projects).forEach(
+    processRawProject.bind(null, undefined)
+  );
+};
+
+/**
+* Fetches the current store
+* @returns {Array} the current store state
  */
 const fetch = function _fetch () {
   return store;
 };
 
 /**
- *
+ * Updates the local database file with current content of the store
+ * @returns {Boolean|Undefined} true if success and undefined if error occurred
  */
 const update = function _update () {
   const storeProcessed = {
@@ -129,11 +129,17 @@ const update = function _update () {
     },
     structure: processStore(store)
   };
-  atom.getStorageFolder().storeSync(filename, storeProcessed);
+  try {
+    atom.getStorageFolder().storeSync(filename, storeProcessed);
+    return true;
+  } catch (e) {
+    return;
+  }
 };
 
 /**
- *
+ * Loads the local database and processes it
+ * @returns {Array} always returns the store
  */
 const refresh = function _refresh () {
   const rawData = atom.getStorageFolder().load(filename);
@@ -141,7 +147,7 @@ const refresh = function _refresh () {
   try {
     data = JSON.parse(rawData);
   } catch (e) {
-    store = [];
+    store.length = 0;
     return store;
   }
 
@@ -151,54 +157,84 @@ const refresh = function _refresh () {
     data.hasOwnProperty('info') &&
     data.hasOwnProperty('structure')
   ) {
-    store = [];
-    data.structure.forEach(processRawDatabase.bind(null, store));
+    store.length = 0;
+    data.structure.forEach(processRawDatabase);
   }
   else {
-    store = [];
+    store.length = 0;
   }
   return store;
 };
 
 /**
- * Moves a model from one parent to another
- *
- * @param {object} childModel - a model object of a group or a project that will have it's prototype changed
- * @param {object} parentModel - a model object of a group to be the new prototype
+ * Moves a model from one prototype to another
+ * @param {Object} childModel a model object of a group or a project that will have it's prototype changed
+ * @param {Object} protoModel a model object of a group to be the new prototype
+ * @return {Null|Boolean} Null if not moved and Boolean if success
  */
-const moveTo = function _moveTo (childModel, parentModel) {
-  const currentParentModel = Object.getPrototypeOf(childModel);
+const moveTo = function _moveTo (childModel, protoModel) {
+  const currentProtoModel = Object.getPrototypeOf(childModel);
 
-  if (currentParentModel === parentModel) { return null; }
-  if (currentParentModel.type && currentParentModel.type !== 'group') {
+  if (currentProtoModel === protoModel) { return null; }
+
+  if (currentProtoModel.type && currentProtoModel.type !== 'group') {
       return null;
   }
-  Object.setPrototypeOf(childModel, parentModel);
+
+  Object.setPrototypeOf(childModel, protoModel);
+
   return true;
 };
 
 /**
  * Removes a model from the store
+ * @param {Object} model the model object to remove from the store
+ * @returns {Null|Object} Undefined if model is an Array, the model if success
  */
 const remove = function _remove (model) {
     const idx = store.indexOf(model);
     if (idx === -1) {
         return null;
     }
+    const list = store.splice(idx, 1);
 
-    store.splice(idx, 1);
+    if (list.length === 0) {
+      return null;
+    }
+
+    return list[0];
 };
 
 /**
- *
+ * Add a model in the store
+ * @param {Object} model the model object candidate to add to the store
+ * @param {Object} protoModel group model object to be the prototype of model
+ * @returns {Undefined|Boolean} Undefined if model is an Array, true if success
  */
+const addTo = function _addTo (model, protoModel) {
+  if (Array.isArray(model)) {
+    model.forEach(
+      entry => addTo.bind(entry, protoModel)
+    );
+    return;
+  }
+
+  if (protoModel && protoModel.type === 'project') { return; }
+
+  if (protoModel) {
+    Object.setPrototypeOf(model, protoModel);
+  }
+
+  store.push(model);
+
+  return true;
+};
+
 database.fetch = fetch;
 database.update = update;
 database.refresh = refresh;
 database.moveTo = moveTo;
 database.remove = remove;
+database.addTo = addTo;
 
-/**
- *
- */
 module.exports = database;

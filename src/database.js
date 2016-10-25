@@ -77,7 +77,7 @@ const database = {
     return component;
   },
   refresh: function _refresh () {
-    const data = atom.getStorageFolder().load('pv040.json');
+    const data = atom.getStorageFolder().load('pv040');
     if (data) {
       const json = JSON.parse(data);
 
@@ -102,7 +102,7 @@ const database = {
     db.some(lookUpEntries.bind(null, list, mutator.currentModel.uuid));
     console.log(list);
     // console.log(changes);
-      // atom.getStorageFolder().storeSync('pv040.json', model);
+      // atom.getStorageFolder().storeSync('pv040', model);
   },
   getListOf: function _getListOf (listType, nested) {
     if (['groups', 'items'].indexOf(listType) === -1) { return null; }

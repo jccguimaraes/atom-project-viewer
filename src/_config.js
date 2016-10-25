@@ -32,7 +32,7 @@ const config = {
   },
   'autoHide': {
     title: 'Sidebar auto hidding',
-    description: 'Panel has auto hide with hover behaviour.',
+    description: 'Panel has auto hide with hover behavior.',
     type: 'boolean',
     default: false,
     order: 3

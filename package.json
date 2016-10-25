@@ -22,8 +22,7 @@
   "devDependencies": {
     "all-contributors-cli": "latest",
     "eslint": "latest",
-    "eslint-plugin-jasmine": "latest",
-    "fs-plus": "^2.9.3"
+    "eslint-plugin-jasmine": "latest"
   },
   "consumedServices": {
     "status-bar": {

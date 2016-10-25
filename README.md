@@ -16,7 +16,7 @@
 
 * [Introduction](#introduction)
 * [Installation](#installation)
-* [Options](#options)
+* [Shortcuts](#shortcuts)
 * [Settings](#settings)
 * [Contributors](#contributors)
 * [Contacts](#contacts)
@@ -35,7 +35,7 @@ apm install project-viewer
 
 Or simply find the package by accessing the menu **Atom → Preferences... → Install** and search for ***project-viewer***.
 
-## Options
+## Shortcuts
 
 - `shift-ctrl-alt-c` toggles sidebar autohide;
 - `shift-ctrl-alt-v` toggles sidebar visibility;
@@ -46,7 +46,14 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
 
 Settings | Type | Description | Default
 ---------|------|-------------|--------
-... | ... | ... | ...
+visibilityOption | `String` | Define what would be the default action for **project-viewer** visibility on startup. | `Display on startup`
+visibilityActive | `Boolean` | Relative to the interaction option selected above. | `true`
+panelPosition | `String` | Position the panel to the left or right of the main pane. | `Right`
+autoHide | `Boolean` | Panel has auto hide with hover behavior. | `false`
+hideTitle | `Boolean` | You can have more space for the `tree list` by hiding the title. | `false`
+keepContext | `Boolean` | When switching from items, if set to `true`, will keep current context. Also will not save contexts between switching. | `false`
+openNewWindow | `Boolean` | Always open items in a new window. | `false`
+statusBar | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
 
 ## Contributors
 

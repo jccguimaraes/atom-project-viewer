@@ -1,6 +1,7 @@
 'use strict';
 
 const database = require('../src/_database');
+const fs = require('fs');
 
 describe ('database', function () {
 
@@ -10,7 +11,7 @@ describe ('database', function () {
     return {
       load: function () { return result; },
       storeSync: function (file, data) {
-        require('fs-plus').writeFileSync(
+        fs.writeFileSync(
           `${__dirname}/mocks/database`,
           JSON.stringify(data),
           'utf8'
@@ -54,7 +55,7 @@ describe ('database', function () {
 
   it ('should exist and with a good schema', function () {
     // mimic the atom.getStorageFolder().load
-    const mockedRawDB = require('fs').readFileSync(
+    const mockedRawDB = fs.readFileSync(
       `${__dirname}/mocks/database-raw`, 'utf8'
     );
     let returnValue = JSON.parse(mockedRawDB);
@@ -72,7 +73,7 @@ describe ('database', function () {
 
     beforeEach (function () {
       // mimic the atom.getStorageFolder().load
-      mockedRawDB = require('fs').readFileSync(
+      mockedRawDB = fs.readFileSync(
         `${__dirname}/mocks/database-raw`, 'utf8'
       );
       returnValue = JSON.parse(mockedRawDB);
@@ -98,23 +99,38 @@ describe ('database', function () {
       expect(Object.getPrototypeOf(store[2])).toBe(store[0]);
     });
 
-    fit ('should save and load the same content if no changes', function () {
-      database.refresh();
-      // mimic the atom.getStorageFolder().load
-      const storedDB = JSON.parse(require('fs').readFileSync(
-        `${__dirname}/mocks/database`, 'utf8'
-      ));
-      expect(returnValue).toEqual(storedDB);
+    it ('should save and load the same content if no changes', function () {
+      const store = database.refresh();
+      const oldStore = store.slice(0);
+      database.update();
+      expect(oldStore).toEqual(store);
     });
 
-    it ('sould remove a model from a parent', function () {});
-
-    it ('should update the local file', function () {
+    xit ('should update the local file', function () {
       const store = database.refresh();
       const oldStore = store.slice(0);
       database.moveTo(store[2], store[0]);
-      database.update();
       expect(oldStore).not.toBe(store);
+    });
+
+    it ('sould remove and/or add a model from a parent', function () {
+      const store = database.refresh();
+      const oldStore = store.slice(0);
+      const projectsDeleted = database.remove(store[2]);
+      expect(oldStore).not.toEqual(store);
+      expect(oldStore).toContain(projectsDeleted);
+      expect(store).not.toContain(projectsDeleted);
+
+      database.addTo(projectsDeleted);
+      expect(store).toContain(projectsDeleted);
+
+      const groupsDeleted = database.remove(store[0]);
+      expect(oldStore).toContain(groupsDeleted);
+      expect(store).not.toContain(groupsDeleted);
+      database.addTo(groupsDeleted, projectsDeleted);
+      expect(store).not.toContain(groupsDeleted);
+      database.addTo(groupsDeleted);
+      expect(store).toContain(groupsDeleted);
     });
 
   });
