@@ -2,7 +2,7 @@
 
 /* package */
 const map = require('./_map');
-const constructor = require('./_constructor');
+const domBuilder = require('./_dom-builder');
 
 const cycleViews = function _cycleViews (parent, views) {
     if (views.view && parent && parent.attachChild) {
@@ -167,7 +167,7 @@ const createView = function _createView (model) {
     let options = {
         tagIs: 'project-viewer'
     };
-    return constructor.createView(options, viewMethods, model);
+    return domBuilder.createView(options, viewMethods, model);
 };
 
 module.exports = {

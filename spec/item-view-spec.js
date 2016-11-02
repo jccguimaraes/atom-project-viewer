@@ -1,11 +1,11 @@
 'use strict';
 
-const _view = require('../src/item-view');
-const _model = require('../src/model');
+const _view = require('../src/_item-view');
+const _model = require('../src/_model');
 const getModel = require('../src/utils').getModel;
 const getView = require('../src/utils').getView;
 
-xdescribe ('item-view', function() {
+xdescribe ('item-view', function () {
 
   const sandBoxView = document.createElement('div');
 
@@ -17,7 +17,7 @@ xdescribe ('item-view', function() {
     document.body.removeChild(sandBoxView);
   });
 
-  it ('should return an HTMLElement', function() {
+  it ('should return an HTMLElement', function () {
     const itemModel = _model.createItem();
     const itemView = _view.createView(itemModel);
 
@@ -44,7 +44,7 @@ xdescribe ('item-view', function() {
     expect(itemView).toBe(fetchedView);
   });
 
-  it ('should set properly the name', function() {
+  it ('should set properly the name', function () {
     const itemModel = _model.createItem();
     const itemView = _view.createView(itemModel);
 
@@ -86,7 +86,7 @@ xdescribe ('item-view', function() {
     expect(name).toEqual('unnamed');
   });
 
-  xit ('should set properly the icon', function() {});
+  xit ('should set properly the icon', function () {});
 
-  xit ('should set properly the color', function() {});
+  xit ('should set properly the color', function () {});
 });

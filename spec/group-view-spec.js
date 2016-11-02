@@ -2,8 +2,8 @@
 
 const _view = require('../src/group-view');
 
-xdescribe ('group-view', function() {
-  it ('if no valid model is passed it will throw errors', function() {
+xdescribe ('group-view', function () {
+  it ('if no valid model is passed it will throw errors', function () {
     const view = _view.createView();
 
     const fnInitialize = function _fnInitialize () {
@@ -18,7 +18,7 @@ xdescribe ('group-view', function() {
     expect(fnRender).toThrow();
   });
 
-  it ('should return an HTMLElement', function() {
+  it ('should return an HTMLElement', function () {
     const model = {
       uuid: 'pv_' + Math.ceil(Date.now() * Math.random()),
       type: 'group'
@@ -30,7 +30,7 @@ xdescribe ('group-view', function() {
     expect(view).toBeInstanceOf(HTMLElement);
   });
 
-  it ('view 2', function() {
+  it ('view 2', function () {
     const model = {
       uuid: 'pv_' + Math.ceil(Date.now() * Math.random()),
       type: 'group',
@@ -42,7 +42,7 @@ xdescribe ('group-view', function() {
     expect(true).toBe(true);
   });
 
-  it ('view 3', function() {
+  it ('view 3', function () {
     const model1 = {
       uuid: 'pv_' + Math.ceil(Date.now() * Math.random()),
       type: 'group',

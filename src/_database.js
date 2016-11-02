@@ -142,12 +142,10 @@ const update = function _update () {
  * @returns {Array} always returns the store
  */
 const refresh = function _refresh () {
-  const rawData = atom.getStorageFolder().load(filename);
-  let data;
-  try {
-    data = JSON.parse(rawData);
-  } catch (e) {
-    store.length = 0;
+  const data = atom.getStorageFolder().load(filename);
+
+  if (!data) {
+    update();
     return store;
   }
 

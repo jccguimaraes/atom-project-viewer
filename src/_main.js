@@ -30,6 +30,7 @@ const serviceExposer = Object.create(null);
 const activate = function _activate () {
     // clear old config settings (a bit of an hack)
     cleanConfig();
+    database.refresh();
 
     // add all disposables
     this.disposables = new CompositeDisposable(
@@ -79,11 +80,11 @@ const deactivate = function _deactivate () {
   }
 
   let view = map.get(this);
-
-  if (view) { return; }
-
+  if (!view) { return; }
+  let panel = atom.workspace.panelForItem(view);
+  if (!panel) { return; }
   view.reset();
-  atom.workspace.panelForItem(view).destroy();
+  panel.destroy();
 };
 
 /**
@@ -162,12 +163,7 @@ const observePanelPosition = function _observePanelPosition (option) {
     view = mainView.createView();
     view.initialize();
     map.set(this, view);
-    // database.refresh();
-    // refreshDB();
-    // view.populate(retrieveDB());
-    // if (!view.onblur) {
-    //   view.onblur = clearActives.bind(null, view);
-    // }
+    view.populate(database.fetch());
   } else {
     panel = atom.workspace.panelForItem(view);
   }

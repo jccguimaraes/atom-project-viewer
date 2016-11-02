@@ -155,6 +155,9 @@ const handler = {
       ];
       cleanValue = allowed.indexOf(value) !== -1 ? value : target[property];
     }
+    else if (target.type ===  'group' && property === 'expanded') {
+      cleanValue = Boolean(value) === value ? value : target[property];
+    }
     else if (property === 'icon') {
       const allowed = [
         'octicon-',
@@ -172,11 +175,8 @@ const handler = {
       const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
       cleanValue = regEx.exec(value) !== null ? value : target[property];
     }
-    else if (property === 'devMode') {
-      cleanValue = value;
-    }
-    else if (property === 'expanded') {
-      cleanValue = value;
+    else if (target.type ===  'project' && property === 'devMode') {
+      cleanValue = Boolean(value) === value ? value : target[property];
     }
     target[property] = cleanValue;
     return true;
@@ -193,7 +193,7 @@ module.exports = {
   },
   createProject: function _createproject () {
     let project = Object.assign(projectModel);
-    project.paths = [];
+    project.paths = []
     let model = Object.assign({}, project, projectMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
     Object.preventExtensions();

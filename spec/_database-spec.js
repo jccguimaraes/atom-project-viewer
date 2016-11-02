@@ -10,12 +10,8 @@ describe ('database', function () {
   const atomGetStorageFolderFn = function _atomGetStorageFolderFn (result) {
     return {
       load: function () { return result; },
-      storeSync: function (file, data) {
-        fs.writeFileSync(
-          `${__dirname}/mocks/database`,
-          JSON.stringify(data),
-          'utf8'
-        );
+      storeSync: function () {
+        return true;
       }
     }
   }
@@ -56,7 +52,7 @@ describe ('database', function () {
   it ('should exist and with a good schema', function () {
     // mimic the atom.getStorageFolder().load
     const mockedRawDB = fs.readFileSync(
-      `${__dirname}/mocks/database-raw`, 'utf8'
+      `${__dirname}/mocks/project-viewer.json`, 'utf8'
     );
     let returnValue = JSON.parse(mockedRawDB);
     spyOnAtomGetStorageFolderLoad.andCallFake(
@@ -74,7 +70,7 @@ describe ('database', function () {
     beforeEach (function () {
       // mimic the atom.getStorageFolder().load
       mockedRawDB = fs.readFileSync(
-        `${__dirname}/mocks/database-raw`, 'utf8'
+        `${__dirname}/mocks/project-viewer.json`, 'utf8'
       );
       returnValue = JSON.parse(mockedRawDB);
       spyOnAtomGetStorageFolderLoad.andCallFake(
@@ -106,7 +102,7 @@ describe ('database', function () {
       expect(oldStore).toEqual(store);
     });
 
-    xit ('should update the local file', function () {
+    it ('should update the local file', function () {
       const store = database.refresh();
       const oldStore = store.slice(0);
       database.moveTo(store[2], store[0]);

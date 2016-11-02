@@ -8,6 +8,10 @@ const createView = function _createView (element, methods, model) {
   let view;
   let options = {};
 
+  if (!tagIs) {
+    return;
+  }
+
   if (methods) {
     options.prototype = methods;
   }
@@ -15,7 +19,6 @@ const createView = function _createView (element, methods, model) {
   if (tagExtends) {
     options.extends = tagExtends;
   }
-
 
   try {
     const viewConstructor = document.registerElement(

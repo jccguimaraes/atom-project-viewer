@@ -55,6 +55,8 @@ keepContext | `Boolean` | When switching from items, if set to `true`, will keep
 openNewWindow | `Boolean` | Always open items in a new window. | `false`
 statusBar | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
 
+> Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
