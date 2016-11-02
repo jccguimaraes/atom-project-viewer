@@ -26,7 +26,7 @@ describe ('project-viewer', function () {
     });
   });
 
-  xdescribe ('deactivate', function () {
+  describe ('deactivate', function () {
 
     it ('should remove project-viewer', function () {
       waitsFor (function () {
@@ -34,8 +34,8 @@ describe ('project-viewer', function () {
       });
 
       runs(function () {
-        const projectViewer = mainElement.querySelector('project-viewer');
         atom.packages.deactivatePackage('project-viewer');
+        const projectViewer = mainElement.querySelector('project-viewer');
         expect(projectViewer).toBeNull();
       });
     })
@@ -50,10 +50,10 @@ describe ('project-viewer', function () {
 
       runs(function () {
         const projectViewer = mainElement.querySelector('project-viewer');
-        const parent = projectViewer.parentNode;
-        expect(parent).toBeVisible();
+        const parentNode = projectViewer.parentNode;
+        expect(parentNode).toBeVisible();
         atom.commands.dispatch(mainElement, 'project-viewer:togglePanel');
-        expect(parent).toBeHidden();
+        expect(parentNode).toBeHidden();
       });
     });
 
@@ -65,10 +65,10 @@ describe ('project-viewer', function () {
 
       runs(function () {
         const projectViewer = mainElement.querySelector('project-viewer');
-        const parent = projectViewer.parentNode;
-        expect(parent).toBeHidden();
+        const parentNode = projectViewer.parentNode;
+        expect(parentNode).toBeHidden();
         atom.commands.dispatch(mainElement, 'project-viewer:togglePanel');
-        expect(parent).toBeVisible();
+        expect(parentNode).toBeVisible();
       });
     });
   });
@@ -80,7 +80,7 @@ describe ('project-viewer', function () {
     describe ('changing visibilityActive', function () {
 
       it ('should be visible if visibilityActive is set', function () {
-        
+
         waitsFor (function () {
           return atom.packages.activatePackage('project-viewer');
         });
@@ -93,7 +93,7 @@ describe ('project-viewer', function () {
       });
 
       it ('should not be visible if visibilityActive is unset', function () {
-        
+
         waitsFor (function () {
           atom.config.set('project-viewer.visibilityActive', false);
           return atom.packages.activatePackage('project-viewer');
@@ -110,7 +110,7 @@ describe ('project-viewer', function () {
     describe ('changing panelPosition', function () {
 
       it ('should start by default as a right panel', function () {
-        
+
         waitsFor (function () {
           return atom.packages.activatePackage('project-viewer');
         });
@@ -134,7 +134,7 @@ describe ('project-viewer', function () {
       });
 
       it ('should start as a left panel if set to Left', function () {
-        
+
         waitsFor (function () {
           atom.config.set('project-viewer.panelPosition', 'Left');
           return atom.packages.activatePackage('project-viewer');
