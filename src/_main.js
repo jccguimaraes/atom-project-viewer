@@ -14,8 +14,8 @@ const database = require('./_database');
 const cleanConfig = require('./_common').cleanConfig;
 
 const mainView = require('./_main-view');
-const groupView = require('./_group-view');
-const projectView = require('./_project-view');
+// const groupView = require('./_group-view');
+// const projectView = require('./_project-view');
 
 /**
  */
@@ -271,14 +271,14 @@ const toggleSelected = function _toggleSelected () {};
  * API
  */
 const createGroup = function _createGroup () {
-  return groupView;
+  // return groupView;
 };
 
 /**
  * API
  */
 const createProject = function _createProject () {
-  return projectView;
+  // return projectView;
 };
 
 /**

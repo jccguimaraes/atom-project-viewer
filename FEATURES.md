@@ -7,6 +7,8 @@
 - [x] Sidebar left / right position;
 - [x] Auto hide sidebar with hover behavior;
   - > This is available through a config option, default is *not autohide*.
+- [x] Focus toggle;
+  - > Toggling focus will switch between current active element and the panel.
 - [x] Traverse and select items with `up` and `down` keys;
 - [x] Toggle collapse / expand of groups with `left` and `right` keys;
 - [x] Keep context when switching from items or switch from contexts;
@@ -27,18 +29,20 @@
 
 - [ ] Editor for groups / items creation and update;
   - [ ] Bulk operation on items creation;
-    * > Ability to create items when more than one path is provided.
+    - > Ability to create items when more than one path is provided.
   - [ ] Custom colors for groups and items;
   - [ ] Sorting children;
   - [ ] List of icons in editor as *only icons* or *icon and description*;
-    * > This is available through a config option, default is *icon and description*.
+    - > This is available through a config option, default is *icon and description*.
 - [ ] Context Menu option to open item in a new window or vice versa;
 - [ ] Old database schemas conversion tools;
 - [ ] Provide an API Service for managing outside groups and items;
 - [ ] Multiple backup services (*Gist* and *Goggle Drive*);
-  * > No more than these 2 services.
+  - > No more than these 2 services.
 - [ ] Resizable pane (*needs investigation*);
-    - > This is also available through a config option which will switch between what is the primary option, defaults to open in *same window*.
+  - > This is also available through a config option which will switch between what is the primary option, defaults to open in *same window*.
+- [ ] Update GitMagic rules;
+  - > Need to check all the rules to not be so *aggressive*.
 
 ## Issues
 

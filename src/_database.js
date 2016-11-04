@@ -2,7 +2,7 @@
 
 const model = require('./_model');
 
-const filename = 'pv040';
+const filename = 'pv040.json';
 const version = '0.4.0';
 const database = Object.create(null);
 const store = [];

@@ -144,7 +144,6 @@ const viewMethods = {
       return;
     }
     Object.setPrototypeOf(nodeModel, thisModel);
-    thisModel.addMetrics(nodeModel);
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

@@ -184,18 +184,24 @@ const handler = {
 };
 
 module.exports = {
-  createGroup: function _createGroup () {
+  createGroup: function _createGroup (candidate) {
     let group = Object.assign(groupModel);
     let model = Object.assign({}, group, groupMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
+    if (candidate) {
+      Object.assign(model, candidate);
+    }
     Object.preventExtensions();
     return new Proxy(model, handler);
   },
-  createProject: function _createproject () {
+  createProject: function _createproject (candidate) {
     let project = Object.assign(projectModel);
     project.paths = []
     let model = Object.assign({}, project, projectMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
+    if (candidate) {
+      Object.assign(model, candidate);
+    }
     Object.preventExtensions();
     return new Proxy(model, handler);
   },

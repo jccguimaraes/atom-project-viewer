@@ -60,8 +60,8 @@ project-viewer {
 		margin-left: 10px;
 	}
 
-	li[is="project-viewer-list-nested-item"].list-nested-item,
-	li[is="project-viewer-list-item"].list-item {
+	li[is="project-viewer-group"].list-nested-item,
+	li[is="project-viewer-project"].list-item {
 		transition: opacity @pv_transition-duration-default;
 
 		&.dragged {
@@ -104,7 +104,7 @@ project-viewer {
 		}
 	}
 
-	li[is="project-viewer-list-nested-item"].list-nested-item {
+	li[is="project-viewer-group"].list-nested-item {
 		-webkit-user-drag: element;
 		pointer-events: none;
 		transition: color @pv_transition-duration-default ease-in 0s;
@@ -121,56 +121,56 @@ project-viewer {
 		.list-tree {
 			pointer-events: none;
 		}
-
-		li[is="project-viewer-list-item"].list-item {
-			-webkit-user-drag: element;
-			-webkit-user-select: none;
-			cursor: pointer;
-			transition: color @pv_transition-duration-default ease-in 0s, background-color @pv_transition-duration-default ease-in 0s, padding @pv_transition-duration-fast ease-in 0s;
-			pointer-events: all;
-
-			&.no-paths,
-			&.no-paths span {
-				text-decoration: line-through;
-				color: @text-color-subtle;
-				cursor: not-allowed;
-			}
-
-			&:not(.selected):not(.no-paths)::before {
-				position: absolute;
-				left: 0;
-				height: @component-line-height;
-				content: "";
-				width: 2px;
-				background-color: @project-viewer_item_background-color;
-				visibility: hidden;
-				transform: scaleY(0);
-				transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
-			}
-
-			&:not(.selected):not(.no-paths):hover {
-				color: @project-viewer_item_color;
-				padding-left: 0;
-			}
-
-			&:not(.selected):hover::before {
-				visibility: visible;
-				transform: scaleY(1);
-			}
-
-			span {
-				pointer-events: none;
-			}
-		}
 	}
+
+    li[is="project-viewer-project"].list-item {
+        -webkit-user-drag: element;
+        -webkit-user-select: none;
+        cursor: pointer;
+        transition: color @pv_transition-duration-default ease-in 0s, background-color @pv_transition-duration-default ease-in 0s, padding @pv_transition-duration-fast ease-in 0s;
+        pointer-events: all;
+
+        &.no-paths,
+        &.no-paths span {
+            text-decoration: line-through;
+            color: @text-color-subtle;
+            cursor: not-allowed;
+        }
+
+        &:not(.selected):not(.no-paths)::before {
+            position: absolute;
+            left: 0;
+            height: @component-line-height;
+            content: "";
+            width: 2px;
+            background-color: @project-viewer_item_background-color;
+            visibility: hidden;
+            transform: scaleY(0);
+            transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
+        }
+
+        &:not(.selected):not(.no-paths):hover {
+            color: @project-viewer_item_color;
+            padding-left: 0;
+        }
+
+        &:not(.selected):hover::before {
+            visibility: visible;
+            transform: scaleY(1);
+        }
+
+        span {
+            pointer-events: none;
+        }
+    }
 }
 
 .pv-has-custom-icons {
 
-	@import (less) "./../node_modules/octicons/build/octicons.css";
+	@import "./../node_modules/octicons/build/octicons.css";
 	@import "./extras/octicons";
 
-	@import (less) "./../node_modules/devicon/devicon.css";
+	@import "./../node_modules/devicon/devicon.css";
 	@import "./extras/devicon";
 
 	.octicon::before {

@@ -168,13 +168,29 @@ describe ('project-model', function () {
 
   it ('should get the project\'s breadcrumb', function () {
     const model1 = modelRef.createProject();
-    const model3 = modelRef.createGroup();
+    const model2 = modelRef.createGroup();
     expect(model1.breadcrumb()).toEqual('unnamed');
     model1.name = 'project #1';
     expect(model1.breadcrumb()).toEqual('project #1');
-    Object.setPrototypeOf(model1, model3);
+    Object.setPrototypeOf(model1, model2);
     expect(model1.breadcrumb()).toEqual('unnamed / project #1');
-    model3.name = 'group #1';
+    model2.name = 'group #1';
     expect(model1.breadcrumb()).toEqual('group #1 / project #1');
+  });
+
+  it ('should create a model if a candidate is not valid', function () {
+    const candidate = {
+      asdasd: 'project candidate #1'
+    };
+    const model = modelRef.createProject(candidate);
+    expect(model.name).toBe('unnamed');
+  });
+
+  it ('should create a model if a candidate is valid', function () {
+    const candidate = {
+      name: 'project candidate #1'
+    };
+    const model = modelRef.createProject(candidate);
+    expect(model.name).toBe(candidate.name);
   });
 });

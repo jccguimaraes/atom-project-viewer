@@ -3,21 +3,29 @@
 /* package */
 const map = require('./_map');
 const domBuilder = require('./_dom-builder');
+const api = require('./_api');
 
-const cycleViews = function _cycleViews (parent, views) {
-    if (views.view && parent && parent.attachChild) {
-        parent.attachChild(views.view);
-    }
-    if (views.hasOwnProperty('groups')) {
-        buildStructure(views.groups, views.view || parent);
-    }
-    if (views.hasOwnProperty('items')) {
-        buildStructure(views.items, views.view || parent);
-    }
-};
+const viewsRef = {};
 
-const buildStructure = function _cycleStructure (list, parent) {
-    list.forEach(cycleViews.bind(this, parent));
+const buildViews = function _buildViews (model) {
+  let view;
+  if (model.type === 'group') {
+    view = api.group.createView(model);
+  }
+  else if (model.type === 'project') {
+    view = api.project.createView(model);
+  }
+  view.initialize();
+  view.render();
+  viewsRef[model.uuid] = view;
+
+  const parentModel = Object.getPrototypeOf(model);
+  if (parentModel === Object.prototype) {
+    this.attachChild(view);
+  }
+  else if (viewsRef.hasOwnProperty(parentModel.uuid)) {
+    viewsRef[parentModel.uuid].attachChild(view);
+  }
 };
 
 const viewMethods = {
@@ -29,12 +37,12 @@ const viewMethods = {
             }
         }
     },
-    populate: function _populate (structure) {
-        if (!structure) {
+    populate: function _populate (list) {
+        if (!list || !Array.isArray(list)) {
             return;
         }
         this.reset();
-        buildStructure(structure, this);
+        list.forEach(buildViews.bind(this));
     },
     initialize: function _initialize () {
         this.setAttribute('tabindex', -1);
@@ -73,6 +81,7 @@ const viewMethods = {
         }, false);
 
         this.addEventListener('dragend', (evt) => {
+            evt.target.classList.remove('dragged');
             evt.stopPropagation();
         }, false);
 

@@ -21,17 +21,23 @@ const cleanConfig = function _cleanConfig () {
   );
 };
 
-  /**
-  */
-  const getModel = function _getModel (view) {
-    if (!view) { return undefined; }
-    while (view && view.nodeName !== 'LI') {
-      view = view.parentNode;
-    }
-    return map.get(view);
-  };
+/**
+*/
+const getModel = function _getModel (view) {
+  if (!view) { return undefined; }
+  return map.get(getView(view));
+};
 
-  /**
-  */
-  exports.cleanConfig = cleanConfig;
-  exports.getModel = getModel;
+/**
+*/
+const getView = function _getView (view) {
+  if (!view) { return undefined; }
+  while (view && view.nodeName !== 'LI') {
+    view = view.parentNode;
+  }
+  return view;
+};
+
+exports.cleanConfig = cleanConfig;
+exports.getModel = getModel;
+exports.getView = getView;
