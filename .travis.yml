@@ -33,3 +33,4 @@ addons:
 branches:
   only:
     - master
+    - 0.4.0
