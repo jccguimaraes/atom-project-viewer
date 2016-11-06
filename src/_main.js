@@ -26,11 +26,39 @@ const main = Object.create(null);
 const serviceExposer = Object.create(null);
 
 /**
+ *
  */
-const activate = function _activate () {
+const serialize = function _serialize () {
+  return {
+      deserializer: 'ProjectViewer',
+      database: database.serialize()
+  };
+};
+
+/**
+ *
+ */
+const deserialize = function _deserialize (data) {
+    return data.database;
+};
+
+/**
+ *
+ */
+const activate = function _activate (state) {
+
+  // update the store
+  if (
+    state &&
+    atom.deserializers.deserialize.hasOwnProperty(state.deserializer)
+  ) {
+      database.deserialize(
+          atom.deserializers.deserialize(state)
+      );
+  }
+
     // clear old config settings (a bit of an hack)
     cleanConfig();
-    database.refresh();
 
     // add all disposables
     this.disposables = new CompositeDisposable(
@@ -166,6 +194,7 @@ const observePanelPosition = function _observePanelPosition (option) {
     view.populate(database.fetch());
   } else {
     panel = atom.workspace.panelForItem(view);
+    view.populate(database.fetch());
   }
 
   if (panel) {
@@ -293,10 +322,15 @@ serviceExposer.createProject = createProject;
 main.config = config;
 main.activate = activate;
 main.deactivate = deactivate;
+main.serialize = serialize;
+main.deserialize = deserialize;
 main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
 main.traverse = traverse;
 main.toggleSelected = toggleSelected;
+main.name = 'ProjectViewer';
+
+atom.deserializers.add(main);
 
 /**
  */

@@ -3,7 +3,7 @@
 - [x] Group nesting;
   - > There is no more definition of `clients`, `groups` or `projects`,
   only an infinite nesting of groups which can contain
-  `items` (previous known as `projects`).
+  `projects` or simply just contain `projects` without any `group`.
 - [x] Sidebar left / right position;
 - [x] Auto hide sidebar with hover behavior;
   - > This is available through a config option, default is *not autohide*.
@@ -48,3 +48,4 @@
 
 - First time switching to a new added project (even on reload), will not update `status-bar`;
   - > Can replicate when clearing state.
+- Scroll not working.

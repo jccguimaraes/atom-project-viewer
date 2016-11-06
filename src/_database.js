@@ -2,7 +2,7 @@
 
 const model = require('./_model');
 
-const filename = 'pv040.json';
+const filename = 'project-viewer.json';
 const version = '0.4.0';
 const database = Object.create(null);
 const store = [];
@@ -16,7 +16,7 @@ const processStorageEntry = function _processStorageEntry (reference, entry) {
   let obj = {};
 
   if (!entry.hasOwnProperty('type')) {
-      return;
+    return;
   }
 
   if (entry.type === 'group') {
@@ -35,11 +35,12 @@ const processStorageEntry = function _processStorageEntry (reference, entry) {
 
   if (prototypeOf === Object.prototype) {
     this[`${entry.type}s`].push(obj);
+    return;
   }
-  else {
-    let prototypeOfObj = reference[prototypeOf.uuid];
-    prototypeOfObj[`${entry.type}s`].push(obj);
-  }
+  let prototypeOfObj = reference[prototypeOf.uuid];
+  if (!prototypeOfObj) { return; }
+
+  prototypeOfObj[`${entry.type}s`].push(obj);
 };
 
 /**
@@ -141,27 +142,44 @@ const update = function _update () {
  * Loads the local database and processes it
  * @returns {Array} always returns the store
  */
-const refresh = function _refresh () {
-  const data = atom.getStorageFolder().load(filename);
+const refresh = function _refresh (serialized) {
 
-  if (!data) {
-    update();
+  if (
+    !serialized ||
+    !serialized.hasOwnProperty('structure') ||
+    Array.isArray(serialized)
+  ) {
     return store;
   }
+  store.length = 0;
+  serialized.structure.forEach(processRawDatabase);
+  // else {
+  //     oldRefresh();
+  // }
 
-  let keys = Object.keys(data);
-  if (
-    keys.length === 2 &&
-    data.hasOwnProperty('info') &&
-    data.hasOwnProperty('structure')
-  ) {
-    store.length = 0;
-    data.structure.forEach(processRawDatabase);
-  }
-  else {
-    store.length = 0;
-  }
   return store;
+};
+
+const oldRefresh = function _oldRefresh () {
+    const data = atom.getStorageFolder().load(filename);
+
+    if (!data) {
+      update();
+      return store;
+    }
+
+    let keys = Object.keys(data);
+    if (
+      keys.length === 2 &&
+      data.hasOwnProperty('info') &&
+      data.hasOwnProperty('structure')
+    ) {
+      store.length = 0;
+      data.structure.forEach(processRawDatabase);
+    }
+    else {
+      store.length = 0;
+    }
 };
 
 /**
@@ -228,6 +246,22 @@ const addTo = function _addTo (model, protoModel) {
   return true;
 };
 
+const deserialize = function _deserialize (data) {
+  refresh(data);
+};
+
+const serialize = function _serialize () {
+  const storeProcessed = {
+    info: {
+      version
+    },
+    structure: processStore(store)
+  };
+  return storeProcessed;
+};
+
+database.serialize = serialize;
+database.deserialize = deserialize;
 database.fetch = fetch;
 database.update = update;
 database.refresh = refresh;

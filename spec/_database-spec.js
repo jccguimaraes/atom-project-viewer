@@ -5,19 +5,18 @@ const fs = require('fs');
 
 describe ('database', function () {
 
-  let spyOnAtomGetStorageFolderLoad;
+  let returnValue;
 
-  const atomGetStorageFolderFn = function _atomGetStorageFolderFn (result) {
+  const atomGetStorageFolderFn = function _atomGetStorageFolderFn () {
     return {
-      load: function () { return result; },
-      storeSync: function () {
-        return true;
-      }
+      load: function () { return returnValue; },
+      storeSync: function () {}
     }
-  }
+  };
 
   beforeEach (function () {
-    spyOnAtomGetStorageFolderLoad = spyOn(atom, 'getStorageFolder');
+    spyOn(atom, 'getStorageFolder')
+      .andCallFake(atomGetStorageFolderFn);
   });
 
   it ('should return an empty array if no refresh', function () {
@@ -25,28 +24,19 @@ describe ('database', function () {
   });
 
   it ('should not exist', function () {
-    let returnValue = undefined;
-    spyOnAtomGetStorageFolderLoad.andCallFake(
-      atomGetStorageFolderFn.bind(this, returnValue)
-    );
-    expect(database.refresh()).toEqual([]);
+    returnValue = undefined;
+    expect(database.refresh(returnValue)).toEqual([]);
 
   });
 
   it ('should exist but empty', function () {
-    let returnValue = '';
-    spyOnAtomGetStorageFolderLoad.andCallFake(
-      atomGetStorageFolderFn.bind(this, returnValue)
-    );
-    expect(database.refresh()).toEqual([]);
+    returnValue = '';
+    expect(database.refresh(returnValue)).toEqual([]);
   });
 
   it ('should exist but with wrong schema', function () {
-    let returnValue = JSON.stringify({});
-    spyOnAtomGetStorageFolderLoad.andCallFake(
-      atomGetStorageFolderFn.bind(this, returnValue)
-    );
-    expect(database.refresh()).toEqual([]);
+    returnValue = JSON.stringify({});
+    expect(database.refresh(returnValue)).toEqual([]);
   });
 
   it ('should exist and with a good schema', function () {
@@ -54,18 +44,14 @@ describe ('database', function () {
     const mockedRawDB = fs.readFileSync(
       `${__dirname}/mocks/project-viewer.json`, 'utf8'
     );
-    let returnValue = JSON.parse(mockedRawDB);
-    spyOnAtomGetStorageFolderLoad.andCallFake(
-      atomGetStorageFolderFn.bind(this, returnValue)
-    );
-    const store = database.refresh();
+    returnValue = JSON.parse(mockedRawDB);
+    const store = database.refresh(returnValue);
     expect(store.length).toBe(5);
   });
 
   describe ('the hierachy', function () {
 
     let mockedRawDB;
-    let returnValue;
 
     beforeEach (function () {
       // mimic the atom.getStorageFolder().load
@@ -73,13 +59,10 @@ describe ('database', function () {
         `${__dirname}/mocks/project-viewer.json`, 'utf8'
       );
       returnValue = JSON.parse(mockedRawDB);
-      spyOnAtomGetStorageFolderLoad.andCallFake(
-        atomGetStorageFolderFn.bind(this, returnValue)
-      );
     });
 
     it ('should have all prototypes defined', function () {
-      const store = database.refresh();
+      const store = database.refresh(returnValue);
       expect(Object.getPrototypeOf(store[0])).toBe(Object.prototype);
       expect(Object.getPrototypeOf(store[1])).toBe(store[0]);
       expect(Object.getPrototypeOf(store[2])).toBe(store[1]);
@@ -88,7 +71,7 @@ describe ('database', function () {
     });
 
     it ('should move a model from one parent to another', function () {
-      const store = database.refresh();
+      const store = database.refresh(returnValue);
       expect(Object.getPrototypeOf(store[2])).toBe(store[1]);
       const result = database.moveTo(store[2], store[0]);
       expect(result).toBe(true);
@@ -96,21 +79,21 @@ describe ('database', function () {
     });
 
     it ('should save and load the same content if no changes', function () {
-      const store = database.refresh();
+      const store = database.refresh(returnValue);
       const oldStore = store.slice(0);
-      database.update();
+      // database.update();
       expect(oldStore).toEqual(store);
     });
 
     it ('should update the local file', function () {
-      const store = database.refresh();
+      const store = database.refresh(returnValue);
       const oldStore = store.slice(0);
       database.moveTo(store[2], store[0]);
       expect(oldStore).not.toBe(store);
     });
 
     it ('sould remove and/or add a model from a parent', function () {
-      const store = database.refresh();
+      const store = database.refresh(returnValue);
       const oldStore = store.slice(0);
       const projectsDeleted = database.remove(store[2]);
       expect(oldStore).not.toEqual(store);
