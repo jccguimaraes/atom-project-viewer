@@ -1,6 +1,6 @@
 'use strict';
 
-const main = require('./../src/_main');
+require('./../src/_main');
 
 describe ('project-viewer', function () {
 

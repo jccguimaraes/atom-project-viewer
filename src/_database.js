@@ -160,27 +160,27 @@ const refresh = function _refresh (serialized) {
   return store;
 };
 
-const oldRefresh = function _oldRefresh () {
-    const data = atom.getStorageFolder().load(filename);
-
-    if (!data) {
-      update();
-      return store;
-    }
-
-    let keys = Object.keys(data);
-    if (
-      keys.length === 2 &&
-      data.hasOwnProperty('info') &&
-      data.hasOwnProperty('structure')
-    ) {
-      store.length = 0;
-      data.structure.forEach(processRawDatabase);
-    }
-    else {
-      store.length = 0;
-    }
-};
+// const oldRefresh = function _oldRefresh () {
+//     const data = atom.getStorageFolder().load(filename);
+//
+//     if (!data) {
+//       update();
+//       return store;
+//     }
+//
+//     let keys = Object.keys(data);
+//     if (
+//       keys.length === 2 &&
+//       data.hasOwnProperty('info') &&
+//       data.hasOwnProperty('structure')
+//     ) {
+//       store.length = 0;
+//       data.structure.forEach(processRawDatabase);
+//     }
+//     else {
+//       store.length = 0;
+//     }
+// };
 
 /**
  * Moves a model from one prototype to another

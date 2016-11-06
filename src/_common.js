@@ -3,7 +3,7 @@
 /**
 */
 const map = require('./_map');
-const config = require('./config');
+const config = require('./_config');
 
 /**
  * clear old config settings (a bit of an hack)
