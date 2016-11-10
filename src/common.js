@@ -2,8 +2,8 @@
 
 /**
 */
-const map = require('./_map');
-const config = require('./_config');
+const map = require('./map');
+const config = require('./config');
 
 /**
  * clear old config settings (a bit of an hack)

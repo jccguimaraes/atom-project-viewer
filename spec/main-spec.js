@@ -1,11 +1,8 @@
 'use strict';
 
-require('./../src/_main');
-
 describe ('project-viewer', function () {
 
   let mainElement;
-  // TODO: test with status-bar and/or tree-view active or not
 
   beforeEach (function () {
     mainElement = atom.views.getView(atom.workspace);

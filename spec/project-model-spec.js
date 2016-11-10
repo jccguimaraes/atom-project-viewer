@@ -1,6 +1,6 @@
 'use strict';
 
-const modelRef = require('../src/_model');
+const modelRef = require('../src/model');
 
 describe ('project-model', function () {
   it ('should have a type of project right?', function () {

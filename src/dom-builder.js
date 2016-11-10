@@ -1,6 +1,6 @@
 'use strict';
 
-const map = require('./_map');
+const map = require('./map');
 
 const createView = function _createView (element, methods, model) {
   const tagExtends = element.tagExtends;

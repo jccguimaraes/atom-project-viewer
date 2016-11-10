@@ -1,11 +1,17 @@
 'use strict';
 
-const model = require('./_model');
+const fs = require('fs');
+const path = require('path');
 
-const filename = 'project-viewer.json';
+const model = require('./model');
 const version = '0.4.0';
 const database = Object.create(null);
 const store = [];
+const file = 'project-viewer.json';
+const filepath = path.join(atom.getConfigDirPath(), file);
+let listeners = [];
+let watcher;
+let hasLocalFile = false;
 
 /**
  * Maps each model to it's schema object
@@ -120,6 +126,13 @@ const fetch = function _fetch () {
 };
 
 /**
+ *
+ */
+const writeToDB = function _writeToDB (content) {
+  fs.writeFile(filepath, JSON.stringify(content, null, 2));
+};
+
+/**
  * Updates the local database file with current content of the store
  * @returns {Boolean|Undefined} true if success and undefined if error occurred
  */
@@ -130,57 +143,44 @@ const update = function _update () {
     },
     structure: processStore(store)
   };
-  try {
-    atom.getStorageFolder().storeSync(filename, storeProcessed);
-    return true;
-  } catch (e) {
-    return;
-  }
+  writeToDB(storeProcessed);
 };
 
 /**
- * Loads the local database and processes it
- * @returns {Array} always returns the store
+ * Processes the content retrieved from reading the file
+ * @param {String} [result] the content that was retrieved in the file
+ * @returns {Array} the store
  */
-const refresh = function _refresh (serialized) {
-
-  if (
-    !serialized ||
-    !serialized.hasOwnProperty('structure') ||
-    Array.isArray(serialized)
-  ) {
+const processFileContent = function _processFileContent(result) {
+    try {
+        let serialized = JSON.parse(result);
+        store.length = 0;
+        serialized.structure.forEach(processRawDatabase);
+        listeners.forEach(runSubscriber);
+    } catch (e) {
+        atom.notifications.addError('Local database corrupted', {
+            detail: 'Please check the content of the local database',
+            icon: 'database'
+        });
+    }
     return store;
-  }
-  store.length = 0;
-  serialized.structure.forEach(processRawDatabase);
-  // else {
-  //     oldRefresh();
-  // }
+}
 
-  return store;
-};
-
-// const oldRefresh = function _oldRefresh () {
-//     const data = atom.getStorageFolder().load(filename);
-//
-//     if (!data) {
-//       update();
-//       return store;
-//     }
-//
-//     let keys = Object.keys(data);
-//     if (
-//       keys.length === 2 &&
-//       data.hasOwnProperty('info') &&
-//       data.hasOwnProperty('structure')
-//     ) {
-//       store.length = 0;
-//       data.structure.forEach(processRawDatabase);
-//     }
-//     else {
-//       store.length = 0;
-//     }
-// };
+/**
+ * Loads the local database and processes it
+ */
+ const refresh = function _refresh () {
+   fs.readFile(filepath, 'utf8', function (err, data) {
+     if (err) {
+       atom.notifications.addWarning('Local database not found', {
+           icon: 'database'
+       });
+       return;
+     }
+     hasLocalFile = true;
+     processFileContent(data);
+   });
+ };
 
 /**
  * Moves a model from one prototype to another
@@ -246,22 +246,100 @@ const addTo = function _addTo (model, protoModel) {
   return true;
 };
 
-const deserialize = function _deserialize (data) {
-  refresh(data);
+/**
+ * ...
+ * @param {Object} listener ...
+ */
+const runSubscriber = function _runSubscriber (listener) {
+  listener(store);
 };
 
-const serialize = function _serialize () {
-  const storeProcessed = {
-    info: {
-      version
-    },
-    structure: processStore(store)
-  };
-  return storeProcessed;
+/**
+* ...
+* @param {Object} listener ...
+ */
+const unsubscribe = function _unsubscribe (listener) {
+  const idx = listeners.indexOf(listener);
+  if (idx === -1) { return; }
+  listeners.splice(idx, 1);
 };
 
-database.serialize = serialize;
-database.deserialize = deserialize;
+/**
+* ...
+* @param {Object} listener ...
+ * @returns {Function} ...
+ */
+const subscribe = function _subscribe (listener) {
+  if (listeners.indexOf(listener) !== -1) {
+    return;
+  }
+  listeners.push(listener);
+  console.log(listeners);
+  return unsubscribe.bind(this, listener);
+};
+
+/**
+ * Each watch notification passes through here where it validates if it was
+ * a change or a rename/deletion.
+ */
+const directoryWatcher = function _directoryWatcher (event, filename) {
+  if (filename !== file) {
+    return;
+  }
+  if (event === 'change') {
+      refresh();
+      return;
+  }
+  if (hasLocalFile) {
+      hasLocalFile = false;
+      atom.notifications.addError('Local database not found', {
+          detail: 'it is possible that the file has been renamed or deleted',
+          icon: 'database'
+      });
+  }
+  else {
+      atom.notifications.addSuccess('Local database found!', {
+          icon: 'database'
+      });
+      hasLocalFile = true;
+      refresh();
+  }
+};
+
+/**
+ * Unwatches for changes in the atom's config directory
+ */
+const directoryUnwatch = function _directoryUnwatch () {
+  if (!watcher) { return; }
+  watcher.close();
+};
+
+/**
+ * Watches for changes in the atom's config directory
+ */
+const directoryWatch = function _directoryWatch () {
+  if (watcher) {
+    watcher.close();
+    watcher = undefined;
+  }
+  watcher = fs.watch(atom.getConfigDirPath(), directoryWatcher);
+};
+
+/**
+ * Clears out the directory watch
+ */
+const deactivate = function _deactivate () {
+    directoryUnwatch();
+};
+
+const activate = function _activate () {
+    directoryWatch();
+};
+
+database.activate = activate;
+database.deactivate = deactivate;
+database.subscribe = subscribe;
+database.unsubscribe = unsubscribe;
 database.fetch = fetch;
 database.update = update;
 database.refresh = refresh;

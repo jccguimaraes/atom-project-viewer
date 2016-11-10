@@ -1,6 +1,7 @@
 'use strict';
 
-const domBuilder = require('../src/_dom-builder');
+const domBuilder = require('../src/dom-builder');
+const map = require('./../src/map');
 
 describe ('dom-builder', function () {
 
@@ -56,7 +57,7 @@ describe ('dom-builder', function () {
       undefined,
       model
     );
-    let sameModel = require('./../src/_map').get(view);
+    let sameModel = map.get(view);
     expect(sameModel).toBe(model);
   });
 });

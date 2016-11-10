@@ -1,9 +1,9 @@
 'use strict';
 
 /* package */
-const map = require('./_map');
-const domBuilder = require('./_dom-builder');
-const api = require('./_api');
+const map = require('./map');
+const domBuilder = require('./dom-builder');
+const api = require('./api');
 
 const viewsRef = {};
 

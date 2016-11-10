@@ -1,8 +1,8 @@
 'use strict';
 
-const model = require('./_model');
-const groupComponent = require('./_group-view');
-const projectComponent = require('./_project-view');
+const model = require('./model');
+const groupComponent = require('./group-view');
+const projectComponent = require('./project-view');
 
 const groupModel = function _groupModel (candidate) {
   return model.createGroup(candidate);

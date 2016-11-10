@@ -8,14 +8,13 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 /**
  * project-viewer
  */
-const config = require('./_config');
-const map = require('./_map');
-const database = require('./_database');
-const cleanConfig = require('./_common').cleanConfig;
+const config = require('./config');
+const map = require('./map');
+const database = require('./database');
+const cleanConfig = require('./common').cleanConfig;
 
-const mainView = require('./_main-view');
-// const groupView = require('./_group-view');
-// const projectView = require('./_project-view');
+const mainView = require('./main-view');
+let databaseUnsubscriber;
 
 /**
  */
@@ -28,79 +27,56 @@ const serviceExposer = Object.create(null);
 /**
  *
  */
-const serialize = function _serialize () {
-  return {
-      deserializer: 'ProjectViewer',
-      database: database.serialize()
-  };
+const activate = function _activate () {
+
+  // clear old config settings (a bit of an hack)
+  cleanConfig();
+
+  // activate database
+  database.activate();
+
+  // add all disposables
+  this.disposables = new CompositeDisposable(
+     atom.commands.add(
+       'atom-workspace',
+       commandWorkspace.call(this)
+     ),
+     atom.commands.add(
+       'project-viewer',
+       commandsCore.call(this)
+     ),
+     atom.contextMenu.add(
+       commandscontextMenu.call(this)
+     ),
+     atom.config.observe(
+       'project-viewer.visibilityOption',
+       observeVisibilityOption.bind(this)
+     ),
+     atom.config.observe(
+       'project-viewer.visibilityActive',
+       observeVisibilityActive.bind(this)
+     ),
+     atom.config.observe(
+       'project-viewer.panelPosition',
+       observePanelPosition.bind(this)
+     ),
+     atom.config.observe(
+       'project-viewer.autoHide',
+       observeAutoHide.bind(this)
+     ),
+     atom.config.observe(
+       'project-viewer.hideTitle',
+       observeHideTitle.bind(this)
+     ),
+     atom.config.observe(
+       'project-viewer.statusBar',
+       observeStatusBar.bind(this)
+     )
+   );
 };
 
 /**
  *
- */
-const deserialize = function _deserialize (data) {
-    return data.database;
-};
-
-/**
- *
- */
-const activate = function _activate (state) {
-
-  // update the store
-  if (
-    state &&
-    atom.deserializers.deserialize.hasOwnProperty(state.deserializer)
-  ) {
-      database.deserialize(
-          atom.deserializers.deserialize(state)
-      );
-  }
-
-    // clear old config settings (a bit of an hack)
-    cleanConfig();
-
-    // add all disposables
-    this.disposables = new CompositeDisposable(
-       atom.commands.add(
-         'atom-workspace',
-         commandWorkspace.call(this)
-       ),
-       atom.commands.add(
-         'project-viewer',
-         commandsCore.call(this)
-       ),
-       atom.contextMenu.add(
-         commandscontextMenu.call(this)
-       ),
-       atom.config.observe(
-         'project-viewer.visibilityOption',
-         observeVisibilityOption.bind(this)
-       ),
-       atom.config.observe(
-         'project-viewer.visibilityActive',
-         observeVisibilityActive.bind(this)
-       ),
-       atom.config.observe(
-         'project-viewer.panelPosition',
-         observePanelPosition.bind(this)
-       ),
-       atom.config.observe(
-         'project-viewer.autoHide',
-         observeAutoHide.bind(this)
-       ),
-       atom.config.observe(
-         'project-viewer.hideTitle',
-         observeHideTitle.bind(this)
-       ),
-       atom.config.observe(
-         'project-viewer.statusBar',
-         observeStatusBar.bind(this)
-       )
-     );
-};
-
-/**
  */
 const deactivate = function _deactivate () {
   if (this.disposables) {
@@ -111,21 +87,28 @@ const deactivate = function _deactivate () {
   if (!view) { return; }
   let panel = atom.workspace.panelForItem(view);
   if (!panel) { return; }
+
+  databaseUnsubscriber();
+  database.deactivate();
+
   view.reset();
   panel.destroy();
 };
 
 /**
+ *
  */
 const projectViewerService = function _projectViewerService () {
   return serviceExposer;
 };
 
 /**
+ *
  */
 const provideStatusBar = function _provideStatusBar (/*service*/) {};
 
 /**
+ *
  */
 const commandWorkspace = function _commandWorkspace () {
   return {
@@ -139,6 +122,7 @@ const commandWorkspace = function _commandWorkspace () {
 };
 
 /**
+ *
  */
 const commandsCore = function _commandsCore () {
   return {
@@ -151,12 +135,14 @@ const commandsCore = function _commandsCore () {
 };
 
 /**
+ *
  */
 const commandscontextMenu = function _commandscontextMenu () {
   return {};
 };
 
 /**
+ *
  */
 const observeVisibilityOption = function _observeVisibilityOption (option) {
   if (option === 'Remember state') {
@@ -171,6 +157,7 @@ const observeVisibilityOption = function _observeVisibilityOption (option) {
 };
 
 /**
+ *
  */
 const observeVisibilityActive = function observeVisibilityActive (option) {
   const vOption = atom.config.get('project-viewer.visibilityOption');
@@ -183,6 +170,7 @@ const observeVisibilityActive = function observeVisibilityActive (option) {
 };
 
 /**
+ *
  */
 const observePanelPosition = function _observePanelPosition (option) {
   let view = map.get(this);
@@ -191,14 +179,13 @@ const observePanelPosition = function _observePanelPosition (option) {
     view = mainView.createView();
     view.initialize();
     map.set(this, view);
-    view.populate(database.fetch());
   } else {
     panel = atom.workspace.panelForItem(view);
-    view.populate(database.fetch());
   }
 
   if (panel) {
     panel.destroy();
+    databaseUnsubscriber();
   }
 
   if (option === 'Left' || option === 'Right') {
@@ -207,15 +194,20 @@ const observePanelPosition = function _observePanelPosition (option) {
       visible: atom.config.get('project-viewer.visibilityActive')
     });
   }
+
+  databaseUnsubscriber = database.subscribe(view.populate.bind(view));
+  database.refresh();
 };
 
 /**
+ *
  */
 const observeAutoHide = function _observeAutoHide (option) {
   autohidePanel.call(this, option);
 };
 
 /**
+ *
  */
 const observeHideTitle = function _observeHideTitle (option) {
   let view = map.get(this);
@@ -226,12 +218,12 @@ const observeHideTitle = function _observeHideTitle (option) {
 };
 
 /**
+ *
  */
-const observeStatusBar = function _observeStatusBar (/*option*/) {
-
-};
+const observeStatusBar = function _observeStatusBar () {};
 
 /**
+ *
  */
 const togglePanel = function _togglePanel () {
   let view = map.get(this);
@@ -249,6 +241,7 @@ const togglePanel = function _togglePanel () {
 };
 
 /**
+ *
  */
 const autohidePanel = function _autohidePanel (option) {
   let view = map.get(this);
@@ -259,10 +252,12 @@ const autohidePanel = function _autohidePanel (option) {
 };
 
 /**
+ *
  */
 const openForm = function _openForm () {};
 
 /**
+ *
  */
 const focusPanel = function _focusPanel () {
   const view = map.get(this);
@@ -281,34 +276,34 @@ const focusPanel = function _focusPanel () {
 };
 
 /**
+ *
  */
 const clearState = function _clearState () {};
 
 /**
+ *
  */
 const clearStates = function _clearStates () {};
 
 /**
+ *
  */
 const traverse = function _traverse () {};
 
 /**
+ *
  */
 const toggleSelected = function _toggleSelected () {};
 
 /**
  * API
  */
-const createGroup = function _createGroup () {
-  // return groupView;
-};
+const createGroup = function _createGroup () {};
 
 /**
  * API
  */
-const createProject = function _createProject () {
-  // return projectView;
-};
+const createProject = function _createProject () {};
 
 /**
  * API
@@ -322,15 +317,10 @@ serviceExposer.createProject = createProject;
 main.config = config;
 main.activate = activate;
 main.deactivate = deactivate;
-main.serialize = serialize;
-main.deserialize = deserialize;
 main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
 main.traverse = traverse;
 main.toggleSelected = toggleSelected;
-main.name = 'ProjectViewer';
-
-atom.deserializers.add(main);
 
 /**
  */

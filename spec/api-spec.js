@@ -1,6 +1,6 @@
 'use strict';
 
-const api = require('./../src/_api');
+const api = require('./../src/api');
 
 describe ('api', function () {
 

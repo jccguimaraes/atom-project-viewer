@@ -1,8 +1,8 @@
 'use strict';
 
-const map = require('./_map');
-const domBuilder = require('./_dom-builder');
-const getModel = require('./_common').getModel;
+const map = require('./map');
+const domBuilder = require('./dom-builder');
+const getModel = require('./common').getModel;
 
 const onClickEvent = function _onClickEvent (model) {
   if (!model) { return null; }

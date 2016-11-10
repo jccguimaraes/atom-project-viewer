@@ -1,7 +1,7 @@
 'use strict';
 
-const groupView = require('../src/_group-view');
-const groupModel = require('../src/_model');
+const groupView = require('../src/group-view');
+const groupModel = require('../src/model');
 
 describe ('group-view', function () {
 

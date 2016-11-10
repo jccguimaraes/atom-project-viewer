@@ -1,10 +1,10 @@
 'use strict';
 
-const cleanConfig = require('../src/_common').cleanConfig;
-const getModel = require('../src/_common').getModel;
-const getView = require('../src/_common').getView;
-const model = require('../src/_model');
-const view = require('../src/_project-view');
+const cleanConfig = require('../src/common').cleanConfig;
+const getModel = require('../src/common').getModel;
+const getView = require('../src/common').getView;
+const model = require('../src/model');
+const view = require('../src/project-view');
 
 describe ('common', function () {
 

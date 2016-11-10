@@ -1,9 +1,9 @@
 'use strict';
 
-const map = require('./_map');
-const domBuilder = require('./_dom-builder');
-const getModel = require('./_common').getModel;
-const getView = require('./_common').getView;
+const map = require('./map');
+const domBuilder = require('./dom-builder');
+const getModel = require('./common').getModel;
+const getView = require('./common').getView;
 
 const dragstart = function _dragstart (evt) {
   evt.dataTransfer.setData(
