@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.26] - 2016-11-12
+
+### Fixed
+
+- ISSUE: shortcuts are not working using Windows ([#94](https://github.com/jccguimaraes/atom-project-viewer/issues/94))
+- Fix: Missing DEV Icons ([#93](https://github.com/jccguimaraes/atom-project-viewer/issues/93))
+- Bug: Can't remove project from client or group via the update modal ([#75](https://github.com/jccguimaraes/atom-project-viewer/issues/75))
+
+### Added
+
+- FEATURE: Clear project search after selection ([#90](https://github.com/jccguimaraes/atom-project-viewer/issues/90))
+- ISSUE: Close my openned files when I switch the "context" ([#76](https://github.com/jccguimaraes/atom-project-viewer/issues/76))
+
 ## [0.3.25] - 2016-10-07
 
 ### Fixed

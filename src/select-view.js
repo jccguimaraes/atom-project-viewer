@@ -83,6 +83,7 @@ class PVSelectListView extends SelectListView {
     }
 
     cancel () {
+        this.filterEditorView.setText('');
         this.hide();
     }
 

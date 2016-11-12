@@ -158,7 +158,14 @@ const utilities = {
             }
             else if (!changes.hasGroup && !original.parent && !original.root) {
                 Object.setPrototypeOf(original.current, Object.prototype);
-                isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children')
+                isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children');
+            }
+            else if (
+                changes.hasOwnProperty('hasClient') &&
+                changes.hasOwnProperty('hasGroup') &&
+                !changes.hasClient && !changes.hasGroup
+            ) {
+              isANewParent = document.querySelector('ul[is="pv-list-tree"].list-tree.has-collapsable-children');
             }
 
             if (isANewParent) {

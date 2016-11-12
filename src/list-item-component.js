@@ -43,11 +43,16 @@ function clickListener(evt) {
         atom.project.getPaths()
     );
 
-    if (serializationFile && atom.storageFolder && typeof atom.storageFolder.storeSync === 'function') {
+    if (
+        !atom.config.get(_utility.getConfig('keepContext')) &&
+        serializationFile &&
+        atom.storageFolder &&
+        typeof atom.storageFolder.storeSync === 'function'
+    ) {
         let serializers = {
+            treeview: _states.treeViewSerialization(),
             project: _states.projectSerialization(),
-            workspace: _states.workspaceSerialization(),
-            treeview: _states.treeViewSerialization()
+            workspace: _states.workspaceSerialization()
         };
 
         atom.storageFolder.storeSync(serializationFile, serializers);
@@ -57,21 +62,13 @@ function clickListener(evt) {
         return;
     }
 
-    // atom.project.getRepositories().forEach((repo) => {
-    //     if (repo && typeof repo.destroy === 'function') {
-    //         repo.destroy();
-    //     }
-    // });
-
-    // atom.workspace.getActivePane().destroy();
-
     serializationFile = atom.getStateKey(model.projectPaths);
 
     if (serializationFile) {
         serialization = atom.storageFolder.load(serializationFile);
     }
 
-    if (serialization) {
+    if (serialization && !atom.config.get(_utility.getConfig('keepContext'))) {
         _states.projectDeserialization(serialization.project);
         _states.workspaceDeserialization(serialization.workspace);
         _states.treeViewDeserialization(serialization.treeview);

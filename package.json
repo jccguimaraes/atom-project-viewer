@@ -14,9 +14,9 @@
     "atom": ">=1.10.0"
   },
   "dependencies": {
-    "atom-space-pen-views": "latest",
-    "devicon": "latest",
-    "octicons": "latest"
+    "atom-space-pen-views": "2.2.0",
+    "devicon": "2.0.0",
+    "octicons": "5.0.1"
   },
   "devDependencies": {
     "all-contributors-cli": "latest"

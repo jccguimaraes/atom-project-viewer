@@ -74,6 +74,12 @@ const config = {
         type: 'boolean',
         default: true,
         order: 10
+    },
+    'keepContext': {
+        description: 'Keep context between project switching.',
+        type: 'boolean',
+        default: false,
+        order: 11
     }
 };
 

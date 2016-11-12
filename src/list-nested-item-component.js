@@ -265,7 +265,9 @@ const htmlMethods = {
         let results = children.sort((currentNode, nextNode) => {
             let result;
 
-            if (sort.includes('alphabetically')) {
+            if (sort.includes('alphabetically') &&
+            typeof currentNode.getText === 'function' &&
+            typeof nextNode.getText === 'function') {
                 result = reverse * new Intl.Collator().compare(
                     currentNode.getText(),
                     nextNode.getText()
