@@ -34,15 +34,15 @@ apm install project-viewer
 Or find the package in **Atom → Settings → Install** and search for ***project-viewer***.
 
 ### Options
-- `ctrl-alt-cmd-v` open a select view for fast project opening;
-- `ctrl-alt-cmd-b` to toggle between sidebar visibility;
-- `ctrl-alt-cmd-n` to toggle focus on sidebar;
+- `shift-ctrl-alt-v` open a select view for fast project opening;
+- `shift-ctrl-alt-b` to toggle between sidebar visibility;
+- `shift-ctrl-alt-n` to toggle focus on sidebar;
 
 ### Settings
 Settings | Type | Description | Default
 ---------|------|-------------|--------
-`startupVisibility` | `Boolean` | Define if you want **project-viewer** to be visible on startup. | `false`
-`statusBarVisibility` | `Boolean` | Define if you want **project-viewer** to show active *group* and *project*. | `false`
+`visibilityState` | `String` | Define what would be the default action for **project-viewer** visibility on startup. Options are `Display on startup` and `Remember state` | `Display on startup`
+`visibilityAction` | `Boolean` | 'This `boolean` is relative to the option selected in `Visibility State`. | `true`
 `autohide` | `Boolean` | Ability to autohide project viewer. | `false`
 `panelPosition` | `String` | You can set the place of the viewer, to the most right position or to the most left position. | `Right`
 `alwaysOpenInNewWindow` | `Boolean` | If set to true, always open projects in a new window (default Atom's behavior), instead of opening in the same window. | `false`
@@ -51,6 +51,7 @@ Settings | Type | Description | Default
 `gistId` | `String` | ID of the gist used as a backup storage. | `''`
 `setName` | `String` | Name of your working set, for example 'work' or 'home'. As each working set is backed up into a separate file in one gist, you can have multiple Client/Group/Project sets on different machines and have them all safely backed up on gist. | `default`
 `convertOldData` | `Boolean` | If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default it will always check on startup for this data and if the new does not exist, it will convert to the new data schema. | `true`
+`keepContext` |  `Boolean` | Keep context between project switching. | `false`
 
 ## Features & Future Features
 Please read the `CHANGE LOG` to have a more insight on all the features existing and planned.
