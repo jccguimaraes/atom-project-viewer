@@ -160,8 +160,8 @@ const handler = {
     }
     else if (property === 'icon') {
       const allowed = [
-        'octicon-',
-        'devicon-'
+        'icon-',
+        'devicons-'
       ];
       cleanValue = allowed.map(
         (val) => value && value.startsWith(val) ? value : undefined

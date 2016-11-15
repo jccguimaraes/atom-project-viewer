@@ -12,9 +12,11 @@ const config = require('./config');
 const map = require('./map');
 const database = require('./database');
 const cleanConfig = require('./common').cleanConfig;
-
 const mainView = require('./main-view');
-let databaseUnsubscriber;
+const selectList = require('./select-list');
+
+let sidebarUnsubscriber;
+let selectListUnsubscriber;
 
 /**
  */
@@ -34,6 +36,9 @@ const activate = function _activate () {
 
   // activate database
   database.activate();
+
+  selectList.initialize();
+  selectListUnsubscriber = database.subscribe(selectList.populate.bind(selectList));
 
   // add all disposables
   this.disposables = new CompositeDisposable(
@@ -88,7 +93,8 @@ const deactivate = function _deactivate () {
   let panel = atom.workspace.panelForItem(view);
   if (!panel) { return; }
 
-  databaseUnsubscriber();
+  sidebarUnsubscriber();
+  selectListUnsubscriber();
   database.deactivate();
 
   view.reset();
@@ -116,6 +122,7 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:autohidePanel': autohidePanel.bind(this, undefined),
     'project-viewer:openForm': openForm.bind(this),
     'project-viewer:focusPanel': focusPanel.bind(this),
+    'project-viewer:toggleSelectList': toggleSelectList,
     'project-viewer:clearState': clearState.bind(this),
     'project-viewer:clearStates': clearStates.bind(this)
   }
@@ -185,7 +192,7 @@ const observePanelPosition = function _observePanelPosition (option) {
 
   if (panel) {
     panel.destroy();
-    databaseUnsubscriber();
+    sidebarUnsubscriber();
   }
 
   if (option === 'Left' || option === 'Right') {
@@ -195,7 +202,7 @@ const observePanelPosition = function _observePanelPosition (option) {
     });
   }
 
-  databaseUnsubscriber = database.subscribe(view.populate.bind(view));
+  sidebarUnsubscriber = database.subscribe(view.populate.bind(view));
   database.refresh();
 };
 
@@ -238,6 +245,10 @@ const togglePanel = function _togglePanel () {
   if (atom.config.get('project-viewer.visibilityOption') === 'Remember state') {
     atom.config.set('project-viewer.visibilityActive', panel.visible);
   }
+};
+
+const toggleSelectList = function _toggleSelectList () {
+  selectList.togglePanel();
 };
 
 /**

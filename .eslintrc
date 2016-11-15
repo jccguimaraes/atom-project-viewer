@@ -8,10 +8,7 @@
   "globals": {
     "atom": true,
     "waitsForPromise": true,
-    
+
   },
-  "plugins": [
-    "jasmine"
-  ],
   "extends": "eslint:recommended"
 }

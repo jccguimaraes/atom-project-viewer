@@ -1,7 +1,28 @@
 @import "ui-variables";
 @import "./extras/pv-variables";
 
+.pv-has-icons {
+    @import (inline) "./../node_modules/devicons/css/devicons.css";
+
+    .devicons {
+        font-family: @font-family;
+        font-size: @font-size;
+        display: inline-block;
+        height: inherit;
+        top: 0;
+    }
+}
+
 project-viewer {
+
+  .devicons:before {
+    font-family: 'devicons';
+    font-size: @component-icon-size;
+    margin-right: @component-padding / 2;
+    vertical-align: middle;
+    height: inherit;
+  }
+
   -webkit-user-select: none;
 	font-size: @font-size;
 	font-family: @font-family;
@@ -9,6 +30,7 @@ project-viewer {
 	flex-direction: column;
 	transition: width 0.5s;
 	width: @project-viewer_main_width-max;
+  overflow: hidden;
 
 	.heading {
 		color: @project-viewer_item_color;
@@ -38,16 +60,17 @@ project-viewer {
 
 	.hidden-block {
 		background-color: @tool-panel-background-color;
-		pointer-events: none;
 		position: absolute;
 		height: 100%;
 		width: 100%;
 		z-index: 1;
 		transition: opacity 0.5s;
+    overflow: hidden;
 	}
 
 	.body-content {
 		overflow: scroll;
+    height: 100%;
 		flex-grow: 1;
 	}
 
@@ -165,27 +188,27 @@ project-viewer {
     }
 }
 
-.pv-has-custom-icons {
-
-	@import "./../node_modules/octicons/build/octicons.css";
-	@import "./extras/octicons";
-
-	@import "./../node_modules/devicon/devicon.css";
-	@import "./extras/devicon";
-
-	.octicon::before {
-		margin-right: @component-padding / 2;
-	}
-
-	.octicon::before,
-	.icon::before {
-		// this fixes the devicon being smaller then the octicons
-		font-size: @component-icon-size;
-		// centers all icons that are width smaller then the average
-		text-align: center;
-		vertical-align: middle;
-	}
-}
+// .pv-has-custom-icons {
+//   //
+// 	// @import "./../node_modules/octicons/build/octicons.css";
+// 	// @import "./extras/octicons";
+//   //
+// 	// @import "./../node_modules/devicon/devicon.css";
+// 	// @import "./extras/devicon";
+//
+// 	.octicon::before {
+// 		margin-right: @component-padding / 2;
+// 	}
+//
+// 	.octicon::before,
+// 	.icon::before {
+// 		// this fixes the devicon being smaller then the octicons
+// 		font-size: @component-icon-size;
+// 		// centers all icons that are width smaller then the average
+// 		text-align: center;
+// 		vertical-align: middle;
+// 	}
+// }
 
 project-viewer-form {
 	background-color: @tab-background-color;

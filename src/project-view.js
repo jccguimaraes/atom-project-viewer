@@ -110,8 +110,8 @@ const viewMethods = {
 
     if (model.icon) {
       contentNode = spanNode;
-      if (model.icon.startsWith('octicon-')) {
-        contentNode.classList.add('octicon', model.icon);
+      if (model.icon.startsWith('devicons-')) {
+        contentNode.classList.add('devicons', model.icon);
       }
       else {
         contentNode.classList.add('icon', model.icon);

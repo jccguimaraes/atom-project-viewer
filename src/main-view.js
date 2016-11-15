@@ -46,6 +46,7 @@ const viewMethods = {
     },
     initialize: function _initialize () {
         this.setAttribute('tabindex', -1);
+        this.classList.add('pv-has-icons');
 
         let hiddenBlock = document.createElement('div');
         hiddenBlock.classList.add('hidden-block');
@@ -63,6 +64,21 @@ const viewMethods = {
             'has-collapsable-children',
             'pv-has-custom-icons'
         );
+
+        // let test = document.createElement('div');
+        // const devicons = require('./json/devicons.json');
+        // devicons.list.forEach(function (icon) {
+        //   const iv = document.createElement('span');
+        //   iv.classList.add('devicons', icon);
+        //   test.appendChild(iv);
+        // });
+        // const octicons = require('./json/octicons.json');
+        // octicons.list.forEach(function (icon) {
+        //   const iv = document.createElement('span');
+        //   iv.classList.add('icon', icon);
+        //   test.appendChild(iv);
+        // });
+        // panelBody.appendChild(test);
 
         this.addEventListener('dragstart', (evt) => {
             evt.stopPropagation();

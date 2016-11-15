@@ -122,7 +122,12 @@ const viewMethods = {
 
     if (model.icon) {
       contentNode = spanNode;
-      contentNode.classList.add('icon', model.icon);
+      if (model.icon.startsWith('devicons-')) {
+        contentNode.classList.add('devicons', model.icon);
+      }
+      else {
+        contentNode.classList.add('icon', model.icon);
+      }
     }
     else if (spanNode) {
       contentNode.removeChild(spanNode);

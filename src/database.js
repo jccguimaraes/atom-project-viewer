@@ -274,7 +274,6 @@ const subscribe = function _subscribe (listener) {
     return;
   }
   listeners.push(listener);
-  console.log(listeners);
   return unsubscribe.bind(this, listener);
 };
 

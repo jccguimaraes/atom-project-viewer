@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 
-[![atom version](https://img.shields.io/badge/atom-1.11.2-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![atom version](https://img.shields.io/badge/atom-1.12.2-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![Travis CI CI](https://travis-ci.org/jccguimaraes/atom-project-viewer.svg?branch=master)](https://travis-ci.org/jccguimaraes/atom-project-viewer)
@@ -20,6 +20,7 @@
 * [Settings](#settings)
 * [Contributors](#contributors)
 * [Contacts](#contacts)
+* [A Special Thank You!](#a-special-thank-you)
 
 ## Introduction
 
@@ -41,6 +42,7 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
 - `shift-ctrl-alt-v` toggles sidebar visibility;
 - `shift-ctrl-alt-n` open the editor tab;
 - `shift-ctrl-alt-m` toggle focus from active panel and the sidebar;
+- `shift-ctrl-alt-l` toggle the select list modal;
 
 ## Settings
 
@@ -71,3 +73,8 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 ## Contacts
 
 You can follow me on [Twitter](https://twitter.com/jccguimaraes)
+
+### A Special Thank You!
+
+I thank all you guys that are and did give great feedback to this project.
+:beers: for everyone.
