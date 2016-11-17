@@ -50,6 +50,7 @@ const getFilterKey = function _getFilterKey () {
 
 const confirmed = function confirmed (model) {
     const view = document.querySelector(`li[data-project-viewer-uuid="${model.uuid}"]`);
+    if (!view) { return; }
     view.openOnWorkspace();
 };
 

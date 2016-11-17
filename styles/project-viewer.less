@@ -10,141 +10,155 @@
         display: inline-block;
         height: inherit;
         top: 0;
+        line-height: @component-line-height;
+
+        &:before {
+            font-family: 'devicons';
+            font-size: 16px;
+            margin-right: 5px;
+            vertical-align: middle;
+            height: inherit;
+        }
+    }
+
+    .list-group .primary-line.devicons {
+        display: block;
+        text-align: left;
     }
 }
 
 project-viewer {
 
-  .devicons:before {
-    font-family: 'devicons';
-    font-size: @component-icon-size;
-    margin-right: @component-padding / 2;
-    vertical-align: middle;
-    height: inherit;
-  }
-
-  -webkit-user-select: none;
-	font-size: @font-size;
-	font-family: @font-family;
-	display: flex;
-	flex-direction: column;
-	transition: width 0.5s;
-	width: @project-viewer_main_width-max;
-  overflow: hidden;
-
-	.heading {
-		color: @project-viewer_item_color;
-		padding-left: @component-padding;
-    white-space: nowrap;
-
-		&.hidden {
-			visibility: hidden;
-		}
-	}
-
-	&.autohide {
-		width: @project-viewer_main_width-min;
-
-    .hidden-block {
-      opacity: 0;
+    .devicons:before {
+        font-family: 'devicons';
+        font-size: @component-icon-size;
+        margin-right: @component-padding / 2;
+        vertical-align: middle;
+        height: inherit;
     }
 
-		&:hover {
-			width: @project-viewer_main_width-max;
-
-			.hidden-block {
-				opacity: 1;
-			}
-		}
-	}
-
-	.hidden-block {
-		background-color: @tool-panel-background-color;
-		position: absolute;
-		height: 100%;
-		width: 100%;
-		z-index: 1;
-		transition: opacity 0.5s;
+    -webkit-user-select: none;
+    font-size: @font-size;
+    font-family: @font-family;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.5s;
+    width: @project-viewer_main_width-max;
     overflow: hidden;
-	}
 
-	.body-content {
-		overflow: scroll;
-    height: 100%;
-		flex-grow: 1;
-	}
+    .heading {
+        color: @project-viewer_item_color;
+        padding-left: @component-padding;
+        white-space: nowrap;
 
-	> .list-tree {
-		position: relative;
-		padding: @component-padding @component-padding/2;
-	}
+        &.hidden {
+            visibility: hidden;
+        }
+    }
 
-	.has-collapsable-children {
-		margin-left: 10px;
-	}
+    &.autohide {
+        width: @project-viewer_main_width-min;
 
-	li[is="project-viewer-group"].list-nested-item,
-	li[is="project-viewer-project"].list-item {
-		transition: opacity @pv_transition-duration-default;
+        .hidden-block {
+            opacity: 0;
+        }
 
-		&.dragged {
-			opacity: 0.5;
+        &:hover {
+            width: @project-viewer_main_width-max;
 
-			> .list-item {
-				color: @project-viewer_item_color_dragged !important;
-			}
+            .hidden-block {
+                opacity: 1;
+            }
+        }
+    }
 
-			.list-tree {
-				display: none;
-			}
-		}
+    .hidden-block {
+        background-color: @tool-panel-background-color;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+        transition: opacity 0.5s;
+        overflow: hidden;
+    }
 
-		&:not(.selected)::before {
-			position: absolute;
-			left: 0;
-			height: @component-line-height;
-			content: "";
-			width: 2px;
-			background-color: @project-viewer_item_background-color;
-			visibility: hidden;
-			transform: scaleY(0);
-			color: @project-viewer_item_color;
-			transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
-			padding-left: 0;
-		}
+    .body-content {
+        overflow: scroll;
+        height: 100%;
+        flex-grow: 1;
+    }
 
-		&.active {
-			color: @project-viewer_item_color;
+    > .list-tree {
+        position: relative;
+        padding: @component-padding @component-padding/2;
+    }
 
-			> .list-item {
-				color: @project-viewer_item_color;
-			}
+    .has-collapsable-children {
+        margin-left: 10px;
+    }
 
-			&:not(.selected):not(.no-paths)::before {
-				visibility: visible !important;
-				transform: scaleY(1) !important;
-			}
-		}
-	}
+    li[is="project-viewer-group"].list-nested-item,
+    li[is="project-viewer-project"].list-item {
+        transition: opacity @pv_transition-duration-default;
 
-	li[is="project-viewer-group"].list-nested-item {
-		-webkit-user-drag: element;
-		pointer-events: none;
-		transition: color @pv_transition-duration-default ease-in 0s;
+        &.dragged {
+            opacity: 0.5;
 
-		> .list-item {
-			pointer-events: all;
-			cursor: pointer;
+            > .list-item {
+                color: @project-viewer_item_color_dragged !important;
+            }
 
-			&:hover {
-				color: @project-viewer_item_color;
-			}
-		}
+            .list-tree {
+                display: none;
+            }
+        }
 
-		.list-tree {
-			pointer-events: none;
-		}
-	}
+        &:not(.selected)::before {
+            position: absolute;
+            left: 0;
+            height: @component-line-height;
+            content: "";
+            width: 2px;
+            background-color: @project-viewer_item_background-color;
+            visibility: hidden;
+            transform: scaleY(0);
+            color: @project-viewer_item_color;
+            transition: transform @pv_transition-duration-default, visibility @pv_transition-duration-default;
+            padding-left: 0;
+        }
+
+        &.active {
+            color: @project-viewer_item_color;
+
+            > .list-item {
+                color: @project-viewer_item_color;
+            }
+
+            &:not(.selected):not(.no-paths)::before {
+                visibility: visible !important;
+                transform: scaleY(1) !important;
+            }
+        }
+    }
+
+    li[is="project-viewer-group"].list-nested-item {
+        -webkit-user-drag: element;
+        pointer-events: none;
+        transition: color @pv_transition-duration-default ease-in 0s;
+
+        > .list-item {
+            pointer-events: all;
+            cursor: pointer;
+
+            &:hover {
+                color: @project-viewer_item_color;
+            }
+        }
+
+        .list-tree {
+            pointer-events: none;
+        }
+    }
 
     li[is="project-viewer-project"].list-item {
         -webkit-user-drag: element;
@@ -211,114 +225,114 @@ project-viewer {
 // }
 
 project-viewer-form {
-	background-color: @tab-background-color;
-	overflow: scroll;
-	padding: @component-padding * 2;
+    background-color: @tab-background-color;
+    overflow: scroll;
+    padding: @component-padding * 2;
 
-	.panel-body {
-		width: 80%;
-	  margin: 0 auto;
-	}
+    .panel-body {
+        width: 80%;
+        margin: 0 auto;
+    }
 
-	h1 {
-		color: @text-color-highlight;
-	}
+    h1 {
+        color: @text-color-highlight;
+    }
 
-	div[class*="form-block"] {
-		border-bottom: 1px solid @pane-item-border-color;
-		padding-bottom: @component-padding;
-	}
+    div[class*="form-block"] {
+        border-bottom: 1px solid @pane-item-border-color;
+        padding-bottom: @component-padding;
+    }
 
-	.form-block-title .input-label {
-		display: inline;
-		width: -webkit-max-content;
-		margin: 0 1em 1em 0;
-	}
+    .form-block-title .input-label {
+        display: inline;
+        width: -webkit-max-content;
+        margin: 0 1em 1em 0;
+    }
 
-	.input-label {
-		display: block;
-		width: -webkit-max-content;
+    .input-label {
+        display: block;
+        width: -webkit-max-content;
 
-		.text-info {
-			margin-left: @component-padding/2;
-		}
-	}
+        .text-info {
+            margin-left: @component-padding/2;
+        }
+    }
 
-	.list-group {
-		.pv-path-remove::before {
-			color: @text-color-error;
-		}
-		.pv-path-redo::before {
-			color: @text-color-warning;
-		}
+    .list-group {
+        .pv-path-remove::before {
+            color: @text-color-error;
+        }
+        .pv-path-redo::before {
+            color: @text-color-warning;
+        }
 
-		.pv-path-name {
-			&.remove-existing {
-				text-decoration: line-through;
-				color: @text-color-subtle;
-			}
-		}
-	}
+        .pv-path-name {
+            &.remove-existing {
+                text-decoration: line-through;
+                color: @text-color-subtle;
+            }
+        }
+    }
 
-	.icons-list {
-		margin-top: @component-padding;
-		height: 200px;
-		overflow: scroll;
-		padding: @component-padding;
-		background-color: @tool-panel-background-color;
-		position: relative;
-		flex: 1 1 300px;
-		min-width: 0;
-		// border: 1px solid @tool-panel-border-color;
-		display: flex;
-		flex-wrap: wrap;
-		align-content: flex-start;
+    .icons-list {
+        margin-top: @component-padding;
+        height: 200px;
+        overflow: scroll;
+        padding: @component-padding;
+        background-color: @tool-panel-background-color;
+        position: relative;
+        flex: 1 1 300px;
+        min-width: 0;
+        // border: 1px solid @tool-panel-border-color;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
 
-		.icon {
-			flex: 1 0 200px;
-			padding: @component-padding/2 @component-padding;
-			transition: all @pv_transition-duration-default;
+        .icon {
+            flex: 1 0 200px;
+            padding: @component-padding/2 @component-padding;
+            transition: all @pv_transition-duration-default;
 
-			&:hover {
-				cursor: pointer;
-				color: @text-color-highlight;
-				background-color: @button-background-color-hover;
-			}
-		}
-	}
+            &:hover {
+                cursor: pointer;
+                color: @text-color-highlight;
+                background-color: @button-background-color-hover;
+            }
+        }
+    }
 
-	.input-label {
-		cursor: pointer;
-	}
+    .input-label {
+        cursor: pointer;
+    }
 
-	input[type="checkbox"] {
-		cursor: pointer;
-	}
+    input[type="checkbox"] {
+        cursor: pointer;
+    }
 
-	.list-group {
-		margin-top: @component-padding;
-	}
+    .list-group {
+        margin-top: @component-padding;
+    }
 
-	.form-block-groups {
-		position: relative;
+    .form-block-groups {
+        position: relative;
 
-		.list-nested-item {
-			-webkit-user-select: none;
-			pointer-events: none;
-			transition: color @pv_transition-duration-default ease-in 0s;
+        .list-nested-item {
+            -webkit-user-select: none;
+            pointer-events: none;
+            transition: color @pv_transition-duration-default ease-in 0s;
 
-			> .list-item {
-				pointer-events: all;
-				cursor: pointer;
+            > .list-item {
+                pointer-events: all;
+                cursor: pointer;
 
-				&:hover {
-					color: @project-viewer_item_color;
-				}
-			}
+                &:hover {
+                    color: @project-viewer_item_color;
+                }
+            }
 
-			.list-tree {
-				pointer-events: none;
-			}
-		}
-	}
+            .list-tree {
+                pointer-events: none;
+            }
+        }
+    }
 }
