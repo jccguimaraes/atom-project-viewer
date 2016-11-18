@@ -19,25 +19,10 @@ class PVSelectListView extends SelectListView {
 
         this.setLoading('loading projects...');
         this.getEmptyMessage('couldn\'t find any projects');
-
-        this.disposables.add(
-            atom.commands.add(
-                'atom-workspace', {
-                    'project-viewer:toggle-select-view': this.toggle.bind(this),
-                    'core:move-up': this.selectPreviousItemView.bind(this),
-                    'core:move-down': this.selectNextItemView.bind(this),
-                    'core:confirm': this.confirmSelection.bind(this),
-                    'core:cancel': this.cancelSelection.bind(this)
-                }
-            )
-        );
     }
 
     destroy () {
         this.cancel();
-
-        this.disposables.dispose();
-        this.disposables = null;
 
         if (this.panel) {
             this.panel.destroy();
@@ -51,6 +36,9 @@ class PVSelectListView extends SelectListView {
     }
 
     confirmSelection () {
+      if (this.panel && !this.panel.isVisible()) {
+          return;
+      }
         const item = this.getSelectedItem();
         if (item) {
             this.confirmed(item);
@@ -97,6 +85,16 @@ class PVSelectListView extends SelectListView {
             });
         }
         this.disposables.add(
+            atom.commands.add(
+                'atom-workspace', {
+                    'core:move-up': this.selectPreviousItemView.bind(this),
+                    'core:move-down': this.selectNextItemView.bind(this),
+                    'core:confirm': this.confirmSelection.bind(this),
+                    'core:cancel': this.cancelSelection.bind(this)
+                }
+            )
+        );
+        this.disposables.add(
             this.filterEditorView.getModel().getBuffer().onDidStopChanging(this.onChange.bind(this))
         );
         this.storeFocusedElement();
@@ -108,6 +106,7 @@ class PVSelectListView extends SelectListView {
     }
 
     hide () {
+        this.disposables.dispose();
         if (this.panel) {
             this.list.empty();
             this.panel.hide();
@@ -115,7 +114,7 @@ class PVSelectListView extends SelectListView {
     }
 
     cancelled () {
-        this.hide();
+        this.cancel();
     }
 
     toggle () {

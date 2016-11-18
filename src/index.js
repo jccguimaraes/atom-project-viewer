@@ -534,8 +534,11 @@ const projectViewer = {
         views.headerView = new _headerConstructor();
         views.containerView = new _listTreeConstructor();
 
+        views.selectView = new _selectView();
+
         this.disposables.add(
             atom.commands.add('atom-workspace', {
+                'project-viewer:toggle-select-view': views.selectView.toggle.bind(views.selectView),
                 'project-viewer:toggle-display': togglePanel.bind(this),
                 'project-viewer:toggle-focus': toggleFocus.bind(this),
                 'project-viewer:create-item': createModal.bind(this, undefined),
@@ -673,8 +676,6 @@ const projectViewer = {
         updateProjectViewer.call(this);
 
         githubWorker.onmessage = githubWorkerOnMessage.bind(this);
-
-        views.selectView = new _selectView();
 
         views.atomSyle = _colors.initialize();
     },
