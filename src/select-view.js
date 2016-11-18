@@ -62,7 +62,10 @@ class PVSelectListView extends SelectListView {
 
     confirmed (item) {
         const event = new MouseEvent('click');
-        document.getElementById(item.projectId).dispatchEvent(event);
+        const view = document.getElementById(item.projectId);
+        if (view) {
+          view.dispatchEvent(event);
+        }
         this.cancel();
     }
 
@@ -88,7 +91,6 @@ class PVSelectListView extends SelectListView {
     }
 
     show () {
-        this.storeFocusedElement();
         if (!this.panel) {
             this.panel = atom.workspace.addModalPanel({
                 item: this
@@ -97,6 +99,7 @@ class PVSelectListView extends SelectListView {
         this.disposables.add(
             this.filterEditorView.getModel().getBuffer().onDidStopChanging(this.onChange.bind(this))
         );
+        this.storeFocusedElement();
         this.panel.show();
         if (this.items.length > 0) {
             this.scrollToItemView(this.list.find('li:first'));
@@ -109,6 +112,10 @@ class PVSelectListView extends SelectListView {
             this.list.empty();
             this.panel.hide();
         }
+    }
+
+    cancelled () {
+        this.hide();
     }
 
     toggle () {
