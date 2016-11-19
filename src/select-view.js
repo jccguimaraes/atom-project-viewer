@@ -146,10 +146,9 @@ class PVSelectListView extends SelectListView {
             return list;
         }
 
+        query = query.toLowerCase();
         return list.filter(
-            (project) => {
-                return project.projectName.includes(query);
-            }
+            (project) => project.projectName.toLowerCase().indexOf(query) !== -1
         );
     }
 
@@ -184,7 +183,7 @@ class PVSelectListView extends SelectListView {
                     });
                 });
                 this.div({
-                    class: 'primary-secondary no-icon'
+                    class: 'secondary-line no-icon'
                 }, () => {
                     let projectLine = '';
                     if (item.clientName) {
