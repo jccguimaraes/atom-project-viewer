@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.29] - 2016-11-19
+
+### Fixed
+
+- Added new contributor @lneveu.
+- Add - Select-view: fuzzy searching and fix second line class name ([#97](https://github.com/jccguimaraes/atom-project-viewer/pull/97))
+- FEATURE: Add fuzzy project search ([#89](https://github.com/jccguimaraes/atom-project-viewer/issues/89))
+
+## [0.3.28] - 2016-11-18
+
+### Fixed
+
+- ISSUE: Project Swap on Atom Search ([#95](https://github.com/jccguimaraes/atom-project-viewer/issues/95))
+
 ## [0.3.27] - 2016-11-12
 
 ### Changed
