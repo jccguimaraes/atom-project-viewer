@@ -47,6 +47,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lneveu",
+      "name": "Loann Neveu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10619585?v=3",
+      "profile": "https://github.com/lneveu",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ]
 }
