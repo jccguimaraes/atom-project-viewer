@@ -3,6 +3,7 @@
 const model = require('./model');
 const groupComponent = require('./group-view');
 const projectComponent = require('./project-view');
+const editorComponent = require('./editor-view');
 
 const groupModel = function _groupModel (candidate) {
   return model.createGroup(candidate);
@@ -20,6 +21,10 @@ const projectView = function _projectView (model) {
   return projectComponent.createView(model);
 };
 
+const editorView = function _editorView () {
+  return editorComponent.createView();
+};
+
 const group = {
   createModel: groupModel,
   createView: groupView
@@ -30,9 +35,14 @@ const project = {
   createView: projectView
 };
 
+const editor = {
+  createView: editorView
+};
+
 const api = {
   group,
-  project
+  project,
+  editor
 };
 
 module.exports = api;

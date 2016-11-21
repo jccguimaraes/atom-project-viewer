@@ -1,7 +1,0 @@
-{
-  "database": {
-    "rejected": {
-      "message": "No local database found"
-    }
-  }
-}

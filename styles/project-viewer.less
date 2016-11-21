@@ -1,6 +1,30 @@
 @import "ui-variables";
 @import "./extras/pv-variables";
 
+
+li[is="tabs-tab"][data-type="project-viewer-editor"] {
+  &:before {
+    background-color: @project-viewer_item_color;
+  }
+}
+
+project-viewer-editor {
+  background-color: @tab-background-color;
+  overflow: scroll;
+  padding: @component-padding * 4 @component-padding * 2;
+
+  .panel-body {
+      width: 80%;
+      margin: 0 auto;
+  }
+
+  .pv-editor-header::before {
+    content: '';
+    border: 1px solid @project-viewer_item_color;
+    margin-right: @component-padding;
+  }
+}
+
 .pv-has-icons {
     @import (inline) "./../node_modules/devicons/css/devicons.css";
 
@@ -202,27 +226,15 @@ project-viewer {
     }
 }
 
-// .pv-has-custom-icons {
-//   //
-// 	// @import "./../node_modules/octicons/build/octicons.css";
-// 	// @import "./extras/octicons";
-//   //
-// 	// @import "./../node_modules/devicon/devicon.css";
-// 	// @import "./extras/devicon";
-//
-// 	.octicon::before {
-// 		margin-right: @component-padding / 2;
-// 	}
-//
-// 	.octicon::before,
-// 	.icon::before {
-// 		// this fixes the devicon being smaller then the octicons
-// 		font-size: @component-icon-size;
-// 		// centers all icons that are width smaller then the average
-// 		text-align: center;
-// 		vertical-align: middle;
-// 	}
-// }
+
+
+
+
+
+
+
+
+
 
 project-viewer-form {
     background-color: @tab-background-color;

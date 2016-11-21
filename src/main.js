@@ -1,34 +1,16 @@
 'use strict';
 
-/**
- * atom
- */
 const CompositeDisposable = require('atom').CompositeDisposable;
-
-/**
- * project-viewer
- */
 const config = require('./config');
 const map = require('./map');
 const database = require('./database');
-const cleanConfig = require('./common').cleanConfig;
 const mainView = require('./main-view');
-const selectList = require('./select-list');
+const selectList = require('./select-list-view');
+const cleanConfig = require('./common').cleanConfig;
 
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
-/**
- */
-const main = Object.create(null);
-
-/**
- */
-const serviceExposer = Object.create(null);
-
-/**
- *
- */
 const activate = function _activate () {
 
   // clear old config settings (a bit of an hack)
@@ -38,7 +20,9 @@ const activate = function _activate () {
   database.activate();
 
   selectList.initialize();
-  selectListUnsubscriber = database.subscribe(selectList.populate.bind(selectList));
+  selectListUnsubscriber = database.subscribe(
+    selectList.populate.bind(selectList)
+  );
 
   // add all disposables
   this.disposables = new CompositeDisposable(
@@ -70,8 +54,8 @@ const activate = function _activate () {
        observeAutoHide.bind(this)
      ),
      atom.config.observe(
-       'project-viewer.hideTitle',
-       observeHideTitle.bind(this)
+       'project-viewer.hideHeader',
+       observehideHeader.bind(this)
      ),
      atom.config.observe(
        'project-viewer.statusBar',
@@ -80,9 +64,6 @@ const activate = function _activate () {
    );
 };
 
-/**
- *
- */
 const deactivate = function _deactivate () {
   if (this.disposables) {
     this.disposables.dispose();
@@ -101,26 +82,17 @@ const deactivate = function _deactivate () {
   panel.destroy();
 };
 
-/**
- *
- */
 const projectViewerService = function _projectViewerService () {
   return serviceExposer;
 };
 
-/**
- *
- */
 const provideStatusBar = function _provideStatusBar (/*service*/) {};
 
-/**
- *
- */
 const commandWorkspace = function _commandWorkspace () {
   return {
     'project-viewer:togglePanel': togglePanel.bind(this),
     'project-viewer:autohidePanel': autohidePanel.bind(this, undefined),
-    'project-viewer:openForm': openForm.bind(this),
+    'project-viewer:openEditor': openEditor.bind(this),
     'project-viewer:focusPanel': focusPanel.bind(this),
     'project-viewer:toggleSelectList': toggleSelectList,
     'project-viewer:clearState': clearState.bind(this),
@@ -128,29 +100,20 @@ const commandWorkspace = function _commandWorkspace () {
   }
 };
 
-/**
- *
- */
 const commandsCore = function _commandsCore () {
   return {
-    'core:move-up': function () { return traverse.call(this, 'up'); },
-    'core:move-down': function () { return traverse.call(this, 'down'); },
-    'core:move-left': function () { return toggleSelected.call(this, '<-') },
-    'core:move-right': function () { return toggleSelected.call(this, '->') },
-    'core:confirm': function () { return toggleSelected.call(this) }
+    'core:move-up': function () { return this.traverse.call(this, '☝️'); },
+    'core:move-down': function () { return this.traverse.call(this, '👇'); },
+    'core:move-left': function () { return this.setAction.call(this, '📪') },
+    'core:move-right': function () { return this.setAction.call(this, '📭') },
+    'core:confirm': function () { return this.setAction.call(this, '✅') }
   }
 };
 
-/**
- *
- */
 const commandscontextMenu = function _commandscontextMenu () {
   return {};
 };
 
-/**
- *
- */
 const observeVisibilityOption = function _observeVisibilityOption (option) {
   if (option === 'Remember state') {
     const vActive = atom.config.get('project-viewer.visibilityActive');
@@ -163,9 +126,6 @@ const observeVisibilityOption = function _observeVisibilityOption (option) {
   }
 };
 
-/**
- *
- */
 const observeVisibilityActive = function observeVisibilityActive (option) {
   const vOption = atom.config.get('project-viewer.visibilityOption');
   if (vOption === 'Display on startup') { return; }
@@ -176,9 +136,6 @@ const observeVisibilityActive = function observeVisibilityActive (option) {
   option ? panel.show() : panel.hide();
 };
 
-/**
- *
- */
 const observePanelPosition = function _observePanelPosition (option) {
   let view = map.get(this);
   let panel;
@@ -206,17 +163,11 @@ const observePanelPosition = function _observePanelPosition (option) {
   database.refresh();
 };
 
-/**
- *
- */
 const observeAutoHide = function _observeAutoHide (option) {
   autohidePanel.call(this, option);
 };
 
-/**
- *
- */
-const observeHideTitle = function _observeHideTitle (option) {
+const observehideHeader = function _observehideHeader (option) {
   let view = map.get(this);
 
   if (!view) { return; }
@@ -224,14 +175,8 @@ const observeHideTitle = function _observeHideTitle (option) {
   view.toggleTitle(option);
 };
 
-/**
- *
- */
 const observeStatusBar = function _observeStatusBar () {};
 
-/**
- *
- */
 const togglePanel = function _togglePanel () {
   let view = map.get(this);
 
@@ -251,9 +196,6 @@ const toggleSelectList = function _toggleSelectList () {
   selectList.togglePanel();
 };
 
-/**
- *
- */
 const autohidePanel = function _autohidePanel (option) {
   let view = map.get(this);
 
@@ -262,14 +204,12 @@ const autohidePanel = function _autohidePanel (option) {
   view.autohide(option);
 };
 
-/**
- *
- */
-const openForm = function _openForm () {};
+const openEditor = function _openEditor () {
+  const view = map.get(this);
+  if (!view) { return; }
+  view.openEditor();
+};
 
-/**
- *
- */
 const focusPanel = function _focusPanel () {
   const view = map.get(this);
   if (!view) { return false; }
@@ -280,58 +220,44 @@ const focusPanel = function _focusPanel () {
 
   if (document.activeElement === item) {
     atom.workspace.getActivePane().activate();
-    return;
-  }
-
-  item.focus();
+    const selectedView = view.querySelector(
+        `li[is="project-viewer-project"].active,
+      li[is="project-viewer-project"].active`
+    );
+    if (selectedView) {
+        selectedView.classList.remove('active');
+    }
+} else {
+    const selectedView = view.querySelector(
+      'li[is="project-viewer-project"].selected'
+    );
+    if (selectedView) {
+        selectedView.classList.add('active');
+    }
+    item.focus();
+}
 };
 
-/**
- *
- */
 const clearState = function _clearState () {};
 
-/**
- *
- */
 const clearStates = function _clearStates () {};
 
-/**
- *
- */
-const traverse = function _traverse () {};
-
-/**
- *
- */
-const toggleSelected = function _toggleSelected () {};
-
-/**
- * API
- */
 const createGroup = function _createGroup () {};
 
-/**
- * API
- */
 const createProject = function _createProject () {};
 
-/**
- * API
- */
+const serviceExposer = Object.create(null);
+
 serviceExposer.createGroup = createGroup;
 serviceExposer.createProject = createProject;
 
-/**
- * ATOM's lifecycle
- */
-main.config = config;
+const main = Object.create(null);
+
 main.activate = activate;
+main.config = config;
 main.deactivate = deactivate;
 main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
-main.traverse = traverse;
-main.toggleSelected = toggleSelected;
 
 /**
  */

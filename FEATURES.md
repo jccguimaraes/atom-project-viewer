@@ -1,26 +1,26 @@
 # Features
 
 - [x] Group nesting;
-  - > There is no more definition of `clients`, `groups` or `projects`,
-  only an infinite nesting of `groups` which can contain
-  `projects` or simply just contain `projects` without being part of a `group`.
+  - > Infinite nesting of `groups` which can contain also `projects`;
+  - > `projects` can be at any level.
 - [x] Sidebar left / right position;
 - [x] Auto hide sidebar with hover behavior;
+- [x] Hide header for more space;
   - > This is available through a config option, default is *not autohide*.
 - [x] Focus toggle;
   - > Toggling focus will switch between current active element and the panel.
 - [x] Keep context when switching from `projects` or switch from contexts;
   - > This is available through a config option, default is *switch contexts*.
 - [x] `SelectListView` integration;
-  - > Will only show `projects`.
+  - > Only shows `projects`.
+- [x] Traverse and select `projects` with `up` and `down` keys;
+- [x] Toggle collapse / expand of `groups` with `left` and `right` keys;
 
 ## Working on Feature
 
 - [ ] `status-bar` with the `project`'s' *breadcrumb* path;
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
-- [ ] Traverse and select `projects` with `up` and `down` keys;
-- [ ] Toggle collapse / expand of `groups` with `left` and `right` keys;
 - [ ] Drag & Drop `groups` and `projects`;
   - [x] Drag and drop a `group` or `project` into a `group` will add it as a child;
   - [ ] Drag and drop a`group` or `project` into an `project` will add it as sibling of the dropped item;
@@ -29,6 +29,7 @@
 
 ## Not implemented yet
 
+- [ ] Override settings by `project`;
 - [ ] Editor for groups / `projects` creation and update;
   - [ ] Bulk operation on `project` creation;
     - > Ability to create `project` when more than one path is provided.
@@ -50,4 +51,3 @@
 
 - First time switching to a new added `project` (even on reload), will not update `status-bar`;
   - > Can replicate when clearing state.
-- When switching from the `SelectListView` project ain't selected in the sidebar.

@@ -5,10 +5,9 @@ const defaults = {
   sortBy: 'position',
   icon: '',
   color: '',
-  group: 0,
-  project: 0,
   expanded: false,
-  devMode: false
+  devMode: false,
+  config: {}
 };
 
 const groupModel = {
@@ -25,7 +24,8 @@ const projectModel = {
   name: defaults.name,
   icon: defaults.icon,
   color: defaults.color,
-  devMode: defaults.devMode
+  devMode: defaults.devMode,
+  config: defaults.config
 };
 
 const methods = {
@@ -120,7 +120,8 @@ const handler = {
       'expanded',
       'icon',
       'color',
-      'devMode'
+      'devMode',
+      'config'
     ];
     if (allowedProps.indexOf(property) === -1) {
       return true;
@@ -178,6 +179,9 @@ const handler = {
     else if (target.type ===  'project' && property === 'devMode') {
       cleanValue = Boolean(value) === value ? value : target[property];
     }
+    else if (target.type ===  'project' && property === 'config') {
+      cleanValue = target[property];
+    }
     target[property] = cleanValue;
     return true;
   }
@@ -222,9 +226,10 @@ module.exports = {
       icon = projectModel.icon,
       color = projectModel.color,
       devMode = projectModel.devMode,
+      config = projectModel.config,
       paths = []
     } = {}
   ) {
-    return { name, icon, color, devMode, paths };
+    return { name, icon, color, devMode, config, paths };
   }
 };

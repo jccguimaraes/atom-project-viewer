@@ -6,20 +6,7 @@ const getModel = require('./common').getModel;
 
 const onClickEvent = function _onClickEvent (model) {
   if (!model) { return null; }
-
-  const newItemSelected = this.openOnWorkspace();
-
-  if (!newItemSelected) { return; }
-
-  let selected = document.querySelector(
-    'project-viewer .has-collapsable-children .selected'
-  );
-  if (selected && selected !== this) {
-    selected.classList.remove('selected');
-  }
-  if (selected !== this) {
-    this.classList.add('selected');
-  }
+  this.openOnWorkspace();
 };
 
 const viewMethods = {
@@ -164,6 +151,16 @@ const viewMethods = {
     );
 
     if (currentOpenedProject) { return false; }
+
+    let selected = document.querySelector(
+      'project-viewer .has-collapsable-children .selected'
+    );
+    if (selected && selected !== this) {
+      selected.classList.remove('selected');
+    }
+    if (selected !== this) {
+      this.classList.add('selected');
+    }
 
     if (atom.config.get('project-viewer.openNewWindow')) {
       atom.open({

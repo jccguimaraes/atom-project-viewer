@@ -37,9 +37,9 @@ const config = {
     default: false,
     order: 3
   },
-  'hideTitle': {
-    title: 'Hide title of this package',
-    description: 'You can have more space for the `tree list` by hiding the title.',
+  'hideHeader': {
+    title: 'Hide the header',
+    description: 'You can have more space for the list by hiding the header.',
     type: 'boolean',
     default: false,
     order: 4

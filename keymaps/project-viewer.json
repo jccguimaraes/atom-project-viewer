@@ -2,7 +2,7 @@
   ".platform-darwin, .platform-win32, .platform-linux": {
     "shift-ctrl-alt-c": "project-viewer:autohidePanel",
     "shift-ctrl-alt-v": "project-viewer:togglePanel",
-    "shift-ctrl-alt-n": "project-viewer:openForm",
+    "shift-ctrl-alt-n": "project-viewer:openEditor",
     "shift-ctrl-alt-m": "project-viewer:focusPanel",
     "shift-ctrl-alt-l": "project-viewer:toggleSelectList"
   }

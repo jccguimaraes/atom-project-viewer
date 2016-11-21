@@ -1,37 +1,44 @@
 'use strict';
 
 const database = require('../src/database');
+const path = require('path');
 const fs = require('fs');
 
-xdescribe ('database', function () {
+describe ('database', function () {
 
-  let returnValue;
-
-  const atomGetStorageFolderFn = function _atomGetStorageFolderFn () {
-    return {
-      load: function () { return returnValue; },
-      storeSync: function () {}
-    }
-  };
+  let fsReadFileError;
+  let fsReadFileData;
 
   beforeEach (function () {
-    spyOn(atom, 'getStorageFolder')
-      .andCallFake(atomGetStorageFolderFn);
+    spyOn(fs, 'readFile').andCallFake(function (file, options, cb) {
+      cb(fsReadFileError, fsReadFileData);
+    });
+    spyOn(fs, 'writeFile').andCallFake(function (file, content) {
+      // console.log(file, content);
+    });
+
+    spyOn(atom.notifications, 'addError');
+    spyOn(atom.notifications, 'addWarning');
+    spyOn(atom.notifications, 'addSuccess');
   });
 
-  it ('should return an empty array if no refresh', function () {
+  fit ('should return an empty array if no refresh', function () {
     expect(database.fetch()).toEqual([]);
   });
 
-  it ('should not exist', function () {
-    returnValue = undefined;
-    expect(database.refresh(returnValue)).toEqual([]);
-
+  fit ('should not exist', function () {
+    fsReadFileError = {};
+    database.refresh();
+    expect(database.fetch()).toEqual([]);
+    expect(atom.notifications.addWarning).toHaveBeenCalled();
   });
 
-  it ('should exist but empty', function () {
-    returnValue = '';
-    expect(database.refresh(returnValue)).toEqual([]);
+  fit ('should exist but empty', function () {
+    fsReadFileError = null;
+    fsReadFileData = '';
+    database.refresh();
+    expect(database.fetch()).toEqual([]);
+    // expect(atom.notifications.addWarning).toHaveBeenCalled();
   });
 
   it ('should exist but with wrong schema', function () {

@@ -206,7 +206,7 @@ describe ('project-viewer', function () {
       });
     });
 
-    describe ('changing hideTitle', function () {
+    describe ('changing hideHeader', function () {
 
       it ('should show the title by default', function () {
 
@@ -218,7 +218,7 @@ describe ('project-viewer', function () {
           const projectViewer = mainElement.querySelector('project-viewer');
           const title = projectViewer.querySelector('.heading');
           expect(title).not.toHaveClass('hidden');
-          atom.config.set('project-viewer.hideTitle', true);
+          atom.config.set('project-viewer.hideHeader', true);
           expect(title).toHaveClass('hidden');
         });
       });
@@ -226,7 +226,7 @@ describe ('project-viewer', function () {
       it ('should not show the title if set to false', function () {
 
         waitsFor (function () {
-          atom.config.set('project-viewer.hideTitle', true);
+          atom.config.set('project-viewer.hideHeader', true);
           return atom.packages.activatePackage('project-viewer');
         });
 
@@ -234,7 +234,7 @@ describe ('project-viewer', function () {
           const projectViewer = mainElement.querySelector('project-viewer');
           const title = projectViewer.querySelector('.heading');
           expect(title).toHaveClass('hidden');
-          atom.config.set('project-viewer.hideTitle', false);
+          atom.config.set('project-viewer.hideHeader', false);
           expect(title).not.toHaveClass('hidden');
         });
       });
