@@ -15,6 +15,20 @@ class PVSelectListView extends SelectListView {
 
     initialize () {
         this.disposables = new CompositeDisposable();
+        this.disposables.add(
+            atom.commands.add(
+                'atom-workspace', {
+                    'core:move-up': this.selectPreviousItemView.bind(this),
+                    'core:move-down': this.selectNextItemView.bind(this),
+                    'core:confirm': this.confirmSelection.bind(this),
+                    'core:cancel': this.cancelSelection.bind(this)
+                }
+            )
+        );
+        // let the atom-space-pen-views plugin manage the update and the filtering (fuzzy search) of the list with the native 'populateList' function
+        this.disposables.add(
+            this.filterEditorView.getModel().getBuffer().onDidChange(this.populateList.bind(this))
+        );
         this.setLoading('Loading projects...');
     }
 
@@ -69,21 +83,6 @@ class PVSelectListView extends SelectListView {
                 item: this
             });
         }
-        this.disposables.add(
-            atom.commands.add(
-                'atom-workspace', {
-                    'core:move-up': this.selectPreviousItemView.bind(this),
-                    'core:move-down': this.selectNextItemView.bind(this),
-                    'core:confirm': this.confirmSelection.bind(this),
-                    'core:cancel': this.cancelSelection.bind(this)
-                }
-            )
-        );
-
-        // let the atom-space-pen-views plugin manage the update and the filtering (fuzzy search) of the list with the native 'populateList' function
-        this.disposables.add(
-            this.filterEditorView.getModel().getBuffer().onDidChange(this.populateList.bind(this))
-        );
         this.storeFocusedElement();
         this.panel.show();
         if (this.items.length > 0) {
@@ -93,7 +92,6 @@ class PVSelectListView extends SelectListView {
     }
 
     hide () {
-        this.disposables.dispose();
         if (this.panel) {
             this.list.empty();
             this.panel.hide();
