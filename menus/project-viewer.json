@@ -12,8 +12,8 @@
               "command": "project-viewer:togglePanel"
             },
             {
-              "label": "Open Form...",
-              "command": "project-viewer:openForm"
+              "label": "Open editor...",
+              "command": "project-viewer:openEditor"
             },
             {"type": "separator"},
             {
@@ -42,10 +42,10 @@
                   "command": "project-viewer:clearStates"
                 },
                 {
-                  "label": "Convert database 0.2.x"
+                  "label": "Convert from database 0.2.x"
                 },
                 {
-                  "label": "Convert database 0.3.x"
+                  "label": "Convert from database 0.3.x"
                 }
               ]
             }

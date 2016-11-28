@@ -213,29 +213,7 @@ const openEditor = function _openEditor () {
 const focusPanel = function _focusPanel () {
   const view = map.get(this);
   if (!view) { return false; }
-  const panel = atom.workspace.panelForItem(view);
-  if (!panel) { return false; }
-  const item = panel.getItem();
-  if (!item) { return false; }
-
-  if (document.activeElement === item) {
-    atom.workspace.getActivePane().activate();
-    const selectedView = view.querySelector(
-        `li[is="project-viewer-project"].active,
-      li[is="project-viewer-project"].active`
-    );
-    if (selectedView) {
-        selectedView.classList.remove('active');
-    }
-} else {
-    const selectedView = view.querySelector(
-      'li[is="project-viewer-project"].selected'
-    );
-    if (selectedView) {
-        selectedView.classList.add('active');
-    }
-    item.focus();
-}
+  view.toggleFocus();
 };
 
 const clearState = function _clearState () {};

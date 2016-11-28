@@ -4,6 +4,7 @@
 const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
+const database = require('./database');
 
 const viewsRef = {};
 
@@ -29,21 +30,24 @@ const buildViews = function _buildViews (model) {
 };
 
 const toggleTitle = function _toggleTitle (visibility) {
-  let title = this.querySelector('.heading');
+  const title = this.querySelector('.heading');
   if (!title) { return; }
   title.classList.toggle('hidden', visibility);
 };
 
 const openEditor = function _openEditor () {
-  let activePane = atom.workspace.getActivePane();
-  let editorItem = api.editor.createView();
+  console.log('openEditor');
+  const activePane = atom.workspace.getActivePane();
+  const randomModel = database.fetch()[Math.ceil(Math.random()*6)];
+  const editorItem = api.editor.createView();
+  map.set(editorItem, randomModel);
   editorItem.initialize();
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
 };
 
 const reset = function _reset () {
-  let listTree = this.querySelector('ul.list-tree');
+  const listTree = this.querySelector('ul.list-tree');
   if (listTree) {
     while (listTree.firstChild) {
       listTree.removeChild(listTree.firstChild);
@@ -141,6 +145,32 @@ const autohide = function _autohide (option) {
   }
   else {
     this.classList.toggle('autohide');
+  }
+};
+
+const toggleFocus = function _toggleFocus () {
+  const panel = atom.workspace.panelForItem(this);
+  if (!panel) { return false; }
+  const item = panel.getItem();
+  if (!item) { return false; }
+
+  if (document.activeElement === item) {
+    atom.workspace.getActivePane().activate();
+    const selectedView = this.querySelector(
+      `li[is="project-viewer-project"].active,
+      li[is="project-viewer-project"].active`
+    );
+    if (selectedView) {
+      selectedView.classList.remove('active');
+    }
+  } else {
+    const activeView = this.querySelector(
+      'li[is="project-viewer-project"].selected'
+    );
+    if (activeView) {
+      activeView.classList.add('active');
+    }
+    item.focus();
   }
 };
 
@@ -249,6 +279,7 @@ const viewMethods = {
   reset,
   setAction,
   sorting,
+  toggleFocus,
   toggleTitle,
   traverse
 };

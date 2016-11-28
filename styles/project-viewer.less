@@ -20,8 +20,70 @@ project-viewer-editor {
 
   .pv-editor-header::before {
     content: '';
-    border: 1px solid @project-viewer_item_color;
+    border: 2px solid @project-viewer_item_color;
     margin-right: @component-padding;
+  }
+
+  .pv-editor-block {
+    padding-bottom: @component-padding * 2;
+  }
+
+  .input-label {
+    display: block;
+    width: -webkit-max-content;
+    margin: 0 1em 1em 0;
+  }
+
+  .list-group {
+    padding-top: @component-padding;
+  }
+
+  .icons-list {
+    margin-top: @component-padding;
+    height: 200px;
+    overflow: scroll;
+    padding: @component-padding;
+    background-color: @tool-panel-background-color;
+    position: relative;
+    flex: 1 1 300px;
+    min-width: 0;
+    border: 1px solid @tool-panel-border-color;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+
+    .icon, .devicons {
+        flex: 1 0 200px;
+        padding: @component-padding/2 @component-padding;
+        transition: all @pv_transition-duration-default;
+
+        &:hover {
+            cursor: pointer;
+            color: @text-color-highlight;
+            background-color: @button-background-color-hover;
+        }
+    }
+  }
+
+  .list-tree {
+    .list-nested-item {
+      -webkit-user-select: none;
+      pointer-events: none;
+
+     .list-item {
+          pointer-events: all;
+          cursor: pointer;
+          transition: color @pv_transition-duration-default ease-in 0s;
+
+          &:hover {
+              color: @project-viewer_item_color;
+          }
+      }
+
+      .list-tree {
+          pointer-events: none;
+      }
+    }
   }
 }
 
@@ -32,9 +94,8 @@ project-viewer-editor {
         font-family: @font-family;
         font-size: @font-size;
         display: inline-block;
-        height: inherit;
+        text-align: left;
         top: 0;
-        line-height: @component-line-height;
 
         &:before {
             font-family: 'devicons';
@@ -222,129 +283,6 @@ project-viewer {
 
         span {
             pointer-events: none;
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-project-viewer-form {
-    background-color: @tab-background-color;
-    overflow: scroll;
-    padding: @component-padding * 2;
-
-    .panel-body {
-        width: 80%;
-        margin: 0 auto;
-    }
-
-    h1 {
-        color: @text-color-highlight;
-    }
-
-    div[class*="form-block"] {
-        border-bottom: 1px solid @pane-item-border-color;
-        padding-bottom: @component-padding;
-    }
-
-    .form-block-title .input-label {
-        display: inline;
-        width: -webkit-max-content;
-        margin: 0 1em 1em 0;
-    }
-
-    .input-label {
-        display: block;
-        width: -webkit-max-content;
-
-        .text-info {
-            margin-left: @component-padding/2;
-        }
-    }
-
-    .list-group {
-        .pv-path-remove::before {
-            color: @text-color-error;
-        }
-        .pv-path-redo::before {
-            color: @text-color-warning;
-        }
-
-        .pv-path-name {
-            &.remove-existing {
-                text-decoration: line-through;
-                color: @text-color-subtle;
-            }
-        }
-    }
-
-    .icons-list {
-        margin-top: @component-padding;
-        height: 200px;
-        overflow: scroll;
-        padding: @component-padding;
-        background-color: @tool-panel-background-color;
-        position: relative;
-        flex: 1 1 300px;
-        min-width: 0;
-        // border: 1px solid @tool-panel-border-color;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: flex-start;
-
-        .icon {
-            flex: 1 0 200px;
-            padding: @component-padding/2 @component-padding;
-            transition: all @pv_transition-duration-default;
-
-            &:hover {
-                cursor: pointer;
-                color: @text-color-highlight;
-                background-color: @button-background-color-hover;
-            }
-        }
-    }
-
-    .input-label {
-        cursor: pointer;
-    }
-
-    input[type="checkbox"] {
-        cursor: pointer;
-    }
-
-    .list-group {
-        margin-top: @component-padding;
-    }
-
-    .form-block-groups {
-        position: relative;
-
-        .list-nested-item {
-            -webkit-user-select: none;
-            pointer-events: none;
-            transition: color @pv_transition-duration-default ease-in 0s;
-
-            > .list-item {
-                pointer-events: all;
-                cursor: pointer;
-
-                &:hover {
-                    color: @project-viewer_item_color;
-                }
-            }
-
-            .list-tree {
-                pointer-events: none;
-            }
         }
     }
 }

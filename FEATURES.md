@@ -18,6 +18,9 @@
 
 ## Working on Feature
 
+- [ ] Editor for groups / `projects` creation and update;
+  - [ ] Bulk operation on `project` creation;
+    - > Ability to create `project` when more than one path is provided.
 - [ ] `status-bar` with the `project`'s' *breadcrumb* path;
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
@@ -30,9 +33,6 @@
 ## Not implemented yet
 
 - [ ] Override settings by `project`;
-- [ ] Editor for groups / `projects` creation and update;
-  - [ ] Bulk operation on `project` creation;
-    - > Ability to create `project` when more than one path is provided.
   - [ ] Custom colors for groups and `project`;
   - [ ] Sorting children;
   - [ ] List of icons in editor as *only icons* or *icon and description*;
@@ -51,3 +51,5 @@
 
 - First time switching to a new added `project` (even on reload), will not update `status-bar`;
   - > Can replicate when clearing state.
+- Linter does not switch context;
+- Context is not working proper;
