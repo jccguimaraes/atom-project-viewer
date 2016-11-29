@@ -3,12 +3,25 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.3.29] - 2016-11-19
+## [0.3.30] - 2016-11-29
+
+### Added
+
+- Refacto - Select-view: use native functionnalities of atom-space-pen-views plugin ([#98](https://github.com/jccguimaraes/atom-project-viewer/pull/98))
 
 ### Fixed
 
-- Added new contributor @lneveu.
+- FEATURE: Add fuzzy project search ([#89](https://github.com/jccguimaraes/atom-project-viewer/issues/89))
+
+## [0.3.29] - 2016-11-19
+
+### Added
+
+- Added new contributor [Loann Neveu](https://github.com/lneveu)
 - Add - Select-view: fuzzy searching and fix second line class name ([#97](https://github.com/jccguimaraes/atom-project-viewer/pull/97))
+
+### Fixed
+
 - FEATURE: Add fuzzy project search ([#89](https://github.com/jccguimaraes/atom-project-viewer/issues/89))
 
 ## [0.3.28] - 2016-11-18
