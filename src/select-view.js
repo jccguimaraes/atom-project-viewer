@@ -14,11 +14,26 @@ class PVSelectListView extends SelectListView {
     }
 
     initialize () {
-
         this.disposables = new CompositeDisposable();
+        this.disposables.add(
+            atom.commands.add(
+                'atom-workspace', {
+                    'core:move-up': this.selectPreviousItemView.bind(this),
+                    'core:move-down': this.selectNextItemView.bind(this),
+                    'core:confirm': this.confirmSelection.bind(this),
+                    'core:cancel': this.cancelSelection.bind(this)
+                }
+            )
+        );
+        // let the atom-space-pen-views plugin manage the update and the filtering (fuzzy search) of the list with the native 'populateList' function
+        this.disposables.add(
+            this.filterEditorView.getModel().getBuffer().onDidChange(this.populateList.bind(this))
+        );
+        this.setLoading('Loading projects...');
+    }
 
-        this.setLoading('loading projects...');
-        this.getEmptyMessage('couldn\'t find any projects');
+    getEmptyMessage () {
+        return 'Couldn\'t find any projects';
     }
 
     destroy () {
@@ -57,22 +72,6 @@ class PVSelectListView extends SelectListView {
         this.cancel();
     }
 
-    selectPreviousItemView () {
-        let view = this.getSelectedItemView().prev();
-        if (!view.length) {
-            view = this.list.find('li:last');
-        }
-        return this.selectItemView(view);
-    }
-
-    selectNextItemView () {
-        let view = this.getSelectedItemView().next();
-        if (!view.length) {
-            view = this.list.find('li:first');
-        }
-        return this.selectItemView(view);
-    }
-
     cancel () {
         this.filterEditorView.setText('');
         this.hide();
@@ -84,19 +83,6 @@ class PVSelectListView extends SelectListView {
                 item: this
             });
         }
-        this.disposables.add(
-            atom.commands.add(
-                'atom-workspace', {
-                    'core:move-up': this.selectPreviousItemView.bind(this),
-                    'core:move-down': this.selectNextItemView.bind(this),
-                    'core:confirm': this.confirmSelection.bind(this),
-                    'core:cancel': this.cancelSelection.bind(this)
-                }
-            )
-        );
-        this.disposables.add(
-            this.filterEditorView.getModel().getBuffer().onDidStopChanging(this.onChange.bind(this))
-        );
         this.storeFocusedElement();
         this.panel.show();
         if (this.items.length > 0) {
@@ -106,7 +92,6 @@ class PVSelectListView extends SelectListView {
     }
 
     hide () {
-        this.disposables.dispose();
         if (this.panel) {
             this.list.empty();
             this.panel.hide();
@@ -121,35 +106,14 @@ class PVSelectListView extends SelectListView {
         if (this.panel && this.panel.isVisible()) {
             this.cancel();
         } else {
-            this.populate(this.filterItems());
+            this.populate();
             this.show();
             this.focusFilterEditor();
         }
     }
 
-    populate (items) {
-        let models = [];
-        if (Array.isArray(items) && items.length > 0) {
-            models = items;
-        }
-        this.setItems(models);
-    }
-
-    filterItems (query) {
-        let list = _utilities.fetchProjects();
-
-        if (!list || list.length === 0) {
-            return [];
-        }
-
-        if (!query) {
-            return list;
-        }
-
-        query = query.toLowerCase();
-        return list.filter(
-            (project) => project.projectName.toLowerCase().indexOf(query) !== -1
-        );
+    populate () {
+        this.setItems(_utilities.fetchProjects())
     }
 
     getFilterKey () {
@@ -157,14 +121,6 @@ class PVSelectListView extends SelectListView {
             return 'projectName';
         }
         return '';
-    }
-
-    onChange () {
-        if (this.focusFilterEditor) {
-            this.populate(
-                this.filterItems(this.getFilterQuery())
-            );
-        }
     }
 
     viewForItem (item) {
