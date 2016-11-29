@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.31] - 2016-11-29
+
+### Fixed
+
+- Problems with publish
+
 ## [0.3.30] - 2016-11-29
 
 ### Added
