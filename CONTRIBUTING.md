@@ -17,7 +17,6 @@ Please start an issue with the following title `ISSUE: Description`.
 #### Performance / Refactor
 Please start an issue with the following title `PERF: Description`.
 
-
 ## Making a Pull Request
 
 Just **fork** the project, enjoy coding and send a **Pull Request** to me. Will haply inspect and accept it.

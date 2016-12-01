@@ -7,6 +7,29 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 > WIP
 
+## [0.3.32] - 2016-12-01
+
+### Fixed
+
+- Added new contributor [Kristian Barrese](https://github.com/bitkris-dev)
+- Fix for horizontal scrollbar ([#99](https://github.com/jccguimaraes/atom-project-viewer/pull/99))
+
+## [0.3.31] - 2016-11-29
+
+### Fixed
+
+- Problems with publish
+
+## [0.3.30] - 2016-11-29
+
+### Added
+
+- Refacto - Select-view: use native functionnalities of atom-space-pen-views plugin ([#98](https://github.com/jccguimaraes/atom-project-viewer/pull/98))
+
+### Fixed
+
+- FEATURE: Add fuzzy project search ([#89](https://github.com/jccguimaraes/atom-project-viewer/issues/89))
+
 ## [0.3.29] - 2016-11-19
 
 ### Fixed
