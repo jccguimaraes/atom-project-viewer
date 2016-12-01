@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.32] - 2016-12-01
+
+### Fixed
+
+- Added new contributor [Kristian Barrese](https://github.com/bitkris-dev)
+- Fix for horizontal scrollbar ([#99](https://github.com/jccguimaraes/atom-project-viewer/pull/99))
+
 ## [0.3.31] - 2016-11-29
 
 ### Fixed
