@@ -8,6 +8,8 @@ There are two main ways to contribute to this package. Either open an issue on t
 
 For helping me maintain this package, please follow the next guidelines when opening issues on [*github*]().
 
+> **NOTE** Please provide screenshots if possible!
+
 #### Feature Requests
 Please start an issue with the following title `FEATURE: Description`.
 
