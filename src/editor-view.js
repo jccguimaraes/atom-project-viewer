@@ -161,7 +161,7 @@ const pathsContainer = function _pathsContainer (parentView) {
   pathsBlock.appendChild(pathsButton);
   pathsBlock.appendChild(pathsList);
 
-  if (this) {
+  if (this && Array.isArray(this.paths)) {
     this.paths.forEach(
       (path) => {
         let listItem = document.createElement('li');

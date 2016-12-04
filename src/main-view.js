@@ -1,6 +1,7 @@
 'use strict';
 
 /* package */
+const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
 const database = require('./database');
@@ -66,7 +67,7 @@ const openEditor = function _openEditor () {
   const activePane = atom.workspace.getActivePane();
   const randomModel = database.fetch()[Math.ceil(Math.random()*6)];
   const editorItem = api.editor.createView();
-  mathis.set(editorItem, randomModel);
+  map.set(editorItem, randomModel);
   editorItem.initialize();
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
@@ -144,7 +145,7 @@ const setAction = function _setAction (action) {
 
   if (!selectedView) { return false; }
 
-  const model = mathis.get(selectedView);
+  const model = map.get(selectedView);
 
   if (!model) { return false; }
 
@@ -282,7 +283,7 @@ const initialize = function _initialize () {
 };
 
 const sorting = function _sorting () {
-  const model = mathis.get(this);
+  const model = map.get(this);
   if (!model) { return; }
 
   return model.name;
