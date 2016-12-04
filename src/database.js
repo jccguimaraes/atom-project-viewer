@@ -155,18 +155,18 @@ const update = function _update () {
  * @since 1.0.0
  */
 const processFileContent = function _processFileContent(result) {
-    try {
-        let serialized = JSON.parse(result);
-        store.length = 0;
-        serialized.structure.forEach(processRawDatabase);
-        listeners.forEach(runSubscriber);
-    } catch (e) {
-        atom.notifications.addError('Local database corrupted', {
-            detail: 'Please check the content of the local database',
-            icon: 'database'
-        });
-    }
-    return store;
+  try {
+    let serialized = JSON.parse(result);
+    store.length = 0;
+    serialized.structure.forEach(processRawDatabase);
+    listeners.forEach(runSubscriber);
+  } catch (e) {
+    atom.notifications.addError('Local database corrupted', {
+      detail: 'Please check the content of the local database',
+      icon: 'database'
+    });
+  }
+  return store;
 }
 
 /**
@@ -174,19 +174,19 @@ const processFileContent = function _processFileContent(result) {
  * @public
  * @since 1.0.0
  */
- const refresh = function _refresh () {
-   fs.readFile(filepath, 'utf8', function (err, data) {
+const refresh = function _refresh () {
+  fs.readFile(filepath, 'utf8', function (err, data) {
     //  console.log('err:', err, 'data:', data);
-     if (err) {
-       atom.notifications.addWarning('Local database not found', {
-           icon: 'database'
-       });
-       return;
-     }
-     hasLocalFile = true;
-     processFileContent(data);
-   });
- };
+    if (err) {
+      atom.notifications.addWarning('Local database not found', {
+        icon: 'database'
+      });
+      return;
+    }
+    hasLocalFile = true;
+    processFileContent(data);
+  });
+};
 
 /**
  * Moves a model from one prototype to another
@@ -203,7 +203,7 @@ const moveTo = function _moveTo (childModel, protoModel) {
   if (currentProtoModel === protoModel) { return null; }
 
   if (currentProtoModel.type && currentProtoModel.type !== 'group') {
-      return null;
+    return null;
   }
 
   Object.setPrototypeOf(childModel, protoModel);
@@ -219,17 +219,17 @@ const moveTo = function _moveTo (childModel, protoModel) {
  * @since 1.0.0
  */
 const remove = function _remove (model) {
-    const idx = store.indexOf(model);
-    if (idx === -1) {
-        return null;
-    }
-    const list = store.splice(idx, 1);
+  const idx = store.indexOf(model);
+  if (idx === -1) {
+    return null;
+  }
+  const list = store.splice(idx, 1);
 
-    if (list.length === 0) {
-      return null;
-    }
+  if (list.length === 0) {
+    return null;
+  }
 
-    return list[0];
+  return list[0];
 };
 
 /**
@@ -270,11 +270,11 @@ const runSubscriber = function _runSubscriber (listener) {
 };
 
 /**
-* Unsubscribes the callback
-* @callback subscriber
-* @param {subscriber} listener - The listener callback
-* @public
-* @since 1.0.0
+ * Unsubscribes the callback
+ * @callback subscriber
+ * @param {subscriber} listener - The listener callback
+ * @public
+ * @since 1.0.0
  */
 const unsubscribe = function _unsubscribe (listener) {
   const idx = listeners.indexOf(listener);
@@ -283,11 +283,11 @@ const unsubscribe = function _unsubscribe (listener) {
 };
 
 /**
-* Subscribes the callback to be invoked on store changes
-* @callback subscriber
-* @param {subscriber} listener - The listener callback
-* @public
-* @since 1.0.0
+ * Subscribes the callback to be invoked on store changes
+ * @callback subscriber
+ * @param {subscriber} listener - The listener callback
+ * @public
+ * @since 1.0.0
  */
 const subscribe = function _subscribe (listener) {
   if (listeners.indexOf(listener) !== -1) {
@@ -301,7 +301,7 @@ const subscribe = function _subscribe (listener) {
  * Each watch notification passes through here where it validates if it was
  * a change or a rename/deletion.
  * @param {String} event - The event occured in the local database,
-                            values are change and rename
+ *                         values are change and rename
  * @param {String} filename - The listener callback
  * @since 1.0.0
  */
@@ -310,22 +310,22 @@ const directoryWatcher = function _directoryWatcher (event, filename) {
     return;
   }
   if (event === 'change') {
-      refresh();
-      return;
+    refresh();
+    return;
   }
   if (hasLocalFile) {
-      hasLocalFile = false;
-      atom.notifications.addError('Local database not found', {
-          detail: 'it is possible that the file has been renamed or deleted',
-          icon: 'database'
-      });
+    hasLocalFile = false;
+    atom.notifications.addError('Local database not found', {
+      detail: 'it is possible that the file has been renamed or deleted',
+      icon: 'database'
+    });
   }
   else {
-      atom.notifications.addSuccess('Local database found!', {
-          icon: 'database'
-      });
-      hasLocalFile = true;
-      refresh();
+    atom.notifications.addSuccess('Local database found!', {
+      icon: 'database'
+    });
+    hasLocalFile = true;
+    refresh();
   }
 };
 
@@ -357,7 +357,7 @@ const directoryWatch = function _directoryWatch () {
  * @since 1.0.0
  */
 const deactivate = function _deactivate () {
-    directoryUnwatch();
+  directoryUnwatch();
 };
 
 /**
@@ -367,7 +367,7 @@ const deactivate = function _deactivate () {
  * @since 1.0.0
  */
 const activate = function _activate () {
-    directoryWatch();
+  directoryWatch();
 };
 
 database.activate = activate;

@@ -131,6 +131,10 @@ project-viewer {
     width: @project-viewer_main_width-max;
     overflow: hidden;
 
+    &.resizing {
+      transition: none;
+    }
+
     .heading {
         color: @project-viewer_item_color;
         padding-left: @component-padding;
@@ -142,7 +146,7 @@ project-viewer {
     }
 
     &.autohide {
-        width: @project-viewer_main_width-min;
+        width: @project-viewer_main_width-min !important;
 
         .hidden-block {
             opacity: 0;
@@ -285,4 +289,13 @@ project-viewer {
             pointer-events: none;
         }
     }
+}
+
+.pv-resizer {
+  position: absolute;
+  cursor: ew-resize;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  display: block;
 }

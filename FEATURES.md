@@ -20,7 +20,7 @@
 
 - [ ] Editor for groups / `projects` creation and update;
   - [ ] Bulk operation on `project` creation;
-    - > Ability to create `project` when more than one path is provided.
+    - > Ability to create individual `projects` when more than one path is provided.
 - [ ] `status-bar` with the `project`'s' *breadcrumb* path;
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
@@ -45,7 +45,8 @@
 - [ ] Resizable pane (*needs investigation*);
   - > This is also available through a config option which will switch between what is the primary option, defaults to open in *same window*.
 - [ ] Update GitMagic rules;
-  - > Need to check all the rules to not be so *aggressive*.
+  - > Need to check all the rules to not be so *aggressive*;
+- [ ] No `groups` or `projects` message.
 
 ## Issues
 

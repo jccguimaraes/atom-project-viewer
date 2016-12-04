@@ -26,42 +26,42 @@ const activate = function _activate () {
 
   // add all disposables
   this.disposables = new CompositeDisposable(
-     atom.commands.add(
-       'atom-workspace',
-       commandWorkspace.call(this)
-     ),
-     atom.commands.add(
-       'project-viewer',
-       commandsCore.call(this)
-     ),
-     atom.contextMenu.add(
-       commandscontextMenu.call(this)
-     ),
-     atom.config.observe(
-       'project-viewer.visibilityOption',
-       observeVisibilityOption.bind(this)
-     ),
-     atom.config.observe(
-       'project-viewer.visibilityActive',
-       observeVisibilityActive.bind(this)
-     ),
-     atom.config.observe(
-       'project-viewer.panelPosition',
-       observePanelPosition.bind(this)
-     ),
-     atom.config.observe(
-       'project-viewer.autoHide',
-       observeAutoHide.bind(this)
-     ),
-     atom.config.observe(
-       'project-viewer.hideHeader',
-       observehideHeader.bind(this)
-     ),
-     atom.config.observe(
-       'project-viewer.statusBar',
-       observeStatusBar.bind(this)
-     )
-   );
+    atom.commands.add(
+      'atom-workspace',
+      commandWorkspace.call(this)
+    ),
+    atom.commands.add(
+      'project-viewer',
+      commandsCore.call(this)
+    ),
+    atom.contextMenu.add(
+      commandscontextMenu.call(this)
+    ),
+    atom.config.observe(
+      'project-viewer.visibilityOption',
+      observeVisibilityOption.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.visibilityActive',
+      observeVisibilityActive.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.panelPosition',
+      observePanelPosition.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.autoHide',
+      observeAutoHide.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.hideHeader',
+      observehideHeader.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.statusBar',
+      observeStatusBar.bind(this)
+    )
+  );
 };
 
 const deactivate = function _deactivate () {
@@ -238,5 +238,5 @@ main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
 
 /**
- */
+*/
 module.exports = main;

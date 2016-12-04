@@ -62,8 +62,8 @@ const viewMethods = {
 
       if (!view) { return; }
 
-    //   const deadzone = getModel(evt.target);
-    //   const landingView = getView(deadzone);
+      //   const deadzone = getModel(evt.target);
+      //   const landingView = getView(deadzone);
 
       // if (deadzone.type !== 'group') { return; }
       //

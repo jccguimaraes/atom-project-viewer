@@ -33,27 +33,27 @@ const dragend = function _dragend (evt) {
 };
 
 const drop = function _drop (evt) {
-    evt.stopPropagation();
-    const uuid = evt.dataTransfer.getData("text/plain");
-    const view = document.querySelector(
-      `project-viewer li[data-project-viewer-uuid="${uuid}"]`
-    );
+  evt.stopPropagation();
+  const uuid = evt.dataTransfer.getData("text/plain");
+  const view = document.querySelector(
+    `project-viewer li[data-project-viewer-uuid="${uuid}"]`
+  );
 
-    if (!view) { return; }
+  if (!view) { return; }
 
-    const droppedModel = getModel(evt.target);
-    const draggedModel = getModel(view);
+  const droppedModel = getModel(evt.target);
+  const draggedModel = getModel(view);
 
-    const droppedView = getView(evt.target);
+  const droppedView = getView(evt.target);
 
-    if (!droppedView) { return; }
+  if (!droppedView) { return; }
 
-    if (droppedModel.type !== 'group') { return; }
+  if (droppedModel.type !== 'group') { return; }
 
-    if (droppedView === view) { return; }
+  if (droppedView === view) { return; }
 
-    droppedView.attachChild(view);
-    Object.setPrototypeOf(draggedModel, droppedModel);
+  droppedView.attachChild(view);
+  Object.setPrototypeOf(draggedModel, droppedModel);
 };
 
 const viewMethods = {

@@ -3,9 +3,6 @@
 const map = require('./map');
 const config = require('./config');
 
-/**
- * clear old config settings (a bit of an hack)
-*/
 const cleanConfig = function _cleanConfig () {
   const values = Object.keys(atom.config.getAll('project-viewer')[0].value);
 

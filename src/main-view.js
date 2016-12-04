@@ -1,12 +1,38 @@
 'use strict';
 
 /* package */
-const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
 const database = require('./database');
 
 const viewsRef = {};
+let startX;
+let startWidth;
+let dragListener;
+let stopListener;
+
+const resizerResetDrag = function _resizerResetDrag () {
+  this.removeAttribute('style');
+};
+
+const resizerInitializeDrag = function _resizerInitializeDrag (event) {
+  this.classList.add('resizing');
+  startX = event.clientX;
+  startWidth = parseInt(window.getComputedStyle(this).width, 10);
+  document.addEventListener('mousemove', dragListener, false);
+  document.addEventListener('mouseup', stopListener, false);
+};
+
+const resizerDoDrag = function _resizerDoDrag (event) {
+  const variation = startX - event.clientX;
+  this.setAttribute('style',`width:${startWidth + variation}px;`);
+};
+
+const resizerStopDrag = function _resizerStopDrag () {
+  this.classList.remove('resizing');
+  document.removeEventListener('mousemove', dragListener, false);
+  document.removeEventListener('mouseup', stopListener, false);
+};
 
 const buildViews = function _buildViews (model) {
   let view;
@@ -40,7 +66,7 @@ const openEditor = function _openEditor () {
   const activePane = atom.workspace.getActivePane();
   const randomModel = database.fetch()[Math.ceil(Math.random()*6)];
   const editorItem = api.editor.createView();
-  map.set(editorItem, randomModel);
+  mathis.set(editorItem, randomModel);
   editorItem.initialize();
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
@@ -118,7 +144,7 @@ const setAction = function _setAction (action) {
 
   if (!selectedView) { return false; }
 
-  const model = map.get(selectedView);
+  const model = mathis.get(selectedView);
 
   if (!model) { return false; }
 
@@ -194,6 +220,9 @@ const initialize = function _initialize () {
   let hiddenBlock = document.createElement('div');
   hiddenBlock.classList.add('hidden-block');
 
+  let pvResizer = document.createElement('div');
+  pvResizer.classList.add('pv-resizer');
+
   let panelHeading = document.createElement('h2');
   panelHeading.classList.add('heading');
   panelHeading.textContent = 'Project-Viewer';
@@ -243,11 +272,17 @@ const initialize = function _initialize () {
   panelBody.appendChild(listTree);
   hiddenBlock.appendChild(panelHeading);
   hiddenBlock.appendChild(panelBody);
+  hiddenBlock.appendChild(pvResizer);
   this.appendChild(hiddenBlock);
+
+  dragListener = resizerDoDrag.bind(this);
+  stopListener = resizerStopDrag.bind(this);
+  pvResizer.addEventListener('mousedown', resizerInitializeDrag.bind(this), false);
+  pvResizer.addEventListener("dblclick", resizerResetDrag.bind(this), false);
 };
 
 const sorting = function _sorting () {
-  const model = map.get(this);
+  const model = mathis.get(this);
   if (!model) { return; }
 
   return model.name;
