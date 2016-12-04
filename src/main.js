@@ -152,11 +152,62 @@ const observePanelPosition = function _observePanelPosition (option) {
     sidebarUnsubscriber();
   }
 
-  if (option === 'Left' || option === 'Right') {
-    atom.workspace[`add${option}Panel`]({
+  if (option === 'Left' && atom.packages.getActivePackages().length > 0) {
+    atom.workspace.addLeftPanel({
       item: view,
       visible: atom.config.get('project-viewer.visibilityActive')
     });
+    view.invertResizer(true);
+  }
+  else if (option === 'Left') {
+    atom.packages.onDidActivateInitialPackages(function () {
+      let leftPanels = atom.workspace.getLeftPanels();
+      let priority = 0;
+      if (leftPanels.length > 0) {
+          priority = leftPanels[leftPanels.length - 1].priority + 100;
+      }
+      atom.workspace.addLeftPanel({
+        item: view,
+        visible: atom.config.get('project-viewer.visibilityActive'),
+        priority: priority
+      });
+      view.invertResizer(true);
+    });
+  }
+  else if (option === 'Most Left') {
+      atom.workspace.addLeftPanel({
+        item: view,
+        visible: atom.config.get('project-viewer.visibilityActive'),
+        priority: 0
+      });
+      view.invertResizer(true);
+  }
+  else if (option === 'Right' && atom.packages.getActivePackages().length > 0) {
+    atom.workspace.addRightPanel({
+      item: view,
+      visible: atom.config.get('project-viewer.visibilityActive')
+    });
+  }
+  else if (option === 'Right') {
+    atom.packages.onDidActivateInitialPackages(function () {
+      let rightPanels = atom.workspace.getRightPanels();
+      let priority = 0;
+      if (rightPanels.length > 0) {
+          priority = rightPanels[rightPanels.length - 1].priority + 100;
+      }
+      atom.workspace.addRightPanel({
+        item: view,
+        visible: atom.config.get('project-viewer.visibilityActive'),
+        priority: priority
+      });
+    });
+  }
+  else if (option === 'Most Right') {
+      atom.workspace.addRightPanel({
+        item: view,
+        visible: atom.config.get('project-viewer.visibilityActive'),
+        priority: 0
+      });
   }
 
   sidebarUnsubscriber = database.subscribe(view.populate.bind(view));

@@ -26,7 +26,9 @@ const config = {
     default: 'Right',
     enum: [
       'Left',
-      'Right'
+      'Most Left',
+      'Right',
+      'Most Right'
     ],
     order: 2
   },
@@ -64,6 +66,13 @@ const config = {
     type: 'boolean',
     default: false,
     order: 7
+  },
+  'customWidth': {
+    title: 'Set a custom panel width',
+    description: 'Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width',
+    type: 'number',
+    default: 200,
+    order: 8
   }
 };
 

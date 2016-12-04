@@ -12,8 +12,18 @@ let startWidth;
 let dragListener;
 let stopListener;
 
+const invertResizer = function _invertResizer (inverted) {
+  if (inverted) {
+    viewsRef['resizer'].classList.add('invert');
+  }
+  else {
+    viewsRef['resizer'].classList.remove('invert');
+  }
+};
+
 const resizerResetDrag = function _resizerResetDrag () {
   this.removeAttribute('style');
+  atom.config.set('project-viewer.customWidth', undefined);
 };
 
 const resizerInitializeDrag = function _resizerInitializeDrag (event) {
@@ -25,14 +35,23 @@ const resizerInitializeDrag = function _resizerInitializeDrag (event) {
 };
 
 const resizerDoDrag = function _resizerDoDrag (event) {
-  const variation = startX - event.clientX;
-  this.setAttribute('style',`width:${startWidth + variation}px;`);
+  let variation;
+  if (atom.config.get('project-viewer.panelPosition') === 'Right') {
+    variation = startX - event.clientX;
+  }
+  else {
+    variation = event.clientX - startX;
+  }
+  this.setAttribute('style', `width:${startWidth + variation}px;`);
 };
 
 const resizerStopDrag = function _resizerStopDrag () {
   this.classList.remove('resizing');
   document.removeEventListener('mousemove', dragListener, false);
   document.removeEventListener('mouseup', stopListener, false);
+  let value = parseInt(window.getComputedStyle(this).width, 10);
+  if (value === 200) { value = undefined; }
+  atom.config.set('project-viewer.customWidth', value);
 };
 
 const buildViews = function _buildViews (model) {
@@ -223,6 +242,11 @@ const initialize = function _initialize () {
 
   let pvResizer = document.createElement('div');
   pvResizer.classList.add('pv-resizer');
+  viewsRef['resizer'] = pvResizer;
+
+  if (atom.config.get('project-viewer.customWidth') !== 200) {
+    this.setAttribute('style', `width:${atom.config.get('project-viewer.customWidth')}px;`);
+  }
 
   let panelHeading = document.createElement('h2');
   panelHeading.classList.add('heading');
@@ -317,7 +341,8 @@ const viewMethods = {
   sorting,
   toggleFocus,
   toggleTitle,
-  traverse
+  traverse,
+  invertResizer
 };
 
 const createView = function _createView (model) {

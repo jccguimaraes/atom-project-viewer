@@ -15,6 +15,7 @@
   - > Only shows `projects`.
 - [x] Traverse and select `projects` with `up` and `down` keys;
 - [x] Toggle collapse / expand of `groups` with `left` and `right` keys;
+- [x] Resizable panel;
 
 ## Working on Feature
 
@@ -42,7 +43,6 @@
 - [ ] Provide an API Service for managing outside `groups` and `projects`;
 - [ ] Multiple backup services (*Gist* and *Goggle Drive*);
   - > No more than these 2 services.
-- [ ] Resizable pane (*needs investigation*);
   - > This is also available through a config option which will switch between what is the primary option, defaults to open in *same window*.
 - [ ] Update GitMagic rules;
   - > Need to check all the rules to not be so *aggressive*;

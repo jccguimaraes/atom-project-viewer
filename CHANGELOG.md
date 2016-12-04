@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 > WIP
 
+## [0.3.33] - 2016-12-04
+
+### Added
+
+- FEATURE: Resizable panel ([#37](https://github.com/jccguimaraes/atom-project-viewer/issues/37))
+
 ## [0.3.32] - 2016-12-01
 
 ### Fixed
