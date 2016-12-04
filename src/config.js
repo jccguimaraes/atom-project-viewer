@@ -80,6 +80,12 @@ const config = {
         type: 'boolean',
         default: false,
         order: 11
+    },
+    'customWidth': {
+        description: 'Set a custom panel width',
+        type: 'number',
+        default: 180,
+        order: 12
     }
 };
 

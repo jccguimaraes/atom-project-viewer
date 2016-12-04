@@ -11,15 +11,19 @@ project-viewer {
 	background-color: @tree-view-background-color;
 	font-size: @font-size;
 	font-family: @font-family;
-	box-sizing: content-box;
+	box-sizing: border-box;
 
 	border-left: 1px @pane-item-border-color solid;
 
 	transition-property: width, opacity;
 	transition-duration: @project-viewer-transition-duration;
 
+    &.resizing {
+        transition: none !important;
+    }
+
 	&.autohide:not(:focus):not(:hover) {
-		width: @project-viewer-auto-width;
+		width: @project-viewer-auto-width !important;
 		opacity: 0;
 	}
 
@@ -236,4 +240,20 @@ pv-remove-quick-modal {
 		font-size: 16px;
 		font-size: @component-icon-size;
 	}
+}
+
+.pv-resizer {
+    position: absolute;
+    cursor: ew-resize;
+    top: 0;
+    right: inherit;
+    width: 4px;
+    height: 100%;
+    display: block;
+    z-index: 1;
+
+    &.invert {
+      right: 0;
+      top: inherit;
+    }
 }
