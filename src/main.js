@@ -136,6 +136,41 @@ const observeVisibilityActive = function observeVisibilityActive (option) {
   option ? panel.show() : panel.hide();
 };
 
+const buildPanel = function _buildPanel (options) {
+  let priority;
+  let panels;
+  let panel = {
+    item: this,
+    visible: atom.config.get('project-viewer.visibilityActive')
+  };
+
+  if (options.priority) {
+    panel.priority = 0;
+  }
+
+  if (options.left) {
+    atom.workspace.addLeftPanel(panel);
+  }
+
+  if (options.right) {
+    atom.workspace.addRightPanel(panel);
+  }
+
+  if (options.invertResizer) {
+    this.invertResizer(true);
+  }
+};
+
+const addPanel = function _addPanel (options) {
+  if (atom.packages.getActivePackages().length > 0) {
+    buildPanel.call(this, options);
+    return;
+  }
+  atom.packages.onDidActivateInitialPackages(
+    buildPanel.bind(this, options)
+  );
+};
+
 const observePanelPosition = function _observePanelPosition (option) {
   let view = map.get(this);
   let panel;
@@ -152,62 +187,17 @@ const observePanelPosition = function _observePanelPosition (option) {
     sidebarUnsubscriber();
   }
 
-  if (option === 'Left' && atom.packages.getActivePackages().length > 0) {
-    atom.workspace.addLeftPanel({
-      item: view,
-      visible: atom.config.get('project-viewer.visibilityActive')
-    });
-    view.invertResizer(true);
+  if (option === 'Left (first)') {
+    addPanel.call(view, { left: true, priority: true });
   }
-  else if (option === 'Left') {
-    atom.packages.onDidActivateInitialPackages(function () {
-      let leftPanels = atom.workspace.getLeftPanels();
-      let priority = 0;
-      if (leftPanels.length > 0) {
-          priority = leftPanels[leftPanels.length - 1].priority + 100;
-      }
-      atom.workspace.addLeftPanel({
-        item: view,
-        visible: atom.config.get('project-viewer.visibilityActive'),
-        priority: priority
-      });
-      view.invertResizer(true);
-    });
+  else if (option === 'Left (last)') {
+    addPanel.call(view, { left: true });
   }
-  else if (option === 'Most Left') {
-      atom.workspace.addLeftPanel({
-        item: view,
-        visible: atom.config.get('project-viewer.visibilityActive'),
-        priority: 0
-      });
-      view.invertResizer(true);
+  else if (option === 'Right (first)') {
+    addPanel.call(view, { right: true, priority: true });
   }
-  else if (option === 'Right' && atom.packages.getActivePackages().length > 0) {
-    atom.workspace.addRightPanel({
-      item: view,
-      visible: atom.config.get('project-viewer.visibilityActive')
-    });
-  }
-  else if (option === 'Right') {
-    atom.packages.onDidActivateInitialPackages(function () {
-      let rightPanels = atom.workspace.getRightPanels();
-      let priority = 0;
-      if (rightPanels.length > 0) {
-          priority = rightPanels[rightPanels.length - 1].priority + 100;
-      }
-      atom.workspace.addRightPanel({
-        item: view,
-        visible: atom.config.get('project-viewer.visibilityActive'),
-        priority: priority
-      });
-    });
-  }
-  else if (option === 'Most Right') {
-      atom.workspace.addRightPanel({
-        item: view,
-        visible: atom.config.get('project-viewer.visibilityActive'),
-        priority: 0
-      });
+  else if (option === 'Right (last)') {
+    addPanel.call(view, { right: true });
   }
 
   sidebarUnsubscriber = database.subscribe(view.populate.bind(view));

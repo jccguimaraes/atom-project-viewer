@@ -3,7 +3,7 @@
 - [x] Group nesting;
   - > Infinite nesting of `groups` which can contain also `projects`;
   - > `projects` can be at any level.
-- [x] Sidebar left / right position;
+- [x] Sidebar Left / Right (first or last) position;
 - [x] Auto hide sidebar with hover behavior;
 - [x] Hide header for more space;
   - > This is available through a config option, default is *not autohide*.
@@ -16,6 +16,7 @@
 - [x] Traverse and select `projects` with `up` and `down` keys;
 - [x] Toggle collapse / expand of `groups` with `left` and `right` keys;
 - [x] Resizable panel;
+  - > *Double click* to default width;
 
 ## Working on Feature
 

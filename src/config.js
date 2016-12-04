@@ -23,12 +23,12 @@ const config = {
     title: 'Panel Position',
     description: 'Position the panel to the left or right of the main pane.',
     type: 'string',
-    default: 'Right',
+    default: 'Right (last)',
     enum: [
-      'Left',
-      'Most Left',
-      'Right',
-      'Most Right'
+      'Left (first)',
+      'Left (last)',
+      'Right (first)',
+      'Right (last)'
     ],
     order: 2
   },
