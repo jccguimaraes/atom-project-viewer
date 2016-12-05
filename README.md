@@ -13,6 +13,8 @@
 [![CircleCI CI](https://circleci.com/gh/jccguimaraes/atom-project-viewer/tree/master.svg?style=shield&circle-token=c2215983920e08d193a80b5775760792c5d2e883
 )](https://circleci.com/gh/jccguimaraes/atom-project-viewer)
 
+[![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/badge.svg?style=flat-square)](https://beerpay.io/jccguimaraes/atom-project-viewer)
+
 This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
 
 ![pv_cgp_01](https://cloud.githubusercontent.com/assets/14871650/15876484/8bfcbc5a-2d05-11e6-90c0-87a38020d78c.gif)
