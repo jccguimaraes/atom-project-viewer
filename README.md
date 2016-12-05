@@ -76,3 +76,8 @@ You can follow me on [Twitter](https://twitter.com/jccguimaraes)
 ## A Special Thank You!
 I thank all you guys that are and did give great feedback to this project.
 :beers: for everyone.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/badge.svg?style=beer-square)](https://beerpay.io/jccguimaraes/atom-project-viewer)  [![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/make-wish.svg?style=flat-square)](https://beerpay.io/jccguimaraes/atom-project-viewer?focus=wish)
