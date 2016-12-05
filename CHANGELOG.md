@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 > WIP
 
+## [0.3.34] - 2016-12-05
+
+### Added
+
+- Add `beerpay` badge.
+
 ## [0.3.33] - 2016-12-04
 
 ### Added

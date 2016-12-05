@@ -6,11 +6,14 @@
 [![atom version](https://img.shields.io/badge/atom-1.12.5-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+
 [![Travis CI CI](https://travis-ci.org/jccguimaraes/atom-project-viewer.svg?branch=master)](https://travis-ci.org/jccguimaraes/atom-project-viewer)
 [![AppVeyor CI](https://ci.appveyor.com/api/projects/status/2t91cemmpf635p2e?svg=true
 )](https://ci.appveyor.com/project/jccguimaraes/atom-project-viewer)
 [![CircleCI CI](https://circleci.com/gh/jccguimaraes/atom-project-viewer/tree/master.svg?style=shield&circle-token=c2215983920e08d193a80b5775760792c5d2e883
 )](https://circleci.com/gh/jccguimaraes/atom-project-viewer)
+
+[![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/badge.svg?style=flat-square)](https://beerpay.io/jccguimaraes/atom-project-viewer)
 
 ## Table Of Contents
 
