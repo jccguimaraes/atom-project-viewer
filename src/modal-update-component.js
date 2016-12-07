@@ -1,5 +1,6 @@
 'use strict';
 
+const CompositeDisposable = require('atom').CompositeDisposable;
 const _views = require('./views');
 const _utilities = require('./utilities');
 const _utils = require('./utils');
@@ -12,6 +13,7 @@ const definition = {
 
 let originalItem = {};
 let changesToItem = {};
+let disposables;
 
 // TODO: this can be on the helper functions with an argument being the modal
 function closeModal () {
@@ -52,7 +54,7 @@ function addIconClickEvent (evt) {
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
         changesToItem.hasIcon = true;
-        changesToItem.icon = view.textContent;
+        changesToItem.icon = view.getAttribute('data-icon');
     }
 }
 
@@ -167,11 +169,24 @@ function sortIcons (evt) {
 }
 
 function loopIcons (iconSet, iconsList, itemIcon) {
+    const smaller = atom.config.get('project-viewer.onlyIcons');
     iconSet.icons.forEach(
         (icon) => {
             let entryIcon = document.createElement('button');
             entryIcon.classList.add('btn', 'btn-sm', 'inline-block-tight', 'text-subtle', 'icon', icon);
-            entryIcon.textContent = icon;
+            if (smaller) {
+              entryIcon.classList.add('only-icon');
+              disposables.add(
+                atom.tooltips.add(entryIcon, {
+                  title: icon,
+                  delay: {show: 100, hide: 100}
+                })
+              );
+            }
+            else {
+              entryIcon.textContent = icon;
+            }
+            entryIcon.setAttribute('data-icon', icon);
             entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
             iconsList.appendChild(entryIcon);
             if (itemIcon === icon) {
@@ -928,7 +943,7 @@ const htmlMethods = {
     },
     attachedCallback: function attachedCallback() {
         const item = _utilities.getDB().mapper.get(this);
-
+        disposables = new CompositeDisposable();
         if (!item) {
             closeModal.call(this);
         }
@@ -945,6 +960,7 @@ const htmlMethods = {
         addButtons.call(this);
     },
     detachedCallback: function detachedCallback () {
+      disposables.dispose();
         const views = _views.get(this);
         views.pathAdd && views.pathAdd.removeEventListener('click', addPath.bind(this));
 

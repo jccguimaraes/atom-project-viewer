@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.38] - 2016-12-07
+
+### Fixed
+
+- Issues regarding icons (on create and update)
+
 ## [0.3.37] - 2016-12-07
 
 ### Added

@@ -59,7 +59,7 @@ function addIconClickEvent (evt) {
     if (!selected || selected !== view) {
         view.classList.add('btn-info');
         changesToItem.hasIcon = true;
-        changesToItem.icon = view.textContent;
+        changesToItem.icon = view.getAttribute('data-icon');
     }
 }
 
@@ -272,6 +272,7 @@ function loopIcons (iconSet, iconsList, itemIcon) {
             else {
               entryIcon.textContent = icon;
             }
+            entryIcon.setAttribute('data-icon', icon);
             entryIcon.addEventListener('click', addIconClickEvent.bind(this), false);
             iconsList.appendChild(entryIcon);
             if (itemIcon === icon) {
