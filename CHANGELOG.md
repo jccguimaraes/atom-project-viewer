@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.37] - 2016-12-07
+
+### Added
+
+- FEATURE: Icons list ([#66](https://github.com/jccguimaraes/atom-project-viewer/issues/66))
+
 ## [0.3.36] - 2016-12-07
 
 ### Added

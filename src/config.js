@@ -92,6 +92,12 @@ const config = {
         type: 'string',
         default: '',
         order: 13
+    },
+    'onlyIcons': {
+      description: 'Show the icons without the description.',
+      type: 'boolean',
+      default: false,
+      order: 14
     }
 };
 
