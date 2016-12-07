@@ -14,6 +14,7 @@
 )](https://circleci.com/gh/jccguimaraes/atom-project-viewer)
 
 [![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/badge.svg?style=flat-square)](https://beerpay.io/jccguimaraes/atom-project-viewer)
+[![paypal](https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square)](https://paypal.me/jccguimaraes)
 
 ## Table Of Contents
 
@@ -79,5 +80,4 @@ You can follow me on [Twitter](https://twitter.com/jccguimaraes)
 
 ## A Special Thank You!
 
-I thank all you guys that are and did give great feedback to this project.
-:beers: for everyone.
+I thank you all for giving such great feedback! :beers: for everyone.
