@@ -14,6 +14,7 @@
 )](https://circleci.com/gh/jccguimaraes/atom-project-viewer)
 
 [![Beerpay](https://beerpay.io/jccguimaraes/atom-project-viewer/badge.svg?style=flat-square)](https://beerpay.io/jccguimaraes/atom-project-viewer)
+[![paypal](https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square)](https://paypal.me/jccguimaraes)
 
 This package was driven by other packages that manage projects but didn't gave me what I really wanted for my day to basis setup, so I created this package.
 
