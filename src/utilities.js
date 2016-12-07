@@ -108,11 +108,11 @@ const utilities = {
                 itemView.setIcon('');
             }
 
-            if (changes.color && original.current.type !== 'project') {
+            if (changes.hasColor && original.current.type !== 'project') {
                 original.current[original.current.type + 'Color'] = changes.color;
                 itemView.setColor(changes.color);
             }
-            else if (!changes.color && original.current.type !== 'project') {
+            else if (changes.hasOwnProperty('hasColor') && !changes.hasColor && original.current.type !== 'project') {
                 original.current[original.current.type + 'Color'] = undefined;
                 itemView.setColor();
             }

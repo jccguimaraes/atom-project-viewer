@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.35] - 2016-12-07
+
+### Fixed
+
+- Colors lost when updating project settings ([#100](https://github.com/jccguimaraes/atom-project-viewer/issues/100))
+
+### Added
+
+- Add `paypal` badge.
+
 ## [0.3.34] - 2016-12-05
 
 ### Added
