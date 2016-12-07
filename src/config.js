@@ -86,6 +86,12 @@ const config = {
         type: 'number',
         default: 180,
         order: 12
+    },
+    'customSelectedColor': {
+        description: 'Only allows for hexadecimal colors',
+        type: 'string',
+        default: '',
+        order: 13
     }
 };
 

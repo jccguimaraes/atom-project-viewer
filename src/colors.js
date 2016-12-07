@@ -65,6 +65,13 @@ sheet.setRule = function _setRule (itemId, itemType, color) {
         delete colorsObject.rules[itemType][itemId];
     }
 
+    if (colorsObject.rules.selected) {
+      colorsObject.element.sheet.insertRule(
+          colorsObject.rules.selected,
+          colorsObject.element.sheet.cssRules.length
+      )
+    }
+
     Object.keys(colorsObject.rules.client).forEach(
         (client, idx) => colorsObject.element.sheet.insertRule(
             colorsObject.rules.client[client],
@@ -85,6 +92,55 @@ sheet.setRule = function _setRule (itemId, itemType, color) {
             colorsObject.element.sheet.cssRules.length
         )
     );
+};
+
+sheet.setSelectedColor = function _setSelectedColor (color) {
+  const colorsObject = wm.get(this);
+
+  if (!colorsObject) {
+      return undefined;
+  }
+  sheet.unsetSelectedColor();
+  const rule = `project-viewer li[is="pv-list-item"].list-item.active span { color: ${color} !important}`;
+  colorsObject.element.sheet.insertRule(
+    rule,
+    colorsObject.element.sheet.cssRules.length
+  );
+  colorsObject.rules.selected = rule;
+};
+
+sheet.unsetSelectedColor = function _unsetSelectedColor () {
+  const colorsObject = wm.get(this);
+
+  if (!colorsObject || !colorsObject.rules.selected) {
+      return undefined;
+  }
+  colorsObject.rules.selected = undefined;
+
+  while (colorsObject.element.sheet.cssRules.length > 0) {
+      colorsObject.element.sheet.deleteRule(colorsObject.element.sheet.cssRules.length - 1);
+  }
+
+  Object.keys(colorsObject.rules.client).forEach(
+      (client, idx) => colorsObject.element.sheet.insertRule(
+          colorsObject.rules.client[client],
+          colorsObject.element.sheet.cssRules.length
+      )
+  );
+
+  Object.keys(colorsObject.rules.group).forEach(
+      (group, idx) => colorsObject.element.sheet.insertRule(
+          colorsObject.rules.group[group],
+          colorsObject.element.sheet.cssRules.length
+      )
+  );
+
+  Object.keys(colorsObject.rules.project).forEach(
+      (project, idx) => colorsObject.element.sheet.insertRule(
+          colorsObject.rules.project[project],
+          colorsObject.element.sheet.cssRules.length
+      )
+  );
 };
 
 module.exports = sheet;

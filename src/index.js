@@ -678,6 +678,16 @@ const projectViewer = {
         githubWorker.onmessage = githubWorkerOnMessage.bind(this);
 
         views.atomSyle = _colors.initialize();
+
+        this.disposables.add(atom.config.observe(_utility.getConfig('customSelectedColor'), (value) => {
+          const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
+          const parsed = regEx.exec(value);
+          if (!parsed) {
+            _colors.unsetSelectedColor();
+            return;
+          }
+          _colors.setSelectedColor(parsed[0]);
+        }));
     },
     serialize: function serialize() {},
     deactivate: function deactivate() {

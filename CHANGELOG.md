@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.36] - 2016-12-07
+
+### Added
+
+- FEATURE: Custom selected color ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+
 ## [0.3.35] - 2016-12-07
 
 ### Fixed
