@@ -157,8 +157,9 @@ function sortIcons (evt) {
 
     iconListArry.forEach(
         (child) => {
-            // Removen the icon prefix for filter purpouse
-            const iconString = child.innerHTML.substring(child.innerHTML.indexOf('-')+1, child.innerHTML.length);
+            const dataIcon = child.getAttribute('data-icon');
+            // Remove the icon prefix for filter purpose
+            const iconString = dataIcon.substring(dataIcon.indexOf('-')+1, dataIcon.length);
             if(iconString.indexOf(filterString) > -1){
                 child.style.display = 'inline-block';
             } else {

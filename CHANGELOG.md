@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.39] - 2016-12-07
+
+### Fixed
+
+- Filtering icons
+
+### Added
+
+- Doubled the size of the icons when `onlyIcons` is set to true;
+- Custom hover color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+
 ## [0.3.38] - 2016-12-07
 
 ### Fixed

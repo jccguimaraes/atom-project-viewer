@@ -93,11 +93,17 @@ const config = {
         default: '',
         order: 13
     },
+    'customHoverColor': {
+        description: 'Only allows for hexadecimal colors',
+        type: 'string',
+        default: '',
+        order: 14
+    },
     'onlyIcons': {
       description: 'Show the icons without the description.',
       type: 'boolean',
       default: false,
-      order: 14
+      order: 15
     }
 };
 

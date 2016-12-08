@@ -688,6 +688,16 @@ const projectViewer = {
           }
           _colors.setSelectedColor(parsed[0]);
         }));
+
+        this.disposables.add(atom.config.observe(_utility.getConfig('customHoverColor'), (value) => {
+          const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
+          const parsed = regEx.exec(value);
+          if (!parsed) {
+            _colors.unsetHoverColor();
+            return;
+          }
+          _colors.setHoverColor(parsed[0]);
+        }));
     },
     serialize: function serialize() {},
     deactivate: function deactivate() {
