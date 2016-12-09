@@ -1,6 +1,7 @@
 'use strict';
 
 const map = require('./map');
+const statusBar = require('./status-bar');
 const domBuilder = require('./dom-builder');
 const getModel = require('./common').getModel;
 
@@ -126,6 +127,10 @@ const viewMethods = {
       'selected',
       currentOpenedProject
     );
+
+    if (currentOpenedProject) {
+      statusBar.update(model.breadcrumb());
+    }
   },
   sorting: function _sorting () {
     const model = map.get(this);
@@ -197,6 +202,8 @@ const viewMethods = {
       atom.getStorageFolder().storeSync(projectSHA, serialization);
     }
 
+    statusBar.update(model.breadcrumb());
+
     projectSHA = atom.getStateKey(model.paths);
     serialization = atom.getStorageFolder().load(projectSHA);
 
@@ -212,7 +219,6 @@ const viewMethods = {
     }
 
     atom.project.deserialize(serialization.project, atom.deserializers);
-    // updateStatusBar(model.breadcrumb());
 
     if (serialization.treeView && tV.mainModule.treeView) {
       tV.mainModule.treeView.updateRoots(serialization.treeView.directoryExpansionStates);

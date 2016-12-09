@@ -73,6 +73,13 @@ const config = {
     type: 'number',
     default: 200,
     order: 8
+  },
+  'onlyIcons': {
+    title: 'Icons list without description',
+    description: 'Will show only the icons in the icon\'s list',
+    type: 'boolean',
+    default: false,
+    order: 9
   }
 };
 

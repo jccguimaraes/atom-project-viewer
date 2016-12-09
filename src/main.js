@@ -4,6 +4,7 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 const config = require('./config');
 const map = require('./map');
 const database = require('./database');
+const statusBar = require('./status-bar');
 const mainView = require('./main-view');
 const selectList = require('./select-list-view');
 const cleanConfig = require('./common').cleanConfig;
@@ -86,7 +87,9 @@ const projectViewerService = function _projectViewerService () {
   return serviceExposer;
 };
 
-const provideStatusBar = function _provideStatusBar (/*service*/) {};
+const provideStatusBar = function _provideStatusBar (service) {
+  map.set(statusBar, service);
+};
 
 const commandWorkspace = function _commandWorkspace () {
   return {
@@ -96,7 +99,8 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:focusPanel': focusPanel.bind(this),
     'project-viewer:toggleSelectList': toggleSelectList,
     'project-viewer:clearState': clearState.bind(this),
-    'project-viewer:clearStates': clearStates.bind(this)
+    'project-viewer:clearStates': clearStates.bind(this),
+    'project-viewer:openDatabase': openDatabase.bind(this)
   }
 };
 
@@ -111,7 +115,24 @@ const commandsCore = function _commandsCore () {
 };
 
 const commandscontextMenu = function _commandscontextMenu () {
-  return {};
+  return {
+      'project-viewer': [
+        {
+          command: 'project-viewer:openEditor',
+          created: function (evt) {
+            let model = map.get(evt.target);
+            if (model) {
+              this.label = `Update ${model.name}...`;
+            }
+          },
+          shouldDisplay: function (evt) {
+            let model = map.get(evt.target);
+            if (!model) { return false; }
+            return true;
+          }
+        }
+      ]
+  };
 };
 
 const observeVisibilityOption = function _observeVisibilityOption (option) {
@@ -137,8 +158,6 @@ const observeVisibilityActive = function observeVisibilityActive (option) {
 };
 
 const buildPanel = function _buildPanel (options) {
-  let priority;
-  let panels;
   let panel = {
     item: this,
     visible: atom.config.get('project-viewer.visibilityActive')
@@ -245,16 +264,20 @@ const autohidePanel = function _autohidePanel (option) {
   view.autohide(option);
 };
 
-const openEditor = function _openEditor () {
+const openEditor = function _openEditor (evt) {
   const view = map.get(this);
   if (!view) { return; }
-  view.openEditor();
+  view.openEditor(map.get(evt.target));
 };
 
 const focusPanel = function _focusPanel () {
   const view = map.get(this);
   if (!view) { return false; }
   view.toggleFocus();
+};
+
+const openDatabase = function _openDatabase () {
+  database.openDatabase();
 };
 
 const clearState = function _clearState () {};

@@ -14,6 +14,17 @@ let watcher;
 let hasLocalFile = false;
 
 /**
+ * Opens the local database file
+ * @since 1.0.0
+ */
+const openDatabase = function _openDatabase () {
+  atom.open({
+    pathsToOpen: filepath,
+    newWindow: false
+  })
+};
+
+/**
  * Maps each model to it's schema object
  * @returns {Undefined} cancel if entry has no type or type is not allowed
  * @since 1.0.0
@@ -379,6 +390,7 @@ database.refresh = refresh;
 database.moveTo = moveTo;
 database.remove = remove;
 database.addTo = addTo;
+database.openDatabase = openDatabase;
 
 /**
  * Database / Store module

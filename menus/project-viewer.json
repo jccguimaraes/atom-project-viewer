@@ -15,6 +15,10 @@
               "label": "Open editor...",
               "command": "project-viewer:openEditor"
             },
+            {
+              "label": "Toggle Select View...",
+              "command": "project-viewer:toggleSelectList"
+            },
             {"type": "separator"},
             {
               "label": "Import / Export...",
@@ -38,11 +42,12 @@
               "label": "Utilities...",
               "submenu": [
                 {
-                  "label": "Clear all projects stored states",
-                  "command": "project-viewer:clearStates"
+                  "label": "Open database file",
+                  "command": "project-viewer:openDatabase"
                 },
                 {
-                  "label": "Convert from database 0.2.x"
+                  "label": "Clear all projects stored states",
+                  "command": "project-viewer:clearStates"
                 },
                 {
                   "label": "Convert from database 0.3.x"

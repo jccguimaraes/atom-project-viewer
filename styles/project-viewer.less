@@ -28,10 +28,39 @@ project-viewer-editor {
     padding-bottom: @component-padding * 2;
   }
 
+  input,
+  .btn {
+    margin-bottom: @component-padding / 2;
+    margin-right: @component-padding / 2;
+  }
+
+  .input-color {
+    cursor: pointer;
+    transition: opacity @pv_transition-duration-default;
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+  }
+
+  .input-select {
+    cursor: pointer;
+  }
+
+  .input-checkbox {
+    cursor: pointer;
+  }
+
   .input-label {
+    cursor: pointer;
     display: block;
     width: -webkit-max-content;
     margin: 0 1em 1em 0;
+
+    &.inliner {
+      display: inline-block;
+    }
   }
 
   .list-group {
@@ -42,7 +71,7 @@ project-viewer-editor {
     margin-top: @component-padding;
     height: 200px;
     overflow: scroll;
-    padding: @component-padding;
+    padding: @component-padding / 2;
     background-color: @tool-panel-background-color;
     position: relative;
     flex: 1 1 300px;
@@ -51,6 +80,23 @@ project-viewer-editor {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+
+    &.only-icons {
+      .icon, .devicons {
+        flex: 0 0 32px;
+        margin: 3px;
+        text-align: center;
+        padding: 0;
+
+        &:before{
+          margin: 0;
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+          vertical-align: middle;
+        }
+      }
+    }
 
     .icon, .devicons {
         flex: 1 0 200px;

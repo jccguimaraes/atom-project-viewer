@@ -4,7 +4,6 @@
 const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
-const database = require('./database');
 
 const viewsRef = {};
 let startX;
@@ -81,12 +80,10 @@ const toggleTitle = function _toggleTitle (visibility) {
   title.classList.toggle('hidden', visibility);
 };
 
-const openEditor = function _openEditor () {
-  console.log('openEditor');
+const openEditor = function _openEditor (model) {
   const activePane = atom.workspace.getActivePane();
-  const randomModel = database.fetch()[Math.ceil(Math.random()*6)];
   const editorItem = api.editor.createView();
-  map.set(editorItem, randomModel);
+  map.set(editorItem, model);
   editorItem.initialize();
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
