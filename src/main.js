@@ -122,13 +122,11 @@ const commandscontextMenu = function _commandscontextMenu () {
           created: function (evt) {
             let model = map.get(evt.target);
             if (model) {
-              this.label = `Update ${model.name}...`;
+              this.label = `Edit ${model.name}...`;
             }
           },
           shouldDisplay: function (evt) {
-            let model = map.get(evt.target);
-            if (!model) { return false; }
-            return true;
+            return map.get(evt.target);
           }
         }
       ]

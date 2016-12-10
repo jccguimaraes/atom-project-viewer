@@ -83,8 +83,8 @@ const toggleTitle = function _toggleTitle (visibility) {
 const openEditor = function _openEditor (model) {
   const activePane = atom.workspace.getActivePane();
   const editorItem = api.editor.createView();
-  map.set(editorItem, model);
-  editorItem.initialize();
+  // map.set(editorItem, model);
+  editorItem.initialize(model);
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
 };

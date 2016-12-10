@@ -58,3 +58,4 @@
 
 - [ ] Linter does not switch context;
 - [ ] Context is not working proper;
+- [ ] expand / collapse is not stored;
