@@ -142,7 +142,7 @@ const handler = {
         '\u2028': '\\u2028',
         '\u2029': '\\u2029'
       };
-      cleanValue = value.replace && value.replace(
+      cleanValue = value.length > 0 && value.replace && value.replace(
         UNSAFE_CHARS_PATTERN,
         function (unsafeChar) { return UNICODE_CHARS[unsafeChar]; }
       ) === value ? value : target[property];
@@ -189,29 +189,30 @@ const handler = {
 
 module.exports = {
   createGroup: function _createGroup (candidate) {
-    let group = Object.assign(groupModel);
-    let model = Object.assign({}, group, groupMethods);
+    const group = Object.assign(groupModel);
+    const model = Object.assign({}, group, groupMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
+    const proxy = new Proxy(model, handler);
     if (candidate) {
-      Object.assign(model, candidate);
+      Object.assign(proxy, candidate);
     }
-    Object.preventExtensions();
-    return new Proxy(model, handler);
+    return proxy;
   },
   createProject: function _createproject (candidate) {
-    let project = Object.assign(projectModel);
+    const project = Object.assign(projectModel);
     project.paths = []
-    let model = Object.assign({}, project, projectMethods);
+    const model = Object.assign({}, project, projectMethods);
     model.uuid = 'pv_' + Math.ceil(Date.now() * Math.random());
+    const proxy = new Proxy(model, handler);
     if (candidate) {
-      Object.assign(model, candidate);
+      Object.assign(proxy, candidate);
+      proxy.addPaths(candidate.paths);
     }
-    Object.preventExtensions();
-    return new Proxy(model, handler);
+    return proxy
   },
   createGroupSchema: function _createGroupSchema (
     {
-      name = groupModel.name,
+      name = groupModel.name === defaults.name ? '' : groupModel.name,
       sortBy = groupModel.sortBy,
       icon = groupModel.icon,
       color = groupModel.color,
@@ -222,7 +223,7 @@ module.exports = {
   },
   createProjectSchema: function _createProjectSchema (
     {
-      name = projectModel.name,
+      name = projectModel.name === defaults.name ? '' : projectModel.name,
       icon = projectModel.icon,
       color = projectModel.color,
       devMode = projectModel.devMode,

@@ -36,10 +36,10 @@ const resizerInitializeDrag = function _resizerInitializeDrag (event) {
 const resizerDoDrag = function _resizerDoDrag (event) {
   let variation;
   if (atom.config.get('project-viewer.panelPosition') === 'Right') {
-    variation = startX - event.clientX;
+    variation = event.clientX - startX;
   }
   else {
-    variation = event.clientX - startX;
+    variation = startX - event.clientX;
   }
   this.setAttribute('style', `width:${startWidth + variation}px;`);
 };
@@ -81,9 +81,15 @@ const toggleTitle = function _toggleTitle (visibility) {
 };
 
 const openEditor = function _openEditor (model) {
+  const alreadyEditing = model && atom.workspace.getActivePane().items.some(
+    function (item) {
+      return item.nodeName === 'PROJECT-VIEWER-EDITOR' &&
+        item.getAttribute('data-pv-uuid') === model.uuid;
+    }
+  );
+  if (model && alreadyEditing) { return; }
   const activePane = atom.workspace.getActivePane();
   const editorItem = api.editor.createView();
-  // map.set(editorItem, model);
   editorItem.initialize(model);
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);

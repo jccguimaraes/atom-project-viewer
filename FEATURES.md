@@ -24,16 +24,16 @@
 
 - [ ] A decent testing coverage;
 - [ ] Editor for groups / `projects` creation and update;
-  - [ ] Bulk operation on `project` creation;
+  - [ ] Bulk operation on a `project` creation;
     - > Ability to create individual `projects` when more than one path is provided.
   - [ ] Filtering icons;
-  - [ ] List of icons in editor as *only icons* or *icon and description*;
+  - [x] List of icons in editor as *only icons* or *icon and description*;
     - > This is available through a config option, default is *icon and description*.
-  - [ ] Drag & Drop `groups` and `projects`;
-    - [x] Drag and drop a `group` or `project` into a `group` will add it as a child;
-    - [ ] Drag and drop a`group` or `project` into an `project` will add it as sibling of the dropped item;
-    - [x] Drag and drop a `group` or `project` into a clear space in the panel will add it as a root child;
-    - [ ] Order dragged `group` / `project` accordingly with dropped `group` sorting.
+- [ ] Drag & Drop `groups` and `projects`;
+  - [x] Drag and drop a `group` or `project` into a `group` will add it as a child;
+  - [ ] Drag and drop a`group` or `project` into an `project` will add it as sibling of the dropped item;
+  - [x] Drag and drop a `group` or `project` into a clear space in the panel will add it as a root child;
+  - [ ] Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
 

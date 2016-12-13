@@ -63,6 +63,10 @@ const detachedCallback = function _detachedCallback () {
 const attachedCallback = function _attachedCallback () {
   this.disposables = new CompositeDisposable();
   this.classList.add('native-key-bindings', 'pv-has-icons');
+  const props = map.get(this);
+  if (props.model) {
+    this.setAttribute('data-pv-uuid', props.model.uuid);
+  }
 };
 
 const getTitle = function _getTitle () {
@@ -176,6 +180,24 @@ const iconContainer = function _iconContainer (parentView) {
   const iconHeader = buildHeader('Icons');
   const iconInput = buildInput('search', 'icon');
 
+  iconInput.addEventListener('keyup', function (evt) {
+    const searchPattern = evt.target.value;
+    Array.from(iconList.childNodes).forEach(function (iconView) {
+      const currentIcon = iconView.getAttribute('data-pv-icon');
+      const isMatch = currentIcon.search(searchPattern) !== -1;
+      iconView.classList.toggle('hidden', !!searchPattern.length && !isMatch);
+    });
+  }, false);
+
+  iconInput.addEventListener('search', function (evt) {
+    const searchPattern = evt.target.value;
+    Array.from(iconList.childNodes).forEach(function (iconView) {
+      const currentIcon = iconView.getAttribute('data-pv-icon');
+      const isMatch = currentIcon.search(searchPattern) !== -1;
+      iconView.classList.toggle('hidden', !!searchPattern.length && !isMatch);
+    });
+  }, false);
+
   props.refs['pv-container-icons'] = iconBlock;
 
   const iconList = document.createElement('div');
@@ -243,7 +265,12 @@ const colorContainer = function _colorContainer (parentView) {
     function (color) {
       const palette = document.createElement('div');
       palette.classList.add('pv-palette');
+      palette.addEventListener('click', function (evt) {
+        if (evt.target.parentNode.hasAttribute('hidden')) { return; }
+        colorInput.value = evt.target.getAttribute('data-pv-palette');
+      }, false);
       palette.setAttribute('style', `background-color: ${color}`)
+      palette.setAttribute('data-pv-palette', color);
       colorPalette.appendChild(palette);
     }
   );
@@ -277,7 +304,7 @@ const optionsContainer = function _optionsContainer (parentView) {
   const optionsBlock = buildBlock();
   const optionsHeader = buildHeader('Options');
   const devModeInput = buildInput('checkbox', 'checkbox-devMode');
-  const devModeLabel = buildLabel('Dev Mode', 'devMode', devModeInput);
+  const devModeLabel = buildLabel('Open in Dev Mode', 'devMode', devModeInput);
 
   props.refs['pv-container-options'] = optionsBlock;
 
@@ -299,7 +326,9 @@ const pathsContainer = function _pathsContainer (parentView) {
 
   pathsButton.addEventListener('click', function () {
     atom.pickFolder(function (path) {
-      props.refs['pv-list-paths'] = props.refs['pv-list-paths'].concat(path);
+      if (props.refs['pv-list-paths'].indexOf(path) !== -1) {
+        props.refs['pv-list-paths'] = props.refs['pv-list-paths'].concat(path);
+      }
     });
   }, false);
 
@@ -314,7 +343,10 @@ const pathsContainer = function _pathsContainer (parentView) {
 
   pathsBlock.appendChild(pathsHeader);
   pathsBlock.appendChild(pathsButton);
-  pathsBlock.appendChild(bulkLabel);
+
+  if (!props.model) {
+    pathsBlock.appendChild(bulkLabel);
+  }
   pathsBlock.appendChild(pathsList);
 
   parentView.appendChild(pathsBlock);
@@ -410,7 +442,7 @@ const activateContainers = function _activateContainer (options) {
 };
 
 const initialize = function _initialize (model) {
-  map.set(this, {
+  const context = map.set(this, {
     model,
     refs: Object.create(null)
   });
@@ -464,15 +496,27 @@ const clickDeleteButton = function _clickDeleteButton () {
 };
 
 const clickSuccessButton = function _clickSuccessButton () {
-  console.log('type:', getType.call(this));
-  console.log('name:', getName.call(this));
-  console.log('sortBy:', getSelectedSortBy.call(this));
-  console.log('icon:', getSelectedIcon.call(this));
-  console.log('color:', getSelectedColor.call(this));
-  console.log('options:'/*, getSelectedOptions.call(this)*/);
-  console.log('paths:', getSelectedPaths.call(this));
-  console.log('groups:'/*, getSelectedGroup.call(this)*/);
-  console.log('config:'/*, getSelectedConfig.call(this)*/);
+  const type = getType.call(this);
+
+  if (!type) { return }
+
+  const model = module.parent.exports[type].createModel({
+    name: getName.call(this),
+    sortBy: getSelectedSortBy.call(this),
+    icon: getSelectedIcon.call(this),
+    color: getSelectedColor.call(this),
+    paths: getSelectedPaths.call(this)
+  });
+
+  const wasAdded = database.addTo(model);
+  if (!wasAdded) {
+    atom.notifications.addError(`Could not create the new ${type}`, {
+      detail: 'it is possible that some of the fields are incorrect',
+      icon: 'database'
+    });
+    return;
+  }
+  database.update();
 };
 
 const clickIconView = function _clickIconView (view) {

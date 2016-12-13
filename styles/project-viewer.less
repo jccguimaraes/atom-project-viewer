@@ -45,6 +45,7 @@ project-viewer-editor {
   }
 
   .input-color {
+    border: none;
     cursor: pointer;
     transition: opacity @pv_transition-duration-default;
 
@@ -71,6 +72,10 @@ project-viewer-editor {
 
     &[hidden] {
       opacity: 0.1;
+
+        .pv-palette {
+          cursor: not-allowed;
+        }
     }
   }
 
@@ -84,6 +89,7 @@ project-viewer-editor {
     width: 20px;
     border-radius: 5px;
     margin: 0 2px;
+    cursor: pointer;
   }
 
   .input-label {
@@ -118,6 +124,7 @@ project-viewer-editor {
     &.only-icons {
       .icon, .devicons {
         flex: 0 0 32px;
+        height: 32px;
         margin: 3px;
         text-align: center;
         padding: 0;
@@ -133,14 +140,18 @@ project-viewer-editor {
     }
 
     .icon, .devicons {
+      cursor: pointer;
       flex: 1 0 200px;
       padding: @component-padding/2 @component-padding;
       transition: all @pv_transition-duration-default;
 
-      &:hover {
-        cursor: pointer;
+      &:hover:not(.highlight-success) {
         color: @text-color-highlight;
         background-color: @button-background-color-hover;
+      }
+
+      &.hidden {
+        display: none;
       }
     }
   }
