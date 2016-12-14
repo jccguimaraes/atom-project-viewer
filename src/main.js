@@ -8,6 +8,8 @@ const statusBar = require('./status-bar');
 const mainView = require('./main-view');
 const selectList = require('./select-list-view');
 const cleanConfig = require('./common').cleanConfig;
+const getModel = require('./common').getModel;
+const getView = require('./common').getView;
 
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
@@ -120,13 +122,14 @@ const commandscontextMenu = function _commandscontextMenu () {
         {
           command: 'project-viewer:openEditor',
           created: function (evt) {
-            let model = map.get(evt.target);
+            const model = getModel(evt.target);
             if (model) {
               this.label = `Edit ${model.name}...`;
             }
           },
           shouldDisplay: function (evt) {
-            return map.get(evt.target);
+            const view = getView(evt.target);
+            return map.has(view);
           }
         }
       ]
@@ -265,7 +268,8 @@ const autohidePanel = function _autohidePanel (option) {
 const openEditor = function _openEditor (evt) {
   const view = map.get(this);
   if (!view) { return; }
-  view.openEditor(map.get(evt.target));
+  const model = getModel(evt.target);
+  view.openEditor(model);
 };
 
 const focusPanel = function _focusPanel () {
