@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.41] - 2016-12-21
+
+### Fixed
+
+- Fix `Add project folder` validation issues ([#105](https://github.com/jccguimaraes/atom-project-viewer/issues/105))
+
 ## [0.3.40] - 2016-12-21
 
 ### Added

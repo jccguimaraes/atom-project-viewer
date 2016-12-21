@@ -672,8 +672,9 @@ const projectViewer = {
         this.disposables.add(
           atom.project.onDidChangePaths((paths) => {
             const selectedModel = _utility.getSelectedProjectModel();
-            const type = selectedModel.type;
             if (!selectedModel) { return; }
+            const type = selectedModel.type;
+            if (!type) { return; }
             const selectedPaths = selectedModel[type + 'Paths'];
             const changes = {
                 name: selectedModel[type + 'Name'],
