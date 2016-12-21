@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.42] - 2016-12-21
+
+### Fixed
+
+- Project config being corrupted ([#106](https://github.com/jccguimaraes/atom-project-viewer/issues/106))
+
 ## [0.3.41] - 2016-12-21
 
 ### Fixed

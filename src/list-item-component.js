@@ -68,6 +68,7 @@ function clickListener(evt) {
         serialization = atom.storageFolder.load(serializationFile);
     }
 
+    _utility.bypassPathChanges = true;
     if (serialization && !atom.config.get(_utility.getConfig('keepContext'))) {
         _states.projectDeserialization(serialization.project);
         _states.workspaceDeserialization(serialization.workspace);
@@ -75,6 +76,7 @@ function clickListener(evt) {
     } else {
         atom.project.setPaths(model.projectPaths);
     }
+    _utility.bypassPathChanges = false;
 
     _utility.setSelectedProjectView(this);
 
