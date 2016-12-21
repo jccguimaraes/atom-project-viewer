@@ -171,8 +171,53 @@ sheet.unsetHoverColor = function _unsetHoverColor () {
     });
 };
 
+sheet.setTitleColor = function _setTitleColor (color) {
+    const colorsObject = wm.get(this);
+
+    if (!colorsObject) {
+        return undefined;
+    }
+
+    let selectorText = `project-viewer pv-header`;
+    let rule = `${selectorText} { color: ${color} !important}`;
+
+    Array.from(colorsObject.element.sheet.cssRules).forEach(function (cssRule, idx) {
+        if (cssRule.selectorText ===  selectorText) {
+            colorsObject.element.sheet.deleteRule(idx);
+        }
+    });
+
+    colorsObject.element.sheet.insertRule(
+      rule,
+      colorsObject.element.sheet.cssRules.length
+    );
+    colorsObject.rules.title = rule;
+};
+
+sheet.unsetTitleColor = function _unsetTitleColor () {
+    const colorsObject = wm.get(this);
+
+    if (!colorsObject) {
+        return undefined;
+    }
+
+    let selectorText = `project-viewer pv-header`;
+
+    Array.from(colorsObject.element.sheet.cssRules).forEach(function (cssRule, idx) {
+        if (cssRule.selectorText ===  selectorText) {
+            colorsObject.element.sheet.deleteRule(idx);
+            delete colorsObject.rules.title;
+        }
+    });
+};
 
 sheet.setRules = function _setRules (obj) {
+  if (obj.rules.title) {
+    obj.element.sheet.insertRule(
+        obj.rules.title,
+        obj.element.sheet.cssRules.length
+    )
+  }
   if (obj.rules.selected) {
     obj.element.sheet.insertRule(
         obj.rules.selected,

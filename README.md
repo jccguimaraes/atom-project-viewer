@@ -57,6 +57,11 @@ Settings | Type | Description | Default
 `setName` | `String` | Name of your working set, for example 'work' or 'home'. As each working set is backed up into a separate file in one gist, you can have multiple Client/Group/Project sets on different machines and have them all safely backed up on gist. | `default`
 `convertOldData` | `Boolean` | If you came from a version previous to <code>0.3.0</code>, you most probably have the old data in the atom folder. By default it will always check on startup for this data and if the new does not exist, it will convert to the new data schema. | `true`
 `keepContext` |  `Boolean` | Keep context between project switching. | `false`
+`customWidth` | `Number` | Set a custom panel width | `180`
+`customSelectedColor` | `String` | Set custom selected project color | `''`
+`customHoverColor` | `String` | Set custom hover project color | `''`
+`customTitleColor` | `String` | Set custom main title color | `''`
+`onlyIcons` | `Boolean` | Show the icons without the description. | `false`
 
 ## Features & Future Features
 Please read the `CHANGE LOG` to have a more insight on all the features existing and planned.

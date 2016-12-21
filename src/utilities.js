@@ -142,6 +142,7 @@ const utilities = {
                     (path) => {
                         if ( path !== undefined ) {
                             original.current.projectPaths.push(path);
+                            atom.project.addPath(path);
                         }
                     }
                 );

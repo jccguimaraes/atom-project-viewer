@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.40] - 2016-12-21
+
+### Added
+
+- Custom title color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+
+### Fixed
+
+- Root paths should be left justified in the project dialog ([#104](https://github.com/jccguimaraes/atom-project-viewer/issues/104))
+- Project paths added to an open project are lost after closing and reopening the project ([#103](https://github.com/jccguimaraes/atom-project-viewer/issues/103))
+
+### Changed
+
+- Updated README
+
 ## [0.3.39] - 2016-12-07
 
 ### Fixed

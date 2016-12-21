@@ -158,8 +158,8 @@ function addProjects (parentMapper, parentView, atRootLevel) {
 
             let isActive = false;
             if (atom.project.getPaths().length > 0 && Array.isArray(mappedProject.paths) && mappedProject.paths.length > 0) {
-                isActive = atom.project.getPaths().every((path) => {
-                    return mappedProject.paths.indexOf(path) !== -1;
+                isActive = atom.project.getPaths().every((_path) => {
+                    return mappedProject.paths.indexOf(_path) !== -1;
                 });
             }
             if (isActive) {
@@ -669,6 +669,52 @@ const projectViewer = {
           })
         );
 
+        this.disposables.add(
+          atom.project.onDidChangePaths((paths) => {
+            const selectedModel = _utility.getSelectedProjectModel();
+            const type = selectedModel.type;
+            if (!selectedModel) { return; }
+            const selectedPaths = selectedModel[type + 'Paths'];
+            const changes = {
+                name: selectedModel[type + 'Name'],
+                icon: selectedModel[type + 'Icon'],
+                sortBy: type === 'project' ? undefined : selectedModel.sortBy
+            };
+            paths.forEach((_path) => {
+                if (selectedPaths.indexOf(_path) === -1) {
+                    _utility.updateItem(
+                        {
+                            current: selectedModel,
+                            parent: Object.getPrototypeOf(selectedModel)
+                        },
+                        Object.assign(changes, {
+                            paths: {
+                                remove: [],
+                                add: [_path]
+                            }
+                        })
+                    );
+                }
+            });
+            selectedPaths.forEach((_path) => {
+                if (paths.indexOf(_path) === -1) {
+                    _utility.updateItem(
+                        {
+                            current: selectedModel,
+                            parent: Object.getPrototypeOf(selectedModel)
+                        },
+                        Object.assign(changes, {
+                            paths: {
+                                remove: [_path],
+                                add: []
+                            }
+                        })
+                    );
+                }
+            });
+          })
+        );
+
         views.containerView.setAsRootLevel();
         views.mainView.addNode(views.headerView);
         views.mainView.addNode(views.containerView);
@@ -697,6 +743,16 @@ const projectViewer = {
             return;
           }
           _colors.setHoverColor(parsed[0]);
+        }));
+
+        this.disposables.add(atom.config.observe(_utility.getConfig('customTitleColor'), (value) => {
+          const regEx = new RegExp('^#(?:[0-9a-f]{3}){1,2}$', 'i');
+          const parsed = regEx.exec(value);
+          if (!parsed) {
+            _colors.unsetTitleColor();
+            return;
+          }
+          _colors.setTitleColor(parsed[0]);
         }));
     },
     serialize: function serialize() {},
