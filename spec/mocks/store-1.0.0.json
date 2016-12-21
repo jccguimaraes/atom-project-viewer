@@ -1,0 +1,102 @@
+{
+  "info": {
+    "version": "1.0.0"
+  },
+  "structure": [
+    {
+      "type": "group",
+      "name": "blip",
+      "sortBy": "position",
+      "icon": "",
+      "color": "",
+      "expanded": true,
+      "list": [
+        {
+          "type": "group",
+          "name": "eds",
+          "sortBy": "reverse-alphabetically",
+          "icon": "devicons-javascript",
+          "color": "",
+          "expanded": false,
+          "list": [
+            {
+              "type": "project",
+              "name": "bf-eds-functional-tests",
+              "icon": "",
+              "color": "",
+              "devMode": false,
+              "config": {},
+              "paths": [
+                "/Users/guimaraesj/devel/eds/bf-eds-functional-tests/"
+              ]
+            },
+            {
+              "type": "project",
+              "name": "bf-eds-static-client",
+              "icon": "",
+              "color": "",
+              "devMode": false,
+              "config": {},
+              "paths": [
+                "/Users/guimaraesj/devel/eds/bf-eds-static-client"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "name": "ui-components",
+          "sortBy": "alphabetically",
+          "icon": "",
+          "color": "",
+          "expanded": false,
+          "list": [
+            {
+              "type": "project",
+              "name": "bf-sports-highlights",
+              "icon": "",
+              "color": "",
+              "devMode": false,
+              "config": {},
+              "paths": [
+                "/Users/guimaraesj/devel/ui-components/bf-sports-highlights"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "personal",
+      "sortBy": "reverse-alphabetically",
+      "icon": "devicons-javascript",
+      "color": "",
+      "expanded": false,
+      "list": [
+        {
+          "type": "project",
+          "name": "atom-pv-integration",
+          "icon": "icon-alert",
+          "color": "#ff6611",
+          "devMode": false,
+          "config": {},
+          "paths": [
+            "/Users/guimaraesj/personal/devel/atom-pv-integration"
+          ]
+        },
+        {
+          "type": "project",
+          "name": "atom-project-viewer",
+          "icon": "",
+          "color": "",
+          "devMode": false,
+          "config": {},
+          "paths": [
+            "/Users/guimaraesj/personal/devel/atom-project-viewer"
+          ]
+        }
+      ]
+    }
+  ]
+}

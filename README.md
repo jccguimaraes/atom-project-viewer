@@ -63,6 +63,22 @@ statusBar | `Boolean` | Will show the breadcrumb to the current opened project i
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
 
+## Local File manipulation
+
+### Group schema
+
+parameter | Type | Description | Required
+----------|------|-------------|--------
+`type` | `String` | | `true`
+`name` | `String` | | `true`
+`list` | `Array` | | `true`
+
+### Project schema
+
+parameter | Type | Description | Required
+----------|------|-------------|--------
+`type` | `String` | | `true`
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):

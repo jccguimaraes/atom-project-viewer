@@ -80,6 +80,18 @@ const config = {
     type: 'boolean',
     default: true,
     order: 9
+  },
+  'customPalette': {
+    title: 'Custom palette to use on editor',
+    description: 'This can be filled with custom colors',
+    type: 'array',
+    default: ['#F1E4E8', '#F7B05B', '#595959', '#CD5334', '#EDB88B', '#23282E', '#263655',
+    '#F75468', '#FF808F', '#FFDB80', '#292E1E', '#248232', '#2BA84A', '#D8DAD3',
+    '#FCFFFC', '#8EA604', '#F5BB00', '#EC9F05', '#FF5722', '#BF3100'],
+    items: {
+      type: 'string'
+    },
+    order: 10
   }
 };
 

@@ -212,6 +212,7 @@ module.exports = {
   },
   createGroupSchema: function _createGroupSchema (
     {
+      type = 'group',
       name = groupModel.name === defaults.name ? '' : groupModel.name,
       sortBy = groupModel.sortBy,
       icon = groupModel.icon,
@@ -219,10 +220,11 @@ module.exports = {
       expanded = groupModel.expanded
     } = {}
   ) {
-    return { name, sortBy, icon, color, expanded };
+    return { type, name, sortBy, icon, color, expanded };
   },
   createProjectSchema: function _createProjectSchema (
     {
+      type = 'project',
       name = projectModel.name === defaults.name ? '' : projectModel.name,
       icon = projectModel.icon,
       color = projectModel.color,
@@ -231,6 +233,6 @@ module.exports = {
       paths = []
     } = {}
   ) {
-    return { name, icon, color, devMode, config, paths };
+    return { type, name, icon, color, devMode, config, paths };
   }
 };

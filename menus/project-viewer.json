@@ -46,11 +46,12 @@
                   "command": "project-viewer:openDatabase"
                 },
                 {
-                  "label": "Clear all projects stored states",
-                  "command": "project-viewer:clearStates"
+                  "label": "Convert from 0.3.x local database",
+                  "command": "project-viewer:migrate03x"
                 },
                 {
-                  "label": "Convert from database 0.3.x"
+                  "label": "Clear all projects stored states",
+                  "command": "project-viewer:clearStates"
                 }
               ]
             }

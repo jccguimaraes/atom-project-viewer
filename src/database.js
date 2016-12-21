@@ -4,9 +4,9 @@ const fs = require('fs');
 const path = require('path');
 
 const model = require('./model');
-const version = '0.4.0';
+const version = '1.0.0';
 const database = Object.create(null);
-const store = [];
+let store = [];
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
 let listeners = [];
@@ -39,8 +39,7 @@ const processStorageEntry = function _processStorageEntry (reference, entry) {
 
   if (entry.type === 'group') {
     obj = model.createGroupSchema(entry);
-    obj.groups = [];
-    obj.projects = [];
+    obj.list = [];
   }
   else if (entry.type === 'project') {
     obj = model.createProjectSchema(entry);
@@ -52,13 +51,13 @@ const processStorageEntry = function _processStorageEntry (reference, entry) {
   reference[entry.uuid] = obj;
 
   if (prototypeOf === Object.prototype) {
-    this[`${entry.type}s`].push(obj);
+    this.push(obj);
     return;
   }
   let prototypeOfObj = reference[prototypeOf.uuid];
   if (!prototypeOfObj) { return; }
 
-  prototypeOfObj[`${entry.type}s`].push(obj);
+  prototypeOfObj.list.push(obj);
 };
 
 /**
@@ -68,13 +67,25 @@ const processStorageEntry = function _processStorageEntry (reference, entry) {
  * @since 1.0.0
  */
 const processStore = function _processStore () {
-  let storage = {
-    groups: [],
-    projects: []
-  };
+  let storage = [];
   const reference = {};
   store.forEach(processStorageEntry.bind(storage, reference));
-  return [storage];
+  return storage;
+};
+
+/**
+ * Processes the listed model as a group or project
+ * @param {Object} listed - a candidate to a model
+ * @param {Object} parentModel - the model where the candidate will be placed
+ * @since 1.0.0
+ */
+const processList = function _processList (parentModel, listed) {
+  if (listed.type === 'group') {
+      processGroup(parentModel, listed);
+  }
+  if (listed.type === 'project') {
+      processProject(parentModel, listed);
+  }
 };
 
 /**
@@ -83,19 +94,13 @@ const processStore = function _processStore () {
  * @param {Object} data - an object with a candidate to become a group
  * @since 1.0.0
  */
-const processRawGroup = function _processRawGroup (protoModel, data) {
+const processGroup = function _processGroup (protoModel, data) {
   if (!data) { return; }
-
   let groupModel = model.createGroup(data);
 
   addTo(groupModel, protoModel);
 
-  Array.prototype.concat(data.groups).forEach(
-    processRawGroup.bind(null, groupModel)
-  );
-  Array.prototype.concat(data.projects).forEach(
-    processRawProject.bind(null, groupModel)
-  );
+  data.list.forEach(processList.bind(null, groupModel));
 };
 
 /**
@@ -104,25 +109,10 @@ const processRawGroup = function _processRawGroup (protoModel, data) {
  * @param {Object} data - an object with a candidate to become a project
  * @since 1.0.0
  */
-const processRawProject = function _processRawProject (protoModel, data) {
+const processProject = function _processProject (protoModel, data) {
   if (!data) { return; }
   let projectModel = model.createProject(data);
   addTo(projectModel, protoModel);
-};
-
-/**
- * Start point to process the database object
- * @param {Object} data - an object with the database object
- * @since 1.0.0
- */
-const processRawDatabase = function _processRawDatabase (data) {
-  if (!data) { return; }
-  Array.prototype.concat(data.groups).forEach(
-    processRawGroup.bind(null, undefined)
-  );
-  Array.prototype.concat(data.projects).forEach(
-    processRawProject.bind(null, undefined)
-  );
 };
 
 /**
@@ -169,7 +159,7 @@ const processFileContent = function _processFileContent(result) {
   try {
     let serialized = JSON.parse(result);
     store.length = 0;
-    serialized.structure.forEach(processRawDatabase);
+    serialized.structure.forEach(processList.bind(null, undefined));
     listeners.forEach(runSubscriber);
   } catch (e) {
     atom.notifications.addError('Local database corrupted', {
@@ -187,7 +177,6 @@ const processFileContent = function _processFileContent(result) {
  */
 const refresh = function _refresh () {
   fs.readFile(filepath, 'utf8', function (err, data) {
-    //  console.log('err:', err, 'data:', data);
     if (err) {
       atom.notifications.addWarning('Local database not found', {
         icon: 'database'
@@ -216,9 +205,10 @@ const moveTo = function _moveTo (childModel, protoModel) {
   if (currentProtoModel.type && currentProtoModel.type !== 'group') {
     return null;
   }
-
+  const oldIdx = store.indexOf(childModel);
+  store.splice(oldIdx, 1);
   Object.setPrototypeOf(childModel, protoModel);
-
+  store.push(childModel);
   return true;
 };
 
@@ -317,13 +307,13 @@ const subscribe = function _subscribe (listener) {
  * @since 1.0.0
  */
 const directoryWatcher = function _directoryWatcher (event, filename) {
-  if (filename !== file) {
-    return;
-  }
+  if (filename !== file) { return; }
+
   if (event === 'change') {
     refresh();
     return;
   }
+
   if (hasLocalFile) {
     hasLocalFile = false;
     atom.notifications.addError('Local database not found', {
@@ -362,6 +352,40 @@ const directoryWatch = function _directoryWatch () {
 };
 
 /**
+ * Migrate old 0.3.x local database to 1.0.0
+ * @since 1.0.0
+ */
+const migrate03x = function _migrate03x () {
+  const store03x = atom.getStorageFolder().load(file);
+  const convertedStore = [];
+
+  function processGroup (group) {
+    const groupModel = model.createGroup(group);
+    convertedStore.push(groupModel);
+    if (group.hasOwnProperty('groups')) {
+      group.groups.forEach(processGroup.bind(null, groupModel));
+    }
+    if (group.hasOwnProperty('projects')) {
+      group.projects.forEach(processProject.bind(null, groupModel));
+    }
+  }
+
+  function processProject (parentModel, project) {
+    const projectModel = model.createProject(project);
+    convertedStore.push(projectModel);
+    Object.setPrototypeOf(projectModel, parentModel);
+  }
+
+  store03x.clients.forEach(processGroup);
+  store03x.groups.forEach(processGroup);
+  store03x.projects.forEach(processProject);
+
+  store = convertedStore;
+  update();
+  listeners.forEach(runSubscriber);
+};
+
+/**
  * Deactivation of the database module
  * Clears out the directory watcher
  * @public
@@ -391,6 +415,7 @@ database.moveTo = moveTo;
 database.remove = remove;
 database.addTo = addTo;
 database.openDatabase = openDatabase;
+database.migrate03x = migrate03x;
 
 /**
  * Database / Store module

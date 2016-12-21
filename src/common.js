@@ -29,6 +29,12 @@ const getView = function _getView (view) {
   return view;
 };
 
+const getViewFromModel = function _getViewFromModel (model) {
+  return document.querySelector(
+    `project-viewer li[data-project-viewer-uuid="${model.uuid}"]`
+  );
+};
+
 const buildBlock = function _buildBlock () {
   const view = document.createElement('div');
   view.classList.add('block', 'pv-editor-block');
@@ -67,6 +73,7 @@ const buildLabel = function _buildLabel (text, type, child) {
 
 exports.cleanConfig = cleanConfig;
 exports.getModel = getModel;
+exports.getViewFromModel = getViewFromModel;
 exports.getView = getView;
 exports.buildBlock = buildBlock;
 exports.buildHeader = buildHeader;

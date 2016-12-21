@@ -1,6 +1,7 @@
 'use strict';
 
 const map = require('./map');
+const database = require('./database');
 const domBuilder = require('./dom-builder');
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
@@ -52,8 +53,9 @@ const drop = function _drop (evt) {
 
   if (droppedView === view) { return; }
 
+  database.moveTo(draggedModel, droppedModel);
   droppedView.attachChild(view);
-  Object.setPrototypeOf(draggedModel, droppedModel);
+  database.update();
 };
 
 const viewMethods = {

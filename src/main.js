@@ -102,7 +102,8 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:toggleSelectList': toggleSelectList,
     'project-viewer:clearState': clearState.bind(this),
     'project-viewer:clearStates': clearStates.bind(this),
-    'project-viewer:openDatabase': openDatabase.bind(this)
+    'project-viewer:openDatabase': openDatabase.bind(this),
+    'project-viewer:migrate03x': migrate03x
   }
 };
 
@@ -251,6 +252,10 @@ const togglePanel = function _togglePanel () {
   if (atom.config.get('project-viewer.visibilityOption') === 'Remember state') {
     atom.config.set('project-viewer.visibilityActive', panel.visible);
   }
+};
+
+const migrate03x = function _migrate03x () {
+  database.migrate03x();
 };
 
 const toggleSelectList = function _toggleSelectList () {
