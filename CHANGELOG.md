@@ -7,6 +7,50 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 > WIP
 
+## [0.3.42] - 2016-12-21
+
+### Fixed
+
+- Project config being corrupted ([#106](https://github.com/jccguimaraes/atom-project-viewer/issues/106))
+
+## [0.3.41] - 2016-12-21
+
+### Fixed
+
+- Fix `Add project folder` validation issues ([#105](https://github.com/jccguimaraes/atom-project-viewer/issues/105))
+
+## [0.3.40] - 2016-12-21
+
+### Added
+
+- Custom title color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+
+### Fixed
+
+- Root paths should be left justified in the project dialog ([#104](https://github.com/jccguimaraes/atom-project-viewer/issues/104))
+- Project paths added to an open project are lost after closing and reopening the project ([#103](https://github.com/jccguimaraes/atom-project-viewer/issues/103))
+
+### Changed
+
+- Updated README
+
+## [0.3.39] - 2016-12-07
+
+### Fixed
+
+- Filtering icons
+
+### Added
+
+- Doubled the size of the icons when `onlyIcons` is set to true;
+- Custom hover color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+
+## [0.3.38] - 2016-12-07
+
+### Fixed
+
+- Issues regarding icons (on create and update)
+
 ## [0.3.37] - 2016-12-07
 
 ### Added

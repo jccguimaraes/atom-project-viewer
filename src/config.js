@@ -92,6 +92,18 @@ const config = {
       type: 'string'
     },
     order: 10
+  },
+  'rootSortBy': {
+    description: 'Sets the root sort by',
+    type: 'string',
+    default: 'position',
+    enum: [
+      'position',
+      'reverse-position',
+      'alphabetically',
+      'reverse-alphabetically'
+    ],
+    order: 11
   }
 };
 

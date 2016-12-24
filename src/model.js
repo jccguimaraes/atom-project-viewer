@@ -1,5 +1,7 @@
 'use strict';
 
+const Path = require('path');
+
 const defaults = {
   name: 'unnamed',
   sortBy: 'position',
@@ -62,8 +64,9 @@ const projectMethods = {
     if (typeof paths !== 'string') {
       return;
     }
-    if (this.paths.indexOf(paths) === -1) {
-      this.paths.push(paths);
+    const normalizedPath = Path.normalize(paths);
+    if (this.paths.indexOf(normalizedPath) === -1) {
+      this.paths.push(normalizedPath);
     }
   },
   removePath: function _removePath (path) {

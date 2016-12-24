@@ -281,6 +281,14 @@ project-viewer {
     padding: @component-padding @component-padding/2;
   }
 
+  .background-message {
+    transition: opacity @pv_transition-duration-default;
+
+    &.hidden {
+      opacity: 0;
+    }
+  }
+
   .has-collapsable-children {
     margin-left: 10px;
   }

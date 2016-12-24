@@ -595,7 +595,7 @@ const clickCancelButton = function _clickCancelButton () {
 
 const clickDeleteButton = function _clickDeleteButton () {
   const context = map.get(this);
-  if (!context) { return; }
+  if (!context || !context.model) { return; }
   const view = getViewFromModel(context.model);
   if (!view) { return; }
   view.remove();
@@ -633,6 +633,9 @@ const createModel = function _createModel (type, changes) {
 
 const updateModel = function _updateModel (changes) {
   const context = map.get(this);
+
+  if (!context || !context.model) { return; }
+
   const parentContext = Object.getPrototypeOf(context.model);
 
   const view = getViewFromModel(context.model);
@@ -643,10 +646,13 @@ const updateModel = function _updateModel (changes) {
 
   const newParentGroup = changes.group;
 
-  if (parentView != newParentGroup.view) {
+  if (newParentGroup && parentView != newParentGroup.view) {
     database.moveTo(context.model, newParentGroup.model);
     newParentGroup.view.attachChild(view);
   }
+
+  database.update();
+  closeEditor();
 };
 
 const clickSuccessButton = function _clickSuccessButton () {
@@ -664,8 +670,6 @@ const clickSuccessButton = function _clickSuccessButton () {
 
   if (!type) {
     updateModel.call(this, changes);
-    database.update();
-    closeEditor();
     return;
   }
 
@@ -686,12 +690,17 @@ const clickSuccessButton = function _clickSuccessButton () {
 };
 
 const clickListItem = function _clickListItem (context, evt) {
-  const current = getView(evt.target);
+  let current = getView(evt.target);
   const selected = context.refs['pv-group-selected'];
   if (selected && current !== selected) {
     selected.classList.remove('selected');
   }
-  context.refs['pv-group-selected'] = current;
+  if (selected === current) {
+      context.refs['pv-group-selected'] = undefined;
+  }
+  else {
+    context.refs['pv-group-selected'] = current;
+  }
   current.classList.toggle('selected');
 };
 

@@ -58,6 +58,25 @@ const drop = function _drop (evt) {
   database.update();
 };
 
+const sortBy = function _sortBy (pModel, cModel, cView, childView) {
+  let result;
+  const childModel = map.get(childView);
+  const reversed = pModel.sortBy.includes('reverse') ? -1 : 1;
+  const byPosition = pModel.sortBy.includes('position');
+  if (byPosition) {
+    result = reversed;
+  }
+  else {
+    result = reversed * new Intl.Collator().compare(
+      cModel.name,
+      childModel.name
+    );
+  }
+  const insertWhere = result >= 0 ? 'beforeend' : 'afterbegin';
+  this.insertAdjacentElement(insertWhere, cView);
+  Object.setPrototypeOf(cModel, pModel);
+};
+
 const viewMethods = {
   attachedCallback: function _attachedCallback () {
     this.addEventListener('dragstart', dragstart, true);
@@ -112,6 +131,10 @@ const viewMethods = {
     let spanNode = this.querySelector('.list-item span');
     let contentNode = this.querySelector('.list-item');
 
+    if (spanNode && spanNode.parentNode !== this) {
+        spanNode = undefined;
+    }
+
     if (!contentNode) {
       return;
     }
@@ -163,8 +186,15 @@ const viewMethods = {
     if (!nodeModel || !thisModel) {
       return;
     }
-    listTree.appendChild(node);
-    Object.setPrototypeOf(nodeModel, thisModel);
+
+    if (listTree.children.length === 0) {
+      listTree.appendChild(node);
+      return;
+    }
+
+    Array.from(listTree.children).forEach(
+      sortBy.bind(listTree, thisModel, nodeModel, node)
+    );
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

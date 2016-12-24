@@ -63,6 +63,10 @@ const activate = function _activate () {
     atom.config.observe(
       'project-viewer.statusBar',
       observeStatusBar.bind(this)
+    ),
+    atom.config.onDidChange(
+      'project-viewer.rootSortBy',
+      observeRootSortBy.bind(this)
     )
   );
 };
@@ -238,6 +242,12 @@ const observehideHeader = function _observehideHeader (option) {
 };
 
 const observeStatusBar = function _observeStatusBar () {};
+
+const observeRootSortBy = function _observeRootSortBy (value) {
+  let view = map.get(this)
+  if (!view) { return; }
+  database.update();
+};
 
 const togglePanel = function _togglePanel () {
   let view = map.get(this);

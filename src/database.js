@@ -5,6 +5,7 @@ const path = require('path');
 
 const model = require('./model');
 const version = '1.0.0';
+let sortBy;
 const database = Object.create(null);
 let store = [];
 const file = 'project-viewer.json';
@@ -144,7 +145,7 @@ const update = function _update () {
     info: {
       version
     },
-    structure: processStore(store)
+    root: processStore(store)
   };
   writeToDB(storeProcessed);
 };
@@ -159,7 +160,7 @@ const processFileContent = function _processFileContent(result) {
   try {
     let serialized = JSON.parse(result);
     store.length = 0;
-    serialized.structure.forEach(processList.bind(null, undefined));
+    serialized.root.forEach(processList.bind(null, undefined));
     listeners.forEach(runSubscriber);
   } catch (e) {
     atom.notifications.addError('Local database corrupted', {

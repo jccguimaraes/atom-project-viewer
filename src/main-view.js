@@ -109,6 +109,13 @@ const populate = function _populate (list) {
     return;
   }
   this.reset();
+
+  if (list.length === 0) {
+    const emptyMessage = this.querySelector('.background-message');
+    emptyMessage.classList.remove('hidden');
+    return;
+  }
+
   list.forEach(buildViews.bind(this));
 };
 
@@ -258,6 +265,11 @@ const initialize = function _initialize () {
   let panelBody = document.createElement('div');
   panelBody.classList.add('body-content');
 
+  let emptyMessage = document.createElement('ul');
+  emptyMessage.classList.add('background-message', 'centered');
+  let emptyMessageText = document.createElement('li');
+  emptyMessageText.textContent = 'No groups or projects';
+
   let listTree = document.createElement('ul');
   listTree.classList.add(
     'list-tree',
@@ -288,16 +300,14 @@ const initialize = function _initialize () {
 
   this.addEventListener('drop', (evt) => {
     const uuid = evt.dataTransfer.getData("text/plain");
-    const view = document.querySelector(
-      `project-viewer li[data-project-viewer-uuid="${uuid}"]`
-    );
-
+    const view = viewsRef[uuid];
     if (!view) { return; }
-
     this.attachChild(view);
   }, false);
 
+  emptyMessage.appendChild(emptyMessageText);
   panelBody.appendChild(listTree);
+  panelBody.appendChild(emptyMessage);
   hiddenBlock.appendChild(panelHeading);
   hiddenBlock.appendChild(panelBody);
   hiddenBlock.appendChild(pvResizer);
@@ -309,11 +319,23 @@ const initialize = function _initialize () {
   pvResizer.addEventListener("dblclick", resizerResetDrag.bind(this), false);
 };
 
-const sorting = function _sorting () {
-  const model = map.get(this);
-  if (!model) { return; }
-
-  return model.name;
+const rootSorting = function _rootSorting (sortByValue, listTree, nodeView, childView) {
+  let result;
+  const nodeModel = map.get(nodeView);
+  const childModel = map.get(childView);
+  const reversed = sortByValue.includes('reverse') ? -1 : 1;
+  const byPosition = sortByValue.includes('position');
+  if (byPosition) {
+    result = reversed;
+  }
+  else {
+    result = reversed * new Intl.Collator().compare(
+      nodeModel.name,
+      childModel.name
+    );
+  }
+  const insertWhere = result >= 0 ? 'beforeend' : 'afterbegin';
+  listTree.insertAdjacentElement(insertWhere, nodeView);
 };
 
 const attachChild = function _attachChild (node) {
@@ -321,7 +343,19 @@ const attachChild = function _attachChild (node) {
   if (!listTree) {
     return;
   }
-  listTree.appendChild(node);
+
+  const sortByValue = atom.config.get('project-viewer.rootSortBy');
+
+  if (listTree.children.length === 0) {
+    const emptyMessage = this.querySelector('.background-message');
+    emptyMessage.classList.add('hidden');
+    listTree.appendChild(node);
+    return;
+  }
+
+  Array.from(listTree.children).forEach(
+    rootSorting.bind(this, sortByValue, listTree, node)
+  );
 };
 
 const detachChild = function _detachChild (node) {
@@ -341,7 +375,6 @@ const viewMethods = {
   populate,
   reset,
   setAction,
-  sorting,
   toggleFocus,
   toggleTitle,
   traverse,

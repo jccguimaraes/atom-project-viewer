@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
 
-[![atom version](https://img.shields.io/badge/atom-1.12.5-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![atom version](https://img.shields.io/badge/atom-1.12.7-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 
@@ -20,8 +20,12 @@
 
 * [Introduction](#introduction)
 * [Installation](#installation)
+* [Features](#features)
 * [Shortcuts](#shortcuts)
 * [Settings](#settings)
+* [Local File manipulation](#local-file-manipulation)
+  * [Group Schema](#group-schema)
+  * [Project Schema](#project-schema)
 * [Contributors](#contributors)
 * [Contacts](#contacts)
 * [A Special Thank You!](#a-special-thank-you)
@@ -32,13 +36,42 @@ This is a package built for and by the Atom community. For contribution read [be
 
 ## Installation
 
-In a terminal / command line write the following line:
-
-```sh
-apm install project-viewer
-```
+In a terminal / command line write the following line `apm install project-viewer`.
 
 Or simply find the package by accessing the menu **Atom → Preferences... → Install** and search for ***project-viewer***.
+
+## Features
+
+- Group nesting;
+  - > Infinite nesting of `groups` which can contain also `projects`;
+  - > `projects` can be at any level.
+- Sidebar Left / Right (first or last) position;
+- Auto hide sidebar with hover behavior;
+- Resizable panel;
+  - > *Double click* to default width;
+- Hide header for more space;
+  - > This is available through a config option, default is *not autohide*.
+- Focus toggle;
+  - > Toggling focus will switch between current active element and the panel.
+- Keep context when switching from `projects` or switch from contexts;
+  - > This is available through a config option, default is *switch contexts*.
+- `SelectListView` integration;
+  - > Only shows `projects`.
+- Traverse and select `projects` with `up` and `down` keys;
+- Toggle collapse / expand of `groups` with `left` and `right` keys;
+- `status-bar` with the `project`'s' *breadcrumb* path;
+- Open the local database file for direct editing;
+- Old database schemas conversion tools;
+- Editor for `groups` / `projects` creation and update;
+  - Create, update and remove `group` or `project`;
+  - Automatic set it's name according to first path base name added;
+  - Bulk operation on a `project` creation;
+    - > Ability to create individual `projects` when more than one path is provided;
+    - > Each project will automatically have it's name set to it's path base name.
+  - Filtering icons;
+  - List of icons in editor as *only icons* or *icon and description*;
+    - > This is available through a config option, default is *icon and description*.
+- No `groups` and / or `projects` message;
 
 ## Shortcuts
 
@@ -52,20 +85,24 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
 
 Settings | Type | Description | Default
 ---------|------|-------------|--------
-visibilityOption | `String` | Define what would be the default action for **project-viewer** visibility on startup. | `Display on startup`
-visibilityActive | `Boolean` | Relative to the interaction option selected above. | `true`
-panelPosition | `String` | Position the panel to the left or right of the main pane. | `Right`
-autoHide | `Boolean` | Panel has auto hide with hover behavior. | `false`
-hideHeader | `Boolean` | You can have more space for the list by hiding the header. | `false`
-keepContext | `Boolean` | When switching from items, if set to `true`, will keep current context. Also will not save contexts between switching. | `false`
-openNewWindow | `Boolean` | Always open items in a new window. | `false`
-statusBar | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
+`visibilityOption` | `String` | Define what would be the default action for **project-viewer** visibility on startup. | `Display on startup`
+`visibilityActive` | `Boolean` | Relative to the interaction option selected above. | `true`
+`panelPosition` | `String` | Position the panel to the left or right of the main pane. | `Right`
+`autoHide` | `Boolean` | Panel has auto hide with hover behavior. | `false`
+`hideHeader` | `Boolean` | You can have more space for the list by hiding the header. | `false`
+`keepContext` | `Boolean` | When switching from items, if set to `true`, will keep current context. Also will not save contexts between switching. | `false`
+`openNewWindow` | `Boolean` | Always open items in a new window. | `false`
+`statusBar` | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
+`customWidth` | `Integer` | Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width | 200
+`onlyIcons` | `Boolean` | Will show only the icons in the icon\'s list | `true`
+`customPalette` | `String` | Custom palette to use on editor | `#F1E4E8, #F7B05B, #595959, #CD5334, #EDB88B, #23282E, #263655, #F75468, #FF808F, #FFDB80, #292E1E, #248232, #2BA84A, #D8DAD3, #FCFFFC, #8EA604, #F5BB00, #EC9F05, #FF5722, #BF3100`
+`rootSortBy` | `Array` | Sets the root sort by. | `position`
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
 
 ## Local File manipulation
 
-### Group schema
+### Group Schema
 
 parameter | Type | Description | Required
 ----------|------|-------------|--------
@@ -73,7 +110,7 @@ parameter | Type | Description | Required
 `name` | `String` | | `true`
 `list` | `Array` | | `true`
 
-### Project schema
+### Project Schema
 
 parameter | Type | Description | Required
 ----------|------|-------------|--------
