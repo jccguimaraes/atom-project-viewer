@@ -26,13 +26,13 @@
 
 ## Issues
 
-- [ ] Missing remove path from editor view;
-- [ ] Config change for `status-bar`;
-- [ ] Drag and Drop a group looses all it's children;
-- [ ] Linter does not switch context;
-- [ ] Context is not working proper;
-- [ ] expand / collapse is not stored;
+- Missing remove path from editor view;
+- Drag and Drop a group looses all it's children;
+- Linter does not switch context;
+- Context is not working proper;
+- expand / collapse is not stored;
+- editor view group list to have also the sorting ability;
 
 ## Performance
 
-- [ ] Improve layout rendering each time a change is added
+- Improve layout rendering each time a change is added

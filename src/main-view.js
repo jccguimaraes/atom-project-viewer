@@ -117,6 +117,14 @@ const populate = function _populate (list) {
   }
 
   list.forEach(buildViews.bind(this));
+
+  const sortByValue = atom.config.get('project-viewer.rootSortBy');
+  const listTree = this.querySelector('ul.list-tree');
+  const listTreeChildren = Array.from(listTree.children);
+  listTreeChildren.sort(
+    rootSorting.bind(this, sortByValue, listTree)
+  );
+  listTreeChildren.forEach(view => listTree.appendChild(view));
 };
 
 const traverse = function _traverse (direction) {
@@ -320,22 +328,19 @@ const initialize = function _initialize () {
 };
 
 const rootSorting = function _rootSorting (sortByValue, listTree, nodeView, childView) {
-  let result;
   const nodeModel = map.get(nodeView);
   const childModel = map.get(childView);
   const reversed = sortByValue.includes('reverse') ? -1 : 1;
   const byPosition = sortByValue.includes('position');
   if (byPosition) {
-    result = reversed;
+    return -reversed;
   }
   else {
-    result = reversed * new Intl.Collator().compare(
+    return reversed * new Intl.Collator().compare(
       nodeModel.name,
       childModel.name
     );
   }
-  const insertWhere = result >= 0 ? 'beforeend' : 'afterbegin';
-  listTree.insertAdjacentElement(insertWhere, nodeView);
 };
 
 const attachChild = function _attachChild (node) {
@@ -344,18 +349,11 @@ const attachChild = function _attachChild (node) {
     return;
   }
 
-  const sortByValue = atom.config.get('project-viewer.rootSortBy');
-
   if (listTree.children.length === 0) {
     const emptyMessage = this.querySelector('.background-message');
     emptyMessage.classList.add('hidden');
-    listTree.appendChild(node);
-    return;
   }
-
-  Array.from(listTree.children).forEach(
-    rootSorting.bind(this, sortByValue, listTree, node)
-  );
+  listTree.appendChild(node);
 };
 
 const detachChild = function _detachChild (node) {

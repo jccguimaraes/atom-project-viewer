@@ -60,10 +60,6 @@ const activate = function _activate () {
       'project-viewer.hideHeader',
       observehideHeader.bind(this)
     ),
-    atom.config.observe(
-      'project-viewer.statusBar',
-      observeStatusBar.bind(this)
-    ),
     atom.config.onDidChange(
       'project-viewer.rootSortBy',
       observeRootSortBy.bind(this)
@@ -95,6 +91,12 @@ const projectViewerService = function _projectViewerService () {
 
 const provideStatusBar = function _provideStatusBar (service) {
   map.set(statusBar, service);
+  this.disposables.add(
+      atom.config.observe(
+        'project-viewer.statusBar',
+        observeStatusBar.bind(this)
+      )
+  )
 };
 
 const commandWorkspace = function _commandWorkspace () {
@@ -241,7 +243,9 @@ const observehideHeader = function _observehideHeader (option) {
   view.toggleTitle(option);
 };
 
-const observeStatusBar = function _observeStatusBar () {};
+const observeStatusBar = function _observeStatusBar (value) {
+  statusBar.toggle.call(statusBar, value);
+};
 
 const observeRootSortBy = function _observeRootSortBy (value) {
   let view = map.get(this)
