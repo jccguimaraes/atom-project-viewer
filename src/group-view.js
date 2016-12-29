@@ -5,6 +5,7 @@ const database = require('./database');
 const domBuilder = require('./dom-builder');
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
+const sortViews = require('./common').sortViews;
 
 const dragstart = function _dragstart (evt) {
   evt.dataTransfer.setData(
@@ -56,25 +57,6 @@ const drop = function _drop (evt) {
   database.moveTo(draggedModel, droppedModel);
   droppedView.attachChild(view);
   database.update();
-};
-
-const sortBy = function _sortBy (pModel, cModel, cView, childView) {
-  let result;
-  const childModel = map.get(childView);
-  const reversed = pModel.sortBy.includes('reverse') ? -1 : 1;
-  const byPosition = pModel.sortBy.includes('position');
-  if (byPosition) {
-    result = reversed;
-  }
-  else {
-    result = reversed * new Intl.Collator().compare(
-      cModel.name,
-      childModel.name
-    );
-  }
-  const insertWhere = result >= 0 ? 'beforeend' : 'afterbegin';
-  this.insertAdjacentElement(insertWhere, cView);
-  Object.setPrototypeOf(cModel, pModel);
 };
 
 const viewMethods = {
@@ -187,14 +169,14 @@ const viewMethods = {
       return;
     }
 
-    if (listTree.children.length === 0) {
-      listTree.appendChild(node);
-      return;
-    }
+    listTree.appendChild(node);
+    Object.setPrototypeOf(nodeModel, thisModel);
 
-    Array.from(listTree.children).forEach(
-      sortBy.bind(listTree, thisModel, nodeModel, node)
+    const listTreeChildren = Array.from(listTree.children);
+    listTreeChildren.sort(
+      sortViews.bind(this, listTree)
     );
+    listTreeChildren.forEach(view => listTree.appendChild(view));
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

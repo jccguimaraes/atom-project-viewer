@@ -14,6 +14,7 @@ const devicons = require('./json/devicons.json');
 const database = require('./database');
 const getView = require('./common').getView;
 const getViewFromModel = require('./common').getViewFromModel;
+const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 
 const getType = function _getType () {
   const context = map.get(this);
@@ -367,6 +368,16 @@ const clickBulkCheckbox = function _clickBulkCheckbox (context) {
   }, context);
 };
 
+
+const removePath = function _removePath (parentView) {
+  const cPath = parentView.querySelector('.pv-path-name').textContent;
+  parentView.remove();
+  const idx = this.refs['pv-list-paths'].indexOf(cPath);
+  if (idx !== -1) {
+    this.refs['pv-list-paths'].splice(idx, 1);
+  }
+};
+
 const clickPathsButton = function _clickPathsButtons (context, parentView) {
   atom.pickFolder(addPaths.bind(null, context, parentView))
 };
@@ -393,6 +404,11 @@ const addPath = function _addPath (context, parentView, path) {
   listItem.classList.add('list-item');
   listItemSpanRemove.classList.add(
     'icon', 'icon-remove-close', 'pv-path-remove', 'text-error'
+  );
+  listItemSpanRemove.addEventListener(
+    'click',
+    removePath.bind(context, listItem),
+    false
   );
   listItemSpan.classList.add('pv-path-name', 'text-info');
   listItemSpan.textContent = path;
@@ -465,7 +481,7 @@ const groupsContainer = function _parentContainer (parentView) {
       parentGroupModel = Object.getPrototypeOf(context.model);
   }
 
-  database.fetch().filter((entry) => {
+  database.fetch().some(function databaseFetch (entry) {
     if (entry.type === 'group') {
       const listNestedItem = document.createElement('li');
       const listItem = document.createElement('div');
@@ -475,6 +491,9 @@ const groupsContainer = function _parentContainer (parentView) {
       if (entry === parentGroupModel) {
         listNestedItem.classList.add('selected');
         context.refs['pv-group-selected'] = listNestedItem;
+      }
+      if (entry === context.model) {
+        listNestedItem.classList.add('hidden');
       }
       listNestedTree.classList.add('list-tree');
       listNestedItem.setAttribute('data-project-viewer-uuid', entry.uuid);
@@ -499,6 +518,8 @@ const groupsContainer = function _parentContainer (parentView) {
       }
 
       listTree.appendChild(listNestedItem);
+
+      return false;
     }
   });
 
@@ -641,17 +662,30 @@ const updateModel = function _updateModel (changes) {
   const view = getViewFromModel(context.model);
   const parentView = getViewFromModel(parentContext);
 
+  const currentOpenedProject = getCurrentOpenedProject(context.model);
+
   Object.assign(context.model, changes);
-  view.render();
+
+  if (context.type === 'project') {
+    context.model.clearPaths();
+    context.model.addPaths(changes.paths);
+  }
+
+  if (currentOpenedProject) {
+    atom.project.setPaths(changes.paths);
+  }
 
   const newParentGroup = changes.group;
 
-  if (newParentGroup && parentView != newParentGroup.view) {
+  if (!newParentGroup || !newParentGroup.view) {
+    database.moveTo(context.model);
+  }
+  else if (newParentGroup && parentView != newParentGroup.view) {
     database.moveTo(context.model, newParentGroup.model);
-    newParentGroup.view.attachChild(view);
   }
 
   database.update();
+  view.render();
   closeEditor();
 };
 

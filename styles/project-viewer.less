@@ -91,6 +91,10 @@ project-viewer-editor {
     margin-bottom: 2px;
   }
 
+  .pv-path-remove {
+    cursor: pointer;
+  }
+
   .pv-palette {
     display: inline-block;
     height: 20px;
@@ -272,8 +276,10 @@ project-viewer {
 
   .body-content {
     overflow: scroll;
-    height: 100%;
+    height: calc(~"100% - 50px");
+    width: 100%;
     flex-grow: 1;
+    position: absolute;
   }
 
   > .list-tree {

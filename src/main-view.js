@@ -4,6 +4,9 @@
 const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
+const database = require('./database');
+const getModel = require('./common').getModel;
+const sortViews = require('./common').sortViews;
 
 const viewsRef = {};
 let startX;
@@ -80,14 +83,19 @@ const toggleTitle = function _toggleTitle (visibility) {
   title.classList.toggle('hidden', visibility);
 };
 
-const openEditor = function _openEditor (model) {
-  const alreadyEditing = model && atom.workspace.getActivePane().items.some(
-    function (item) {
-      return item.nodeName === 'PROJECT-VIEWER-EDITOR' &&
-        item.getAttribute('data-pv-uuid') === model.uuid;
-    }
+const validateActivePaneItem = function _validateActivePaneItem (item) {
+  return item.nodeName === 'PROJECT-VIEWER-EDITOR' &&
+    item.getAttribute('data-pv-uuid') === this.uuid;
+};
+
+const isAlreadyEditing = function _isAlreadyEditing (model) {
+  return model && atom.workspace.getActivePane().items.some(
+    validateActivePaneItem, model
   );
-  if (model && alreadyEditing) { return; }
+};
+
+const openEditor = function _openEditor (model) {
+  if (isAlreadyEditing(model)) { return; }
   const activePane = atom.workspace.getActivePane();
   const editorItem = api.editor.createView();
   editorItem.initialize(model);
@@ -97,10 +105,11 @@ const openEditor = function _openEditor (model) {
 
 const reset = function _reset () {
   const listTree = this.querySelector('ul.list-tree');
-  if (listTree) {
-    while (listTree.firstChild) {
-      listTree.removeChild(listTree.firstChild);
-    }
+  if (!listTree) {
+    return;
+  }
+  while (listTree.firstChild) {
+    listTree.removeChild(listTree.firstChild);
   }
 };
 
@@ -118,11 +127,10 @@ const populate = function _populate (list) {
 
   list.forEach(buildViews.bind(this));
 
-  const sortByValue = atom.config.get('project-viewer.rootSortBy');
   const listTree = this.querySelector('ul.list-tree');
   const listTreeChildren = Array.from(listTree.children);
   listTreeChildren.sort(
-    rootSorting.bind(this, sortByValue, listTree)
+    sortViews.bind(this, listTree)
   );
   listTreeChildren.forEach(view => listTree.appendChild(view));
 };
@@ -310,7 +318,10 @@ const initialize = function _initialize () {
     const uuid = evt.dataTransfer.getData("text/plain");
     const view = viewsRef[uuid];
     if (!view) { return; }
+    const draggedModel = getModel(view);
+    database.moveTo(draggedModel, Object.prototype);
     this.attachChild(view);
+    database.update();
   }, false);
 
   emptyMessage.appendChild(emptyMessageText);
@@ -327,24 +338,8 @@ const initialize = function _initialize () {
   pvResizer.addEventListener("dblclick", resizerResetDrag.bind(this), false);
 };
 
-const rootSorting = function _rootSorting (sortByValue, listTree, nodeView, childView) {
-  const nodeModel = map.get(nodeView);
-  const childModel = map.get(childView);
-  const reversed = sortByValue.includes('reverse') ? -1 : 1;
-  const byPosition = sortByValue.includes('position');
-  if (byPosition) {
-    return -reversed;
-  }
-  else {
-    return reversed * new Intl.Collator().compare(
-      nodeModel.name,
-      childModel.name
-    );
-  }
-};
-
 const attachChild = function _attachChild (node) {
-  let listTree = this.querySelector('.list-tree');
+  const listTree = this.querySelector('.list-tree');
   if (!listTree) {
     return;
   }
@@ -354,6 +349,12 @@ const attachChild = function _attachChild (node) {
     emptyMessage.classList.add('hidden');
   }
   listTree.appendChild(node);
+
+  const listTreeChildren = Array.from(listTree.children);
+  listTreeChildren.sort(
+    sortViews.bind(this, listTree)
+  );
+  listTreeChildren.forEach(view => listTree.appendChild(view));
 };
 
 const detachChild = function _detachChild (node) {

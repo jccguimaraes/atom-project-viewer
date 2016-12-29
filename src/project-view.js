@@ -3,239 +3,151 @@
 const map = require('./map');
 const statusBar = require('./status-bar');
 const domBuilder = require('./dom-builder');
-const getModel = require('./common').getModel;
+const getSelectedProject = require('./common').getSelectedProject;
+const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 
 const onClickEvent = function _onClickEvent (model) {
   if (!model) { return null; }
   this.openOnWorkspace();
 };
 
-const viewMethods = {
-  initialize: function _initialize () {
-    const model = map.get(this);
+const initialize = function _initialize () {
+  const model = map.get(this);
 
-    if (!model) { return; }
+  if (!model) { return; }
 
-    this.classList.add('list-item');
+  this.classList.add('list-item');
 
-    // TODO do we need this?
-    this.setAttribute('data-project-viewer-uuid', model.uuid);
-    this.setAttribute('draggable', 'true');
+  this.setAttribute('data-project-viewer-uuid', model.uuid);
+  this.setAttribute('draggable', 'true');
 
-    this.addEventListener(
-      'click',
-      onClickEvent.bind(this, model)
-    );
+  this.addEventListener(
+    'click',
+    onClickEvent.bind(this, model)
+  );
+};
 
-    this.addEventListener('dragstart', (evt) => {
-      evt.dataTransfer.setData(
-        "text/plain",
-        getModel(evt.target).uuid
-      );
-      evt.dataTransfer.dropEffect = "move";
-      evt.target.classList.add('dragged');
-      evt.stopPropagation();
-    }, true);
+const render = function _render () {
+  const model = map.get(this);
 
-    this.addEventListener('dragover', (evt) => {
-      evt.preventDefault();
-    }, true);
+  if (!model) {
+    return;
+  }
 
-    this.addEventListener('dragleave', (evt) => {
-      evt.stopPropagation();
-    }, true);
+  let spanNode = this.querySelector('span');
+  let contentNode = this;
 
-    this.addEventListener('dragenter', (evt) => {
-      evt.stopPropagation();
-    }, true);
+  if (!spanNode) {
+    contentNode.textContent = '';
+    spanNode = document.createElement('span');
+    contentNode.appendChild(spanNode);
+  }
 
-    this.addEventListener('dragend', (evt) => {
-      evt.target.classList.remove('dragged');
-      evt.stopPropagation();
-    }, true);
-
-    this.addEventListener('drop', (evt) => {
-      evt.stopPropagation();
-      const uuid = evt.dataTransfer.getData("text/plain");
-      const view = document.querySelector(
-        `project-viewer li[data-project-viewer-uuid="${uuid}"]`
-      );
-
-      if (!view) { return; }
-
-      //   const deadzone = getModel(evt.target);
-      //   const landingView = getView(deadzone);
-
-      // if (deadzone.type !== 'group') { return; }
-      //
-      // if (landingView === view) { return; }
-      //
-      // try {
-      //     landingView.attachChild(view);
-      // }
-      // catch (e) {
-      //     atom.notifications.addError('drag&drop error', {
-      //         description: 'trying to add a parent to a child!'
-      //     });
-      // }
-    }, true);
-  },
-  render: function _render () {
-    const model = map.get(this);
-
-    if (!model) {
-      return;
+  if (model.icon) {
+    contentNode = spanNode;
+    if (model.icon.startsWith('devicons-')) {
+      contentNode.classList.add('devicons', model.icon);
     }
-
-    let spanNode = this.querySelector('span');
-    let contentNode = this;
-
-    if (/*model.icon && */!spanNode) {
-      contentNode.textContent = '';
-      spanNode = document.createElement('span');
-      contentNode.appendChild(spanNode);
+    else {
+      contentNode.classList.add('icon', model.icon);
     }
+  }
+  else if (spanNode) {
+    contentNode = spanNode;
+  }
 
-    if (model.icon) {
-      contentNode = spanNode;
-      if (model.icon.startsWith('devicons-')) {
-        contentNode.classList.add('devicons', model.icon);
-      }
-      else {
-        contentNode.classList.add('icon', model.icon);
-      }
-    }
-    else if (spanNode) {
-      contentNode = spanNode;
-      // contentNode.removeChild(spanNode);
-    }
+  if (model.name) {
+    contentNode.textContent = model.name;
+  }
 
-    if (model.name) {
-      contentNode.textContent = model.name;
-    }
+  this.classList.toggle('no-paths', model.paths.length === 0);
 
-    this.classList.toggle('no-paths', model.paths.length === 0);
+  const currentOpenedProject = getCurrentOpenedProject(model);
 
-    let currentOpenedProject = atom.project.getPaths().length > 0 &&
-    model.paths.length > 0 &&
-    !atom.project.getPaths().some(
-      path => {
-        return model.paths.indexOf(path) === -1;
-      }
-    );
-    this.classList.toggle(
-      'selected',
-      currentOpenedProject
-    );
+  this.classList.toggle(
+    'selected',
+    currentOpenedProject
+  );
 
-    if (currentOpenedProject) {
-      statusBar.update(model.breadcrumb());
-    }
-  },
-  sorting: function _sorting () {
-    const model = map.get(this);
-
-    if (!model) {
-      return;
-    }
-    return model.name;
-  },
-  openOnWorkspace: function _openOnWorkspace () {
-    const model = map.get(this);
-
-    if (!model) { return false; }
-
-    if (model.paths.length === 0) { return false; }
-
-    let currentOpenedProject = atom.project.getPaths().length > 0 &&
-    model.paths.length > 0 &&
-    !atom.project.getPaths().some(
-      path => {
-        return model.paths.indexOf(path) === -1;
-      }
-    );
-
-    if (currentOpenedProject) { return false; }
-
-    let selected = document.querySelector(
-      'project-viewer .has-collapsable-children .selected'
-    );
-    if (selected && selected !== this) {
-      selected.classList.remove('selected');
-    }
-    if (selected !== this) {
-      this.classList.add('selected');
-    }
-
-    if (atom.config.get('project-viewer.openNewWindow')) {
-      atom.open({
-        pathsToOpen: model.paths,
-        newWindow: true,
-        devMode: model.devMode,
-        safeMode: false
-      });
-      return false;
-    }
-
-    let projectSHA = atom.getStateKey(atom.project.getPaths());
-    let serialization;
-    let tV = atom.packages.getActivePackage('tree-view');
-
-    if (!atom.config.get('project-viewer.keepContext') && projectSHA) {
-      serialization = {
-        workspace: atom.workspace.serialize(),
-        project: atom.project.serialize()
-      }
-
-      if (
-        atom.project.getPaths().length > 0 &&
-        tV &&
-        tV.mainModule &&
-        tV.mainModule.treeView
-      ) {
-        serialization.treeView = tV.mainModule.treeView.serialize();
-        serialization.treeView.scrollTop = tV.mainModule.treeView.scrollTop();
-      }
-    }
-
-    if (serialization) {
-      atom.getStorageFolder().storeSync(projectSHA, serialization);
-    }
-
+  if (currentOpenedProject) {
     statusBar.update(model.breadcrumb());
+  }
+};
 
-    projectSHA = atom.getStateKey(model.paths);
-    serialization = atom.getStorageFolder().load(projectSHA);
+const sorting = function _sorting () {
+  const model = map.get(this);
 
-    if (atom.config.get('project-viewer.keepContext')) {
-      atom.project.setPaths(model.paths);
-      return true;
-    }
+  if (!model) {
+    return;
+  }
+  return model.name;
+};
 
-    if (!serialization) {
-      atom.workspace.destroyActivePane();
-      atom.project.setPaths(model.paths);
-      return true;
-    }
+const openOnWorkspace = function _openOnWorkspace () {
+  const model = map.get(this);
 
-    atom.project.deserialize(serialization.project, atom.deserializers);
+  if (!model) { return false; }
 
-    if (serialization.treeView && tV.mainModule.treeView) {
-      tV.mainModule.treeView.updateRoots(serialization.treeView.directoryExpansionStates);
-      if (serialization.treeView.scrollTop > 0) tV.mainModule.treeView.scrollTop(serialization.treeView.scrollTop);
-      if (serialization.treeView.width > 0) tV.mainModule.treeView.width(serialization.treeView.width);
-    }
+  if (model.paths.length === 0) { return false; }
 
-    if (serialization.treeView && !tV.mainModule.treeView) {
-      tV.mainModule.createView(serialization.treeView);
-    }
+  const currentOpenedProject = getCurrentOpenedProject(model);
 
-    if (atom.config.get('project-viewer.keepContext')) { return true; }
+  if (currentOpenedProject) { return false; }
 
-    atom.workspace.deserialize(serialization.workspace, atom.deserializers);
+  let selectedProject = getSelectedProject();
 
+  if (selectedProject) {
+    selectedProject.classList.remove('selected');
+  }
+
+  this.classList.add('selected');
+
+  if (atom.config.get('project-viewer.openNewWindow')) {
+    atom.open({
+      pathsToOpen: model.paths,
+      newWindow: true,
+      devMode: model.devMode,
+      safeMode: false
+    });
+    return false;
+  }
+
+  let projectSHA = atom.getStateKey(atom.project.getPaths());
+  let serialization = atom.serialize();
+
+  if (projectSHA && serialization) {
+    atom.getStorageFolder().storeSync(projectSHA, serialization);
+  }
+
+  statusBar.update(model.breadcrumb());
+
+  projectSHA = atom.getStateKey(model.paths);
+  serialization = atom.getStorageFolder().load(projectSHA);
+
+  if (!serialization) {
+    atom.workspace.destroyActivePane();
+    atom.project.setPaths(model.paths);
     return true;
   }
+
+  atom.deserialize(serialization);
+
+  const linterPackage = atom.packages.getActivePackage('linter');
+
+  // hack to make linter update on project switching
+  if (linterPackage) {
+    linterPackage.deactivate();
+    linterPackage.activate();
+  }
+
+  return true;
+};
+
+const viewMethods = {
+  initialize,
+  render,
+  sorting,
+  openOnWorkspace
 };
 
 const createView = function _createView (model) {

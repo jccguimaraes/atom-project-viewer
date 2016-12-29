@@ -8,6 +8,8 @@
   - [ ] Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
+- [ ] Keep context when switching from `projects` or switch from contexts;
+  - > This is available through a config option, default is *switch contexts*.
 
 ## Not implemented yet
 
@@ -26,12 +28,11 @@
 
 ## Issues
 
-- Missing remove path from editor view;
 - Drag and Drop a group looses all it's children;
-- Linter does not switch context;
-- Context is not working proper;
 - expand / collapse is not stored;
 - editor view group list to have also the sorting ability;
+- Implement missing `0.3.x` features;
+- Fix minimum local file schema properties;
 
 ## Performance
 

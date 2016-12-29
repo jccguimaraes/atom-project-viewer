@@ -35,6 +35,19 @@ const getViewFromModel = function _getViewFromModel (model) {
   );
 };
 
+const getSelectedProject = function _getSelectedProject () {
+  return document.querySelector(
+    'project-viewer li[is="project-viewer-project"].selected'
+  );
+};
+
+const getCurrentOpenedProject = function _getCurrentOpenedProject (model) {
+  return model && Array.isArray(model.paths) &&
+  atom.project.getPaths().length > 0 && model.paths.length > 0 &&
+  model.paths.length === atom.project.getPaths().length &&
+  atom.project.getPaths().every(path => model.paths.indexOf(path) !== -1);
+};
+
 const buildBlock = function _buildBlock () {
   const view = document.createElement('div');
   view.classList.add('block', 'pv-editor-block');
@@ -71,12 +84,30 @@ const buildLabel = function _buildLabel (text, type, child) {
   return view;
 };
 
+const sortViews = function _sortViews (listTree, nodeView, childView) {
+  const sortBy = atom.config.get('project-viewer.rootSortBy');
+  const nodeModel = map.get(nodeView);
+  const childModel = map.get(childView);
+  const reversed = sortBy.includes('reverse') ? -1 : 1;
+  const byPosition = sortBy.includes('position');
+  if (byPosition) {
+    return -reversed;
+  }
+  return reversed * new Intl.Collator().compare(
+    nodeModel.name,
+    childModel.name
+  );
+};
+
 exports.cleanConfig = cleanConfig;
 exports.getModel = getModel;
 exports.getViewFromModel = getViewFromModel;
+exports.getSelectedProject = getSelectedProject;
+exports.getCurrentOpenedProject = getCurrentOpenedProject;
 exports.getView = getView;
 exports.buildBlock = buildBlock;
 exports.buildHeader = buildHeader;
 exports.buildInput = buildInput;
 exports.buildButton = buildButton;
 exports.buildLabel = buildLabel;
+exports.sortViews = sortViews;

@@ -5,7 +5,6 @@ const path = require('path');
 
 const model = require('./model');
 const version = '1.0.0';
-let sortBy;
 const database = Object.create(null);
 let store = [];
 const file = 'project-viewer.json';
@@ -201,16 +200,19 @@ const refresh = function _refresh () {
 const moveTo = function _moveTo (childModel, protoModel) {
   const currentProtoModel = Object.getPrototypeOf(childModel);
 
+  if (!protoModel) { protoModel = Object.prototype; }
+
   if (currentProtoModel === protoModel) { return null; }
 
   if (currentProtoModel.type && currentProtoModel.type !== 'group') {
     return null;
   }
-  const oldIdx = store.indexOf(childModel);
-  store.splice(oldIdx, 1);
+
   Object.setPrototypeOf(childModel, protoModel);
-  store.push(childModel);
-  return true;
+  const childIdx = store.indexOf(childModel);
+  const protoIdx = store.indexOf(protoModel);
+  const subStore = store.splice(childIdx, protoIdx - childIdx);
+  store = store.concat(subStore);
 };
 
 /**

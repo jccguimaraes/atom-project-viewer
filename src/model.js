@@ -96,6 +96,7 @@ Object.assign(projectMethods, methods);
 
 const setPrototypeOf = function _setPrototypeOf (target, prototype) {
   if (
+    prototype === Object.prototype ||
     (target.type === 'group' && target.type === prototype.type) ||
     (prototype.type === 'group' && target.type === 'project')
   ) {
@@ -211,7 +212,7 @@ module.exports = {
       Object.assign(proxy, candidate);
       proxy.addPaths(candidate.paths);
     }
-    return proxy
+    return proxy;
   },
   createGroupSchema: function _createGroupSchema (
     {

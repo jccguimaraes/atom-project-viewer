@@ -53,8 +53,6 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
   - > This is available through a config option, default is *not autohide*.
 - Focus toggle;
   - > Toggling focus will switch between current active element and the panel.
-- Keep context when switching from `projects` or switch from contexts;
-  - > This is available through a config option, default is *switch contexts*.
 - `SelectListView` integration;
   - > Only shows `projects`.
 - Traverse and select `projects` with `up` and `down` keys;
