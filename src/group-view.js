@@ -37,14 +37,14 @@ const dragend = function _dragend (evt) {
 const drop = function _drop (evt) {
   evt.stopPropagation();
   const uuid = evt.dataTransfer.getData("text/plain");
-  const view = document.querySelector(
+  const draggedView = document.querySelector(
     `project-viewer li[data-project-viewer-uuid="${uuid}"]`
   );
 
-  if (!view) { return; }
+  if (!draggedView) { return; }
 
   const droppedModel = getModel(evt.target);
-  const draggedModel = getModel(view);
+  const draggedModel = getModel(draggedView);
 
   const droppedView = getView(evt.target);
 
@@ -52,10 +52,10 @@ const drop = function _drop (evt) {
 
   if (droppedModel.type !== 'group') { return; }
 
-  if (droppedView === view) { return; }
+  if (droppedView === draggedView) { return; }
 
   database.moveTo(draggedModel, droppedModel);
-  droppedView.attachChild(view);
+  // droppedView.attachChild(draggedView);
   database.update();
 };
 
@@ -81,11 +81,13 @@ const viewMethods = {
     this.removeEventListener('drop', drop, true);
   },
   toggle: function _toggle (evt) {
-    if (evt) {
-      evt.preventDefault();
-      evt.stopPropagation();
-    }
-    this.classList.toggle('collapsed');
+    evt.preventDefault();
+    evt.stopPropagation();
+    const model = map.get(getView(evt.target));
+    if (!model) { return; }
+    model.expanded = !model.expanded;
+    this.classList.toggle('collapsed', model.expanded);
+    database.update();
   },
   initialize: function _initialize () {
 
@@ -97,6 +99,7 @@ const viewMethods = {
     listItem.addEventListener('click', this.toggle.bind(this));
 
     this.classList.add('list-nested-item');
+    this.classList.toggle('collapsed', !model.expanded);
     this.setAttribute('data-project-viewer-uuid', model.uuid);
     this.setAttribute('draggable', 'true');
     this.appendChild(listItem);
