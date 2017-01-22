@@ -513,7 +513,6 @@ function toggleFocus() {
 const projectViewer = {
     config: _config,
     activate: function activate(state) {
-
         if (atom.config.getAll('project-viewer').length > 0) {
             for (let config in atom.config.getAll('project-viewer')[0].value) {
                 if (!_config.hasOwnProperty(config)) {

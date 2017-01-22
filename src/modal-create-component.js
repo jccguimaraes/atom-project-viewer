@@ -236,7 +236,7 @@ function sortIcons (evt) {
     evt.preventDefault();
 
     const view = evt.target;
-    const filterString = view.model.buffer.getText();
+    const filterString = view.getModel().buffer.getText();
     const iconList = document.getElementsByClassName("pv-icons")[0];
     // Children are not of type array, so we convert them
     const iconListArry = [].slice.call(iconList.children);

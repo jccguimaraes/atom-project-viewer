@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.43] - 2017-01-22
+
+### Fixed
+
+- Fixed getter of input model ([#110](https://github.com/jccguimaraes/atom-project-viewer/issues/110))
+
 ## [0.3.42] - 2016-12-21
 
 ### Fixed
