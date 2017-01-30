@@ -55,39 +55,38 @@ const drop = function _drop (evt) {
   if (droppedView === draggedView) { return; }
 
   database.moveTo(draggedModel, droppedModel);
-  // droppedView.attachChild(draggedView);
-  database.update();
+  database.save();
 };
 
 const viewMethods = {
   attachedCallback: function _attachedCallback () {
-    this.addEventListener('dragstart', dragstart, true);
-    this.addEventListener('dragover', dragover, true);
-    this.addEventListener('dragleave', dragleave, true);
-    this.addEventListener('dragenter', dragenter, true);
-    this.addEventListener('dragend', dragend, true);
-    this.addEventListener('drop', drop, true);
+    this.addEventListener('dragstart', dragstart, false);
+    this.addEventListener('dragover', dragover, false);
+    this.addEventListener('dragleave', dragleave, false);
+    this.addEventListener('dragenter', dragenter, false);
+    this.addEventListener('dragend', dragend, false);
+    this.addEventListener('drop', drop, false);
   },
   detachedCallback: function _detachedCallback () {
     let contentNode = this.querySelector('.list-item');
     if (contentNode) {
-      contentNode.removeEventListener('click', this.toggle.bind(this));
+      contentNode.removeEventListener('click', this.expandOrCollapse.bind(this));
     }
-    this.removeEventListener('dragstart', dragstart, true);
-    this.removeEventListener('dragover', dragover, true);
-    this.removeEventListener('dragleave', dragleave, true);
-    this.removeEventListener('dragenter', dragenter, true);
-    this.removeEventListener('dragend', dragend, true);
-    this.removeEventListener('drop', drop, true);
+    this.removeEventListener('dragstart', dragstart, false);
+    this.removeEventListener('dragover', dragover, false);
+    this.removeEventListener('dragleave', dragleave, false);
+    this.removeEventListener('dragenter', dragenter, false);
+    this.removeEventListener('dragend', dragend, false);
+    this.removeEventListener('drop', drop, false);
   },
-  toggle: function _toggle (evt) {
+  expandOrCollapse: function _expandOrCollapse (evt) {
     evt.preventDefault();
     evt.stopPropagation();
     const model = map.get(getView(evt.target));
     if (!model) { return; }
     model.expanded = !model.expanded;
-    this.classList.toggle('collapsed', model.expanded);
-    database.update();
+    this.classList.toggle('collapsed');
+    database.save();
   },
   initialize: function _initialize () {
 
@@ -96,7 +95,7 @@ const viewMethods = {
 
     let listItem = document.createElement('div');
     listItem.classList.add('list-item');
-    listItem.addEventListener('click', this.toggle.bind(this));
+    listItem.addEventListener('click', this.expandOrCollapse.bind(this));
 
     this.classList.add('list-nested-item');
     this.classList.toggle('collapsed', !model.expanded);
@@ -177,7 +176,7 @@ const viewMethods = {
 
     const listTreeChildren = Array.from(listTree.children);
     listTreeChildren.sort(
-      sortViews.bind(this, listTree)
+      sortViews.bind(this, listTree, thisModel.sortBy)
     );
     listTreeChildren.forEach(view => listTree.appendChild(view));
   },

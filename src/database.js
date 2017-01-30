@@ -14,24 +14,13 @@ let watcher;
 let hasLocalFile = false;
 
 /**
- * Opens the local database file
- * @since 1.0.0
- */
-const openDatabase = function _openDatabase () {
-  atom.open({
-    pathsToOpen: filepath,
-    newWindow: false
-  })
-};
-
-/**
  * Maps each model to it's schema object
  * @returns {Undefined} cancel if entry has no type or type is not allowed
  * @since 1.0.0
  */
 const processStorageEntry = function _processStorageEntry (reference, entry) {
   let prototypeOf = Object.getPrototypeOf(entry);
-  let obj = {};
+  let obj;
 
   if (!entry.hasOwnProperty('type')) {
     return;
@@ -131,22 +120,37 @@ const fetch = function _fetch () {
  * @since 1.0.0
  */
 const writeToDB = function _writeToDB (content) {
-  fs.writeFile(filepath, JSON.stringify(content, null, 2));
+  fs.writeFile(
+    filepath,
+    JSON.stringify(content, null, 2),
+    function writeToDBCallback (err) {
+      if (err) {
+        atom.notifications.addError('Local database corrupted', {
+          detail: '😱! Something when wrong while writing to local file!',
+          icon: 'database'
+        });
+      }
+      setTimeout(directoryWatch, 1000);
+    }
+  );
 };
 
 /**
- * Updates the local database file with current content of the store
+ * Updates the local database file with the current content of the store
  * @public
  * @since 1.0.0
  */
-const update = function _update () {
+const save = function _save () {
   const storeProcessed = {
     info: {
-      version
+      version,
+      updated: new Date()
     },
     root: processStore(store)
   };
+  directoryUnwatch();
   writeToDB(storeProcessed);
+  runSubscribers();
 };
 
 /**
@@ -160,7 +164,7 @@ const processFileContent = function _processFileContent(result) {
     let serialized = JSON.parse(result);
     store.length = 0;
     serialized.root.forEach(processList.bind(null, undefined));
-    listeners.forEach(runSubscriber);
+    runSubscribers();
   } catch (e) {
     atom.notifications.addError('Local database corrupted', {
       detail: 'Please check the content of the local database',
@@ -197,12 +201,10 @@ const refresh = function _refresh () {
  * @public
  * @since 1.0.0
  */
-const moveTo = function _moveTo (childModel, protoModel) {
+const moveTo = function _moveTo (childModel, protoModel, siblingModel, below) {
   const currentProtoModel = Object.getPrototypeOf(childModel);
 
   if (!protoModel) { protoModel = Object.prototype; }
-
-  if (currentProtoModel === protoModel) { return null; }
 
   if (currentProtoModel.type && currentProtoModel.type !== 'group') {
     return null;
@@ -211,7 +213,40 @@ const moveTo = function _moveTo (childModel, protoModel) {
   Object.setPrototypeOf(childModel, protoModel);
   const childIdx = store.indexOf(childModel);
   const protoIdx = store.indexOf(protoModel);
-  const subStore = store.splice(childIdx, protoIdx - childIdx);
+  const siblingIdx = store.indexOf(siblingModel);
+
+  let subStore;
+
+  if (!siblingModel && protoIdx !== -1) {
+    subStore = store.splice(childIdx, protoIdx - childIdx);
+  }
+  else if (!siblingModel && protoIdx === -1) {
+    subStore = store.splice(childIdx, store.length - 1 - childIdx);
+  }
+  else if (siblingIdx !== -1 && childIdx > siblingIdx) {
+    subStore = store.splice(siblingIdx, childIdx - siblingIdx);
+    const x = subStore.slice(0, 1);
+    const y = subStore.slice(-1);
+    subStore.shift();
+    subStore.pop();
+    subStore = below ? x.concat(y).concat(subStore) : y.concat(x).concat(subStore);
+  }
+  else if (siblingIdx !== -1 && childIdx <= siblingIdx) {
+      subStore = store.splice(childIdx, siblingIdx - childIdx);
+
+      const firstItem = [subStore.shift()];
+      const lastItem = [subStore.pop()];
+
+      if (below) {
+          subStore = subStore.concat(lastItem).concat(firstItem);
+      }
+      else {
+          subStore = subStore.concat(firstItem).concat(lastItem);
+      }
+  }
+  else {
+    return;
+  }
   store = store.concat(subStore);
 };
 
@@ -264,41 +299,57 @@ const addTo = function _addTo (model, protoModel) {
 };
 
 /**
- * Runs a subscriber callback when a change in the store is made
- * @callback subscriber
- * @param {subscriber} listener - The listener callback
+ * Migrate old 0.3.x local database to 1.0.0
  * @since 1.0.0
  */
-const runSubscriber = function _runSubscriber (listener) {
-  listener(store);
-};
+const migrate03x = function _migrate03x () {
+  const store03x = atom.getStorageFolder().load(file);
+  const convertedStore = [];
 
-/**
- * Unsubscribes the callback
- * @callback subscriber
- * @param {subscriber} listener - The listener callback
- * @public
- * @since 1.0.0
- */
-const unsubscribe = function _unsubscribe (listener) {
-  const idx = listeners.indexOf(listener);
-  if (idx === -1) { return; }
-  listeners.splice(idx, 1);
-};
-
-/**
- * Subscribes the callback to be invoked on store changes
- * @callback subscriber
- * @param {subscriber} listener - The listener callback
- * @public
- * @since 1.0.0
- */
-const subscribe = function _subscribe (listener) {
-  if (listeners.indexOf(listener) !== -1) {
-    return;
+  function processGroup (group) {
+    const groupModel = model.createGroup(group);
+    convertedStore.push(groupModel);
+    if (group.hasOwnProperty('groups')) {
+      group.groups.forEach(processGroup.bind(null, groupModel));
+    }
+    if (group.hasOwnProperty('projects')) {
+      group.projects.forEach(processProject.bind(null, groupModel));
+    }
   }
-  listeners.push(listener);
-  return unsubscribe.bind(this, listener);
+
+  function processProject (parentModel, project) {
+    const projectModel = model.createProject(project);
+    convertedStore.push(projectModel);
+    Object.setPrototypeOf(projectModel, parentModel);
+  }
+
+  store03x.clients.forEach(processGroup);
+  store03x.groups.forEach(processGroup);
+  store03x.projects.forEach(processProject);
+
+  store = convertedStore;
+  save();
+  runSubscribers();
+};
+
+/**
+ * Deactivation of the database module
+ * Clears out the directory watcher
+ * @public
+ * @since 1.0.0
+ */
+const deactivate = function _deactivate () {
+  directoryUnwatch();
+};
+
+/**
+ * Activation of the database module
+ * Activates the directory watcher
+ * @public
+ * @since 1.0.0
+ */
+const activate = function _activate () {
+  directoryWatch();
 };
 
 /**
@@ -311,7 +362,6 @@ const subscribe = function _subscribe (listener) {
  */
 const directoryWatcher = function _directoryWatcher (event, filename) {
   if (filename !== file) { return; }
-
   if (event === 'change') {
     refresh();
     return;
@@ -355,69 +405,76 @@ const directoryWatch = function _directoryWatch () {
 };
 
 /**
- * Migrate old 0.3.x local database to 1.0.0
+ * Runs a subscriber callback when a change in the store is made
+ * @callback subscriber
+ * @param {subscriber} listener - The listener callback
  * @since 1.0.0
  */
-const migrate03x = function _migrate03x () {
-  const store03x = atom.getStorageFolder().load(file);
-  const convertedStore = [];
+const runSubscriber = function _runSubscriber (listener) {
+  listener(store);
+};
 
-  function processGroup (group) {
-    const groupModel = model.createGroup(group);
-    convertedStore.push(groupModel);
-    if (group.hasOwnProperty('groups')) {
-      group.groups.forEach(processGroup.bind(null, groupModel));
-    }
-    if (group.hasOwnProperty('projects')) {
-      group.projects.forEach(processProject.bind(null, groupModel));
-    }
-  }
-
-  function processProject (parentModel, project) {
-    const projectModel = model.createProject(project);
-    convertedStore.push(projectModel);
-    Object.setPrototypeOf(projectModel, parentModel);
-  }
-
-  store03x.clients.forEach(processGroup);
-  store03x.groups.forEach(processGroup);
-  store03x.projects.forEach(processProject);
-
-  store = convertedStore;
-  update();
+/**
+ * Runs all subscribers callback
+ * @since 1.0.0
+ */
+const runSubscribers = function _runSubscribers () {
   listeners.forEach(runSubscriber);
 };
 
 /**
- * Deactivation of the database module
- * Clears out the directory watcher
+ * Unsubscribes the callback
+ * @callback subscriber
+ * @param {subscriber} listener - The listener callback
  * @public
  * @since 1.0.0
  */
-const deactivate = function _deactivate () {
-  directoryUnwatch();
+const unsubscribe = function _unsubscribe (listener) {
+  const idx = listeners.indexOf(listener);
+  if (idx === -1) { return; }
+  listeners.splice(idx, 1);
+  return true;
 };
 
 /**
- * Activation of the database module
- * Activates the directory watcher
+ * Subscribes the callback to be invoked on store changes
+ * @callback subscriber
+ * @param {subscriber} listener - The listener callback
  * @public
  * @since 1.0.0
  */
-const activate = function _activate () {
-  directoryWatch();
+const subscribe = function _subscribe (listener) {
+  if (listeners.indexOf(listener) !== -1) {
+    return;
+  }
+  listeners.push(listener);
+  return unsubscribe.bind(this, listener);
 };
+
+/**
+ * Opens the local database file
+ * @since 1.0.0
+ */
+const openDatabase = function _openDatabase () {
+  atom.open({
+    pathsToOpen: filepath,
+    newWindow: false
+  })
+};
+
+database.runSubscribers = runSubscribers;
+database.subscribe = subscribe;
+database.unsubscribe = unsubscribe;
+database.openDatabase = openDatabase;
 
 database.activate = activate;
 database.deactivate = deactivate;
-database.subscribe = subscribe;
 database.fetch = fetch;
-database.update = update;
+database.save = save;
 database.refresh = refresh;
 database.moveTo = moveTo;
 database.remove = remove;
 database.addTo = addTo;
-database.openDatabase = openDatabase;
 database.migrate03x = migrate03x;
 
 /**

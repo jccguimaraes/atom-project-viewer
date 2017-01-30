@@ -194,6 +194,9 @@ const sortByContainer = function _sortByContainer (parentView) {
     (sortBy) => {
       const sortByOption = document.createElement('option');
       sortByOption.textContent = sortBy;
+      if (context.model && context.model.sortBy === sortBy) {
+        sortByOption.setAttribute('selected', true);
+      }
       sortBySelect.appendChild(sortByOption);
     }
   );
@@ -621,7 +624,7 @@ const clickDeleteButton = function _clickDeleteButton () {
   if (!view) { return; }
   view.remove();
   database.remove(context.model);
-  database.update();
+  database.save();
   closeEditor();
 };
 
@@ -684,7 +687,7 @@ const updateModel = function _updateModel (changes) {
     database.moveTo(context.model, newParentGroup.model);
   }
 
-  database.update();
+  database.save();
   view.render();
   closeEditor();
 };
@@ -719,7 +722,7 @@ const clickSuccessButton = function _clickSuccessButton () {
   else {
     createModel(type, changes);
   }
-  database.update();
+  database.save();
   closeEditor();
 };
 

@@ -130,7 +130,7 @@ const populate = function _populate (list) {
   const listTree = this.querySelector('ul.list-tree');
   const listTreeChildren = Array.from(listTree.children);
   listTreeChildren.sort(
-    sortViews.bind(this, listTree)
+    sortViews.bind(this, listTree, atom.config.get('project-viewer.rootSortBy'))
   );
   listTreeChildren.forEach(view => listTree.appendChild(view));
 };
@@ -319,9 +319,8 @@ const initialize = function _initialize () {
     const view = viewsRef[uuid];
     if (!view) { return; }
     const draggedModel = getModel(view);
-    database.moveTo(draggedModel, Object.prototype);
-    this.attachChild(view);
-    database.update();
+    database.moveTo(draggedModel);
+    database.save();
   }, false);
 
   emptyMessage.appendChild(emptyMessageText);
@@ -352,7 +351,7 @@ const attachChild = function _attachChild (node) {
 
   const listTreeChildren = Array.from(listTree.children);
   listTreeChildren.sort(
-    sortViews.bind(this, listTree)
+    sortViews.bind(this, listTree, atom.config.get('project-viewer.rootSortBy'))
   );
   listTreeChildren.forEach(view => listTree.appendChild(view));
 };

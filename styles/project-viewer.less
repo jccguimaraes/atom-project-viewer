@@ -401,6 +401,21 @@ project-viewer {
     span {
       pointer-events: none;
     }
+
+    &.dropping {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &.above {
+            padding-top: 5px;
+            padding-bottom: 0;
+        }
+
+        &.below {
+          padding-top: 0;
+          padding-bottom: 5px;
+        }
+    }
   }
 }
 

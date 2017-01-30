@@ -84,8 +84,8 @@ const buildLabel = function _buildLabel (text, type, child) {
   return view;
 };
 
-const sortViews = function _sortViews (listTree, nodeView, childView) {
-  const sortBy = atom.config.get('project-viewer.rootSortBy');
+const sortViews = function _sortViews (listTree, sortBy, nodeView, childView) {
+  // const sortBy = atom.config.get('project-viewer.rootSortBy');
   const nodeModel = map.get(nodeView);
   const childModel = map.get(childView);
   const reversed = sortBy.includes('reverse') ? -1 : 1;

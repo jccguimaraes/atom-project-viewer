@@ -247,10 +247,10 @@ const observeStatusBar = function _observeStatusBar (value) {
   statusBar.toggle.call(statusBar, value);
 };
 
-const observeRootSortBy = function _observeRootSortBy (value) {
+const observeRootSortBy = function _observeRootSortBy () {
   let view = map.get(this)
   if (!view) { return; }
-  database.update();
+  database.save();
 };
 
 const togglePanel = function _togglePanel () {

@@ -24,14 +24,14 @@ describe ('group-model', function () {
     expect(model.name).toBe('group #1');
   });
 
-  fit ('should not assign a name if empty string', function () {
+  it ('should not assign a name if empty string', function () {
     const model = modelRef.createGroup({
         name: ''
     });
     expect(model.name).toBe('unnamed');
   });
 
-  fit ('should keep the last name if setting an invalid', function () {
+  it ('should keep the last name if setting an invalid', function () {
     const model = modelRef.createGroup();
     model.name = 1;
     expect(model.name).toBe('unnamed');

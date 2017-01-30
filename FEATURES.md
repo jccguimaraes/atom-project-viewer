@@ -5,7 +5,7 @@
   - [x] Drag and drop a `group` or `project` into a `group` will add it as a child;
   - [ ] Drag and drop a `group` or `project` into an `project` will add it as sibling of the dropped item;
   - [x] Drag and drop a `group` or `project` into a clear space in the panel will add it as a root child;
-  - [ ] Order dragged `group` / `project` accordingly with dropped `group` sorting.
+  - [x] Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
 - [ ] Keep context when switching from `projects` or switch from contexts;
@@ -25,14 +25,13 @@
 - [ ] Custom selected and hover color on `projects`.
 - [ ] Update GitMagic rules;
   - > Need to check all the rules to not be so *aggressive*;
+- [ ] Each Group has a project counter
 
 ## Issues
 
-- Drag and Drop a group looses all it's children;
-- expand / collapse is not stored;
-- editor view group list to have also the sorting ability;
 - Implement missing `0.3.x` features;
 - Fix minimum local file schema properties;
+- closing atom and reopening will not open last project (this is internal to atom)
 
 ## Performance
 
