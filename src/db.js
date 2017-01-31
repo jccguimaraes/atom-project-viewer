@@ -120,55 +120,97 @@ const moveInStore = function _moveInStore (entry, delegator) {
   return entry;
 };
 
-const move = function _move(moveItem, nextToItem, insertBefore) {
-    if (moveItem === nextToItem) { return; }
-    var moveItemIdx = store.indexOf(moveItem);
-    var nextToItemIdx = store.indexOf(nextToItem);
-    var moveDownwards = moveItemIdx < nextToItemIdx;
-    //var protoOfMoveItem = Object.getPrototypeOf(moveItem);
-    //var protoOfNextToItem = Object.getPrototypeOf(nextToItem);
-    //var protoOfMoveItemIdx = store.indexOf(protoOfMoveItem);
-    //var protoOfNextToItemIdx = store.indexOf(protoOfNextToItem);
+const move = function _move(movingItem, targetedItem, insertBefore) {
+    // this is basic stuff
+    if (!movingItem || !targetedItem) { return; }
 
-    var moveItemSubStoreChildren = [];
-    var nextToItemSubStoreChildren = [];
+    // does this actually happen? as in a DnD action? :see_no_evil:
+    if (movingItem === targetedItem) { return; }
 
-    store.slice( (moveDownwards ? moveItemIdx: nextToItemIdx), (moveDownwards ? nextToItemIdx + 1 : moveItemIdx + 1 ) ).some(
-        (item, idx) => {
-            var result = idx === 0 ? true : moveItemSubStoreChildren.indexOf(Object.getPrototypeOf(item)) !== -1;
-            if (result) {
-                moveItemSubStoreChildren.push(item);
-                moveDownwards && store.splice(store.indexOf(item), 1);
-            }
-            return !result;
-        }
-    );
+    // if `isBefore` is `undefined` this means that we are moving an item
+    // to the targetItem's list and not near it
+    // and the targetItem must be a group
+    if (insertBefore === undefined && targetedItem.type !== 'group') { return; }
 
-    if (moveDownwards) {
-      nextToItemIdx = store.indexOf(nextToItem);
+    let prototypeOfmovingItem;
+
+    // if `isBefore` is `undefined` this means that we are moving an item
+    // to the targetItem's list and not near it
+    if (insertBefore === undefined) {
+        prototypeOfmovingItem = Object.getPrototypeOf(movingItem);
     }
 
-    (!moveDownwards || !insertBefore) && store.slice( (moveDownwards ? nextToItemIdx : moveItemIdx) ).some(
-        (item, idx) => {
-            var result = idx === 0 ? true : nextToItemSubStoreChildren.indexOf(Object.getPrototypeOf(item)) !== -1;
-            if (result) {
-                nextToItemSubStoreChildren.push(item);
-                !moveDownwards && store.splice(store.indexOf(item), 1);
-            }
-            return !result;
+    // does this actually happen? as in a DnD action? :see_no_evil:
+    if (prototypeOfmovingItem === targetedItem) {
+        return;
+    }
+
+    let movingItemIdx = store.indexOf(movingItem);
+    const movingItems = [movingItem];
+
+    store.slice(movingItemIdx + 1).some(
+      storeItem => {
+        const storeItemPrototype = Object.getPrototypeOf(storeItem);
+
+        // this means that no more children of movingItem
+        if (movingItems.indexOf(storeItemPrototype) === -1) {
+          return true;
         }
-    );
 
-    let insertAtIndex = nextToItemIdx;
+        // add to the moving items array
+        if (movingItems.indexOf(storeItem) === -1) {
+          movingItems.push(storeItem);
+        }
 
-    for(let putIdx = nextToItemIdx + 1; putIdx < store.length; putIdx++) {
-      var result = (moveDownwards ? nextToItemSubStoreChildren : moveItemSubStoreChildren).indexOf(Object.getPrototypeOf(store[putIdx])) === -1;
-      if (!result) {
-        insertAtIndex = putIdx;
-        break;
+        // and we remove from the store
+        store.splice(store.indexOf(storeItem), 1);
+
+        // keep searching
+        return false;
       }
+    );
+
+    store.splice(movingItemIdx, 1);
+
+    let targetedItemIdx = store.indexOf(targetedItem);
+    let targetedItems = [targetedItem];
+    let lastTargetedChildIdx = targetedItemIdx;
+
+    store.slice(targetedItemIdx + 1).some(
+      storeItem => {
+        const storeItemPrototype = Object.getPrototypeOf(storeItem);
+
+        if (targetedItems.indexOf(storeItemPrototype) === -1) {
+          // this means that no more children of targetedItem
+          return true;
+        }
+
+        // get the last child's index in the current store
+        // this is a substore so internal index reference is not valid
+        lastTargetedChildIdx++;
+
+        // add to the targeted items array
+        if (targetedItems.indexOf(storeItem) === -1) {
+          targetedItems.push(storeItem);
+        }
+
+        // keep searching
+        return false;
+      }
+    );
+
+    switch (insertBefore) {
+      case undefined:
+        Object.setPrototypeOf(movingItem, targetedItem);
+        store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        break;
+      case true:
+        store.splice(targetedItemIdx, 0, ...movingItems);
+        break;
+      case false:
+        store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        break;
     }
-    store.splice(insertAtIndex + (insertBefore ? 0 : 1), 0, ...(moveDownwards ? moveItemSubStoreChildren : nextToItemSubStoreChildren));
 };
 
 // =============================================================================
