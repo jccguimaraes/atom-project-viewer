@@ -73,14 +73,13 @@ const drop = function _drop (evt) {
 
   const droppedModel = getModel(evt.target);
   const draggedModel = getModel(draggedView);
-  const protoModel = Object.getPrototypeOf(droppedModel);
 
   // a bit hacky
-  const below = droppedView.classList.contains('below');
+  const insertBefore = droppedView.classList.contains('above');
   this.classList.remove('dropping', 'below', 'above');
 
-  database.moveTo(draggedModel, protoModel, droppedModel, below);
-  // database.save();
+  database.moveTo(draggedModel, droppedModel, insertBefore);
+  database.save();
 };
 
 const attachedCallback = function _attachedCallback () {

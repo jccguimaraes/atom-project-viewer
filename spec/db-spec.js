@@ -76,6 +76,42 @@ fdescribe ('database', function () {
         ]);
       });
 
+      it ('should not move anything', function () {
+        const storeAfter = [
+          item_1, item_2, item_3, item_4, item_5,
+          item_6, item_7, item_8, item_9, item_10
+        ]
+        database.move();
+        expect(database.listStore()).toEqual(storeAfter);
+      });
+
+      it ('should not move item_3 when moving to item_8', function () {
+        const storeAfter = [
+          item_1, item_2, item_3, item_4, item_5,
+          item_6, item_7, item_8, item_9, item_10
+        ]
+        database.move(item_3, item_8);
+        expect(database.listStore()).toEqual(storeAfter);
+      });
+
+      it ('should place item_3 in item_4', function () {
+        const storeAfter = [
+          item_1, item_2, item_4, item_5, item_3,
+          item_6, item_7, item_8, item_9, item_10
+        ]
+        database.move(item_3, item_4);
+        expect(database.listStore()).toEqual(storeAfter);
+      });
+
+      it ('should place item_4 in item_7', function () {
+        const storeAfter = [
+          item_1, item_2, item_3, item_6, item_7,
+          item_8, item_9, item_10, item_4, item_5
+        ]
+        database.move(item_4, item_7);
+        expect(database.listStore()).toEqual(storeAfter);
+      });
+
       it ('should place item_3 after item_8', function () {
         const storeAfter = [
           item_1, item_2, item_4, item_5, item_6,

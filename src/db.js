@@ -120,7 +120,7 @@ const moveInStore = function _moveInStore (entry, delegator) {
   return entry;
 };
 
-const move = function _move(movingItem, targetedItem, insertBefore) {
+const move = function _move (movingItem, targetedItem, insertBefore) {
     // this is basic stuff
     if (!movingItem || !targetedItem) { return; }
 
@@ -201,14 +201,16 @@ const move = function _move(movingItem, targetedItem, insertBefore) {
 
     switch (insertBefore) {
       case undefined:
-        Object.setPrototypeOf(movingItem, targetedItem);
         store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, targetedItem);
         break;
       case true:
         store.splice(targetedItemIdx, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, Object.getPrototypeOf(targetedItem));
         break;
       case false:
         store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, Object.getPrototypeOf(targetedItem));
         break;
     }
 };

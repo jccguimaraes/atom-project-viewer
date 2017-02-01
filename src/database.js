@@ -201,53 +201,99 @@ const refresh = function _refresh () {
  * @public
  * @since 1.0.0
  */
-const moveTo = function _moveTo (childModel, protoModel, siblingModel, below) {
-  const currentProtoModel = Object.getPrototypeOf(childModel);
+const moveTo = function _moveTo (movingItem, targetedItem, insertBefore) {
+    // this is basic stuff
+    if (!movingItem || !targetedItem) { return; }
 
-  if (!protoModel) { protoModel = Object.prototype; }
+    // does this actually happen? as in a DnD action? :see_no_evil:
+    if (movingItem === targetedItem) { return; }
 
-  if (currentProtoModel.type && currentProtoModel.type !== 'group') {
-    return null;
-  }
+    // if `isBefore` is `undefined` this means that we are moving an item
+    // to the targetItem's list and not near it
+    // and the targetItem must be a group
+    if (insertBefore === undefined && targetedItem.type !== 'group') { return; }
 
-  Object.setPrototypeOf(childModel, protoModel);
-  const childIdx = store.indexOf(childModel);
-  const protoIdx = store.indexOf(protoModel);
-  const siblingIdx = store.indexOf(siblingModel);
+    let prototypeOfmovingItem;
 
-  let subStore;
+    // if `isBefore` is `undefined` this means that we are moving an item
+    // to the targetItem's list and not near it
+    if (insertBefore === undefined) {
+        prototypeOfmovingItem = Object.getPrototypeOf(movingItem);
+    }
 
-  if (!siblingModel && protoIdx !== -1) {
-    subStore = store.splice(childIdx, protoIdx - childIdx);
-  }
-  else if (!siblingModel && protoIdx === -1) {
-    subStore = store.splice(childIdx, store.length - 1 - childIdx);
-  }
-  else if (siblingIdx !== -1 && childIdx > siblingIdx) {
-    subStore = store.splice(siblingIdx, childIdx - siblingIdx);
-    const x = subStore.slice(0, 1);
-    const y = subStore.slice(-1);
-    subStore.shift();
-    subStore.pop();
-    subStore = below ? x.concat(y).concat(subStore) : y.concat(x).concat(subStore);
-  }
-  else if (siblingIdx !== -1 && childIdx <= siblingIdx) {
-      subStore = store.splice(childIdx, siblingIdx - childIdx);
+    // does this actually happen? as in a DnD action? :see_no_evil:
+    if (prototypeOfmovingItem === targetedItem) {
+        return;
+    }
 
-      const firstItem = [subStore.shift()];
-      const lastItem = [subStore.pop()];
+    let movingItemIdx = store.indexOf(movingItem);
+    const movingItems = [movingItem];
 
-      if (below) {
-          subStore = subStore.concat(lastItem).concat(firstItem);
+    store.slice(movingItemIdx + 1).some(
+      storeItem => {
+        const storeItemPrototype = Object.getPrototypeOf(storeItem);
+
+        // this means that no more children of movingItem
+        if (movingItems.indexOf(storeItemPrototype) === -1) {
+          return true;
+        }
+
+        // add to the moving items array
+        if (movingItems.indexOf(storeItem) === -1) {
+          movingItems.push(storeItem);
+        }
+
+        // and we remove from the store
+        store.splice(store.indexOf(storeItem), 1);
+
+        // keep searching
+        return false;
       }
-      else {
-          subStore = subStore.concat(firstItem).concat(lastItem);
+    );
+
+    store.splice(movingItemIdx, 1);
+
+    let targetedItemIdx = store.indexOf(targetedItem);
+    let targetedItems = [targetedItem];
+    let lastTargetedChildIdx = targetedItemIdx;
+
+    store.slice(targetedItemIdx + 1).some(
+      storeItem => {
+        const storeItemPrototype = Object.getPrototypeOf(storeItem);
+
+        if (targetedItems.indexOf(storeItemPrototype) === -1) {
+          // this means that no more children of targetedItem
+          return true;
+        }
+
+        // get the last child's index in the current store
+        // this is a substore so internal index reference is not valid
+        lastTargetedChildIdx++;
+
+        // add to the targeted items array
+        if (targetedItems.indexOf(storeItem) === -1) {
+          targetedItems.push(storeItem);
+        }
+
+        // keep searching
+        return false;
       }
-  }
-  else {
-    return;
-  }
-  store = store.concat(subStore);
+    );
+
+    switch (insertBefore) {
+      case undefined:
+        store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, targetedItem);
+        break;
+      case true:
+        store.splice(targetedItemIdx, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, Object.getPrototypeOf(targetedItem));
+        break;
+      case false:
+        store.splice(lastTargetedChildIdx + 1, 0, ...movingItems);
+        Object.setPrototypeOf(movingItem, Object.getPrototypeOf(targetedItem));
+        break;
+    }
 };
 
 /**
