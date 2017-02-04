@@ -81,12 +81,13 @@ const drop = function _drop (evt) {
   // a bit hacky
   let insertBefore = undefined;
 
-  if (insertBefore === undefined) {
-    insertBefore = droppedView.classList.contains('above');
+  if (droppedView.classList.contains('above')) {
+    insertBefore = true;
   }
-  if (insertBefore === undefined) {
-    insertBefore = droppedView.classList.contains('above');
+  else if (droppedView.classList.contains('below')) {
+    insertBefore = false;
   }
+
   this.classList.remove('dropping', 'below', 'above', 'center');
 
   database.moveTo(draggedModel, droppedModel, insertBefore);
