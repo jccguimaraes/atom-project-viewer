@@ -12,16 +12,39 @@ const dragstart = function _dragstart (evt) {
     "text/plain",
     getModel(evt.target).uuid
   );
-  evt.dataTransfer.dropEffect = "move";
-  evt.target.classList.add('dragged');
+  // evt.dataTransfer.dropEffect = "move";
+  const view = getView(evt.target);
+  view.classList.add('dragged');
   evt.stopPropagation();
 };
 
 const dragover = function _dragover (evt) {
+  const view = getView(evt.target);
+
+  const threshold = view.querySelector('.list-item').clientHeight / 3;
+
+  if (view.offsetTop + threshold > evt.layerY) {
+    view.classList.add('above');
+    view.classList.remove('center');
+    view.classList.remove('below');
+  }
+  else if (view.offsetTop + (2 * threshold) > evt.layerY) {
+    view.classList.remove('above');
+    view.classList.add('center');
+    view.classList.remove('below');
+  }
+  else {
+    view.classList.remove('above');
+    view.classList.remove('center');
+    view.classList.add('below');
+  }
+
   evt.preventDefault();
 };
 
 const dragleave = function _dragleave (evt) {
+  const view = getView(evt.target);
+  view.classList.remove('above', 'center', 'below');
   evt.stopPropagation();
 };
 
@@ -30,7 +53,8 @@ const dragenter = function _dragenter (evt) {
 };
 
 const dragend = function _dragend (evt) {
-  evt.target.classList.remove('dragged');
+  const view = getView(evt.target);
+  view.classList.remove('above', 'center', 'below', 'dragged');
   evt.stopPropagation();
 };
 
@@ -54,7 +78,18 @@ const drop = function _drop (evt) {
 
   if (droppedView === draggedView) { return; }
 
-  database.moveTo(draggedModel, droppedModel);
+  // a bit hacky
+  let insertBefore = undefined;
+
+  if (insertBefore === undefined) {
+    insertBefore = droppedView.classList.contains('above');
+  }
+  if (insertBefore === undefined) {
+    insertBefore = droppedView.classList.contains('above');
+  }
+  this.classList.remove('dropping', 'below', 'above', 'center');
+
+  database.moveTo(draggedModel, droppedModel, insertBefore);
   database.save();
 };
 

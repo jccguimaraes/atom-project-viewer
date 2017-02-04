@@ -299,6 +299,69 @@ project-viewer {
     margin-left: 10px;
   }
 
+  li[is="project-viewer-group"] {
+
+      &.above {
+        > .list-item {
+            color: @project-viewer_item_color;
+
+            &::after {
+                position: absolute;
+                content: "";
+                left: 0;
+                height: @component-line-height / 2;
+                width: @component-line-height / 3;
+                border-color: @project-viewer_item_color;
+                border-style: solid;
+                border-width: thin;
+                border-bottom: transparent;
+                border-right: transparent;
+            }
+        }
+      }
+
+      &.below {
+
+        > .list-item {
+            color: @project-viewer_item_color;
+
+            &::after {
+                position: absolute;
+                content: "";
+                left: 0;
+                height: @component-line-height / 2;
+                width: @component-line-height / 3;
+                margin-top: @component-line-height / 2;
+                border-color: @project-viewer_item_color;
+                border-style: solid;
+                border-width: thin;
+                border-top: transparent;
+                border-right: transparent;
+            }
+        }
+      }
+
+      &.center {
+        > .list-item {
+            color: @project-viewer_item_color;
+
+            &::after {
+              position: absolute;
+              content: "";
+              left: 0;
+              height: @component-line-height / 2;
+              margin-top: @component-line-height / 3;
+              border-color: @project-viewer_item_color;
+              border-style: solid;
+              border-width: thin;
+              border-top: transparent;
+              border-right: transparent;
+              border-bottom: transparent;
+            }
+        }
+      }
+  }
+
   li[is="project-viewer-group"].list-nested-item,
   li[is="project-viewer-project"].list-item {
     transition: opacity @pv_transition-duration-default;
@@ -393,7 +456,7 @@ project-viewer {
       padding-left: 0;
     }
 
-    &:not(.selected):hover::before {
+    &:not(.dragging):not(.selected):hover::before {
       visibility: visible;
       transform: scaleY(1);
     }
@@ -405,6 +468,7 @@ project-viewer {
     &.dropping {
         padding-top: 0;
         padding-bottom: 0;
+        color: @project-viewer_item_color;
 
         &.above {
             padding-top: 5px;

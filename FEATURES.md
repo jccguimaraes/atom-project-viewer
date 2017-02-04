@@ -1,11 +1,6 @@
 ## Working on Feature
 
 - [ ] A decent testing coverage;
-- [ ] Drag & Drop `groups` and `projects`;
-  - [x] Drag and drop a `group` or `project` into a `group` will add it as a child;
-  - [ ] Drag and drop a `group` or `project` into an `project` will add it as sibling of the dropped item;
-  - [x] Drag and drop a `group` or `project` into a clear space in the panel will add it as a root child;
-  - [x] Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - [ ] Context Menu option to clear selected `project`'s *state* / *context*;
 - [ ] Clear individual `project`'s cached state (from **Atom**'s store?);
 - [ ] Keep context when switching from `projects` or switch from contexts;
@@ -19,7 +14,7 @@
   - [ ] Sorting children;
 - [ ] Context Menu option to open `project` in a new window or vice versa;
 - [ ] Provide an API Service for managing outside `groups` and `projects`;
-- [ ] Multiple backup services (*Gist* and *Goggle Drive*);
+- [ ] Backup services (*Gist* and *Goggle Drive*);
   - > No more than these 2 services.
   - > This is also available through a config option which will switch between what is the primary option, defaults to open in *same window*.
 - [ ] Custom selected and hover color on `projects`.

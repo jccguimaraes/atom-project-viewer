@@ -38,7 +38,7 @@ This is a package built for and by the Atom community. For contribution read [be
 
 In a terminal / command line write the following line `apm install project-viewer`.
 
-Or simply find the package by accessing the menu **Atom → Preferences... → Install** and search for ***project-viewer***.
+Or just find the package by accessing the menu **Atom → Preferences... → Install** and search for ***project-viewer***.
 
 ## Features
 
@@ -58,6 +58,11 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
 - Traverse and select `projects` with `up` and `down` keys;
 - Toggle collapse / expand of `groups` with `left` and `right` keys;
 - `status-bar` with the `project`'s' *breadcrumb* path;
+- Drag & Drop `groups` and `projects`;
+  - Drag and drop a `group` or `project` into a `group` will add it as a child;
+  - Drag and drop a `group` or `project` into an `project` will add it as sibling of the dropped item;
+  - Drag and drop a `group` or `project` into a clear space in the panel will add it as a root child;
+  - Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - Open the local database file for direct editing;
 - Old database schemas conversion tools;
 - Editor for `groups` / `projects` creation and update;
@@ -69,7 +74,7 @@ Or simply find the package by accessing the menu **Atom → Preferences... → I
   - Filtering icons;
   - List of icons in editor as *only icons* or *icon and description*;
     - > This is available through a config option, default is *icon and description*.
-- No `groups` and / or `projects` message;
+- Empty `groups` and / or `projects` list message;
 
 ## Shortcuts
 

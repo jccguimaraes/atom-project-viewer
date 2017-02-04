@@ -15,6 +15,8 @@ const onClickEvent = function _onClickEvent (model) {
 };
 
 const dragstart = function _dragstart (evt) {
+  const view = getView(evt.target);
+  view.classList.add('dragging');
   evt.dataTransfer.setData(
     'text/plain',
     getModel(evt.target).uuid
@@ -36,6 +38,7 @@ const dragover = function _dragover (evt) {
   }
 
   evt.preventDefault();
+  evt.stopPropagation();
 };
 
 const dragleave = function _dragleave (evt) {
@@ -56,6 +59,8 @@ const dragenter = function _dragenter (evt) {
 };
 
 const dragend = function _dragend (evt) {
+  const view = getView(evt.target);
+  view.classList.remove('dragging');
   evt.stopPropagation();
 };
 
