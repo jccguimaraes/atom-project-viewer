@@ -1,6 +1,6 @@
 'use strict';
 
-describe ('project-viewer', function () {
+xdescribe ('project-viewer', function () {
 
   let mainElement;
 

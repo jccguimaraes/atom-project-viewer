@@ -3,7 +3,7 @@
 const fs = require('fs');
 const database = require('../src/db');
 
-describe ('database', function () {
+xdescribe ('database', function () {
 
   const toBeMethod = function _toBeMethod() {
     return typeof this.actual === 'function';

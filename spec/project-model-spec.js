@@ -2,7 +2,7 @@
 
 const modelRef = require('../src/model');
 
-describe ('project-model', function () {
+xdescribe ('project-model', function () {
   it ('should have a type of project right?', function () {
     const model = modelRef.createProject();
     expect(model.type).toBe('project');

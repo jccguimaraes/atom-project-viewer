@@ -18,7 +18,7 @@ const cleanConfig = function _cleanConfig () {
 
 const getModel = function _getModel (view) {
   if (!view) { return undefined; }
-  return map.get(getView(view));
+  return map.get(getView(view)) || view;
 };
 
 const getView = function _getView (view) {
@@ -84,12 +84,10 @@ const buildLabel = function _buildLabel (text, type, child) {
   return view;
 };
 
-const sorter = function _sorter (reversed, previous, current) {
-  const previousModel = map.get(previous);
-  const currentModel = map.get(current);
+const sorter = function _sorter (reversed, previousView, currentView) {
   return (reversed ? -1 : 1) * new Intl.Collator().compare(
-    previousModel.name,
-    currentModel.name
+    getModel(previousView).name,
+    getModel(currentView).name
   );
 };
 

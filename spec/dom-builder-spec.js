@@ -3,7 +3,7 @@
 const domBuilder = require('../src/dom-builder');
 const map = require('./../src/map');
 
-describe ('dom-builder', function () {
+xdescribe ('dom-builder', function () {
 
   it ('should not build an element', function () {
     let view = domBuilder.createView(

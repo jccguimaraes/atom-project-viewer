@@ -2,7 +2,7 @@
 
 const modelRef = require('../src/model');
 
-describe ('group-model', function () {
+xdescribe ('group-model', function () {
   it ('should have a type of group right?', function () {
     const model = modelRef.createGroup();
     expect(model.type).toBe('group');

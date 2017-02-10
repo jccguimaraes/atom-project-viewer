@@ -195,14 +195,19 @@ const viewMethods = {
       this.appendChild(listTree);
     }
   },
-  attachChild: function _attachChild (node) {
-    let listTree = this.querySelector('.list-tree');
-
+  sortChildren: function _sortChildren () {
+    const listTree = this.querySelector('.list-tree');
     if (!listTree) { return; }
+    const children = Array.from(listTree.children);
+    if (!children || children.length === 0) { return; }
 
-    const children = Array.from(listTree.children).concat([node]);
     sortList(children, map.get(this).sortBy);
     children.forEach(view => listTree.appendChild(view));
+  },
+  attachChild: function _attachChild (node) {
+    const listTree = this.querySelector('.list-tree');
+    if (!listTree) { return; }
+    listTree.appendChild(node);
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

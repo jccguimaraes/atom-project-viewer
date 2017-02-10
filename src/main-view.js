@@ -126,6 +126,13 @@ const populate = function _populate (list) {
   }
 
   list.forEach(buildViews.bind(this));
+  this.sortChildren();
+  for (let ref in viewsRef) {
+      const model = getModel(viewsRef[ref]);
+      if (model && model.type === 'group') {
+          viewsRef[ref].sortChildren();
+      }
+  }
 };
 
 const traverse = function _traverse (direction) {
@@ -330,6 +337,16 @@ const initialize = function _initialize () {
   pvResizer.addEventListener("dblclick", resizerResetDrag.bind(this), false);
 };
 
+const sortChildren = function _sortChildren () {
+  const listTree = this.querySelector('.list-tree');
+  if (!listTree) { return; }
+  const children = Array.from(listTree.children);
+  if (!children || children.length === 0) { return; }
+
+  sortList(children, atom.config.get('project-viewer.rootSortBy'));
+  children.forEach(view => listTree.appendChild(view));
+};
+
 const attachChild = function _attachChild (node) {
   const listTree = this.querySelector('.list-tree');
 
@@ -340,9 +357,7 @@ const attachChild = function _attachChild (node) {
     emptyMessage.classList.add('hidden');
   }
 
-  const children = Array.from(listTree.children).concat([node]);
-  sortList(children, atom.config.get('project-viewer.rootSortBy'));
-  children.forEach(view => listTree.appendChild(view));
+  listTree.appendChild(node);
 };
 
 const detachChild = function _detachChild (node) {
@@ -355,8 +370,9 @@ const detachChild = function _detachChild (node) {
 
 const viewMethods = {
   attachChild,
-  autohide,
+  sortChildren,
   detachChild,
+  autohide,
   initialize,
   openEditor,
   populate,

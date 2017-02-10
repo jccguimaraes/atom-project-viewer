@@ -3,7 +3,7 @@
 const groupView = require('../src/group-view');
 const groupModel = require('../src/model');
 
-describe ('group-view', function () {
+xdescribe ('group-view', function () {
 
   it ('if no valid model is passed it will throw errors', function () {
     const view = groupView.createView();
