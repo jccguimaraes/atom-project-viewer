@@ -120,17 +120,27 @@ Change it at your own risk! :speak_no_evil:
 
 ### Group Schema
 
-parameter | Type | Description | Required
-----------|------|-------------|--------
-`type` | `String` | | `true`
-`name` | `String` | | `true`
-`list` | `Array` | | `true`
+Parameter | Type | Description | Default | Required
+----------|------|-------------|---------|---------
+`type` | `String` | | One word... `group` | `true`
+`name` | `String` | | In theory... any word / emoji | `true`
+`sortBy` | `String` | | Possible options `position`, `reserve-position`, `alphabetically` and `reverse-alphabetically` | `true`
+`icon` | `String` | | `''` | `false`
+`color` | `String` | | `''` | `false`
+`expanded` | `Boolean` | | `false` | `true`
+`list` | `Array` | | `[]` | `true`
 
 ### Project Schema
 
-parameter | Type | Description | Required
-----------|------|-------------|--------
-`type` | `String` | | `true`
+Parameter | Type | Description | Default | Required
+----------|------|-------------|---------|---------
+`type` | `String` | | One word... `project` | `true`
+`name` | `String` | | In theory... any word / emoji | `true`
+`icon` | `String` | | `''` | `false`
+`color` | `String` | | `''` | `false`
+`devMode` | `Boolean` | | `false` | `false`
+`config` | `Object` | | `{}` | `false`
+`paths` | `Array` | | `[]` | `true`
 
 ## Contributors
 

@@ -669,7 +669,7 @@ const updateModel = function _updateModel (changes) {
 
   Object.assign(context.model, changes);
 
-  if (context.type === 'project') {
+  if (context.model.type === 'project') {
     context.model.clearPaths();
     context.model.addPaths(changes.paths);
   }
