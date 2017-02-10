@@ -93,6 +93,24 @@ const config = {
     },
     order: 10
   },
+  'customSelectedColor': {
+    description: 'Only allows for hexadecimal colors',
+    type: 'string',
+    default: '',
+    order: 11
+  },
+  'customHoverColor': {
+    description: 'Only allows for hexadecimal colors',
+    type: 'string',
+    default: '',
+    order: 12
+  },
+  'customTitleColor': {
+    description: 'Only allows for hexadecimal colors',
+    type: 'string',
+    default: '',
+    order: 13
+  },
   'rootSortBy': {
     description: 'Sets the root sort by',
     type: 'string',
@@ -103,7 +121,7 @@ const config = {
       'alphabetically',
       'reverse-alphabetically'
     ],
-    order: 11
+    order: 14
   }
 };
 

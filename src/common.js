@@ -84,19 +84,25 @@ const buildLabel = function _buildLabel (text, type, child) {
   return view;
 };
 
-const sortViews = function _sortViews (listTree, sortBy, nodeView, childView) {
-  // const sortBy = atom.config.get('project-viewer.rootSortBy');
-  const nodeModel = map.get(nodeView);
-  const childModel = map.get(childView);
-  const reversed = sortBy.includes('reverse') ? -1 : 1;
-  const byPosition = sortBy.includes('position');
-  if (byPosition) {
-    return -reversed;
-  }
-  return reversed * new Intl.Collator().compare(
-    nodeModel.name,
-    childModel.name
+const sorter = function _sorter (reversed, previous, current) {
+  const previousModel = map.get(previous);
+  const currentModel = map.get(current);
+  return (reversed ? -1 : 1) * new Intl.Collator().compare(
+    previousModel.name,
+    currentModel.name
   );
+};
+
+const sortList = function _sortList (list, sortBy) {
+  const reversed = sortBy.includes('reverse');
+  const byPosition = sortBy.includes('position');
+  if (!byPosition) {
+    list = list.sort(sorter.bind(null, reversed))
+    return;
+  }
+  if (reversed) {
+    list.reverse();
+  }
 };
 
 exports.cleanConfig = cleanConfig;
@@ -110,4 +116,4 @@ exports.buildHeader = buildHeader;
 exports.buildInput = buildInput;
 exports.buildButton = buildButton;
 exports.buildLabel = buildLabel;
-exports.sortViews = sortViews;
+exports.sortList = sortList;

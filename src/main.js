@@ -4,6 +4,7 @@ const CompositeDisposable = require('atom').CompositeDisposable;
 const config = require('./config');
 const map = require('./map');
 const database = require('./database');
+const colours = require('./colours');
 const statusBar = require('./status-bar');
 const mainView = require('./main-view');
 const selectList = require('./select-list-view');
@@ -26,6 +27,8 @@ const activate = function _activate () {
   selectListUnsubscriber = database.subscribe(
     selectList.populate.bind(selectList)
   );
+
+  colours.initialize();
 
   // add all disposables
   this.disposables = new CompositeDisposable(
@@ -58,11 +61,23 @@ const activate = function _activate () {
     ),
     atom.config.observe(
       'project-viewer.hideHeader',
-      observehideHeader.bind(this)
+      observeHideHeader.bind(this)
     ),
     atom.config.onDidChange(
       'project-viewer.rootSortBy',
       observeRootSortBy.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.customTitleColor',
+      observeCustomTitleColor.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.customHoverColor',
+      observeCustomHoverColor.bind(this)
+    ),
+    atom.config.observe(
+      'project-viewer.customSelectedColor',
+      observeCustomSelectedColor.bind(this)
     )
   );
 };
@@ -80,6 +95,7 @@ const deactivate = function _deactivate () {
   sidebarUnsubscriber();
   selectListUnsubscriber();
   database.deactivate();
+  colours.destroy();
 
   view.reset();
   panel.destroy();
@@ -235,12 +251,36 @@ const observeAutoHide = function _observeAutoHide (option) {
   autohidePanel.call(this, option);
 };
 
-const observehideHeader = function _observehideHeader (option) {
-  let view = map.get(this);
-
+const observeHideHeader = function _observeHideHeader (option) {
+  const view = map.get(this);
   if (!view) { return; }
-
   view.toggleTitle(option);
+};
+
+const observeCustomTitleColor = function _observeCustomTitleColor (value) {
+  if (!value) {
+    colours.removeRule('title');
+    return;
+  }
+  colours.addRule('title', 'title', value);
+};
+
+const observeCustomHoverColor = function _observeCustomHoverColor (value) {
+  if (!value) {
+    colours.removeRule('projectHover');
+    colours.removeRule('projectHoverBefore');
+    return;
+  }
+  colours.addRule('projectHover', 'project-hover', value);
+  colours.addRule('projectHoverBefore', 'project-hover-before', value);
+};
+
+const observeCustomSelectedColor = function _observeCustomSelectedColor (value) {
+  if (!value) {
+    colours.removeRule('projectSelected');
+    return;
+  }
+  colours.addRule('projectSelected', 'project-selected', value);
 };
 
 const observeStatusBar = function _observeStatusBar (value) {
@@ -248,9 +288,9 @@ const observeStatusBar = function _observeStatusBar (value) {
 };
 
 const observeRootSortBy = function _observeRootSortBy () {
-  let view = map.get(this)
+  let view = map.get(this);
   if (!view) { return; }
-  database.save();
+  database.refresh();
 };
 
 const togglePanel = function _togglePanel () {

@@ -1,10 +1,13 @@
 dependencies:
   override:
-    - curl -L https://atom.io/download/deb -o atom-amd64.deb
-    - sudo dpkg --install atom-amd64.deb || true
-    - sudo apt-get update
-    - sudo apt-get -f install
-    - apm install
+    - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
+    - chmod u+x build-package.sh
+
 test:
   override:
-    - apm test
+    - ./build-package.sh
+
+machine:
+  environment:
+    ATOM_LINT_WITH_BUNDLED_NODE: "true"
+    APM_TEST_PACKAGES: ""

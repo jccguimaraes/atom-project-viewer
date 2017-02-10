@@ -185,8 +185,8 @@ const sortByContainer = function _sortByContainer (parentView) {
 
   const sortBy = [
     'alphabetically',
-    'position',
     'reverse-alphabetically',
+    'position',
     'reverse-position'
   ];
 

@@ -2,13 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const model = require('./model');
+
 const version = '1.0.0';
-const database = Object.create(null);
-let store = [];
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
+let store = [];
 let listeners = [];
 let watcher;
 let hasLocalFile = false;
@@ -352,26 +351,26 @@ const migrate03x = function _migrate03x () {
   const store03x = atom.getStorageFolder().load(file);
   const convertedStore = [];
 
-  function processGroup (group) {
+  function processOldGroup (group) {
     const groupModel = model.createGroup(group);
     convertedStore.push(groupModel);
     if (group.hasOwnProperty('groups')) {
-      group.groups.forEach(processGroup.bind(null, groupModel));
+      group.groups.forEach(processOldGroup.bind(null, groupModel));
     }
     if (group.hasOwnProperty('projects')) {
-      group.projects.forEach(processProject.bind(null, groupModel));
+      group.projects.forEach(processOldProject.bind(null, groupModel));
     }
   }
 
-  function processProject (parentModel, project) {
+  function processOldProject (parentModel, project) {
     const projectModel = model.createProject(project);
     convertedStore.push(projectModel);
     Object.setPrototypeOf(projectModel, parentModel);
   }
 
-  store03x.clients.forEach(processGroup);
-  store03x.groups.forEach(processGroup);
-  store03x.projects.forEach(processProject);
+  store03x.clients.forEach(processOldGroup);
+  store03x.groups.forEach(processOldGroup);
+  store03x.projects.forEach(processOldProject);
 
   store = convertedStore;
   save();
@@ -507,6 +506,8 @@ const openDatabase = function _openDatabase () {
     newWindow: false
   })
 };
+
+const database = Object.create(null);
 
 database.runSubscribers = runSubscribers;
 database.subscribe = subscribe;

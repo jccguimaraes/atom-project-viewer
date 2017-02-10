@@ -3,9 +3,10 @@
 const map = require('./map');
 const database = require('./database');
 const domBuilder = require('./dom-builder');
+const colours = require('./colours');
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
-const sortViews = require('./common').sortViews;
+const sortList = require('./common').sortList;
 
 const dragstart = function _dragstart (evt) {
   evt.dataTransfer.setData(
@@ -182,6 +183,10 @@ const viewMethods = {
       contentNode.textContent = model.name;
     }
 
+    if (model.color) {
+      colours.addRule(model.uuid, model.type, model.color);
+    }
+
     let listTree = this.querySelector('.list-tree');
 
     if (!listTree) {
@@ -192,29 +197,12 @@ const viewMethods = {
   },
   attachChild: function _attachChild (node) {
     let listTree = this.querySelector('.list-tree');
-    if (!listTree) {
-      return;
-    }
 
-    let thisModel = map.get(this);
-    let nodeModel = map.get(node);
+    if (!listTree) { return; }
 
-    if (nodeModel === Object.getPrototypeOf(thisModel)) {
-      return;
-    }
-
-    if (!nodeModel || !thisModel) {
-      return;
-    }
-
-    listTree.appendChild(node);
-    Object.setPrototypeOf(nodeModel, thisModel);
-
-    const listTreeChildren = Array.from(listTree.children);
-    listTreeChildren.sort(
-      sortViews.bind(this, listTree, thisModel.sortBy)
-    );
-    listTreeChildren.forEach(view => listTree.appendChild(view));
+    const children = Array.from(listTree.children).concat([node]);
+    sortList(children, map.get(this).sortBy);
+    children.forEach(view => listTree.appendChild(view));
   },
   detachChild: function _detachChild (node) {
     let listTree = this.querySelector('.list-tree');

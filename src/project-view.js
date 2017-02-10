@@ -4,6 +4,7 @@ const map = require('./map');
 const database = require('./database');
 const statusBar = require('./status-bar');
 const domBuilder = require('./dom-builder');
+const colours = require('./colours');
 const getSelectedProject = require('./common').getSelectedProject;
 const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 const getModel = require('./common').getModel;
@@ -152,6 +153,10 @@ const render = function _render () {
 
   if (model.name) {
     contentNode.textContent = model.name;
+  }
+
+  if (model.color) {
+    colours.addRule(model.uuid, model.type, model.color);
   }
 
   this.classList.toggle('no-paths', model.paths.length === 0);

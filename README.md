@@ -68,12 +68,14 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
 - Editor for `groups` / `projects` creation and update;
   - Create, update and remove `group` or `project`;
   - Automatic set it's name according to first path base name added;
-  - Bulk operation on a `project` creation;
+  - Batch operation on a `project` creation;
     - > Ability to create individual `projects` when more than one path is provided;
     - > Each project will automatically have it's name set to it's path base name.
   - Filtering icons;
   - List of icons in editor as *only icons* or *icon and description*;
     - > This is available through a config option, default is *icon and description*.
+  - Sort children `groups` / `projects`.
+    - > Sorting root `groups` / `projects` is done through a config option.
 - Empty `groups` and / or `projects` list message;
 
 ## Shortcuts
@@ -99,6 +101,9 @@ Settings | Type | Description | Default
 `customWidth` | `Integer` | Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width | 200
 `onlyIcons` | `Boolean` | Will show only the icons in the icon\'s list | `true`
 `customPalette` | `String` | Custom palette to use on editor | `#F1E4E8, #F7B05B, #595959, #CD5334, #EDB88B, #23282E, #263655, #F75468, #FF808F, #FFDB80, #292E1E, #248232, #2BA84A, #D8DAD3, #FCFFFC, #8EA604, #F5BB00, #EC9F05, #FF5722, #BF3100`
+`customSelectedColor` | `String` | Set custom selected project color | `''`
+`customHoverColor` | `String` | Set custom hover project color | `''`
+`customTitleColor` | `String` | Set custom main title color | `''`
 `rootSortBy` | `Array` | Sets the root sort by. | `position`
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).

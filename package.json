@@ -6,22 +6,21 @@
   "keywords": [
     "project",
     "productivity",
+    "management",
     "settings",
     "workflow"
   ],
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.13.1"
+    "atom": ">=1.14"
   },
   "dependencies": {
     "atom-space-pen-views": "latest",
     "devicons": "1.8.0"
   },
   "devDependencies": {
-    "all-contributors-cli": "latest",
-    "eslint": "latest",
-    "eslint-plugin-jasmine": "latest"
+    "all-contributors-cli": "latest"
   },
   "consumedServices": {
     "status-bar": {
@@ -37,8 +36,5 @@
         "1.0.0": "projectViewerService"
       }
     }
-  },
-  "scripts": {
-    "linter": "eslint src/** && eslint spec/**"
   }
 }

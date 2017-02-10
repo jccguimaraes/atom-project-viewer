@@ -6,7 +6,7 @@ const domBuilder = require('./dom-builder');
 const api = require('./api');
 const database = require('./database');
 const getModel = require('./common').getModel;
-const sortViews = require('./common').sortViews;
+const sortList = require('./common').sortList;
 
 const viewsRef = {};
 let startX;
@@ -126,13 +126,6 @@ const populate = function _populate (list) {
   }
 
   list.forEach(buildViews.bind(this));
-
-  const listTree = this.querySelector('ul.list-tree');
-  const listTreeChildren = Array.from(listTree.children);
-  listTreeChildren.sort(
-    sortViews.bind(this, listTree, atom.config.get('project-viewer.rootSortBy'))
-  );
-  listTreeChildren.forEach(view => listTree.appendChild(view));
 };
 
 const traverse = function _traverse (direction) {
@@ -144,7 +137,7 @@ const traverse = function _traverse (direction) {
   let selectionsFiltered = Array.from(selectionsUnfiltered).filter(
     selection => {
       let isVisible = true;
-      let parent = selection.parentNode;
+      let parent = selection.parent;
       while(!parent.classList.contains('body-content')) {
         parent = parent.parentNode;
         if (!parent || parent.classList.contains('collapsed')) {
@@ -339,21 +332,17 @@ const initialize = function _initialize () {
 
 const attachChild = function _attachChild (node) {
   const listTree = this.querySelector('.list-tree');
-  if (!listTree) {
-    return;
-  }
+
+  if (!listTree) { return; }
 
   if (listTree.children.length === 0) {
     const emptyMessage = this.querySelector('.background-message');
     emptyMessage.classList.add('hidden');
   }
-  listTree.appendChild(node);
 
-  const listTreeChildren = Array.from(listTree.children);
-  listTreeChildren.sort(
-    sortViews.bind(this, listTree, atom.config.get('project-viewer.rootSortBy'))
-  );
-  listTreeChildren.forEach(view => listTree.appendChild(view));
+  const children = Array.from(listTree.children).concat([node]);
+  sortList(children, atom.config.get('project-viewer.rootSortBy'));
+  children.forEach(view => listTree.appendChild(view));
 };
 
 const detachChild = function _detachChild (node) {
