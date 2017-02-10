@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors)
 
-[![atom version](https://img.shields.io/badge/atom-1.13.1-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![atom version](https://img.shields.io/badge/atom-1.14.1-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 
@@ -33,6 +33,10 @@
 ## Introduction
 
 This is a package built for and by the Atom community. For contribution read [below](#contributors).
+
+This package has grown so much over the last year that I felt the need to make it more stable and community friendly. And this required a more deep refactor with lots of new ideas and improvements, also huge amount of :heart: and :sweat_drops:.
+
+So here it is! **Enjoy and contribute!** :earth_africa:
 
 ## Installation
 
@@ -77,6 +81,8 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
   - Sort children `groups` / `projects`.
     - > Sorting root `groups` / `projects` is done through a config option.
 - Empty `groups` and / or `projects` list message;
+- Custom colors for `groups` and `projects`;
+- Custom colors for main title, for hovering on a `project` and for selected `project`;
 
 ## Shortcuts
 
@@ -99,16 +105,18 @@ Settings | Type | Description | Default
 `openNewWindow` | `Boolean` | Always open items in a new window. | `false`
 `statusBar` | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
 `customWidth` | `Integer` | Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width | 200
+`rootSortBy` | `Array` | Sets the root sort by. | `position`
 `onlyIcons` | `Boolean` | Will show only the icons in the icon\'s list | `true`
 `customPalette` | `String` | Custom palette to use on editor | `#F1E4E8, #F7B05B, #595959, #CD5334, #EDB88B, #23282E, #263655, #F75468, #FF808F, #FFDB80, #292E1E, #248232, #2BA84A, #D8DAD3, #FCFFFC, #8EA604, #F5BB00, #EC9F05, #FF5722, #BF3100`
 `customSelectedColor` | `String` | Set custom selected project color | `''`
 `customHoverColor` | `String` | Set custom hover project color | `''`
 `customTitleColor` | `String` | Set custom main title color | `''`
-`rootSortBy` | `Array` | Sets the root sort by. | `position`
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
 
 ## Local File manipulation
+
+Change it at your own risk! :speak_no_evil:
 
 ### Group Schema
 
@@ -141,4 +149,4 @@ You can follow me on [Twitter](https://twitter.com/jccguimaraes)
 
 ## A Special Thank You!
 
-I thank you all for giving such great feedback! :beers: for everyone.
+I thank you all for giving such great feedback! :beers: & :bear: for everyone.

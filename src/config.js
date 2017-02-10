@@ -74,12 +74,25 @@ const config = {
     default: 200,
     order: 8
   },
+  'rootSortBy': {
+    title: 'Root SortBy',
+    description: 'Sets the root sort by',
+    type: 'string',
+    default: 'position',
+    enum: [
+      'position',
+      'reverse-position',
+      'alphabetically',
+      'reverse-alphabetically'
+    ],
+    order: 9
+  },
   'onlyIcons': {
     title: 'Icons list without description',
     description: 'Will show only the icons in the icon\'s list',
     type: 'boolean',
     default: true,
-    order: 9
+    order: 10
   },
   'customPalette': {
     title: 'Custom palette to use on editor',
@@ -91,36 +104,24 @@ const config = {
     items: {
       type: 'string'
     },
-    order: 10
+    order: 11
   },
   'customSelectedColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 11
+    order: 12
   },
   'customHoverColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 12
+    order: 13
   },
   'customTitleColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 13
-  },
-  'rootSortBy': {
-    description: 'Sets the root sort by',
-    type: 'string',
-    default: 'position',
-    enum: [
-      'position',
-      'reverse-position',
-      'alphabetically',
-      'reverse-alphabetically'
-    ],
     order: 14
   }
 };
