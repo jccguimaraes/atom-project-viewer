@@ -140,15 +140,8 @@ const writeToDB = function _writeToDB (content) {
  * @since 1.0.0
  */
 const save = function _save () {
-  const storeProcessed = {
-    info: {
-      version,
-      updated: new Date()
-    },
-    root: processStore(store)
-  };
   directoryUnwatch();
-  writeToDB(storeProcessed);
+  writeToDB(exportDB());
   runSubscribers();
 };
 
@@ -377,6 +370,21 @@ const migrate03x = function _migrate03x () {
   runSubscribers();
 };
 
+const importDB = function _importDB (importedDB) {
+  writeToDB(importedDB);
+};
+
+const exportDB = function _exportDB () {
+  const storeProcessed = {
+    info: {
+      version,
+      updated: new Date()
+    },
+    root: processStore(store)
+  };
+  return storeProcessed;
+};
+
 /**
  * Deactivation of the database module
  * Clears out the directory watcher
@@ -523,6 +531,8 @@ database.moveTo = moveTo;
 database.remove = remove;
 database.addTo = addTo;
 database.migrate03x = migrate03x;
+database.importDB = importDB;
+database.exportDB = exportDB;
 
 /**
  * Database / Store module

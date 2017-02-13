@@ -182,12 +182,26 @@ const sorting = function _sorting () {
   return model.name;
 };
 
-const openOnWorkspace = function _openOnWorkspace () {
+const openOnWorkspace = function _openOnWorkspace (reverseOption) {
   const model = map.get(this);
 
   if (!model) { return false; }
 
   if (model.paths.length === 0) { return false; }
+
+  const action = reverseOption ?
+    !atom.config.get('project-viewer.openNewWindow') :
+    atom.config.get('project-viewer.openNewWindow');
+
+  if (action) {
+    atom.open({
+      pathsToOpen: model.paths,
+      newWindow: true,
+      devMode: model.devMode,
+      safeMode: false
+    });
+    return false;
+  }
 
   const currentOpenedProject = getCurrentOpenedProject(model);
 
@@ -201,18 +215,13 @@ const openOnWorkspace = function _openOnWorkspace () {
 
   this.classList.add('selected');
 
-  if (atom.config.get('project-viewer.openNewWindow')) {
-    atom.open({
-      pathsToOpen: model.paths,
-      newWindow: true,
-      devMode: model.devMode,
-      safeMode: false
-    });
-    return false;
-  }
+  let projectSHA;
+  let serialization;
 
-  let projectSHA = atom.getStateKey(atom.project.getPaths());
-  let serialization = atom.serialize();
+  if (!atom.config.get('project-viewer.keepContext')) {
+    projectSHA = atom.getStateKey(atom.project.getPaths());
+    serialization = atom.serialize();
+  }
 
   if (projectSHA && serialization) {
     atom.getStorageFolder().storeSync(projectSHA, serialization);
@@ -220,20 +229,23 @@ const openOnWorkspace = function _openOnWorkspace () {
 
   statusBar.update(model.breadcrumb());
 
-  projectSHA = atom.getStateKey(model.paths);
-  serialization = atom.getStorageFolder().load(projectSHA);
-
-  if (!serialization) {
-    atom.workspace.destroyActivePane();
-    atom.project.setPaths(model.paths);
-    return true;
+  if (!atom.config.get('project-viewer.keepContext')) {
+    projectSHA = atom.getStateKey(model.paths);
+    serialization = atom.getStorageFolder().load(projectSHA);
   }
 
-  atom.deserialize(serialization);
+  if (!serialization) {
+    atom.project.setPaths(model.paths);
+  } else {
+    atom.deserialize(serialization);
+  }
 
-  const linterPackage = atom.packages.getActivePackage('linter');
+  if (!atom.config.get('project-viewer.keepContext') && !serialization) {
+    atom.workspace.destroyActivePane();
+  }
 
   // hack to make linter update on project switching
+  const linterPackage = atom.packages.getActivePackage('linter');
   if (linterPackage) {
     linterPackage.deactivate();
     linterPackage.activate();

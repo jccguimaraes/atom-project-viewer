@@ -11,6 +11,7 @@ const selectList = require('./select-list-view');
 const cleanConfig = require('./common').cleanConfig;
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
+const githubWorker = new Worker(__dirname + '/workers/github.js');
 
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
@@ -29,6 +30,8 @@ const activate = function _activate () {
   );
 
   colours.initialize();
+
+  githubWorker.onmessage = githubWorkerOnMessage.bind(this);
 
   // add all disposables
   this.disposables = new CompositeDisposable(
@@ -101,17 +104,17 @@ const deactivate = function _deactivate () {
   panel.destroy();
 };
 
-const projectViewerService = function _projectViewerService () {
-  return serviceExposer;
-};
+// const projectViewerService = function _projectViewerService () {
+//   return serviceExposer;
+// };
 
 const provideStatusBar = function _provideStatusBar (service) {
   map.set(statusBar, service);
   this.disposables.add(
-      atom.config.observe(
-        'project-viewer.statusBar',
-        observeStatusBar.bind(this)
-      )
+    atom.config.observe(
+      'project-viewer.statusBar',
+      observeStatusBar.bind(this)
+    )
   )
 };
 
@@ -120,12 +123,16 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:togglePanel': togglePanel.bind(this),
     'project-viewer:autohidePanel': autohidePanel.bind(this, undefined),
     'project-viewer:openEditor': openEditor.bind(this),
+    'project-viewer:openProject': openProject.bind(this),
     'project-viewer:focusPanel': focusPanel.bind(this),
     'project-viewer:toggleSelectList': toggleSelectList,
     'project-viewer:clearState': clearState.bind(this),
     'project-viewer:clearStates': clearStates.bind(this),
     'project-viewer:openDatabase': openDatabase.bind(this),
-    'project-viewer:migrate03x': migrate03x
+    'project-viewer:migrate03x': migrate03x,
+    'project-viewer:gistExport': gistExport,
+    'project-viewer:gistImport': gistImport,
+    'project-viewer:elevate-project': elevateProject.bind(this)
   }
 };
 
@@ -141,21 +148,48 @@ const commandsCore = function _commandsCore () {
 
 const commandscontextMenu = function _commandscontextMenu () {
   return {
-      'project-viewer': [
-        {
-          command: 'project-viewer:openEditor',
-          created: function (evt) {
-            const model = getModel(evt.target);
-            if (model) {
-              this.label = `Edit ${model.name}...`;
-            }
-          },
-          shouldDisplay: function (evt) {
-            const view = getView(evt.target);
-            return map.has(view);
+    'ol.tree-view': [
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Elevate to Project...',
+        command: 'project-viewer:elevate-project',
+      },
+      {
+        type: 'separator'
+      }
+    ],
+    'project-viewer': [
+      {
+        command: 'project-viewer:openEditor',
+        created: function (evt) {
+          const model = getModel(evt.target);
+          if (model) {
+            this.label = `Edit ${model.name}...`;
           }
+        },
+        shouldDisplay: function (evt) {
+          const view = getView(evt.target);
+          return map.has(view);
         }
-      ]
+      },
+      {
+        command: 'project-viewer:openProject',
+        created: function (evt) {
+          const model = getModel(evt.target);
+          if (model && model.type === 'project') {
+            const openIn = atom.config.get('project-viewer.openNewWindow') ?
+            'in same window' : 'in a new window';
+            this.label = `Open ${openIn}`;
+          }
+        },
+        shouldDisplay: function (evt) {
+          const model = getModel(evt.target);
+          return model && model.type === 'project';
+        }
+      }
+    ]
   };
 };
 
@@ -324,6 +358,12 @@ const autohidePanel = function _autohidePanel (option) {
   view.autohide(option);
 };
 
+const openProject = function _openProject (evt) {
+  const view = getView(evt.target);
+  if (!view) { return; }
+  view.openOnWorkspace(true);
+};
+
 const openEditor = function _openEditor (evt) {
   const view = map.get(this);
   if (!view) { return; }
@@ -341,25 +381,81 @@ const openDatabase = function _openDatabase () {
   database.openDatabase();
 };
 
+const githubWorkerOnMessage = function _githubWorkerOnMessage (event) {
+  if (!event.data) {
+    atom.notifications.addError('Project Viewer - Github', {
+      description: 'something\'s wrong with the web worker',
+      icon: event.data.options.icon
+    });
+    return;
+  }
+
+  if (event.data.db) {
+    database.importDB(event.data.db);
+  }
+
+  if (event.data.gistId) {
+    atom.config.set('project-viewer.gistId', event.data.gistId);
+  }
+
+  atom.notifications[event.data.type]('Project Viewer - Github', {
+    description: event.data.message,
+    icon: event.data.options.icon
+  });
+};
+
+const gistExport = function _gistExport () {
+  githubWorker.postMessage([
+    {
+      action: 'update',
+      token: atom.config.get('project-viewer.githubAccessToken'),
+      gistId: atom.config.get('project-viewer.gistId'),
+      setName: atom.config.get('project-viewer.setName'),
+      value: database.exportDB()
+    }
+  ]);
+};
+
+const gistImport = function _gistImport () {
+  githubWorker.postMessage([
+    {
+      action: 'fetch',
+      token: atom.config.get('project-viewer.githubAccessToken'),
+      gistId: atom.config.get('project-viewer.gistId'),
+      setName: atom.config.get('project-viewer.setName')
+    }
+  ]);
+};
+
+const elevateProject = function _elevateProject () {
+  const paths = atom.project.getPaths();
+  const model = { type: 'project', paths };
+
+  const view = map.get(this);
+  if (!view) { return; }
+
+  view.openEditor(model, true);
+};
+
 const clearState = function _clearState () {};
 
 const clearStates = function _clearStates () {};
 
-const createGroup = function _createGroup () {};
+// const createGroup = function _createGroup () {};
 
-const createProject = function _createProject () {};
+// const createProject = function _createProject () {};
 
-const serviceExposer = Object.create(null);
-
-serviceExposer.createGroup = createGroup;
-serviceExposer.createProject = createProject;
+// const serviceExposer = Object.create(null);
+//
+// serviceExposer.createGroup = createGroup;
+// serviceExposer.createProject = createProject;
 
 const main = Object.create(null);
 
 main.activate = activate;
 main.config = config;
 main.deactivate = deactivate;
-main.projectViewerService = projectViewerService;
+// main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
 
 /**

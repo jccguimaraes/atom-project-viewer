@@ -24,10 +24,12 @@
               "label": "Import / Export...",
               "submenu": [
                 {
-                  "label": "Import from a private gist"
+                  "label": "Import from a private gist",
+                  "command": "project-viewer:gistImport"
                 },
                 {
-                  "label": "Export to a private gist"
+                  "label": "Export to a private gist",
+                  "command": "project-viewer:gistExport"
                 },
                 {"type": "separator"},
                 {

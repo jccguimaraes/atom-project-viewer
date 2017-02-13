@@ -106,7 +106,7 @@ const actionsContainer = function _actionsContainer (parentView) {
   const cancelButton = buildButton('Cancel', 'warning');
   const deleteButton = buildButton('Delete', 'error');
   const successButton = buildButton(
-    context.model ? 'Update' : 'Create', 'success'
+    context.model && !context.prefill ? 'Update' : 'Create', 'success'
   );
 
   cancelButton.addEventListener('click', clickCancelButton.bind(this), false);
@@ -114,7 +114,9 @@ const actionsContainer = function _actionsContainer (parentView) {
   successButton.addEventListener('click', clickSuccessButton.bind(this), false);
 
   actionsBlock.appendChild(cancelButton);
-  actionsBlock.appendChild(deleteButton);
+  if (context.model && !context.prefill) {
+    actionsBlock.appendChild(deleteButton);
+  }
   actionsBlock.appendChild(successButton);
 
   parentView.appendChild(actionsBlock);
@@ -162,7 +164,7 @@ const nameContainer = function _setName (parentView) {
   context.refs['pv-input-name'] = nameInput;
 
   if (context.model) {
-    nameInput.value = context.model.name;
+    nameInput.value = context.model.name || '';
   }
 
   nameBlock.appendChild(nameHeader);
@@ -457,7 +459,7 @@ const pathsContainer = function _pathsContainer (parentView) {
   pathsBlock.appendChild(pathsHeader);
   pathsBlock.appendChild(pathsButton);
 
-  if (!context.model) {
+  if (context.prefill || !context.model) {
     pathsBlock.appendChild(bulkLabel);
   }
   pathsBlock.appendChild(pathsList);
@@ -567,9 +569,10 @@ const activateContainers = function _activateContainer (list, context) {
   }
 };
 
-const initialize = function _initialize (model) {
+const initialize = function _initialize (model, prefill) {
   map.set(this, {
     model,
+    prefill,
     refs: Object.create(null)
   });
 

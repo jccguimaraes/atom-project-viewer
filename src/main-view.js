@@ -94,11 +94,11 @@ const isAlreadyEditing = function _isAlreadyEditing (model) {
   );
 };
 
-const openEditor = function _openEditor (model) {
+const openEditor = function _openEditor (model, prefill) {
   if (isAlreadyEditing(model)) { return; }
   const activePane = atom.workspace.getActivePane();
   const editorItem = api.editor.createView();
-  editorItem.initialize(model);
+  editorItem.initialize(model, prefill);
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
 };

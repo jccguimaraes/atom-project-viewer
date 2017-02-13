@@ -87,12 +87,32 @@ const config = {
     ],
     order: 9
   },
+  'githubAccessToken': {
+    title: 'GitHub Access Token',
+    description: 'Your personal and private GitHub access token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string.',
+    type: 'string',
+    default: '',
+    order: 10
+  },
+  'gistId': {
+    title: 'Gist ID',
+    description: 'ID of the gist used as a backup storage.',
+    type: 'string',
+    default: '',
+    order: 11
+  },
+  'setName': {
+    description: 'Name of your working set, for example \'work\' or \'home\'. As each working set is backed up into a separate file in gist, you can have multiple Group/Project sets on different machines and have them all safely backed up on gist.',
+    type: 'string',
+    default: 'default',
+    order: 12
+  },
   'onlyIcons': {
     title: 'Icons list without description',
     description: 'Will show only the icons in the icon\'s list',
     type: 'boolean',
     default: true,
-    order: 10
+    order: 13
   },
   'customPalette': {
     title: 'Custom palette to use on editor',
@@ -104,25 +124,25 @@ const config = {
     items: {
       type: 'string'
     },
-    order: 11
+    order: 14
   },
   'customSelectedColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 12
+    order: 15
   },
   'customHoverColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 13
+    order: 16
   },
   'customTitleColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 14
+    order: 17
   }
 };
 

@@ -18,7 +18,7 @@ const cleanConfig = function _cleanConfig () {
 
 const getModel = function _getModel (view) {
   if (!view) { return undefined; }
-  return map.get(getView(view)) || view;
+  return map.get(getView(view));
 };
 
 const getView = function _getView (view) {

@@ -69,6 +69,7 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
   - Order dragged `group` / `project` accordingly with dropped `group` sorting.
 - Open the local database file for direct editing;
 - Old database schemas conversion tools;
+- Backup services (**GitHub's *private* gist**);
 - Editor for `groups` / `projects` creation and update;
   - Create, update and remove `group` or `project`;
   - Automatic set it's name according to first path base name added;
@@ -83,6 +84,12 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
 - Empty `groups` and / or `projects` list message;
 - Custom colors for `groups` and `projects`;
 - Custom colors for main title, for hovering on a `project` and for selected `project`;
+- Option to open a `project` in a new window or vice versa;
+  - > This is available through a config option which will switch between what is the primary option, defaults to open in *same window*;
+  - > Context menu switching also available.
+- Elevate current opened folders in `tree~view` to a `project`.
+- Keep context when switching from `projects` or switch from contexts;
+  - > This is available through a config option, default is *switch contexts*.
 
 ## Shortcuts
 

@@ -28,13 +28,5 @@
         "^1.0.0": "provideStatusBar"
       }
     }
-  },
-  "providedServices": {
-    "project-viewer": {
-      "description": "Provides an API service for managing outside groups and items",
-      "versions": {
-        "1.0.0": "projectViewerService"
-      }
-    }
   }
 }
