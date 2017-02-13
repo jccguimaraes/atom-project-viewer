@@ -3,12 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.4] - 2017-02-13
+
+### Fixed
+
+- Panel visibility issues ([#118](https://github.com/jccguimaraes/atom-project-viewer/issues/118))
+- Auto hide does not unhide on mouse-over ([#117](https://github.com/jccguimaraes/atom-project-viewer/issues/117))
+
 ## [1.0.3] - 2017-02-13
 
 ### Fixed
 
 - Fixed typo that broke everything :scream:
-
 
 ## [1.0.2] - 2017-02-13
 
@@ -25,6 +31,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2017-02-13
 
 - Look at the README's [features](https://atom.io/packages/project-viewer#features).
+
+## [0.3.43] - 2017-01-22
+
+### Fixed
+
+- Fixed getter of input model ([#110](https://github.com/jccguimaraes/atom-project-viewer/issues/110))
 
 ## [0.3.42] - 2016-12-21
 

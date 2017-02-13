@@ -342,11 +342,12 @@ const observePathsChanges = function _observePathsChanges (paths) {
 const togglePanel = function _togglePanel () {
   let view = map.get(this);
 
-  if (!view) {
-    return;
-  }
+  if (!view) { return; }
 
   const panel = atom.workspace.panelForItem(view);
+
+  if (!panel) { return; }
+
   panel.visible ? panel.hide() : panel.show();
 
   if (atom.config.get('project-viewer.visibilityOption') === 'Remember state') {
