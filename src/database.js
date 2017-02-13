@@ -344,9 +344,10 @@ const migrate03x = function _migrate03x () {
   const store03x = atom.getStorageFolder().load(file);
   const convertedStore = [];
 
-  function processOldGroup (group) {
+  function processOldGroup (parentModel, group) {
     const groupModel = model.createGroup(group);
     convertedStore.push(groupModel);
+    Object.setPrototypeOf(groupModel, parentModel);
     if (group.hasOwnProperty('groups')) {
       group.groups.forEach(processOldGroup.bind(null, groupModel));
     }
@@ -361,9 +362,9 @@ const migrate03x = function _migrate03x () {
     Object.setPrototypeOf(projectModel, parentModel);
   }
 
-  store03x.clients.forEach(processOldGroup);
-  store03x.groups.forEach(processOldGroup);
-  store03x.projects.forEach(processOldProject);
+  store03x.clients.forEach(processOldGroup.bind(null, Object.prototype));
+  store03x.groups.forEach(processOldGroup.bind(null, Object.prototype));
+  store03x.projects.forEach(processOldProject.bind(null, Object.prototype));
 
   store = convertedStore;
   save();
