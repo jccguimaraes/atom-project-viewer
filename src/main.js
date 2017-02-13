@@ -18,7 +18,6 @@ let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
 const activate = function _activate () {
-
   // clear old config settings (a bit of an hack)
   cleanConfig();
 

@@ -175,7 +175,7 @@ const refresh = function _refresh () {
   fs.readFile(filepath, 'utf8', function (err, data) {
     if (err) {
       atom.notifications.addWarning('Local database not found', {
-        description: 'Please go to <strong>Packages -> Project Viewer -> Utilities -> Convert from 0.3.x local database</strong> if you come from a version previous to <strong>1.0.0</strong>'
+        description: 'Please go to <strong>Packages -> Project Viewer -> Utilities -> Convert from 0.3.x local database</strong> if you come from a version previous to <strong>1.0.0</strong>',
         icon: 'database'
       });
       return;

@@ -3,11 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.3] - 2017-02-13
+
+### Fixed
+
+- Fixed typo that broke everything :scream:
+
+
 ## [1.0.2] - 2017-02-13
 
 ### Added
 
-- Added information regarting migration from previous version.
+- Added information regarding migration from previous version.
 
 ## [1.0.1] - 2017-02-13
 
