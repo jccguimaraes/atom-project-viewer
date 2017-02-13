@@ -517,6 +517,7 @@ const openDatabase = function _openDatabase () {
 
 const database = Object.create(null);
 
+database.pathsChangedBypass = false;
 database.runSubscribers = runSubscribers;
 database.subscribe = subscribe;
 database.unsubscribe = unsubscribe;

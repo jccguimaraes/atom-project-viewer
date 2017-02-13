@@ -87,8 +87,9 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
 - Option to open a `project` in a new window or vice versa;
   - > This is available through a config option which will switch between what is the primary option, defaults to open in *same window*;
   - > Context menu switching also available.
-- Elevate current opened folders in `tree~view` to a `project`.
-- Keep context when switching from `projects` or switch from contexts;
+- Elevate current opened folders in `tree-view` to a `project`;
+- `Add Project Folder` and `Remove Project Folder` will update current selected project as well;
+- Keep context when switching from `projects`.
   - > This is available through a config option, default is *switch contexts*.
 
 ## Shortcuts

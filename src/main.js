@@ -11,6 +11,7 @@ const selectList = require('./select-list-view');
 const cleanConfig = require('./common').cleanConfig;
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
+const getSelectedProject = require('./common').getSelectedProject;
 const githubWorker = new Worker(__dirname + '/workers/github.js');
 
 let sidebarUnsubscriber;
@@ -81,6 +82,9 @@ const activate = function _activate () {
     atom.config.observe(
       'project-viewer.customSelectedColor',
       observeCustomSelectedColor.bind(this)
+    ),
+    atom.project.onDidChangePaths(
+      observePathsChanges.bind(this)
     )
   );
 };
@@ -325,6 +329,15 @@ const observeRootSortBy = function _observeRootSortBy () {
   let view = map.get(this);
   if (!view) { return; }
   database.refresh();
+};
+
+const observePathsChanges = function _observePathsChanges (paths) {
+  if (database.pathsChangedBypass) { return; }
+  const selectedProject = getModel(getSelectedProject());
+  if (!selectedProject) { return; }
+  selectedProject.clearPaths();
+  selectedProject.addPaths(paths);
+
 };
 
 const togglePanel = function _togglePanel () {

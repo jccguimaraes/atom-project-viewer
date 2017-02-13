@@ -235,7 +235,9 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
   }
 
   if (!serialization) {
+    database.pathsChangedBypass = true;
     atom.project.setPaths(model.paths);
+    database.pathsChangedBypass = false;
   } else {
     atom.deserialize(serialization);
   }

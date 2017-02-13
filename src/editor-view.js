@@ -678,7 +678,9 @@ const updateModel = function _updateModel (changes) {
   }
 
   if (currentOpenedProject) {
+    database.pathsChangedBypass = true;
     atom.project.setPaths(changes.paths);
+    database.pathsChangedBypass = false;
   }
 
   const newParentGroup = changes.group;
