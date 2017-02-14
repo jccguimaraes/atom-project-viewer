@@ -76,6 +76,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "colorful-tones",
+      "name": "Damon Cook",
+      "avatar_url": "https://avatars.githubusercontent.com/u/405912?v=3",
+      "profile": "http://www.damonacook.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
