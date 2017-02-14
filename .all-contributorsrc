@@ -64,7 +64,16 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/12634286?v=3&s=460",
       "profile": "https://github.com/bitkris-dev",
       "contributions": [
-				"design",
+        "design",
+        "bug"
+      ]
+    },
+    {
+      "login": "girlandhercode",
+      "name": "Nicole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2183606?v=3",
+      "profile": "https://github.com/girlandhercode",
+      "contributions": [
         "bug"
       ]
     }
