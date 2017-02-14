@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.5] - 2017-02-14
+
+### Fixed
+
+- Project Viewer Focus Panel identified ([here](https://github.com/jccguimaraes/atom-project-viewer/issues/119#issuecomment-279496984))
+
 ## [1.0.4] - 2017-02-13
 
 ### Fixed
