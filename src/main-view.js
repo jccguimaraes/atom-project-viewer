@@ -144,7 +144,8 @@ const traverse = function _traverse (direction) {
   let selectionsFiltered = Array.from(selectionsUnfiltered).filter(
     selection => {
       let isVisible = true;
-      let parent = selection.parent;
+      let parent = selection.parentNode;
+      if (!parent) { return; }
       while(!parent.classList.contains('body-content')) {
         parent = parent.parentNode;
         if (!parent || parent.classList.contains('collapsed')) {
@@ -178,7 +179,7 @@ const traverse = function _traverse (direction) {
   ) {
     nextIdx = 0;
   }
-
+  if (!selectionsFiltered[nextIdx]) { return; }
   selectionsFiltered[nextIdx].classList.add('active');
 };
 
