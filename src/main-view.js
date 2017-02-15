@@ -4,6 +4,7 @@
 const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
+const colours = require('./colours');
 const database = require('./database');
 const getModel = require('./common').getModel;
 const sortList = require('./common').sortList;
@@ -38,7 +39,7 @@ const resizerInitializeDrag = function _resizerInitializeDrag (event) {
 
 const resizerDoDrag = function _resizerDoDrag (event) {
   let variation;
-  if (atom.config.get('project-viewer.panelPosition') === 'Right') {
+  if (atom.config.get('project-viewer.panelPosition').includes('Left')) {
     variation = event.clientX - startX;
   }
   else {
@@ -53,6 +54,7 @@ const resizerStopDrag = function _resizerStopDrag () {
   document.removeEventListener('mouseup', stopListener, false);
   let value = parseInt(window.getComputedStyle(this).width, 10);
   if (value === 200) { value = undefined; }
+  this.removeAttribute('style');
   atom.config.set('project-viewer.customWidth', value);
 };
 
@@ -272,7 +274,9 @@ const initialize = function _initialize () {
   viewsRef['resizer'] = pvResizer;
 
   if (atom.config.get('project-viewer.customWidth') !== 200) {
-    this.setAttribute('style', `width:${atom.config.get('project-viewer.customWidth')}px;`);
+    // this.setAttribute('style', `width:${atom.config.get('project-viewer.customWidth')}px;`);
+    colours.removeRule('app');
+    colours.addRule('app', 'app', atom.config.get('project-viewer.customWidth'));
   }
 
   let panelHeading = document.createElement('h2');

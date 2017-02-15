@@ -2,7 +2,7 @@
   "name": "project-viewer",
   "main": "./src/main",
   "version": "1.0.5",
-  "description": "Project viewer/manager that lets you add, edit and remove clients/groups/projects as well as switching between them.",
+  "description": "A project manager that lets you add, edit and remove groups and projects as well as switching between them.",
   "keywords": [
     "project",
     "productivity",
@@ -13,7 +13,7 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.14.1"
+    "atom": ">=1.14.2"
   },
   "dependencies": {
     "atom-space-pen-views": "latest",

@@ -51,11 +51,11 @@ const destroy = function _destroy () {
  * @public
  * @since 1.0.0
  */
-const addRule = function _addRule (itemId, type, color) {
+const addRule = function _addRule (itemId, type, value) {
   if (!itemId) { return; }
   if (!mapper.element || !mapper.element.sheet) { return; }
 
-  if (!color) {
+  if (!value) {
     delete mapper.rules[itemId];
     return;
   }
@@ -64,29 +64,33 @@ const addRule = function _addRule (itemId, type, color) {
   let rule;
 
   switch (type) {
+    case 'app':
+      selectorText = `project-viewer, project-viewer.autohide:hover`;
+      rule = `${selectorText} { width: ${value}px}`;
+      break;
     case 'group':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li[data-project-viewer-uuid="${itemId}"] .list-item`;
-      rule = `${selectorText} { color: ${color}}`;
+      rule = `${selectorText} { color: ${value}}`;
       break;
     case 'project':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li[data-project-viewer-uuid="${itemId}"].list-item`;
-      rule = `${selectorText} { color: ${color}}`;
+      rule = `${selectorText} { color: ${value}}`;
       break;
     case 'project-hover':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li.list-item:hover, project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li .list-item:hover`
-      rule = `${selectorText} { color: ${color}}`;
+      rule = `${selectorText} { color: ${value}}`;
       break;
     case 'project-hover-before':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li.list-item:not(.selected)::before`
-      rule = `${selectorText} { background-color: ${color}}`;
+      rule = `${selectorText} { background-color: ${value}}`;
       break;
     case 'project-selected':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li.list-item.selected`
-      rule = `${selectorText} { color: ${color}}`;
+      rule = `${selectorText} { color: ${value}}`;
       break;
     case 'title':
       selectorText = `project-viewer .heading`;
-      rule = `${selectorText} { color: ${color}}`;
+      rule = `${selectorText} { color: ${value}}`;
       break;
   }
 

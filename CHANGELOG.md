@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.6] - 2017-02-15
+
+### Added
+
+- Add @girlandhercode and @colorful-tones as a contributors.
+- Disclaimer for Release notes.
+
+### Fixed
+
+- Fix Elevate to project ([#121](https://github.com/jccguimaraes/atom-project-viewer/issues/121)).
+- Fix autohide ([#120](https://github.com/jccguimaraes/atom-project-viewer/issues/120)) and ([#119](https://github.com/jccguimaraes/atom-project-viewer/issues/119)).
+- Fix custom width changes not taking place.
+
+### Updated
+
+- README and CHANGE LOG.
+
 ## [1.0.5] - 2017-02-14
 
 ### Fixed

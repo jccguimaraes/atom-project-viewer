@@ -18,6 +18,9 @@ const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 
 const getType = function _getType () {
   const context = map.get(this);
+  if (context.prefill) {
+      return context.model.type;
+  }
   const selected = context.refs['pv-input-type'];
   if (!selected) { return; }
   return context.refs['pv-input-type'].getAttribute('data-pv-type');
@@ -388,6 +391,7 @@ const clickPathsButton = function _clickPathsButtons (context, parentView) {
 };
 
 const addPaths = function _addPaths (context, parentView, paths) {
+  if (!paths) { return; }
   paths.forEach(addPath.bind(null, context, parentView));
 };
 
@@ -710,7 +714,7 @@ const clickSuccessButton = function _clickSuccessButton () {
     group: getSelectedGroup.call(this)
   };
 
-  if (!type) {
+  if (!type && context.model.uuid) {
     updateModel.call(this, changes);
     return;
   }

@@ -490,8 +490,15 @@ project-viewer {
   width: 4px;
   height: 100%;
   display: block;
+  opacity: 1;
+  transition: background-color @pv_transition-duration-default;
 
   &.invert {
     right: 0;
+  }
+
+  &:hover {
+    opacity: 0.5;
+    background-color: @background-color-highlight;
   }
 }

@@ -18,6 +18,7 @@ let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
 const activate = function _activate () {
+
   // clear old config settings (a bit of an hack)
   cleanConfig();
 
@@ -67,6 +68,10 @@ const activate = function _activate () {
       observeHideHeader.bind(this)
     ),
     atom.config.onDidChange(
+      'project-viewer.customWidth',
+      observeCustomWidth.bind(this)
+    ),
+    atom.config.onDidChange(
       'project-viewer.rootSortBy',
       observeRootSortBy.bind(this)
     ),
@@ -86,6 +91,23 @@ const activate = function _activate () {
       observePathsChanges.bind(this)
     )
   );
+
+
+  if (atom.config.get('project-viewer.disclaimer')) {
+      const notification = atom.notifications.addWarning(
+          'Project-Viewer - Release notes',
+          {
+              description: 'This is a major release and due to that many changes occured.\n\nIf you are getting a **No groups or projects** message, please go to **Packages -> Project Viewer -> Utilities... -> Convert from 0.3.x local database** to migrate to the new schema.',
+              icon: 'database',
+              dismissable: true
+          }
+      );
+      this.disposables.add(
+          notification.onDidDismiss(
+              () => atom.config.set('project-viewer.disclaimer', false)
+          )
+      );
+  }
 };
 
 const deactivate = function _deactivate () {
@@ -236,8 +258,11 @@ const buildPanel = function _buildPanel (options) {
     atom.workspace.addRightPanel(panel);
   }
 
-  if (options.invertResizer) {
+  if (options.left) {
     this.invertResizer(true);
+  }
+  else {
+    this.invertResizer(false);
   }
 };
 
@@ -318,6 +343,11 @@ const observeCustomSelectedColor = function _observeCustomSelectedColor (value) 
     return;
   }
   colours.addRule('projectSelected', 'project-selected', value);
+};
+
+const observeCustomWidth = function _observeCustomWidth (value) {
+  colours.removeRule('app');
+  colours.addRule('app', 'app', value.newValue);
 };
 
 const observeStatusBar = function _observeStatusBar (value) {

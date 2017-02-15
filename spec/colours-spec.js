@@ -2,7 +2,7 @@
 
 const colours = require('../src/colours');
 
-xdescribe ('module: colours', function () {
+describe ('module: colours', function () {
 
   describe ('on initialization', function () {
 

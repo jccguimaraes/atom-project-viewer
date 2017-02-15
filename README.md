@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors)
 
-[![atom version](https://img.shields.io/badge/atom-1.14.1-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![atom version](https://img.shields.io/badge/atom-1.14.2-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 
@@ -104,6 +104,7 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
 
 Settings | Type | Description | Default
 ---------|------|-------------|--------
+`disclaimer` | `Boolean` | Show release notes on startup | `true`
 `visibilityOption` | `String` | Define what would be the default action for **project-viewer** visibility on startup. | `Display on startup`
 `visibilityActive` | `Boolean` | Relative to the interaction option selected above. | `true`
 `panelPosition` | `String` | Position the panel to the left or right of the main pane. | `Right`
@@ -161,6 +162,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+
+> If you feel you were left out, just shout!
 
 ## Contacts
 
