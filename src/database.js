@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const model = require('./model');
 
-const version = '1.0.0';
+const version = '1.0.7';
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
 let store = [];
@@ -341,8 +341,8 @@ const addTo = function _addTo (model, protoModel) {
  * Migrate old 0.3.x local database to 1.0.0
  * @since 1.0.0
  */
-const migrate03x = function _migrate03x () {
-  const store03x = atom.getStorageFolder().load(file);
+const migrate03x = function _migrate03x (importedDB) {
+  const store03x = importedDB || atom.getStorageFolder().load(file);
   const convertedStore = [];
 
   function processOldGroup (parentModel, group) {

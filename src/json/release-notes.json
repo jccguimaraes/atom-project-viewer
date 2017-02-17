@@ -1,0 +1,3 @@
+{
+  "v107": "### Added\n- Context menu for delete and create `group` or `project` (missed feature from `0.3.x`).\n- Open local paths (macOS's `finder` / Windows' `explorer` and Linux's `file manager`).\n\n### Fixed\n- *Gist* importing from an old database now passes through the migration step."
+}

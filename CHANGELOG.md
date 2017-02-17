@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.7] - 2017-02-15
+
+### Added
+
+- Context menu for delete and create `group` or `project` (missed feature from `0.3.x`).
+- Open local paths (macOS's `finder` / Windows' `explorer` and Linux's `file manager`).
+
+### Fixed
+
+- *Gist* importing from an old database now passes through the migration step.
+
 ## [1.0.6] - 2017-02-15
 
 ### Added

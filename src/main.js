@@ -13,11 +13,36 @@ const getModel = require('./common').getModel;
 const getView = require('./common').getView;
 const getSelectedProject = require('./common').getSelectedProject;
 const githubWorker = new Worker(__dirname + '/workers/github.js');
+const {shell} = require('electron');
 
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
 const activate = function _activate () {
+
+  atom.packages.onDidActivatePackage(
+      pkg => {
+          if (pkg.name !== 'project-viewer') { return; }
+          const pckv = `v${pkg.metadata.version.replace(/\D/g, '')}`;
+          const confParam = `project-viewer.disclaimer.${pckv}`;
+          if (atom.config.get(confParam)) {
+            const disclaimer = require('./json/release-notes.json')[pckv];
+            const notification = atom.notifications.addWarning(
+              `Project-Viewer - ${pkg.metadata.version} release notes`,
+              {
+                description: disclaimer,
+                icon: 'database',
+                dismissable: true
+              }
+            );
+            this.disposables.add(
+              notification.onDidDismiss(
+                () => atom.config.set(confParam, false)
+              )
+            );
+          }
+      }
+  );
 
   // clear old config settings (a bit of an hack)
   cleanConfig();
@@ -91,23 +116,6 @@ const activate = function _activate () {
       observePathsChanges.bind(this)
     )
   );
-
-
-  if (atom.config.get('project-viewer.disclaimer')) {
-      const notification = atom.notifications.addWarning(
-          'Project-Viewer - Release notes',
-          {
-              description: 'This is a major release and due to that many changes occured.\n\nIf you are getting a **No groups or projects** message, please go to **Packages -> Project Viewer -> Utilities... -> Convert from 0.3.x local database** to migrate to the new schema.',
-              icon: 'database',
-              dismissable: true
-          }
-      );
-      this.disposables.add(
-          notification.onDidDismiss(
-              () => atom.config.set('project-viewer.disclaimer', false)
-          )
-      );
-  }
 };
 
 const deactivate = function _deactivate () {
@@ -157,7 +165,10 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:migrate03x': migrate03x,
     'project-viewer:gistExport': gistExport,
     'project-viewer:gistImport': gistImport,
-    'project-viewer:elevate-project': elevateProject.bind(this)
+    'project-viewer:elevate-project': elevateProject.bind(this),
+    'project-viewer:openProjectFolder': openProjectFolder,
+    'project-viewer:deleteGroupOrProject': deleteGroupOrProject,
+    'project-viewer:createGroupOrProject': createGroupOrProject.bind(this)
   }
 };
 
@@ -200,6 +211,32 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
+        command: 'project-viewer:deleteGroupOrProject',
+        created: function (evt) {
+          const model = getModel(evt.target);
+          if (model) {
+            this.label = `Delete ${model.name}...`;
+          }
+        },
+        shouldDisplay: function (evt) {
+          const view = getView(evt.target);
+          return map.has(view);
+        }
+      },
+      {
+        command: 'project-viewer:createGroupOrProject',
+        created: function (evt) {
+          this.label = `Create new...`;
+        },
+        shouldDisplay: function (evt) {
+          const model = getModel(evt.target);
+          return !model || (model && model.type === 'group');
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         command: 'project-viewer:openProject',
         created: function (evt) {
           const model = getModel(evt.target);
@@ -208,6 +245,16 @@ const commandscontextMenu = function _commandscontextMenu () {
             'in same window' : 'in a new window';
             this.label = `Open ${openIn}`;
           }
+        },
+        shouldDisplay: function (evt) {
+          const model = getModel(evt.target);
+          return model && model.type === 'project';
+        }
+      },
+      {
+        command: 'project-viewer:openProjectFolder',
+        created: function (evt) {
+          this.label = 'Open local path(s)';
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -414,6 +461,24 @@ const openEditor = function _openEditor (evt) {
   view.openEditor(model);
 };
 
+const deleteGroupOrProject = function _deleteGroupOrProject (evt) {
+  const model = getModel(evt.target);
+  if (!model) { return; }
+  database.remove(model);
+  database.save();
+};
+
+const createGroupOrProject = function _createGroupOrProject (evt) {
+  const model = getModel(evt.target) || Object.prototype;
+  const view = map.get(this);
+  if (!view) { return; }
+  const newModel = {
+    name: ''
+  };
+  Object.setPrototypeOf(newModel, model);
+  view.openEditor(null, newModel);
+};
+
 const focusPanel = function _focusPanel () {
   const view = map.get(this);
   if (!view) { return false; }
@@ -434,7 +499,12 @@ const githubWorkerOnMessage = function _githubWorkerOnMessage (event) {
   }
 
   if (event.data.db) {
-    database.importDB(event.data.db);
+    if (event.data.db.info && event.data.db.info.version) {
+      database.importDB(event.data.db);
+    }
+    else {
+      database.migrate03x(event.data.db);
+    }
   }
 
   if (event.data.gistId) {
@@ -477,7 +547,13 @@ const elevateProject = function _elevateProject () {
   const view = map.get(this);
   if (!view) { return; }
 
-  view.openEditor(model, true);
+  view.openEditor(null, model);
+};
+
+const openProjectFolder = function _openProjectFolder (evt) {
+    const model = getModel(evt.target);
+    if (!model) { return; }
+    model.paths.forEach(path => shell.showItemInFolder(path));
 };
 
 const clearState = function _clearState () {};

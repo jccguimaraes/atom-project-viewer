@@ -18,11 +18,11 @@ const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 
 const getType = function _getType () {
   const context = map.get(this);
-  if (context.prefill) {
-      return context.model.type;
-  }
   const selected = context.refs['pv-input-type'];
-  if (!selected) { return; }
+  if (!selected && context.candidate && context.candidate.type) { return; }
+  if (selected && context.candidate && context.candidate.type) {
+    return context.candidate.type;
+  }
   return context.refs['pv-input-type'].getAttribute('data-pv-type');
 };
 
@@ -93,7 +93,7 @@ const attachedCallback = function _attachedCallback () {
 
 const getTitle = function _getTitle () {
   let context = map.get(this);
-  if (context && context.model) {
+  if (context && context.model && context.model.name) {
     return `PV Editor - ${context.model.name}`;
   }
   return 'PV Editor';
@@ -109,7 +109,7 @@ const actionsContainer = function _actionsContainer (parentView) {
   const cancelButton = buildButton('Cancel', 'warning');
   const deleteButton = buildButton('Delete', 'error');
   const successButton = buildButton(
-    context.model && !context.prefill ? 'Update' : 'Create', 'success'
+    context.model && !context.candidate ? 'Update' : 'Create', 'success'
   );
 
   cancelButton.addEventListener('click', clickCancelButton.bind(this), false);
@@ -117,7 +117,7 @@ const actionsContainer = function _actionsContainer (parentView) {
   successButton.addEventListener('click', clickSuccessButton.bind(this), false);
 
   actionsBlock.appendChild(cancelButton);
-  if (context.model && !context.prefill) {
+  if (context.model && (context.candidate && context.candidate.type)) {
     actionsBlock.appendChild(deleteButton);
   }
   actionsBlock.appendChild(successButton);
@@ -151,6 +151,8 @@ const typeContainer = function _typeContainer (parentView) {
   typeGroupInput.setAttribute('data-pv-type', 'group');
   typeProjectInput.setAttribute('data-pv-type', 'project');
 
+  if (context.candidate && context.candidate.hasOwnProperty('type')) { return; }
+  if (!context.candidate && context.model) {return; }
   typeBlock.appendChild(typeHeader);
   typeBlock.appendChild(typeGroupLabel);
   typeBlock.appendChild(typeProjectLabel);
@@ -463,7 +465,7 @@ const pathsContainer = function _pathsContainer (parentView) {
   pathsBlock.appendChild(pathsHeader);
   pathsBlock.appendChild(pathsButton);
 
-  if (context.prefill || !context.model) {
+  if (!context.model || (context.candidate && context.candidate.paths)) {
     pathsBlock.appendChild(bulkLabel);
   }
   pathsBlock.appendChild(pathsList);
@@ -488,6 +490,9 @@ const groupsContainer = function _parentContainer (parentView) {
   let parentGroupModel;
   if (context.model) {
       parentGroupModel = Object.getPrototypeOf(context.model);
+  }
+  if (context.candidate) {
+      parentGroupModel = Object.getPrototypeOf(context.candidate);
   }
 
   database.fetch().some(function databaseFetch (entry) {
@@ -573,10 +578,10 @@ const activateContainers = function _activateContainer (list, context) {
   }
 };
 
-const initialize = function _initialize (model, prefill) {
+const initialize = function _initialize (model, candidate) {
   map.set(this, {
     model,
-    prefill,
+    candidate,
     refs: Object.create(null)
   });
 
@@ -587,11 +592,7 @@ const initialize = function _initialize (model, prefill) {
   panelBody.classList.add('panel-body');
 
   actionsContainer.call(this, panelHeading);
-
-  if (!model) {
-    typeContainer.call(this, panelBody);
-  }
-
+  typeContainer.call(this, panelBody);
   nameContainer.call(this, panelBody);
   sortByContainer.call(this, panelBody);
   iconContainer.call(this, panelBody);
@@ -601,9 +602,9 @@ const initialize = function _initialize (model, prefill) {
   configContainer.call(this, panelBody);
   groupsContainer.call(this, panelBody);
 
-  const hasModel = !!model;
-  const isProject = hasModel && model.type === 'project';
-  const isGroup = hasModel && model.type === 'group';
+  const hasModel = (candidate && candidate.hasOwnProperty('type')) || (!candidate && model);
+  const isProject = hasModel && (model && model.type === 'project' || candidate && candidate.type === 'project');
+  const isGroup = hasModel && !isProject;
 
   activateContainers.call(this, {
     name: hasModel,

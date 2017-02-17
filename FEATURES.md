@@ -8,7 +8,7 @@
   - > Need to check all the rules to not be so *aggressive*;
 - Provide an API Service for managing outside `groups` and `projects`;
 - Override settings by `project`;
-- refactor switching context workflow;
+- Refactor switching context workflow;
 - Clear individual `project`'s cached state (from **Atom**'s store?);
     - > Context Menu option to clear selected `project`'s *state* / *context*.
 - Filtering input over list.
