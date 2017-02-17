@@ -26,11 +26,13 @@ const activate = function _activate () {
           const pckv = `v${pkg.metadata.version.replace(/\D/g, '')}`;
           const confParam = `project-viewer.disclaimer.${pckv}`;
           if (atom.config.get(confParam)) {
-            const disclaimer = require('./json/release-notes.json')[pckv];
+            const versions = require('./json/release-notes.json');
+            let disclaimer = [];
+            for (let v in versions) { disclaimer.push(versions[v]); }
             const notification = atom.notifications.addWarning(
-              `Project-Viewer - ${pkg.metadata.version} release notes`,
+              `Project-Viewer - Release notes`,
               {
-                description: disclaimer,
+                description: disclaimer.join('\n\n'),
                 icon: 'database',
                 dismissable: true
               }

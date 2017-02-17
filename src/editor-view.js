@@ -19,9 +19,11 @@ const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 const getType = function _getType () {
   const context = map.get(this);
   const selected = context.refs['pv-input-type'];
-  if (!selected && context.candidate && context.candidate.type) { return; }
-  if (selected && context.candidate && context.candidate.type) {
+  if (!selected && context.candidate && context.candidate.type) {
     return context.candidate.type;
+  }
+  else if (!selected && context.model && context.model.type) {
+    return context.model.type;
   }
   return context.refs['pv-input-type'].getAttribute('data-pv-type');
 };
@@ -342,11 +344,17 @@ const colorContainer = function _colorContainer (parentView) {
 
   parentView.appendChild(colorBlock);
 
-  if (context.model) {
+  if (context.model && context.model.color) {
     colorInput.value = context.model.color;
     colorInput.disabled = !context.model.color;
     colorPalette.hidden = colorInput.disabled;
     toggleColorInput.checked = !!context.model.color;
+  }
+  else if (context.candidate && context.candidate.color) {
+    colorInput.value = context.candidate.color;
+    colorInput.disabled = !context.candidate.color;
+    colorPalette.hidden = colorInput.disabled;
+    toggleColorInput.checked = !!context.candidate.color;
   }
   else {
     colorInput.disabled = true;
@@ -472,9 +480,12 @@ const pathsContainer = function _pathsContainer (parentView) {
 
   parentView.appendChild(pathsBlock);
 
-  if (!context.model || !Array.isArray(context.model.paths)) { return; }
-
-  context.model.paths.forEach(addPath.bind(null, context, pathsList));
+  if (context.model && Array.isArray(context.model.paths)) {
+    context.model.paths.forEach(addPath.bind(null, context, pathsList));
+  }
+  else if (context.candidate && Array.isArray(context.candidate.paths)) {
+    context.candidate.paths.forEach(addPath.bind(null, context, pathsList));
+  }
 };
 
 const groupsContainer = function _parentContainer (parentView) {
@@ -715,7 +726,7 @@ const clickSuccessButton = function _clickSuccessButton () {
     group: getSelectedGroup.call(this)
   };
 
-  if (!type && context.model.uuid) {
+  if (context.model && context.model.uuid) {
     updateModel.call(this, changes);
     return;
   }

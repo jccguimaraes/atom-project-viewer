@@ -185,6 +185,8 @@ const viewMethods = {
 
     if (model.color) {
       colours.addRule(model.uuid, model.type, model.color);
+    } else {
+      colours.removeRule(model.uuid);
     }
 
     let listTree = this.querySelector('.list-tree');
