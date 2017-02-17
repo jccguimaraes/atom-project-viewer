@@ -81,6 +81,9 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
     - > This is available through a config option, default is *icon and description*.
   - Sort children `groups` / `projects`.
     - > Sorting root `groups` / `projects` is done through a config option.
+- Context menu for delete, update and create new `group` or `project`;
+  - > Create option is only available in `groups` or the `root`.
+- Show the given path in a file manager. (in `finder` or `explorer`'s alike');
 - Empty `groups` and / or `projects` list message;
 - Custom colors for `groups` and `projects`;
 - Custom colors for main title, for hovering on a `project` and for selected `project`;
@@ -104,7 +107,6 @@ Or just find the package by accessing the menu **Atom → Preferences... → Ins
 
 Settings | Type | Description | Default
 ---------|------|-------------|--------
-`disclaimer` | `Boolean` | Show release notes on startup | `true`
 `visibilityOption` | `String` | Define what would be the default action for **project-viewer** visibility on startup. | `Display on startup`
 `visibilityActive` | `Boolean` | Relative to the interaction option selected above. | `true`
 `panelPosition` | `String` | Position the panel to the left or right of the main pane. | `Right`
@@ -120,6 +122,7 @@ Settings | Type | Description | Default
 `customSelectedColor` | `String` | Set custom selected project color | `''`
 `customHoverColor` | `String` | Set custom hover project color | `''`
 `customTitleColor` | `String` | Set custom main title color | `''`
+`disclaimer` | `Object` | Show release notes on startup | `true`
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
 
@@ -131,25 +134,25 @@ Change it at your own risk! :speak_no_evil:
 
 Parameter | Type | Description | Default | Required
 ----------|------|-------------|---------|---------
-`type` | `String` | | One word... `group` | `true`
-`name` | `String` | | In theory... any word / emoji | `true`
-`sortBy` | `String` | | Possible options `position`, `reserve-position`, `alphabetically` and `reverse-alphabetically` | `true`
-`icon` | `String` | | `''` | `false`
-`color` | `String` | | `''` | `false`
-`expanded` | `Boolean` | | `false` | `true`
-`list` | `Array` | | `[]` | `true`
+`type` | `String` | The type of the model | `group` | `true`
+`name` | `String` | The name of the project | In theory... any strj g / emoji | `true`
+`sortBy` | `String` | Sorting of the nested `groups` and `projects` | Possible options are `position`, `reserve-position`, `alphabetically` and `reverse-alphabetically` | `true`
+`icon` | `String` | Custom icon `octicons` or `devicons` | `''` | `false`
+`color` | `String` | Custom color | `''` | `false`
+`expanded` | `Boolean` | `group` is collapsed or expanded | `false` | `true`
+`list` | `Array` | An array of models (`group` or `project` | `[]` | `true`
 
 ### Project Schema
 
 Parameter | Type | Description | Default | Required
 ----------|------|-------------|---------|---------
-`type` | `String` | | One word... `project` | `true`
-`name` | `String` | | In theory... any word / emoji | `true`
-`icon` | `String` | | `''` | `false`
-`color` | `String` | | `''` | `false`
-`devMode` | `Boolean` | | `false` | `false`
-`config` | `Object` | | `{}` | `false`
-`paths` | `Array` | | `[]` | `true`
+`type` | `String` | The type of the model | `project` | `true`
+`name` | `String` | The name of the project | In theory... any strj g / emoji | `true`
+`icon` | `String` | Custom icon `octicons` or `devicons` | `''` | `false`
+`color` | `String` | Custom color | `''` | `false`
+`devMode` | `Boolean` | *Not working for now* | `false` | `false`
+`config` | `Object` | *Not working for now* | `{}` | `false`
+`paths` | `Array` | An array of the root files beloging to the project | `[]` | `true`
 
 ## Contributors
 

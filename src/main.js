@@ -20,32 +20,6 @@ let selectListUnsubscriber;
 
 const activate = function _activate () {
 
-  atom.packages.onDidActivatePackage(
-      pkg => {
-          if (pkg.name !== 'project-viewer') { return; }
-          const pckv = `v${pkg.metadata.version.replace(/\D/g, '')}`;
-          const confParam = `project-viewer.disclaimer.${pckv}`;
-          if (atom.config.get(confParam)) {
-            const versions = require('./json/release-notes.json');
-            let disclaimer = [];
-            for (let v in versions) { disclaimer.push(versions[v]); }
-            const notification = atom.notifications.addWarning(
-              `Project-Viewer - Release notes`,
-              {
-                description: disclaimer.join('\n\n'),
-                icon: 'database',
-                dismissable: true
-              }
-            );
-            this.disposables.add(
-              notification.onDidDismiss(
-                () => atom.config.set(confParam, false)
-              )
-            );
-          }
-      }
-  );
-
   // clear old config settings (a bit of an hack)
   cleanConfig();
 
@@ -117,6 +91,36 @@ const activate = function _activate () {
     atom.project.onDidChangePaths(
       observePathsChanges.bind(this)
     )
+  );
+
+  showDisclaimer.call(this);
+};
+
+const showDisclaimer = function _showDisclaimer () {
+  atom.packages.onDidActivatePackage(
+      pkg => {
+          if (pkg.name !== 'project-viewer') { return; }
+          const pckv = `v${pkg.metadata.version.replace(/\D/g, '')}`;
+          const confParam = `project-viewer.disclaimer.${pckv}`;
+          if (atom.config.get(confParam)) {
+            const versions = require('./json/release-notes.json');
+            let disclaimer = [];
+            for (let v in versions) { disclaimer.push(versions[v]); }
+            const notification = atom.notifications.addWarning(
+              `Project-Viewer - Release notes`,
+              {
+                description: disclaimer.join('\n\n'),
+                icon: 'database',
+                dismissable: true
+              }
+            );
+            this.disposables.add(
+              notification.onDidDismiss(
+                () => atom.config.set(confParam, false)
+              )
+            );
+          }
+      }
   );
 };
 

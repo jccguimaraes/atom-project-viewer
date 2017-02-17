@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.9] - 2017-02-17
+
+### Fixed
+
+- Config issue on disclaimer.
+
+### Added
+
+- Added @zhudock and @CKLFP as contributors.
+
+### Updated
+
+- CHANGE LOG and README files.
+
 ## [1.0.8] - 2017-02-17
 
 ### Fixed

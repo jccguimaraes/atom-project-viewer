@@ -8,6 +8,14 @@ const cleanConfig = function _cleanConfig () {
 
   values.forEach(
     value => {
+        if (value === 'disclaimer') {
+          const versions = atom.config.get('project-viewer.disclaimer');
+          for (let v in versions) {
+            if (v !== Object.keys(config.disclaimer.properties)[0]) {
+              atom.config.unset(`project-viewer.disclaimer.${v}`);
+            }
+          }
+        }
       if (config.hasOwnProperty(value)) {
         return;
       }

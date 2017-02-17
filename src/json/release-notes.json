@@ -1,4 +1,5 @@
 {
+  "v109": "# 1.0.9\n### Fixed\n- Config issue on disclaimer.\n\n### Added\nAdded @zhudock and @CKLFP as contributors.",
   "v108": "# 1.0.8\n### Fixed\n- Issues in `editor`.",
   "v107": "# 1.0.7\n### Added\n- Context menu for delete and create `group` or `project` (missed feature from `0.3.x`).\n- Open local paths (macOS's `finder` / Windows' `explorer` and Linux's `file manager`).\n\n### Fixed\n- *Gist* importing from an old database now passes through the migration step."
 }
