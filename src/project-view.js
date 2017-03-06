@@ -157,6 +157,8 @@ const render = function _render () {
 
   if (model.color) {
     colours.addRule(model.uuid, model.type, model.color);
+  } else {
+    colours.removeRule(model.uuid);
   }
 
   this.classList.toggle('no-paths', model.paths.length === 0);
