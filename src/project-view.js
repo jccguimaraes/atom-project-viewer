@@ -255,6 +255,20 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     linterPackage.activate();
   }
 
+  // hack to make tree-view update on project switching
+  const treeViewPackage = atom.packages.getActivePackage('tree-view');
+  if (treeViewPackage) {
+    const serializer = serialization.packageStates['tree-view'].directoryExpansionStates;
+    if (!treeViewPackage.mainModule.treeView) {
+            treeViewPackage.mainModule.treeView.createView(serializer);
+        } else {
+            treeViewPackage.mainModule.treeView.updateRoots(serializer);
+        }
+    treeViewPackage.mainModule.treeView.scrollTop(
+      serialization.packageStates['tree-view'].scrollTop
+    );
+  }
+
   return true;
 };
 
