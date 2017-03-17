@@ -113,6 +113,9 @@ const addRule = function _addRule (itemId, type, value) {
  * @since 1.0.0
  */
 const removeRule = function _removeRule (itemId) {
+
+  if (!mapper || !mapper.selectorTexts) { return; }
+
   const selectorText = mapper.selectorTexts[itemId];
 
   if (!selectorText) { return; }
