@@ -217,6 +217,21 @@ project-viewer-editor {
 
 project-viewer {
 
+  &.position-absolute {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+
+    &.position-right {
+      right: 0;
+    }
+
+    &.position-left {
+      left: 0;
+    }
+  }
+
   .devicons:before {
     font-family: 'devicons';
     font-size: @component-icon-size;

@@ -65,6 +65,10 @@ const activate = function _activate () {
       observeAutoHide.bind(this)
     ),
     atom.config.observe(
+      'project-viewer.autoHideAbsolute',
+      observeAutoHideAbsolute.bind(this)
+    ),
+    atom.config.observe(
       'project-viewer.hideHeader',
       observeHideHeader.bind(this)
     ),
@@ -358,12 +362,37 @@ const observePanelPosition = function _observePanelPosition (option) {
     addPanel.call(view, { right: true });
   }
 
+  if (
+    atom.config.get('project-viewer.autoHide') &&
+    atom.config.get('project-viewer.autoHideAbsolute') &&
+    option.startsWith('Left')
+  ) {
+    view.classList.add('position-left');
+    view.classList.remove('position-right');
+  }
+  else if (
+    atom.config.get('project-viewer.autoHide') &&
+    atom.config.get('project-viewer.autoHideAbsolute') &&
+    option.startsWith('Right')
+  ) {
+    view.classList.remove('position-left');
+    view.classList.add('position-right');
+  }
+  else {
+    view.classList.remove('position-left', 'position-right');
+  }
+
   sidebarUnsubscriber = database.subscribe(view.populate.bind(view));
   database.refresh();
 };
 
 const observeAutoHide = function _observeAutoHide (option) {
   autohidePanel.call(this, option);
+};
+
+const observeAutoHideAbsolute = function _observeAutoHideAbsolute (option) {
+  if (!atom.config.get('project-viewer.autoHide')) { return; }
+  autohideAbsolutePanel.call(this, option);
 };
 
 const observeHideHeader = function _observeHideHeader (option) {
@@ -447,11 +476,19 @@ const toggleSelectList = function _toggleSelectList () {
 };
 
 const autohidePanel = function _autohidePanel (option) {
-  let view = map.get(this);
+  const view = map.get(this);
 
   if (!view) { return; }
 
   view.autohide(option);
+};
+
+const autohideAbsolutePanel = function _autohideAbsolutePanel (option) {
+  const view = map.get(this);
+
+  if (!view) { return; }
+
+  view.autoHideAbsolute(option);
 };
 
 const openProject = function _openProject (evt) {

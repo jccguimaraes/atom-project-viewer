@@ -226,6 +226,27 @@ const autohide = function _autohide (option) {
   }
 };
 
+const autoHideAbsolute = function _autoHideAbsolute (option) {
+  if (option) {
+    this.classList.add('position-absolute');
+  }
+  else {
+    this.classList.remove('position-absolute');
+  }
+
+  if (option && atom.config.get('project-viewer.panelPosition').startsWith('Left')) {
+    this.classList.remove('position-right');
+    this.classList.add('position-left');
+  }
+  else if (option && atom.config.get('project-viewer.panelPosition').startsWith('Right')) {
+    this.classList.add('position-right');
+    this.classList.remove('position-left');
+  }
+  else {
+    this.classList.remove('position-left', 'position-right');
+  }
+};
+
 const toggleFocus = function _toggleFocus () {
   const panel = atom.workspace.panelForItem(this);
   if (!panel) { return false; }
@@ -390,6 +411,7 @@ const viewMethods = {
   sortChildren,
   detachChild,
   autohide,
+  autoHideAbsolute,
   initialize,
   openEditor,
   populate,
