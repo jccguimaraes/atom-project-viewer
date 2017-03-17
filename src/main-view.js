@@ -204,6 +204,9 @@ const setAction = function _setAction (action) {
     selectedView.classList.remove('collapsed');
   }
   else if (model.type === 'project' && action === '✅') {
+    if (atom.config.get('project-viewer.autoHide')) {
+      this.toggleFocus();
+    }
     selectedView.openOnWorkspace();
   }
   else if (model.type === 'group' && action === '✅') {
@@ -230,6 +233,9 @@ const toggleFocus = function _toggleFocus () {
   if (!item) { return false; }
 
   if (document.activeElement === item) {
+    if (atom.config.get('project-viewer.autoHide')) {
+      item.classList.add('autohide');
+    }
     atom.workspace.getActivePane().activate();
     const selectedView = this.querySelector(
       `li[is="project-viewer-project"].active,
@@ -239,6 +245,9 @@ const toggleFocus = function _toggleFocus () {
       selectedView.classList.remove('active');
     }
   } else {
+    if (atom.config.get('project-viewer.autoHide')) {
+      item.classList.remove('autohide');
+    }
     const activeView = this.querySelector(
       'li[is="project-viewer-project"].selected'
     );
@@ -250,6 +259,9 @@ const toggleFocus = function _toggleFocus () {
 };
 
 const viewUnfocus = function _viewUnfocus () {
+  if (atom.config.get('project-viewer.autoHide')) {
+    this.classList.add('autohide');
+  }
   const selectedView = this.querySelector(
     `li[is="project-viewer-group"].active,
     li[is="project-viewer-project"].active`
