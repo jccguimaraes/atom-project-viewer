@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.10] - 2017-03-17
+
+### Fixed
+
+- Remove project color ([#132](https://github.com/jccguimaraes/atom-project-viewer/issues/132));
+- Focus panel workflow improved [#130](https://github.com/jccguimaraes/atom-project-viewer/issues/130));
+- `Tree-View`'s folder structure and position [#126](https://github.com/jccguimaraes/atom-project-viewer/issues/126)).
+
+### Added
+
+- Auto hide panel configuration option to show as absolute ([#131](https://github.com/jccguimaraes/atom-project-viewer/issues/131)).
+
 ## [1.0.9] - 2017-02-17
 
 ### Fixed

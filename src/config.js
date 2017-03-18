@@ -156,7 +156,7 @@ const config = {
     type: 'object',
     properties: {
       'v109': {
-        title: "for v1.0.9",
+        title: "for v1.0.10",
         type: 'boolean',
         default: true
       }
