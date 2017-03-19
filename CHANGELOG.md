@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.11] - 2017-03-19
+
+### Fixed
+
+- New linter version broke the hack, so I removed it ([#134](https://github.com/jccguimaraes/atom-project-viewer/issues/134));
+
 ## [1.0.10] - 2017-03-17
 
 ### Fixed
