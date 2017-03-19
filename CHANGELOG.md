@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.12] - 2017-03-19
+
+### Fixed
+
+- Fix an issue related with the `Tree-View` ([#134](https://github.com/jccguimaraes/atom-project-viewer/issues/134));
+
 ## [1.0.11] - 2017-03-19
 
 ### Fixed

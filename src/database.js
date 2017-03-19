@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const model = require('./model');
 
-const version = '1.0.11';
+const version = '1.0.12';
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
 let store = [];

@@ -106,6 +106,7 @@ const showDisclaimer = function _showDisclaimer () {
           if (pkg.name !== 'project-viewer') { return; }
           const pckv = `v${pkg.metadata.version.replace(/\D/g, '')}`;
           const confParam = `project-viewer.disclaimer.${pckv}`;
+
           if (atom.config.get(confParam)) {
             const versions = require('./json/release-notes.json');
             let disclaimer = [];

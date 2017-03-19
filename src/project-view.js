@@ -250,7 +250,7 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
 
   // hack to make tree-view update on project switching
   const treeViewPackage = atom.packages.getActivePackage('tree-view');
-  if (treeViewPackage && serialization && serialization.packageStates['tree-view']) {
+  if (treeViewPackage && serialization && serialization.packageStates && serialization.packageStates['tree-view']) {
     const serializer = serialization.packageStates['tree-view'].directoryExpansionStates;
     if (!treeViewPackage.mainModule.treeView) {
             treeViewPackage.mainModule.treeView.createView(serializer);
