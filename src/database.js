@@ -337,39 +337,76 @@ const addTo = function _addTo (model, protoModel) {
   return true;
 };
 
+const applyMigration03x = function _applyMigration03x (importedDB) {
+
+    const store03x = importedDB || atom.getStorageFolder().load(file);
+
+    if (!store03x) {
+        atom.notifications.addInfo('Old database file not found!', {
+          icon: 'database',
+          description: 'Could not find any old database file!'
+        });
+        return;
+    }
+
+    const convertedStore = [];
+
+    function processOldGroup (parentModel, group) {
+      const groupModel = model.createGroup(group);
+      convertedStore.push(groupModel);
+      Object.setPrototypeOf(groupModel, parentModel);
+      if (group.hasOwnProperty('groups')) {
+        group.groups.forEach(processOldGroup.bind(null, groupModel));
+      }
+      if (group.hasOwnProperty('projects')) {
+        group.projects.forEach(processOldProject.bind(null, groupModel));
+      }
+    }
+
+    function processOldProject (parentModel, project) {
+      const projectModel = model.createProject(project);
+      convertedStore.push(projectModel);
+      Object.setPrototypeOf(projectModel, parentModel);
+    }
+
+    store03x.clients.forEach(processOldGroup.bind(null, Object.prototype));
+    store03x.groups.forEach(processOldGroup.bind(null, Object.prototype));
+    store03x.projects.forEach(processOldProject.bind(null, Object.prototype));
+
+    store = convertedStore;
+    save();
+    runSubscribers();
+}
+
 /**
  * Migrate old 0.3.x local database to 1.0.0
  * @since 1.0.0
  */
 const migrate03x = function _migrate03x (importedDB) {
-  const store03x = importedDB || atom.getStorageFolder().load(file);
-  const convertedStore = [];
-
-  function processOldGroup (parentModel, group) {
-    const groupModel = model.createGroup(group);
-    convertedStore.push(groupModel);
-    Object.setPrototypeOf(groupModel, parentModel);
-    if (group.hasOwnProperty('groups')) {
-      group.groups.forEach(processOldGroup.bind(null, groupModel));
-    }
-    if (group.hasOwnProperty('projects')) {
-      group.projects.forEach(processOldProject.bind(null, groupModel));
-    }
+  if (store) {
+    const notification = atom.notifications.addWarning('Local database found!', {
+      icon: 'database',
+      description: 'There is already an **active** database, are you sure you **want** to loose it?',
+      dismissable: true,
+      buttons: [
+          {
+              className: 'btn btn-error',
+              onDidClick: function () {
+                  notification.dismiss();
+              },
+              text: 'abort'
+          },
+          {
+              className: 'btn btn-info',
+              onDidClick: function () {
+                  notification.dismiss();
+                  applyMigration03x.call(this, importedDB);
+              },
+              text: 'continue'
+          }
+      ]
+    });
   }
-
-  function processOldProject (parentModel, project) {
-    const projectModel = model.createProject(project);
-    convertedStore.push(projectModel);
-    Object.setPrototypeOf(projectModel, parentModel);
-  }
-
-  store03x.clients.forEach(processOldGroup.bind(null, Object.prototype));
-  store03x.groups.forEach(processOldGroup.bind(null, Object.prototype));
-  store03x.projects.forEach(processOldProject.bind(null, Object.prototype));
-
-  store = convertedStore;
-  save();
-  runSubscribers();
 };
 
 const importDB = function _importDB (importedDB) {

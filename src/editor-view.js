@@ -25,6 +25,7 @@ const getType = function _getType () {
   else if (!selected && context.model && context.model.type) {
     return context.model.type;
   }
+  if (!context.refs['pv-input-type']) { return; }
   return context.refs['pv-input-type'].getAttribute('data-pv-type');
 };
 
@@ -224,7 +225,7 @@ const iconContainer = function _iconContainer (parentView) {
   const iconInput = buildInput('search', 'icon');
 
   iconInput.addEventListener('keyup', function (evt) {
-    const searchPattern = evt.target.value;
+    const searchPattern = evt.target.value.replace(/\W+/g, '');
     Array.from(iconList.childNodes).forEach(function (iconView) {
       const currentIcon = iconView.getAttribute('data-pv-icon');
       const isMatch = currentIcon.search(searchPattern) !== -1;
@@ -233,7 +234,7 @@ const iconContainer = function _iconContainer (parentView) {
   }, false);
 
   iconInput.addEventListener('search', function (evt) {
-    const searchPattern = evt.target.value;
+    const searchPattern = evt.target.value.replace(/\W+/g, '');
     Array.from(iconList.childNodes).forEach(function (iconView) {
       const currentIcon = iconView.getAttribute('data-pv-icon');
       const isMatch = currentIcon.search(searchPattern) !== -1;
@@ -648,6 +649,8 @@ const clickDeleteButton = function _clickDeleteButton () {
 };
 
 const createModel = function _createModel (type, changes) {
+  if (!type) { return false; }
+
   const model = module.parent.exports[type].createModel(changes);
 
   const wasAdded = database.addTo(model);
@@ -672,6 +675,7 @@ const createModel = function _createModel (type, changes) {
     const mainView = document.querySelector('project-viewer');
     mainView.attachChild(view);
   }
+  return true;
 };
 
 const updateModel = function _updateModel (changes) {
@@ -731,20 +735,25 @@ const clickSuccessButton = function _clickSuccessButton () {
     return;
   }
 
+  let safeToClose = true;
+
   if (context.refs['pv-bulk-operation']) {
     context.refs['pv-list-paths'].forEach(function (path) {
       const uniqueChanges = Object.assign(changes, {
         name: nodePath.basename(path),
         paths: [path]
       });
-      createModel(type, uniqueChanges);
+      safeToClose = createModel(type, uniqueChanges);
     });
   }
   else {
-    createModel(type, changes);
+    safeToClose = createModel(type, changes);
   }
-  database.save();
-  closeEditor();
+
+  if (safeToClose) {
+    database.save();
+    closeEditor();
+  }
 };
 
 const clickListItem = function _clickListItem (context, evt) {

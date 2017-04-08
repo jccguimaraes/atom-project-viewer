@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.13] - 2017-04-08
+
+### Fixed
+
+- Fix bug on searching icons with non alphanumeric characters ([#139](https://github.com/jccguimaraes/atom-project-viewer/issues/139));
+- Fix bug when migrating from a previous version (even if local file didn't exist) ([#138](https://github.com/jccguimaraes/atom-project-viewer/issues/138));
+
+### Added
+
+- Add @stephen-last as a contributor
+
 ## [1.0.12] - 2017-03-19
 
 ### Fixed
