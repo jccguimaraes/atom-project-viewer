@@ -1,5 +1,6 @@
 'use strict';
 
+const ipcRenderer = require('electron').ipcRenderer;
 const CompositeDisposable = require('atom').CompositeDisposable;
 const config = require('./config');
 const map = require('./map');
@@ -18,7 +19,15 @@ const {shell} = require('electron');
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
+const checkIfOpened = function _checkIfOpened (event, model, title) {
+  const paths = atom.project.getPaths();
+  const opened = !paths.some(path => model.paths.indexOf(path) === -1);
+  ipcRenderer.send(`channel-${model.uuid}`, model, title, opened);
+};
+
 const activate = function _activate () {
+
+  ipcRenderer.on('pv-check-if-opened', checkIfOpened);
 
   // clear old config settings (a bit of an hack)
   cleanConfig();
@@ -130,6 +139,9 @@ const showDisclaimer = function _showDisclaimer () {
 };
 
 const deactivate = function _deactivate () {
+
+  ipcRenderer.removeListener('pv-check-if-opened', checkIfOpened);
+
   if (this.disposables) {
     this.disposables.dispose();
   }

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.13] - 2017-04-08
+## [1.0.13] - 2017-04-xx
 
 ### Fixed
 
@@ -12,7 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Add @stephen-last as a contributor
+- Add @GreenGremlin and @stephen-last as a contributor;
+- Fix typo on Issue template ([#141](https://github.com/jccguimaraes/atom-project-viewer/pull/141));
+- If a project is already open, switch to it rather than open a second instance ([#112](https://github.com/jccguimaraes/atom-project-viewer/issues/112));
 
 ## [1.0.12] - 2017-03-19
 

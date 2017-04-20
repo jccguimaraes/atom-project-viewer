@@ -1,5 +1,7 @@
 'use strict';
 
+const remote = require('remote');
+
 const map = require('./map');
 const database = require('./database');
 const statusBar = require('./status-bar');
@@ -9,6 +11,8 @@ const getSelectedProject = require('./common').getSelectedProject;
 const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
 const getModel = require('./common').getModel;
 const getView = require('./common').getView;
+
+let checkedAll = [];
 
 const onClickEvent = function _onClickEvent (model) {
   if (!model) { return null; }
@@ -184,6 +188,41 @@ const sorting = function _sorting () {
   return model.name;
 };
 
+const checkIfOpened = function _checkIfOpened (event, model, title, opened) {
+  const wcs = remote.webContents
+    .getAllWebContents()
+    .filter(wc => wc.browserWindowOptions);
+
+  checkedAll.push({
+      title,
+      opened
+  });
+
+  if (wcs.length !== checkedAll.length) { return; }
+
+  remote.ipcMain.removeListener(`channel-${model.uuid}`, checkIfOpened);
+
+  const openNew = checkedAll.find(checked => checked.opened);
+  checkedAll = [];
+
+  if (!openNew) {
+    atom.open({
+      pathsToOpen: model.paths,
+      newWindow: true,
+      devMode: model.devMode,
+      safeMode: false
+    });
+    return;
+  }
+
+  wcs.some(wc => {
+    if (wc.getTitle() === openNew.title) {
+      wc.focus();
+      return true;
+    }
+  });
+};
+
 const openOnWorkspace = function _openOnWorkspace (reverseOption) {
   const model = map.get(this);
 
@@ -195,19 +234,21 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     !atom.config.get('project-viewer.openNewWindow') :
     atom.config.get('project-viewer.openNewWindow');
 
-  if (action) {
-    atom.open({
-      pathsToOpen: model.paths,
-      newWindow: true,
-      devMode: model.devMode,
-      safeMode: false
-    });
-    return false;
-  }
-
   const currentOpenedProject = getCurrentOpenedProject(model);
 
   if (currentOpenedProject) { return false; }
+
+  if (action) {
+    remote.ipcMain.on(`channel-${model.uuid}`, checkIfOpened);
+    remote.webContents.getAllWebContents().forEach(wc => {
+      if (!wc.browserWindowOptions) { return; }
+      wc.webContents.send(
+        'pv-check-if-opened',
+        model, wc.getTitle()
+      );
+    });
+    return false;
+  }
 
   let selectedProject = getSelectedProject();
 
@@ -250,17 +291,27 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
 
   // hack to make tree-view update on project switching
   const treeViewPackage = atom.packages.getActivePackage('tree-view');
-  if (treeViewPackage && serialization && serialization.packageStates && serialization.packageStates['tree-view']) {
-    const serializer = serialization.packageStates['tree-view'].directoryExpansionStates;
+  if (
+    treeViewPackage && serialization &&
+    serialization.packageStates && serialization.packageStates['tree-view']
+  ) {
+    const serializer = serialization.packageStates['tree-view']
+    .directoryExpansionStates;
+
     if (!treeViewPackage.mainModule.treeView) {
-            treeViewPackage.mainModule.treeView.createView(serializer);
-        } else {
-            treeViewPackage.mainModule.treeView.updateRoots(serializer);
-        }
+      treeViewPackage.mainModule.treeView.createView(serializer);
+    } else {
+      treeViewPackage.mainModule.treeView.updateRoots(serializer);
+    }
+
     treeViewPackage.mainModule.treeView.scrollTop(
       serialization.packageStates['tree-view'].scrollTop
     );
+    treeViewPackage.mainModule.state.directoryExpansionStates =
+    serialization.packageStates['tree-view'].directoryExpansionStates
   }
+
+  atom.getLoadSettings().initialPaths = atom.project.getPaths();
 
   return true;
 };
