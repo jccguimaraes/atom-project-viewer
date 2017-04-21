@@ -1,6 +1,5 @@
 {
+  "v1013": "# 1.0.13\n### **Fixed**\n- Fix an issue related with the `Tree-View` ([#142](https://github.com/jccguimaraes/atom-project-viewer/issues/142))\n- Fix bug on searching icons with non alphanumeric characters ([#139](https://github.com/jccguimaraes/atom-project-viewer/issues/139))\n- Fix bug when migrating from a previous version (even if local file didn't exist) ([#138](https://github.com/jccguimaraes/atom-project-viewer/issues/138));\n- How to open last open project/file on restart ([#108](https://github.com/jccguimaraes/atom-project-viewer/issues/108));\n\n### **Added**\n- Add **@GreenGremlin** and **@stephen-last** as a contributor (a big thank you!);\n- Fix typo on Issue template ([#141](https://github.com/jccguimaraes/atom-project-viewer/pull/141));\n- If a project is already open, switch to it rather than open a second instance ([#112](https://github.com/jccguimaraes/atom-project-viewer/issues/112));",
   "v1012": "# 1.0.12\n### Fixed\n- Fix an issue related with the `Tree-View`",
-  "v1011": "# 1.0.11\n### Fixed\n- New linter version broke the hack, so I removed it (hope it worked).",
-  "v1010": "# 1.0.10\n### Added\n- Auto hide panel configuration option to show as absolute.\n\n### Fixed\n- Remove project color;\n- Focus panel workflow improved;\n- `Tree-View`'s folder structure and position.",
-  "v109": "# 1.0.9\n### Added\nAdded @zhudock and @CKLFP as contributors.\n\n### Fixed\n- Config issue on disclaimer."
+  "v1011": "# 1.0.11\n### Fixed\n- New linter version broke the hack, so I removed it (hope it worked)."
 }

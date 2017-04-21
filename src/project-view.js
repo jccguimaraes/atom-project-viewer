@@ -299,7 +299,7 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     .directoryExpansionStates;
 
     if (!treeViewPackage.mainModule.treeView) {
-      treeViewPackage.mainModule.treeView.createView(serializer);
+      treeViewPackage.mainModule.createView(serializer);
     } else {
       treeViewPackage.mainModule.treeView.updateRoots(serializer);
     }

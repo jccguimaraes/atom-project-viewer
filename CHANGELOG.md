@@ -3,16 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.13] - 2017-04-xx
+## [1.0.13] - 2017-04-21
 
 ### Fixed
 
+- Cannot read property 'createView' of null ([#142](https://github.com/jccguimaraes/atom-project-viewer/issues/142));
 - Fix bug on searching icons with non alphanumeric characters ([#139](https://github.com/jccguimaraes/atom-project-viewer/issues/139));
 - Fix bug when migrating from a previous version (even if local file didn't exist) ([#138](https://github.com/jccguimaraes/atom-project-viewer/issues/138));
+- How to open last open project/file on restart ([#108](https://github.com/jccguimaraes/atom-project-viewer/issues/108));
 
 ### Added
 
-- Add @GreenGremlin and @stephen-last as a contributor;
+- Add @GreenGremlin and @stephen-last as a contributor (a big thank you!);
 - Fix typo on Issue template ([#141](https://github.com/jccguimaraes/atom-project-viewer/pull/141));
 - If a project is already open, switch to it rather than open a second instance ([#112](https://github.com/jccguimaraes/atom-project-viewer/issues/112));
 

@@ -120,7 +120,7 @@ const showDisclaimer = function _showDisclaimer () {
             const versions = require('./json/release-notes.json');
             let disclaimer = [];
             for (let v in versions) { disclaimer.push(versions[v]); }
-            const notification = atom.notifications.addWarning(
+            const notification = atom.notifications.addInfo(
               `Project-Viewer - Release notes`,
               {
                 description: disclaimer.join('\n\n'),
