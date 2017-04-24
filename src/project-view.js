@@ -307,8 +307,6 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     treeViewPackage.mainModule.treeView.scrollTop(
       serialization.packageStates['tree-view'].scrollTop
     );
-    treeViewPackage.mainModule.state.directoryExpansionStates =
-    serialization.packageStates['tree-view'].directoryExpansionStates
   }
 
   atom.getLoadSettings().initialPaths = atom.project.getPaths();
