@@ -121,6 +121,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "skratchdot",
+      "name": "◬",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/434470?v=3",
+      "profile": "http://skratchdot.com/",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
