@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.14] - 2017-05-01
+
+### Fixed
+
+- Hacky solution for beta channel (`1.17`) ([#113](https://github.com/jccguimaraes/atom-project-viewer/issues/113));
+
 ## [1.0.13] - 2017-04-21
 
 ### Fixed

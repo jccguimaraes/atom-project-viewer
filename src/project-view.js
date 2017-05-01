@@ -282,6 +282,9 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     atom.project.setPaths(model.paths);
     database.pathsChangedBypass = false;
   } else {
+    if (atom.appVersion.split('.')[1] >= '17') {
+      delete serialization.workspace;
+    }
     atom.deserialize(serialization);
   }
 
