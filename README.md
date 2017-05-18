@@ -116,6 +116,7 @@ Settings | Type | Description | Default
 `openNewWindow` | `Boolean` | Always open items in a new window. | `false`
 `statusBar` | `Boolean` | Will show the breadcrumb to the current opened project in the `status-bar`. | `false`
 `customWidth` | `Integer` | Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width | 200
+`customHotZone` | `Integer` | Cursor movement within this width will make a hidden panel appear | 20
 `rootSortBy` | `Array` | Sets the root sort by. | `position`
 `onlyIcons` | `Boolean` | Will show only the icons in the icon\'s list | `true`
 `customPalette` | `String` | Custom palette to use on editor | `#F1E4E8, #F7B05B, #595959, #CD5334, #EDB88B, #23282E, #263655, #F75468, #FF808F, #FFDB80, #292E1E, #248232, #2BA84A, #D8DAD3, #FCFFFC, #8EA604, #F5BB00, #EC9F05, #FF5722, #BF3100`
