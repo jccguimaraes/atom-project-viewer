@@ -68,6 +68,10 @@ const addRule = function _addRule (itemId, type, value) {
       selectorText = `project-viewer, project-viewer.autohide:hover`;
       rule = `${selectorText} { width: ${value}px}`;
       break;
+    case 'hotzone':
+      selectorText = 'project-viewer.autohide';
+      rule = `${selectorText} { width: ${value}px}`;
+      break;
     case 'group':
       selectorText = `project-viewer .list-tree.has-collapsable-children.pv-has-custom-icons li[data-project-viewer-uuid="${itemId}"] .list-item`;
       rule = `${selectorText} { color: ${value}}`;

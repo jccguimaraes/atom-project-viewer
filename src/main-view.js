@@ -306,10 +306,19 @@ const initialize = function _initialize () {
   pvResizer.classList.add('pv-resizer');
   viewsRef['resizer'] = pvResizer;
 
-  if (atom.config.get('project-viewer.customWidth') !== 200) {
+  let customWidth = atom.config.get('project-viewer.customWidth');
+
+  if (customWidth !== 200) {
     // this.setAttribute('style', `width:${atom.config.get('project-viewer.customWidth')}px;`);
     colours.removeRule('app');
-    colours.addRule('app', 'app', atom.config.get('project-viewer.customWidth'));
+    colours.addRule('app', 'app', customWidth);
+  }
+
+  let customHotZone = Math.min(atom.config.get('project-viewer.customHotZone'), customWidth);
+
+  if (customHotZone !== 20) {
+    colours.removeRule('hotzone');
+    colours.addRule('hotzone', 'hotzone', customHotZone);
   }
 
   let panelHeading = document.createElement('h2');

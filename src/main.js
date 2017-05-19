@@ -86,6 +86,10 @@ const activate = function _activate () {
       observeCustomWidth.bind(this)
     ),
     atom.config.onDidChange(
+      'project-viewer.customHotZone',
+      observeCustomHotZone.bind(this)
+    ),
+    atom.config.onDidChange(
       'project-viewer.rootSortBy',
       observeRootSortBy.bind(this)
     ),
@@ -443,6 +447,15 @@ const observeCustomSelectedColor = function _observeCustomSelectedColor (value) 
 const observeCustomWidth = function _observeCustomWidth (value) {
   colours.removeRule('app');
   colours.addRule('app', 'app', value.newValue);
+};
+
+const observeCustomHotZone = function _observeCustomHotZone (value) {
+  let customHotZone = Math.min(
+    atom.config.get('project-viewer.customWidth'),
+    value.newValue
+  );
+  colours.removeRule('app');
+  colours.addRule('hotzone', 'hotzone', customHotZone);
 };
 
 const observeStatusBar = function _observeStatusBar (value) {

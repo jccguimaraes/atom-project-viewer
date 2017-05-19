@@ -81,6 +81,13 @@ const config = {
     default: 200,
     order: 9
   },
+  'customHotZone': {
+    title: 'Set a custom hot zone width',
+    description: 'Cursor movement within this width will make a hidden panel appear',
+    type: 'number',
+    default: 20,
+    order: 10
+  },
   'rootSortBy': {
     title: 'Root SortBy',
     description: 'Sets the root sort by',
@@ -92,34 +99,34 @@ const config = {
       'alphabetically',
       'reverse-alphabetically'
     ],
-    order: 10
+    order: 11
   },
   'githubAccessToken': {
     title: 'GitHub Access Token',
     description: 'Your personal and private GitHub access token. This is useful if you want to save/backup your projects to a remote place (as a gist). *note*: keep in mind that this token should have only permissions to `rw` gists as well as that any package can access this token string.',
     type: 'string',
     default: '',
-    order: 11
+    order: 12
   },
   'gistId': {
     title: 'Gist ID',
     description: 'ID of the gist used as a backup storage.',
     type: 'string',
     default: '',
-    order: 12
+    order: 13
   },
   'setName': {
     description: 'Name of your working set, for example \'work\' or \'home\'. As each working set is backed up into a separate file in gist, you can have multiple Group/Project sets on different machines and have them all safely backed up on gist.',
     type: 'string',
     default: 'default',
-    order: 13
+    order: 14
   },
   'onlyIcons': {
     title: 'Icons list without description',
     description: 'Will show only the icons in the icon\'s list',
     type: 'boolean',
     default: true,
-    order: 14
+    order: 15
   },
   'customPalette': {
     title: 'Custom palette to use on editor',
@@ -131,25 +138,25 @@ const config = {
     items: {
       type: 'string'
     },
-    order: 15
+    order: 16
   },
   'customSelectedColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 16
+    order: 17
   },
   'customHoverColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 17
+    order: 18
   },
   'customTitleColor': {
     description: 'Only allows for hexadecimal colors',
     type: 'string',
     default: '',
-    order: 18
+    order: 19
   },
   'disclaimer': {
     title: 'Show release notes on startup',
@@ -161,7 +168,7 @@ const config = {
         default: true
       }
     },
-    order: 19
+    order: 20
   }
 };
 
