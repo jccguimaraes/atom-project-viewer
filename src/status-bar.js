@@ -2,7 +2,7 @@ const map = require('./map');
 
 const update = function _update (text) {
   if (!text) { return; }
-  if (!statusBar.view && typeof statusBar.view.getItem !== 'function') {
+  if (!statusBar.view || typeof statusBar.view.getItem !== 'function') {
     return;
   }
   const item = statusBar.view.getItem();
