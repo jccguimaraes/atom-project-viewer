@@ -1,4 +1,4 @@
-# ISSUE
+# Issue
 Description of the **issue**.
 
 ## Environment
@@ -7,4 +7,6 @@ Description of the **issue**.
 - Any other particularity;
 
 ## Steps
-Please try to describe **step by step** how to get to the issue and if possible provide a screenshot.
+Please try to describe **step by step** how to get to the issue
+
+> and if possible provide a screenshot. :+1:

@@ -1,5 +1,3 @@
-'use strict';
-
 const map = require('./map');
 const config = require('./config');
 

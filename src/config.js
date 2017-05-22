@@ -1,6 +1,11 @@
-'use strict';
-
 const config = {
+  'dockOrPanel': {
+    title: 'Old Panel integration versus Dock',
+    description: 'If you want to use the old panel integration, just check this option',
+    type: 'boolean',
+    default: false,
+    order: 0
+  },
   'visibilityOption': {
     title: 'Panel visibility interaction option',
     description: 'Define what would be the default action for **project-viewer** visibility on startup.',
@@ -10,14 +15,14 @@ const config = {
       'Display on startup',
       'Remember state'
     ],
-    order: 0
+    order: 1
   },
   'visibilityActive': {
     title: 'Panel visibility interaction state',
     description: 'Relative to the interaction option selected above.',
     type: 'boolean',
     default: true,
-    order: 1
+    order: 2
   },
   'panelPosition': {
     title: 'Panel Position',
@@ -30,56 +35,56 @@ const config = {
       'Right (first)',
       'Right (last)'
     ],
-    order: 2
+    order: 3
   },
   'autoHide': {
     title: 'Sidebar auto hidding',
     description: 'Panel has auto hide with hover behavior.',
     type: 'boolean',
     default: false,
-    order: 3
+    order: 4
   },
   'autoHideAbsolute': {
     title: 'Makes the Sidebar auto hidding as an absolute',
     description: 'This will not make the workspace change width.',
     type: 'boolean',
     default: false,
-    order: 4
+    order: 5
   },
   'hideHeader': {
     title: 'Hide the header',
     description: 'You can have more space for the list by hiding the header.',
     type: 'boolean',
     default: false,
-    order: 5
+    order: 6
   },
   'keepContext': {
     title: 'Keep Context',
     description: 'When switching from items, if set to `true`, will keep current context. Also will not save contexts between switching.',
     type: 'boolean',
     default: false,
-    order: 6
+    order: 7
   },
   'openNewWindow': {
     title: 'Open in a new window',
     description: 'Always open items in a new window.',
     type: 'boolean',
     default: false,
-    order: 7
+    order: 8
   },
   'statusBar': {
     title: 'Show current project in the status-bar',
     description: 'Will show the breadcrumb to the current opened project in the `status-bar`.',
     type: 'boolean',
     default: false,
-    order: 8
+    order: 9
   },
   'customWidth': {
     title: 'Set a custom panel width',
     description: 'Define a custom width for the panel.<br>*double clicking* on the resizer will reset the width',
     type: 'number',
     default: 200,
-    order: 9
+    order: 10
   },
   'customHotZone': {
     title: 'Set a custom hot zone width',
@@ -158,17 +163,27 @@ const config = {
     default: '',
     order: 19
   },
+  'packagesReload': {
+    title: 'List of packages to reload',
+    description: 'This is an attempt to reload any package that stays in the *limbo* of the context switching\n\nExample: pigments, colorio\n\n **Keep in mind that some packages could not work properly. If this happens, please contact me via a feature issue asking to investigate**',
+    type: 'array',
+    default: ['status-bar', 'linter', 'linter-ui-default'],
+    items: {
+      type: 'string'
+    },
+    order: 20
+  },
   'disclaimer': {
     title: 'Show release notes on startup',
     type: 'object',
     properties: {
-      'v1014': {
-        title: "for v1.0.14",
+      'v110': {
+        title: "for v1.1.0",
         type: 'boolean',
         default: true
       }
     },
-    order: 20
+    order: 21
   }
 };
 

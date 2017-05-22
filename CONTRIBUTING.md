@@ -11,13 +11,13 @@ For helping me maintain this package, please follow the next guidelines when ope
 > **NOTE** Please provide screenshots if possible!
 
 #### Feature Requests
-Please start an issue with the following title `FEATURE: Description`.
+Please start an issue with the following title `(feature): description`.
 
 #### Issues / Defects
-Please start an issue with the following title `ISSUE: Description`.
+Please start an issue with the following title `(issue): description`.
 
 #### Performance / Refactor
-Please start an issue with the following title `PERF: Description`.
+Please start an issue with the following title `(perf): description`.
 
 ## Making a Pull Request
 

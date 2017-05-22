@@ -1,7 +1,5 @@
-'use strict';
-
-const ipcRenderer = require('electron').ipcRenderer;
-const CompositeDisposable = require('atom').CompositeDisposable;
+const {ipcRenderer} = require('electron');
+const {CompositeDisposable} = require('atom');
 const config = require('./config');
 const map = require('./map');
 const database = require('./database');
@@ -9,10 +7,10 @@ const colours = require('./colours');
 const statusBar = require('./status-bar');
 const mainView = require('./main-view');
 const selectList = require('./select-list-view');
-const cleanConfig = require('./common').cleanConfig;
-const getModel = require('./common').getModel;
-const getView = require('./common').getView;
-const getSelectedProject = require('./common').getSelectedProject;
+const {cleanConfig} = require('./common');
+const {getModel} = require('./common');
+const {getView} = require('./common');
+const {getSelectedProject} = require('./common');
 const githubWorker = new Worker(__dirname + '/workers/github.js');
 const {shell} = require('electron');
 
@@ -58,6 +56,10 @@ const activate = function _activate () {
       commandscontextMenu.call(this)
     ),
     atom.config.observe(
+      'project-viewer.dockOrPanel',
+      observeDockOrPanel.bind(this)
+    ),
+    atom.config.observe(
       'project-viewer.visibilityOption',
       observeVisibilityOption.bind(this)
     ),
@@ -72,6 +74,10 @@ const activate = function _activate () {
     atom.config.observe(
       'project-viewer.autoHide',
       observeAutoHide.bind(this)
+    ),
+    atom.config.onDidChange(
+      'project-viewer.keepContext',
+      observeKeepContext.bind(this)
     ),
     atom.config.observe(
       'project-viewer.autoHideAbsolute',
@@ -107,7 +113,13 @@ const activate = function _activate () {
     ),
     atom.project.onDidChangePaths(
       observePathsChanges.bind(this)
-    )
+    ),
+    atom.workspace.addOpener(uri => {
+      if (uri === database.WORKSPACE_URI) {
+        return map.get(this);
+      }
+      return null;
+    })
   );
 
   showDisclaimer.call(this);
@@ -164,10 +176,6 @@ const deactivate = function _deactivate () {
   panel.destroy();
 };
 
-// const projectViewerService = function _projectViewerService () {
-//   return serviceExposer;
-// };
-
 const provideStatusBar = function _provideStatusBar (service) {
   map.set(statusBar, service);
   this.disposables.add(
@@ -178,6 +186,10 @@ const provideStatusBar = function _provideStatusBar (service) {
   )
 };
 
+const consumeElementIcons = function _consumeElementIcons (func) {
+  // console.log(func);
+};
+
 const commandWorkspace = function _commandWorkspace () {
   return {
     'project-viewer:togglePanel': togglePanel.bind(this),
@@ -186,8 +198,6 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:openProject': openProject.bind(this),
     'project-viewer:focusPanel': focusPanel.bind(this),
     'project-viewer:toggleSelectList': toggleSelectList,
-    'project-viewer:clearState': clearState.bind(this),
-    'project-viewer:clearStates': clearStates.bind(this),
     'project-viewer:openDatabase': openDatabase.bind(this),
     'project-viewer:migrate03x': migrate03x,
     'project-viewer:gistExport': gistExport,
@@ -292,6 +302,16 @@ const commandscontextMenu = function _commandscontextMenu () {
   };
 };
 
+const observeDockOrPanel = function _observeDockOrPanel (option) {
+  // console.log('observeDockOrPanel', option);
+};
+
+const observeKeepContext = function _observeKeepContext (value) {
+  if (!value.newValue) {
+    database.KEEP_CONTEXT = true;
+  }
+};
+
 const observeVisibilityOption = function _observeVisibilityOption (option) {
   if (option === 'Remember state') {
     const vActive = atom.config.get('project-viewer.visibilityActive');
@@ -324,13 +344,43 @@ const buildPanel = function _buildPanel (options) {
     panel.priority = 0;
   }
 
-  if (options.left) {
-    atom.workspace.addLeftPanel(panel);
+  let container;
+  let context;
+
+  if (atom.config.get('project-viewer.dockOrPanel') && options.left) {
+      context = atom.workspace.getLeftDock().paneContainer.getActivePane();
+      container = context.addItem;
+  }
+  else if (atom.config.get('project-viewer.dockOrPanel') && options.right) {
+      context = atom.workspace.getRightDock().paneContainer.getActivePane();
+      container = context.addItem;
+  }
+  else if (!atom.config.get('project-viewer.dockOrPanel') && options.left) {
+      context = atom.workspace;
+      container = context.addLeftPanel;
+  }
+  else if (!atom.config.get('project-viewer.dockOrPanel') && options.right) {
+      context = atom.workspace;
+      container = context.addRightPanel;
   }
 
-  if (options.right) {
-    atom.workspace.addRightPanel(panel);
-  }
+  container.call(context, !atom.config.get('project-viewer.dockOrPanel') ? panel : this);
+  // container(atom.config.get('project-viewer.dockOrPanel') ? this : panel);
+
+  // if (options.left) {
+  //   atom.workspace.addLeftPanel(panel);
+  // }
+
+  // if (options.right) {
+    // atom.workspace.addRightPanel(panel);
+    // atom.workspace.getRightDock().paneContainer.getActivePane().addItem(
+    // atom.workspace.open(
+  //     this, {
+  //     activatePane: true,
+  //     activateItem: true,
+  //     searchAllPanes: true
+  //   });
+  // }
 
   if (options.left) {
     this.invertResizer(true);
@@ -625,26 +675,13 @@ const openProjectFolder = function _openProjectFolder (evt) {
     model.paths.forEach(path => shell.showItemInFolder(path));
 };
 
-const clearState = function _clearState () {};
-
-const clearStates = function _clearStates () {};
-
-// const createGroup = function _createGroup () {};
-
-// const createProject = function _createProject () {};
-
-// const serviceExposer = Object.create(null);
-//
-// serviceExposer.createGroup = createGroup;
-// serviceExposer.createProject = createProject;
-
 const main = Object.create(null);
 
 main.activate = activate;
 main.config = config;
 main.deactivate = deactivate;
-// main.projectViewerService = projectViewerService;
 main.provideStatusBar = provideStatusBar;
+main.consumeElementIcons = consumeElementIcons;
 
 /**
 */

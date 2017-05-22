@@ -30,13 +30,6 @@
                 {
                   "label": "Export to a private gist",
                   "command": "project-viewer:gistExport"
-                },
-                {"type": "separator"},
-                {
-                  "label": "Import from Google Drive"
-                },
-                {
-                  "label": "Export to Google Drive"
                 }
               ]
             },

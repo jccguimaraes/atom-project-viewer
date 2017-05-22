@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/jccguimaraes/atom-project-viewer](http://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](https://gitter.im/jccguimaraes/atom-project-viewer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors)
 
-[![atom version](https://img.shields.io/badge/atom-1.16.0-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
+[![atom version](https://img.shields.io/badge/atom-1.17.0-orange.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm version](https://img.shields.io/apm/v/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 [![apm downloads](https://img.shields.io/apm/dm/project-viewer.svg?style=flat-square)](https://atom.io/packages/project-viewer/)
 
@@ -37,6 +37,8 @@ This is a package built for and by the Atom community. For contribution read [be
 This package has grown so much over the last year that I felt the need to make it more stable and community friendly. And this required a more deep refactor with lots of new ideas and improvements, also huge amount of :heart: and :sweat_drops:.
 
 So here it is! **Enjoy and contribute!** :earth_africa:
+
+> Please keep in mind that after **Atom `1.17.0`** some functionalities changed, and implementations of this package are still being tested for stability.
 
 ## Installation
 
@@ -123,6 +125,7 @@ Settings | Type | Description | Default
 `customSelectedColor` | `String` | Set custom selected project color | `''`
 `customHoverColor` | `String` | Set custom hover project color | `''`
 `customTitleColor` | `String` | Set custom main title color | `''`
+`packagesReload` | `String` | List of packages to reload | `status-bar, linter, linter-ui-default`
 `disclaimer` | `Object` | Show release notes on startup | `true`
 
 > Keep in mind that this package uses Atom's Storage to save all groups and projects. It is wise to save it to the cloud (ex: you can import and export a private Gist through this package!).
@@ -136,7 +139,7 @@ Change it at your own risk! :speak_no_evil:
 Parameter | Type | Description | Default | Required
 ----------|------|-------------|---------|---------
 `type` | `String` | The type of the model | `group` | `true`
-`name` | `String` | The name of the project | In theory... any strj g / emoji | `true`
+`name` | `String` | The name of the project | In theory... any string / emoji | `true`
 `sortBy` | `String` | Sorting of the nested `groups` and `projects` | Possible options are `position`, `reserve-position`, `alphabetically` and `reverse-alphabetically` | `true`
 `icon` | `String` | Custom icon `octicons` or `devicons` | `''` | `false`
 `color` | `String` | Custom color | `''` | `false`

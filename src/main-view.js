@@ -1,13 +1,9 @@
-'use strict';
-
-/* package */
 const map = require('./map');
 const domBuilder = require('./dom-builder');
 const api = require('./api');
 const colours = require('./colours');
 const database = require('./database');
-const getModel = require('./common').getModel;
-const sortList = require('./common').sortList;
+const {getModel, sortList} = require('./common');
 
 const viewsRef = {};
 let startX;
@@ -98,7 +94,7 @@ const isAlreadyEditing = function _isAlreadyEditing (model) {
 
 const openEditor = function _openEditor (model, prefill) {
   if (isAlreadyEditing(model)) { return; }
-  const activePane = atom.workspace.getActivePane();
+  const activePane = atom.workspace.getCenter().getActivePane();
   const editorItem = api.editor.createView();
   editorItem.initialize(model, prefill);
   activePane.addItem(editorItem);
@@ -415,6 +411,26 @@ const detachChild = function _detachChild (node) {
   listTree.removeChild(node);
 };
 
+const getTitle = function _getTitle () {
+  return database.PACKAGE_NAME;
+};
+
+const getURI = function _getURI () {
+  return database.WORKSPACE_URI;
+};
+
+const getDefaultLocation = function _getDefaultLocation () {
+  return 'right';
+};
+
+const getAllowedLocations = function _getAllowedLocations () {
+  return ['left', 'right'];
+};
+
+const isPermanentDockItem = function _isPermanentDockItem () {
+  return true;
+};
+
 const viewMethods = {
   attachChild,
   sortChildren,
@@ -429,7 +445,13 @@ const viewMethods = {
   toggleFocus,
   toggleTitle,
   traverse,
-  invertResizer
+  invertResizer,
+  getTitle,
+  getURI,
+  getDefaultLocation,
+  getAllowedLocations,
+  isPermanentDockItem,
+  getPreferredWidth: () => this.list.style.width = '200px'
 };
 
 const createView = function _createView (model) {

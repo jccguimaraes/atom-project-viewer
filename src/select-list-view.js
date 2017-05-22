@@ -1,5 +1,3 @@
-'use strict';
-
 const selectListView = require('atom-space-pen-views').SelectListView;
 
 const selectList = new selectListView();

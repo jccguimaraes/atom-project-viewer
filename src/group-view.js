@@ -1,12 +1,8 @@
-'use strict';
-
 const map = require('./map');
 const database = require('./database');
 const domBuilder = require('./dom-builder');
 const colours = require('./colours');
-const getModel = require('./common').getModel;
-const getView = require('./common').getView;
-const sortList = require('./common').sortList;
+const {getModel, getView, sortList} = require('./common');
 
 const dragstart = function _dragstart (evt) {
   evt.dataTransfer.setData(

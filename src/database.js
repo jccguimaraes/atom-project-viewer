@@ -1,10 +1,12 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const model = require('./model');
 
-const version = '1.0.14';
+const PACKAGE_NAME = 'Project-Viewer';
+const WORKSPACE_URI = 'atom://atom-project-viewer';
+let KEEP_CONTEXT = false;
+
+const version = '1.0.15';
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
 let store = [];
@@ -573,6 +575,10 @@ database.addTo = addTo;
 database.migrate03x = migrate03x;
 database.importDB = importDB;
 database.exportDB = exportDB;
+
+database.PACKAGE_NAME = PACKAGE_NAME;
+database.WORKSPACE_URI = WORKSPACE_URI;
+database.KEEP_CONTEXT = KEEP_CONTEXT;
 
 /**
  * Database / Store module

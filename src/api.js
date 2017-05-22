@@ -1,5 +1,3 @@
-'use strict';
-
 const model = require('./model');
 const groupComponent = require('./group-view');
 const projectComponent = require('./project-view');

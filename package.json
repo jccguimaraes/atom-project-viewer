@@ -14,7 +14,7 @@
   "license": "MIT",
   "engines": {
     "node": ">=6.5.0",
-    "atom": ">=1.16.0"
+    "atom": ">=1.17.0"
   },
   "dependencies": {
     "atom-space-pen-views": "latest",
@@ -27,6 +27,11 @@
     "status-bar": {
       "versions": {
         "^1.0.0": "provideStatusBar"
+      }
+    },
+    "file-icons.element-icons": {
+      "versions": {
+        "1.0.0": "consumeElementIcons"
       }
     }
   }

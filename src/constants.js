@@ -1,5 +1,3 @@
-'use strict';
-
 const constants = Object.create(null);
 
 constants.packageName = 'project-viewer';

@@ -1,16 +1,14 @@
-'use strict';
-
-const remote = require('remote');
-
-const map = require('./map');
-const database = require('./database');
-const statusBar = require('./status-bar');
-const domBuilder = require('./dom-builder');
+const {
+  getCurrentOpenedProject, getModel, getViewFromModel,
+  getSelectedProject, getView
+} = require('./common');
 const colours = require('./colours');
-const getSelectedProject = require('./common').getSelectedProject;
-const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
-const getModel = require('./common').getModel;
-const getView = require('./common').getView;
+const database = require('./database');
+const domBuilder = require('./dom-builder');
+const map = require('./map');
+const remote = require('remote');
+const statusBar = require('./status-bar');
+const packages = require('./packages');
 
 let checkedAll = [];
 
@@ -21,11 +19,9 @@ const onClickEvent = function _onClickEvent (model) {
 
 const dragstart = function _dragstart (evt) {
   const view = getView(evt.target);
+  const model = getModel(evt.target);
   view.classList.add('dragging');
-  evt.dataTransfer.setData(
-    'text/plain',
-    getModel(evt.target).uuid
-  );
+  evt.dataTransfer.setData('text/plain', model.uuid);
   evt.stopPropagation();
 };
 
@@ -230,13 +226,13 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
 
   if (model.paths.length === 0) { return false; }
 
+  const selectedProject = getSelectedProject();
+
+  if (selectedProject === getViewFromModel(model)) { return; }
+
   const action = reverseOption ?
     !atom.config.get('project-viewer.openNewWindow') :
     atom.config.get('project-viewer.openNewWindow');
-
-  const currentOpenedProject = getCurrentOpenedProject(model);
-
-  if (currentOpenedProject) { return false; }
 
   if (action) {
     remote.ipcMain.on(`channel-${model.uuid}`, checkIfOpened);
@@ -250,7 +246,8 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     return false;
   }
 
-  let selectedProject = getSelectedProject();
+  const packagesList = atom.config.get('project-viewer.packagesReload');
+  packages.state.disable(packagesList);
 
   if (selectedProject) {
     selectedProject.classList.remove('selected');
@@ -261,10 +258,16 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
   let projectSHA;
   let serialization;
 
-  if (!atom.config.get('project-viewer.keepContext')) {
-    projectSHA = atom.getStateKey(atom.project.getPaths());
+  projectSHA = atom.getStateKey(atom.project.getPaths());
+
+  if (atom.config.get('project-viewer.keepContext') || database.KEEP_CONTEXT) {
+    database.KEEP_CONTEXT = false;
+    serialization = atom.getStorageFolder().load(projectSHA);
+  } else {
     serialization = atom.serialize();
   }
+
+  serialization.treeView = packages.treeView.getState();
 
   if (projectSHA && serialization) {
     atom.getStorageFolder().storeSync(projectSHA, serialization);
@@ -272,47 +275,33 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
 
   statusBar.update(model.breadcrumb());
 
-  if (!atom.config.get('project-viewer.keepContext')) {
-    projectSHA = atom.getStateKey(model.paths);
-    serialization = atom.getStorageFolder().load(projectSHA);
+  projectSHA = atom.getStateKey(model.paths);
+
+  const state = atom.getStorageFolder().load(projectSHA);
+
+  if (!state || !state.workspace.paneContainers) {
+      atom.project.setPaths(model.paths);
+      atom.workspace.getCenter().paneContainer.activePane.destroy();
   }
+  else {
+      if (state.workspace.paneContainers && state.workspace.paneContainers.left) {
+        state.workspace.paneContainers.left.paneContainer = {};
+      }
+      if (state.workspace.paneContainers && state.workspace.paneContainers.left) {
+        state.workspace.paneContainers.right.paneContainer = {};
+      }
+      if (state.workspace.paneContainers && state.workspace.paneContainers.left) {
+        state.workspace.paneContainers.bottom.paneContainer = {};
+      }
 
-  if (!serialization) {
-    database.pathsChangedBypass = true;
-    atom.project.setPaths(model.paths);
-    database.pathsChangedBypass = false;
-  } else {
-    if (atom.appVersion.split('.')[1] >= '17') {
-      delete serialization.workspace;
-    }
-    atom.deserialize(serialization);
+      if (atom.config.get('project-viewer.keepContext')) {
+        state.workspace.paneContainers.center = {};
+      }
+
+      atom.deserialize(state);
+      packages.treeView.setState(state.treeView);
+      packages.state.enable(packagesList);
   }
-
-  if (!atom.config.get('project-viewer.keepContext') && !serialization) {
-    atom.workspace.destroyActivePane();
-  }
-
-  // hack to make tree-view update on project switching
-  const treeViewPackage = atom.packages.getActivePackage('tree-view');
-  if (
-    treeViewPackage && serialization &&
-    serialization.packageStates && serialization.packageStates['tree-view']
-  ) {
-    const serializer = serialization.packageStates['tree-view']
-    .directoryExpansionStates;
-
-    if (!treeViewPackage.mainModule.treeView) {
-      treeViewPackage.mainModule.createView(serializer);
-    } else {
-      treeViewPackage.mainModule.treeView.updateRoots(serializer);
-    }
-
-    treeViewPackage.mainModule.treeView.scrollTop(
-      serialization.packageStates['tree-view'].scrollTop
-    );
-  }
-
-  atom.getLoadSettings().initialPaths = atom.project.getPaths();
 
   return true;
 };

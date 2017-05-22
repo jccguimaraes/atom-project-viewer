@@ -1,5 +1,3 @@
-'use strict';
-
 const map = require('./map');
 
 const createView = function _createView (element, methods, model) {

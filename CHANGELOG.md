@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2017-05-22
+
+### Added
+
+- Config option to list packages that need to be reloaded on project switch([#133](https://github.com/jccguimaraes/atom-project-viewer/issues/133));
+- @erikgeiser as a contributor (a big thank you!);
+- Custom hot zone width ([#150](https://github.com/jccguimaraes/atom-project-viewer/pull/150)) and ([#131](https://github.com/jccguimaraes/atom-project-viewer/issues/131));
+- Dock or Panel container (Panel by default). (***highly unstable***)
+
+### Fixed
+
+- Fix context switch ([#113](https://github.com/jccguimaraes/atom-project-viewer/issues/113)), ([#126](https://github.com/jccguimaraes/atom-project-viewer/issues/126)) and ([#148](https://github.com/jccguimaraes/atom-project-viewer/issues/148));
+- Attempt to fix some packages that need to also restart / reset on project switching;
+- Opening of editorView in the center.
+
+### Removed
+
+- Import / Export to Google Drive option in menu as it is useless.
+
 ## [1.0.14] - 2017-05-01
 
 ### Fixed
@@ -20,7 +39,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Add @GreenGremlin and @stephen-last as a contributor (a big thank you!);
+- @GreenGremlin and @stephen-last as a contributor (a big thank you!);
 - Fix typo on Issue template ([#141](https://github.com/jccguimaraes/atom-project-viewer/pull/141));
 - If a project is already open, switch to it rather than open a second instance ([#112](https://github.com/jccguimaraes/atom-project-viewer/issues/112));
 

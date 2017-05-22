@@ -1,20 +1,16 @@
-'use strict';
-
-const CompositeDisposable = require('atom').CompositeDisposable;
+const {CompositeDisposable} = require('atom');
 const nodePath = require('path');
 const map = require('./map');
 const domBuilder = require('./dom-builder');
-const buildBlock = require('./common').buildBlock;
-const buildHeader = require('./common').buildHeader
-const buildInput = require('./common').buildInput
-const buildButton = require('./common').buildButton
-const buildLabel = require('./common').buildLabel
+const {
+  buildBlock, buildHeader, buildInput, buildButton, buildLabel
+} = require('./common');
 const octicons = require('./json/octicons.json');
 const devicons = require('./json/devicons.json');
 const database = require('./database');
-const getView = require('./common').getView;
-const getViewFromModel = require('./common').getViewFromModel;
-const getCurrentOpenedProject = require('./common').getCurrentOpenedProject;
+const {
+  getView, getViewFromModel, getCurrentOpenedProject
+} = require('./common');
 
 const getType = function _getType () {
   const context = map.get(this);
