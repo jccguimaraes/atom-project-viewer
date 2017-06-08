@@ -14,9 +14,10 @@
   "license": "MIT",
   "engines": {
     "node": ">=6.5.0",
-    "atom": ">=1.17.0"
+    "atom": ">=1.17.2"
   },
   "dependencies": {
+    "atom-select-list": "^0.2.0",
     "atom-space-pen-views": "latest",
     "devicons": "1.8.0"
   },

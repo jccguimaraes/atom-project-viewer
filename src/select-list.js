@@ -1,23 +1,12 @@
-const etch = require('etch');
+const SelectList = require('atom-select-list');
 
-module.exports = class SelectList {
+module.exports = class PVSelectList extends SelectList {
 
-  constructor (props, children) {
-    etch.initialize(this);
+  items () {
+    return [];
   }
 
-  render () {
-    console.log(this);
-    return etch.dom.div(
-        { className: 'status-bar', innerHTML: 'hi' }
-    );
-  }
-
-  update (props, children) {
-    return etch.update(this);
-  }
-
-  destroy () {
-    return etch.destroy(this);
+  viewForItem (item) {
+      return item;
   }
 }

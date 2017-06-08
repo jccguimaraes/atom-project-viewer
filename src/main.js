@@ -7,12 +7,16 @@ const colours = require('./colours');
 const statusBar = require('./status-bar');
 const mainView = require('./main-view');
 const selectList = require('./select-list-view');
+const pvSelectList = require('./select-list');
 const {cleanConfig} = require('./common');
 const {getModel} = require('./common');
 const {getView} = require('./common');
 const {getSelectedProject} = require('./common');
 const githubWorker = new Worker(__dirname + '/workers/github.js');
 const {shell} = require('electron');
+
+// const pvs = new pvSelectList({items: []});
+// console.log(pvs);
 
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
