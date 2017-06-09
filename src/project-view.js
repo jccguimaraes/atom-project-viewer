@@ -260,16 +260,21 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
 
   projectSHA = atom.getStateKey(atom.project.getPaths());
 
-  if (atom.config.get('project-viewer.keepContext') || database.KEEP_CONTEXT) {
-    database.KEEP_CONTEXT = false;
-    serialization = atom.getStorageFolder().load(projectSHA);
-  } else {
-    serialization = atom.serialize();
-  }
-
-  serialization.treeView = packages.treeView.getState();
-
-  if (projectSHA && serialization) {
+  // We need to ensure that the projectSHA is valid (i.e. the project contains at least one path)
+  if (projectSHA !== null) {
+    if (atom.config.get('project-viewer.keepContext') || database.KEEP_CONTEXT) {
+      database.KEEP_CONTEXT = false;
+      serialization = atom.getStorageFolder().load(projectSHA);
+      
+      // Ensure that the serialized file exists
+      if (typeof serialization === 'undefined') {
+        serialization = atom.serialize();
+      }
+    } else {
+      serialization = atom.serialize();
+    }
+    
+    serialization.treeView = packages.treeView.getState();
     atom.getStorageFolder().storeSync(projectSHA, serialization);
   }
 
