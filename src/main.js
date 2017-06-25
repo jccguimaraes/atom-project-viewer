@@ -6,8 +6,7 @@ const database = require('./database');
 const colours = require('./colours');
 const statusBar = require('./status-bar');
 const mainView = require('./main-view');
-const selectList = require('./select-list-view');
-const pvSelectList = require('./select-list');
+const ProjectsList = require('./projects-list');
 const {cleanConfig} = require('./common');
 const {getModel} = require('./common');
 const {getView} = require('./common');
@@ -15,16 +14,20 @@ const {getSelectedProject} = require('./common');
 const githubWorker = new Worker(__dirname + '/workers/github.js');
 const {shell} = require('electron');
 
-// const pvs = new pvSelectList({items: []});
-// console.log(pvs);
-
 let sidebarUnsubscriber;
 let selectListUnsubscriber;
 
-const checkIfOpened = function _checkIfOpened (event, model, title) {
+const createProjectsListView = function () {
+  if (!this.projectsListView) {
+    this.projectsListView = new ProjectsList();
+  }
+  return this.projectsListView;
+}
+
+const checkIfOpened = function _checkIfOpened (event, model, title, action) {
   const paths = atom.project.getPaths();
   const opened = !paths.some(path => model.paths.indexOf(path) === -1);
-  ipcRenderer.send(`channel-${model.uuid}`, model, title, opened);
+  ipcRenderer.send(`channel-${model.uuid}`, model, title, opened, action);
 };
 
 const activate = function _activate () {
@@ -37,10 +40,15 @@ const activate = function _activate () {
   // activate database
   database.activate();
 
-  selectList.initialize();
-  selectListUnsubscriber = database.subscribe(
-    selectList.populate.bind(selectList)
-  );
+  database.subscribe(
+    (models) => {
+      const items = models.filter(function (model) {
+        return model.type === 'project';
+      });
+      const projectsList = this.createProjectsListView();
+      projectsList.update.call(projectsList, items);
+    }
+  )
 
   colours.initialize();
 
@@ -201,7 +209,7 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:openEditor': openEditor.bind(this),
     'project-viewer:openProject': openProject.bind(this),
     'project-viewer:focusPanel': focusPanel.bind(this),
-    'project-viewer:toggleSelectList': toggleSelectList,
+    'project-viewer:toggleSelectList': toggleSelectList.bind(this),
     'project-viewer:openDatabase': openDatabase.bind(this),
     'project-viewer:migrate03x': migrate03x,
     'project-viewer:gistExport': gistExport,
@@ -209,7 +217,8 @@ const commandWorkspace = function _commandWorkspace () {
     'project-viewer:elevate-project': elevateProject.bind(this),
     'project-viewer:openProjectFolder': openProjectFolder,
     'project-viewer:deleteGroupOrProject': deleteGroupOrProject,
-    'project-viewer:createGroupOrProject': createGroupOrProject.bind(this)
+    'project-viewer:createNewGroup': createNewGroup.bind(this),
+    'project-viewer:createNewProject': createNewProject.bind(this)
   }
 };
 
@@ -265,9 +274,19 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
-        command: 'project-viewer:createGroupOrProject',
+        command: 'project-viewer:createNewGroup',
         created: function (evt) {
-          this.label = `Create new...`;
+          this.label = `Create new group...`;
+        },
+        shouldDisplay: function (evt) {
+          const model = getModel(evt.target);
+          return !model || (model && model.type === 'group');
+        }
+      },
+      {
+        command: 'project-viewer:createNewProject',
+        created: function (evt) {
+          this.label = `Create new project...`;
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -552,7 +571,7 @@ const migrate03x = function _migrate03x () {
 };
 
 const toggleSelectList = function _toggleSelectList () {
-  selectList.togglePanel();
+  this.createProjectsListView().toggle();
 };
 
 const autohidePanel = function _autohidePanel (option) {
@@ -591,11 +610,24 @@ const deleteGroupOrProject = function _deleteGroupOrProject (evt) {
   database.save();
 };
 
-const createGroupOrProject = function _createGroupOrProject (evt) {
+const createNewGroup = function _createNewGroup (evt) {
   const model = getModel(evt.target) || Object.prototype;
   const view = map.get(this);
   if (!view) { return; }
   const newModel = {
+    type: 'group',
+    name: ''
+  };
+  Object.setPrototypeOf(newModel, model);
+  view.openEditor(null, newModel);
+};
+
+const createNewProject = function _createNewProject (evt) {
+  const model = getModel(evt.target) || Object.prototype;
+  const view = map.get(this);
+  if (!view) { return; }
+  const newModel = {
+    type: 'project',
     name: ''
   };
   Object.setPrototypeOf(newModel, model);
@@ -686,6 +718,7 @@ main.config = config;
 main.deactivate = deactivate;
 main.provideStatusBar = provideStatusBar;
 main.consumeElementIcons = consumeElementIcons;
+main.createProjectsListView = createProjectsListView;
 
 /**
 */

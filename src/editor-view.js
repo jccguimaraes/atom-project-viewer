@@ -111,6 +111,9 @@ const actionsContainer = function _actionsContainer (parentView) {
     context.model && !context.candidate ? 'Update' : 'Create', 'success'
   );
 
+  context.refs['pv-button-cancel'] = cancelButton;
+  context.refs['pv-button-success'] = successButton;
+
   cancelButton.addEventListener('click', clickCancelButton.bind(this), false);
   deleteButton.addEventListener('click', clickDeleteButton.bind(this), false);
   successButton.addEventListener('click', clickSuccessButton.bind(this), false);
@@ -118,6 +121,7 @@ const actionsContainer = function _actionsContainer (parentView) {
   actionsBlock.appendChild(cancelButton);
   if (context.model && (context.candidate && context.candidate.type)) {
     actionsBlock.appendChild(deleteButton);
+    context.refs['pv-button-delete'] = deleteButton;
   }
   actionsBlock.appendChild(successButton);
 
@@ -131,10 +135,14 @@ const typeContainer = function _typeContainer (parentView) {
   const typeHeader = buildHeader('Type');
   const typeGroupInput = buildInput('radio', 'type-group');
   const typeProjectInput = buildInput('radio', 'type-project');
+
   const typeGroupLabel = buildLabel('Group', 'type-group', typeGroupInput);
   const typeProjectLabel = buildLabel(
     'Project', 'type-group', typeProjectInput
   );
+
+  context.refs['pv-type-group'] = typeGroupInput;
+  context.refs['pv-type-project'] = typeProjectInput;
 
   typeGroupLabel.addEventListener(
     'click',
@@ -556,30 +564,164 @@ const configContainer = function _configContainer () {};
 const activateContainers = function _activateContainer (list, context) {
   if (!context) { context = map.get(this); }
 
+  let tabIndex = 1;
+
+  if (context.refs['pv-button-cancel']) {
+    context.refs['pv-button-cancel'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+
+  if (context.refs['pv-button-delete']) {
+    context.refs['pv-button-delete'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+
+  if (context.refs['pv-button-success']) {
+    context.refs['pv-button-success'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+
+  if (context.refs['pv-type-group']) {
+    context.refs['pv-type-group'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+
+  if (context.refs['pv-type-project']) {
+    context.refs['pv-type-project'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+
   if (list.hasOwnProperty('name')) {
     context.refs['pv-container-name']
       .classList.toggle('hidden', !list.name);
   }
+
+  if (list.name) {
+    context.refs['pv-input-name'].tabIndex = tabIndex;
+    tabIndex++;
+  }
+  else {
+    context.refs['pv-input-name'].tabIndex = -1;
+  }
+
   if (list.hasOwnProperty('sortBy')) {
     context.refs['pv-container-sortBy']
       .classList.toggle('hidden', !list.sortBy);
   }
+
+  if (list.sortBy) {
+    let element = context.refs['pv-container-sortBy']
+      .querySelector('.pv-select-sortBy');
+    if (element) {
+      element.tabIndex = tabIndex;
+      tabIndex++;
+    }
+  }
+  else {
+    let element = context.refs['pv-container-sortBy']
+      .querySelector('.pv-select-sortBy');
+    if (element) {
+      element.tabIndex = -1;
+    }
+  }
+
   if (list.hasOwnProperty('icons')) {
     context.refs['pv-container-icons']
       .classList.toggle('hidden', !list.icons);
   }
+
+  if (list.icons) {
+    let element = context.refs['pv-container-icons']
+      .querySelector('.pv-input-icon');
+    if (element) {
+      element.tabIndex = tabIndex;
+      tabIndex++;
+    }
+  }
+  else {
+    let element = context.refs['pv-container-icons']
+      .querySelector('.pv-input-icon');
+    if (element) {
+      element.tabIndex = -1;
+    }
+  }
+
   if (list.hasOwnProperty('color')) {
     context.refs['pv-container-color']
       .classList.toggle('hidden', !list.color);
   }
+
+  if (list.color) {
+    let element = context.refs['pv-container-color']
+      .querySelector('.pv-input-checkbox-color');
+    if (element) {
+      element.tabIndex = tabIndex;
+      tabIndex++;
+    }
+  }
+  else {
+    let element = context.refs['pv-container-color']
+      .querySelector('.pv-input-checkbox-color');
+    if (element) {
+      element.tabIndex = -1;
+    }
+  }
+
   if (list.hasOwnProperty('options')) {
     context.refs['pv-container-options']
       .classList.toggle('hidden', !list.options);
   }
+
+  if (list.options) {
+    let element = context.refs['pv-container-options']
+      .querySelector('.pv-input-checkbox-devMode');
+    if (element) {
+      element.tabIndex = tabIndex;
+      tabIndex++;
+    }
+  }
+  else {
+    let element = context.refs['pv-container-options']
+      .querySelector('.pv-input-checkbox-devMode');
+    if (element) {
+      element.tabIndex = -1;
+    }
+  }
+
   if (list.hasOwnProperty('paths')) {
     context.refs['pv-container-paths']
       .classList.toggle('hidden', !list.paths);
   }
+
+  if (list.paths) {
+    let elementPaths = context.refs['pv-container-paths']
+      .querySelector('.pv-button-paths');
+    if (elementPaths) {
+      elementPaths.tabIndex = tabIndex;
+      tabIndex++;
+    }
+
+    let elementBulk = context.refs['pv-container-paths']
+      .querySelector('.pv-input-checkbox-bulk');
+    if (elementBulk) {
+      elementPaths.tabIndex = tabIndex;
+      tabIndex++;
+    }
+  }
+  else {
+    let elementPaths = context.refs['pv-container-paths']
+      .querySelector('.pv-button-paths');
+    if (elementPaths) {
+      elementPaths.tabIndex = -1;
+    }
+
+    let elementBulk = context.refs['pv-container-paths']
+      .querySelector('.pv-input-checkbox-bulk');
+    if (elementBulk) {
+      elementPaths.tabIndex = -1;
+    }
+  }
+
   if (list.hasOwnProperty('groups')) {
     context.refs['pv-container-groups']
       .classList.toggle('hidden', !list.groups);
@@ -627,6 +769,17 @@ const initialize = function _initialize (model, candidate) {
 
   this.appendChild(panelHeading);
   this.appendChild(panelBody);
+
+  const context = map.get(this);
+
+  if (context.candidate && context.candidate.type === 'group') {
+    context.refs['pv-type-group'].checked = true;
+    clickType.call(this, context, { target: context.refs['pv-type-group'] });
+  }
+  else {
+    context.refs['pv-type-project'].checked = true;
+    clickType.call(this, context, { target: context.refs['pv-type-project'] });
+  }
 };
 
 const clickCancelButton = function _clickCancelButton () {

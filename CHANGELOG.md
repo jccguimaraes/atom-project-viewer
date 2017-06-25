@@ -3,17 +3,33 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2017-06-25
+
+### Added
+
+- Error when creating a node without selecting a node type ([#140](https://github.com/jccguimaraes/atom-project-viewer/issues/140));
+- Keyboard navigation not possible in new project/group creator ([#136](https://github.com/jccguimaraes/atom-project-viewer/issues/136)).
+
+### Changed
+
+- Refactor SelectView to use new `atom-select-list` ([#144](https://github.com/jccguimaraes/atom-project-viewer/issues/144)).
+
+### Fixed
+
+- Open in new window doesn't work on first attempt ([#157](https://github.com/jccguimaraes/atom-project-viewer/issues/157));
+- Cannot set property 'treeView' of undefined ([#152](https://github.com/jccguimaraes/atom-project-viewer/issues/152)) with PR ([#156](https://github.com/jccguimaraes/atom-project-viewer/pull/156)).
+
 ## [1.1.2] - 2017-05-22
 
 ### Fixed
 
-- Bad workflow for status-bar issues ([149])(https://github.com/jccguimaraes/atom-project-viewer/issues/149).
+- Bad workflow for status-bar issues ([#149](https://github.com/jccguimaraes/atom-project-viewer/issues/149)).
 
 ## [1.1.1] - 2017-05-22
 
 ### Fixed
 
-- Attempt to fix status-bar issues ([149])(https://github.com/jccguimaraes/atom-project-viewer/issues/149).
+- Attempt to fix status-bar issues ([#149](https://github.com/jccguimaraes/atom-project-viewer/issues/149)).
 
 ## [1.1.0] - 2017-05-22
 
@@ -32,7 +48,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
-- Import / Export to Google Drive option in menu as it is useless.
+- Import / Export to Google Drive option in menu as it's useless.
 
 ## [1.0.14] - 2017-05-01
 
@@ -150,7 +166,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Added information regarding migration from previous version.
+- Information about migrating from previous version.
 
 ## [1.0.1] - 2017-02-13
 
@@ -184,7 +200,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Custom title color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+- Custom title color ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
 
 ### Fixed
 
@@ -204,13 +220,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Doubled the size of the icons when `onlyIcons` is set to true;
-- Custom hover color regarding ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
+- Custom hover color ([#101](https://github.com/jccguimaraes/atom-project-viewer/issues/101))
 
 ## [0.3.38] - 2016-12-07
 
 ### Fixed
 
-- Issues regarding icons (on create and update)
+- Issues on icons (on create and update)
 
 ## [0.3.37] - 2016-12-07
 
@@ -343,7 +359,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Multiple working sets implemented ([#78](https://github.com/jccguimaraes/atom-project-viewer/pull/78));
+- Multi working sets implemented ([#78](https://github.com/jccguimaraes/atom-project-viewer/pull/78));
 - Changed Travis CI and AppVeyor files;
 
 ### Added
@@ -419,7 +435,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-- The backup only saves once. Any other changes are not saved ([#58](https://github.com/jccguimaraes/atom-project-viewer/issues/58));
+- The backup saves once. Any other changes are not saved ([#58](https://github.com/jccguimaraes/atom-project-viewer/issues/58));
 
 ## [0.3.10] - 2016-06-17
 
@@ -524,7 +540,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Toggle PV state `ctrl-alt-v`;
 - Add Clients, Groups and Projects (menu and context-menu);
 - Remove Clients, Groups and Projects (menu and context-menu);
-- Update Clients, Groups and Projects (context-menu only);
+- Update Clients, Groups and Projects (context-menu);
 - Drag & Drop workflow;
 
 ### Deprecated

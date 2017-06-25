@@ -96,6 +96,7 @@ const openEditor = function _openEditor (model, prefill) {
   if (isAlreadyEditing(model)) { return; }
   const activePane = atom.workspace.getCenter().getActivePane();
   const editorItem = api.editor.createView();
+  editorItem.tabIndex = 0;
   editorItem.initialize(model, prefill);
   activePane.addItem(editorItem);
   activePane.activateItem(editorItem);
