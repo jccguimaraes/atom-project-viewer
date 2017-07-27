@@ -326,7 +326,7 @@ const commandscontextMenu = function _commandscontextMenu () {
 };
 
 const observeDockOrPanel = function _observeDockOrPanel (option) {
-  // console.log('observeDockOrPanel', option);
+  console.log('observeDockOrPanel', option);
 };
 
 const observeKeepContext = function _observeKeepContext (value) {
@@ -388,11 +388,11 @@ const buildPanel = function _buildPanel (options) {
   }
 
   container.call(context, !atom.config.get('project-viewer.dockOrPanel') ? panel : this);
-  // container(atom.config.get('project-viewer.dockOrPanel') ? this : panel);
+  container(atom.config.get('project-viewer.dockOrPanel') ? this : panel);
 
-  // if (options.left) {
-  //   atom.workspace.addLeftPanel(panel);
-  // }
+  if (options.left) {
+    atom.workspace.addLeftPanel(panel);
+  }
 
   // if (options.right) {
     // atom.workspace.addRightPanel(panel);
