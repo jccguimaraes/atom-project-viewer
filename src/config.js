@@ -1,7 +1,7 @@
 const config = {
   'dockOrPanel': {
     title: 'Old Panel integration versus Dock',
-    description: 'If you want to use the old panel integration, just check this option',
+    description: 'If you want to use the old panel integration, just leave uncheck',
     type: 'boolean',
     default: false,
     order: 0
@@ -177,8 +177,8 @@ const config = {
     title: 'Show release notes on startup',
     type: 'object',
     properties: {
-      'v120': {
-        title: "for v1.2.0",
+      'v121': {
+        title: "for v1.2.1",
         type: 'boolean',
         default: true
       }

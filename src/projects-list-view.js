@@ -41,7 +41,6 @@ class SelectListView {
   }
 
   confirm (item) {
-    console.log('confirm', item);
     this.cancel();
   }
 

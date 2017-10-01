@@ -772,7 +772,10 @@ const initialize = function _initialize (model, candidate) {
 
   const context = map.get(this);
 
-  if (context.candidate && context.candidate.type === 'group') {
+  if (
+    (context.candidate && context.candidate.type === 'group') ||
+    (context.model && context.model.type === 'group')
+  ) {
     context.refs['pv-type-group'].checked = true;
     clickType.call(this, context, { target: context.refs['pv-type-group'] });
   }

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.1] - 2017-19-02
+
+### Added
+
+- Dock version (experimental) thanks to @rgawenda ([#159](https://github.com/jccguimaraes/atom-project-viewer/issues/159)) and ([#160](https://github.com/jccguimaraes/atom-project-viewer/pull/160)).
+
+### Fixed
+
+- Devicons not showing thanks to @mdeuerlein ([#135](https://github.com/jccguimaraes/atom-project-viewer/issues/135)) and ([#168](https://github.com/jccguimaraes/atom-project-viewer/pull/168))
+- `Elevate to Project...` due to `tree-view` changes;
+- Missing `sortBy` option on editing `groups`.
+- Not actually a fix, but disabled (for the time being) switching between opened projects in different instances of Atom.
+
 ## [1.2.0] - 2017-06-25
 
 ### Added

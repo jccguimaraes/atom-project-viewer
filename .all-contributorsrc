@@ -139,6 +139,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rgawenda",
+      "name": "netizen",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3426685?v=4",
+      "profile": "https://github.com/rgawenda",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mdeuerlein",
+      "name": "Markus M. Deuerlein",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14030524?v=4",
+      "profile": "https://entidia.de",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ]
 }

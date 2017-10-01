@@ -185,9 +185,7 @@ const sorting = function _sorting () {
 };
 
 const checkIfOpened = function _checkIfOpened (event, model, title, opened, action) {
-  const wcs = remote.webContents
-    .getAllWebContents()
-    .filter(wc => wc.browserWindowOptions);
+  const wcs = remote.webContents;
 
   checkedAll.push({
       title,
@@ -195,14 +193,14 @@ const checkIfOpened = function _checkIfOpened (event, model, title, opened, acti
   });
 
   if (wcs.length !== checkedAll.length) {
-    if (action) {
-      atom.open({
-        pathsToOpen: model.paths,
-        newWindow: true,
-        devMode: model.devMode,
-        safeMode: false
-      });
-    }
+    // if (action) {
+    //   atom.open({
+    //     pathsToOpen: model.paths,
+    //     newWindow: true,
+    //     devMode: model.devMode,
+    //     safeMode: false
+    //   });
+    // }
     return;
   }
 

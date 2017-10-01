@@ -15,7 +15,7 @@ const githubWorker = new Worker(__dirname + '/workers/github.js');
 const {shell} = require('electron');
 
 let sidebarUnsubscriber;
-let selectListUnsubscriber;
+// let selectListUnsubscriber;
 
 const createProjectsListView = function () {
   if (!this.projectsListView) {
@@ -180,7 +180,7 @@ const deactivate = function _deactivate () {
   if (!panel) { return; }
 
   sidebarUnsubscriber();
-  selectListUnsubscriber();
+  // selectListUnsubscriber();
   database.deactivate();
   colours.destroy();
 
@@ -234,7 +234,7 @@ const commandsCore = function _commandsCore () {
 
 const commandscontextMenu = function _commandscontextMenu () {
   return {
-    'ol.tree-view': [
+    '.tree-view': [
       {
         type: 'separator'
       },
@@ -326,7 +326,7 @@ const commandscontextMenu = function _commandscontextMenu () {
 };
 
 const observeDockOrPanel = function _observeDockOrPanel (option) {
-  console.log('observeDockOrPanel', option);
+  // console.log('observeDockOrPanel', option);
 };
 
 const observeKeepContext = function _observeKeepContext (value) {
@@ -388,7 +388,7 @@ const buildPanel = function _buildPanel (options) {
   }
 
   container.call(context, !atom.config.get('project-viewer.dockOrPanel') ? panel : this);
-  container(atom.config.get('project-viewer.dockOrPanel') ? this : panel);
+  // container(atom.config.get('project-viewer.dockOrPanel') ? this : panel);
 
   if (options.left) {
     atom.workspace.addLeftPanel(panel);
