@@ -65,6 +65,13 @@ const config = {
     default: false,
     order: 7
   },
+  'keepWindowSize': {
+    title: 'Keep Window Size',
+    description: 'When changing projects, if set to `true`, the window size will not change.',
+    type: 'boolean',
+    default: false,
+    order: 7
+  },
   'openNewWindow': {
     title: 'Open in a new window',
     description: 'Always open items in a new window.',

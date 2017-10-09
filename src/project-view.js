@@ -316,6 +316,10 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
       if (atom.config.get('project-viewer.keepContext')) {
         state.workspace.paneContainers.center = {};
       }
+      if (atom.config.get('project-viewer.keepWindowSize')) {
+        state.windowDimensions = atom.getWindowDimensions();
+        state.fullScreen = atom.isFullScreen();
+      }
 
       atom.deserialize(state);
       // atom.restoreStateIntoThisEnvironment(state);
