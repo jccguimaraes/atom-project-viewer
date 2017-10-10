@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] - 2017-10-10
+
+### Fixed
+
+- Open in a new window not working ([#169](https://github.com/jccguimaraes/atom-project-viewer/issues/169)) and ([#170](https://github.com/jccguimaraes/atom-project-viewer/issues/170))
+
+### Added
+
+- `keepWindowSize` feature. Thanks to @audrummer15 ([#172](https://github.com/jccguimaraes/atom-project-viewer/pull/172)).
+
 ## [1.2.1] - 2017-10-02
 
 ### Added
