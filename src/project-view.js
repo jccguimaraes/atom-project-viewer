@@ -193,14 +193,14 @@ const checkIfOpened = function _checkIfOpened (event, model, title, opened, acti
   });
 
   if (wcs.length !== checkedAll.length) {
-    // if (action) {
-    //   atom.open({
-    //     pathsToOpen: model.paths,
-    //     newWindow: true,
-    //     devMode: model.devMode,
-    //     safeMode: false
-    //   });
-    // }
+    if (action) {
+      atom.open({
+        pathsToOpen: model.paths,
+        // newWindow: true,
+        devMode: model.devMode,
+        safeMode: false
+      });
+    }
     return;
   }
 
@@ -212,7 +212,7 @@ const checkIfOpened = function _checkIfOpened (event, model, title, opened, acti
   if (!openNew) {
     atom.open({
       pathsToOpen: model.paths,
-      newWindow: true,
+      // newWindow: true,
       devMode: model.devMode,
       safeMode: false
     });
