@@ -274,9 +274,9 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
-        command: 'project-viewer:createNewGroup',
+        command: 'project-viewer:createNewProject',
         created: function (evt) {
-          this.label = `Create new group...`;
+          this.label = `New Project...`;
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -284,9 +284,9 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
-        command: 'project-viewer:createNewProject',
+        command: 'project-viewer:createNewGroup',
         created: function (evt) {
-          this.label = `Create new project...`;
+          this.label = `New Group...`;
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -626,12 +626,43 @@ const createNewProject = function _createNewProject (evt) {
   const model = getModel(evt.target) || Object.prototype;
   const view = map.get(this);
   if (!view) { return; }
+
+  var dirs = atom.project.getDirectories();
+  var name;
+  var tpathArray;
+  if(dirs && dirs.length){
+	  // path.parse().name doesn't return proper name if folder has dots (e.g. folder named "foo.bar" yeilds "foo")
+	  var tpath = dirs[0].path;
+	  var Apath = tpath.split(path.sep);
+	  name = Apath.pop() || '';
+	  // maybe trailing slash
+	  if( ! name ) {
+		  name = Apath.pop() || '';
+	  }
+
+	  tpathArray = [tpath];
+  }
+
+  name = name || "Yoda"
+
+console.log("tpathArray", tpathArray);
+
   const newModel = {
     type: 'project',
-    name: ''
+    name: name,
+	paths : tpathArray,
+	amNew : true
   };
+
   Object.setPrototypeOf(newModel, model);
-  view.openEditor(null, newModel);
+// mike
+console.log("newModel.name", newModel.name)
+    // hack into model.
+    //newModel.name = name;
+    //model.name = name;
+  view.openEditor(newModel, newModel);
+
+
 };
 
 const focusPanel = function _focusPanel () {
