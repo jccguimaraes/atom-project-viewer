@@ -627,6 +627,7 @@ const createNewProject = function _createNewProject (evt) {
   const view = map.get(this);
   if (!view) { return; }
 
+  // @commit: mike: Auto populate the new project name and first open folder.
   var dirs = atom.project.getDirectories();
   var name;
   var tpathArray;
@@ -645,21 +646,19 @@ const createNewProject = function _createNewProject (evt) {
 
   name = name || "Yoda"
 
-console.log("tpathArray", tpathArray);
-
   const newModel = {
     type: 'project',
     name: name,
 	paths : tpathArray,
-	amNew : true
+	amNew : true // @commit: mike: a flag so we can hide the DELETE button.
   };
 
+
   Object.setPrototypeOf(newModel, model);
-// mike
-console.log("newModel.name", newModel.name)
-    // hack into model.
-    //newModel.name = name;
-    //model.name = name;
+
+  // @commit: mike: not sure why we can't just populate with some default
+  // view.openEditor(null, newModel);
+
   view.openEditor(newModel, newModel);
 
 
