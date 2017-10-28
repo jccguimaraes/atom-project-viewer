@@ -634,7 +634,7 @@ const createNewProject = function _createNewProject (evt) {
   if(dirs && dirs.length){
 	  // path.parse().name doesn't return proper name if folder has dots (e.g. folder named "foo.bar" yeilds "foo")
 	  var tpath = dirs[0].path;
-	  var Apath = tpath.split(path.sep);
+	  var Apath = tpath.split(require('path').sep);
 	  name = Apath.pop() || '';
 	  // maybe trailing slash
 	  if( ! name ) {
