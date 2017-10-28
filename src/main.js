@@ -274,9 +274,9 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
-        command: 'project-viewer:createNewGroup',
+        command: 'project-viewer:createNewProject',
         created: function (evt) {
-          this.label = `Create new group...`;
+          this.label = `New Project...`;
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -284,9 +284,9 @@ const commandscontextMenu = function _commandscontextMenu () {
         }
       },
       {
-        command: 'project-viewer:createNewProject',
+        command: 'project-viewer:createNewGroup',
         created: function (evt) {
-          this.label = `Create new project...`;
+          this.label = `New Group...`;
         },
         shouldDisplay: function (evt) {
           const model = getModel(evt.target);
@@ -626,12 +626,42 @@ const createNewProject = function _createNewProject (evt) {
   const model = getModel(evt.target) || Object.prototype;
   const view = map.get(this);
   if (!view) { return; }
+
+  // @commit: mike: Auto populate the new project name and first open folder.
+  var dirs = atom.project.getDirectories();
+  var name;
+  var tpathArray;
+  if(dirs && dirs.length){
+	  // path.parse().name doesn't return proper name if folder has dots (e.g. folder named "foo.bar" yeilds "foo")
+	  var tpath = dirs[0].path;
+	  var Apath = tpath.split(path.sep);
+	  name = Apath.pop() || '';
+	  // maybe trailing slash
+	  if( ! name ) {
+		  name = Apath.pop() || '';
+	  }
+
+	  tpathArray = [tpath];
+  }
+
+  name = name || "Yoda"
+
   const newModel = {
     type: 'project',
-    name: ''
+    name: name,
+	paths : tpathArray,
+	amNew : true // @commit: mike: a flag so we can hide the DELETE button.
   };
+
+
   Object.setPrototypeOf(newModel, model);
-  view.openEditor(null, newModel);
+
+  // @commit: mike: not sure why we can't just populate with some default
+  // view.openEditor(null, newModel);
+
+  view.openEditor(newModel, newModel);
+
+
 };
 
 const focusPanel = function _focusPanel () {
