@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.3] - 2017-10-28
+
+### Added
+
+- Add @bobtherobot as a contributor
+- UX enhancements in `editor` mode ([#177](https://github.com/jccguimaraes/atom-project-viewer/pull/177)).
+
 ## [1.2.2] - 2017-10-10
 
 ### Fixed
