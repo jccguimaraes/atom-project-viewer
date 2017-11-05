@@ -689,36 +689,12 @@ const createNewGroup = function _createNewGroup(evt) {
 	view.openEditor(null, newModel);
 };
 
-<<<<<<< HEAD
-const createNewProject = function _createNewProject (evt) {
-  const model = getModel(evt.target) || Object.prototype;
-  const view = map.get(this);
-  if (!view) { return; }
-
-  // @commit: mike: Auto populate the new project name and first open folder.
-  var dirs = atom.project.getDirectories();
-  var name;
-  var tpathArray;
-  if(dirs && dirs.length){
-	  // path.parse().name doesn't return proper name if folder has dots (e.g. folder named "foo.bar" yeilds "foo")
-	  var tpath = dirs[0].path;
-	  var Apath = tpath.split(require('path').sep);
-	  name = Apath.pop() || '';
-	  // maybe trailing slash
-	  if( ! name ) {
-		  name = Apath.pop() || '';
-	  }
-
-	  tpathArray = [tpath];
-  }
-=======
 const createNewProject = function _createNewProject(evt) {
 	const model = getModel(evt.target) || Object.prototype;
 	const view = map.get(this);
 	if (!view) {
 		return;
 	}
->>>>>>> b134668de37a1503b006c1f52c75634f49e80e5a
 
 	// @commit: mike: build a list of existing paths so we can see if we're currently operating in a project or not.
 	var existingPaths = [];

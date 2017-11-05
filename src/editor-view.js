@@ -556,15 +556,14 @@ const pathsContainer = function _pathsContainer(parentView) {
 
 	pathsList.classList.add('list-group');
 
-
-	pathsBlock.appendChild(pathsHeader); // mike
-	if (!context.model || (context.candidate && context.candidate.paths)) {
-		pathsBlock.appendChild(bulkLabel);
-	}
+	pathsBlock.appendChild(pathsHeader); // mike - reorganizing display order
 	pathsBlock.appendChild(pathsList);
 	pathsBlock.appendChild(pathsButton); // button at bottom
 
 	parentView.appendChild(pathsBlock);
+	if (!context.model || (context.candidate && context.candidate.paths)) {
+		parentView.appendChild(bulkLabel);
+	}
 
 	if (context.model && Array.isArray(context.model.paths)) {
 		context.model.paths.forEach(addPath.bind(null, context, pathsList));

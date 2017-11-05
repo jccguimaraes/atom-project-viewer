@@ -13,22 +13,47 @@ project-viewer-editor {
   padding: @component-padding * 4 0;
 
   .panel-head {
-    width: 80%;
-    margin: 0 auto;
+    // width: 80%;
+    // margin: 0 0 0 auto;
   }
 
   .panel-body {
     margin: 0 auto;
     height: 100%;
     overflow: scroll;
-    padding: 0 10% 32px 10%;
+    padding: 0 32px 32px 32px; // T R B L
   }
 
-  .pv-editor-header::before {
-    content: '';
-    border: 2px solid @project-viewer_item_color;
-    margin-right: @component-padding;
+	.panel-body-col-wrap {
+    display : flex;
   }
+
+	.parent > div,
+	.panel-body-col {
+    flex: 1;
+  }
+
+	.panel-body-col:first-child {
+		flex : 2;
+	}
+
+	.pv-input-color {
+		width : 26px;
+		height : 26px;
+	}
+
+	.panel-body-col:last-child {
+		margin-left : 20px;
+	}
+
+	// doesn't seem to be taking?
+	input.input-text:placeholder {
+		color : #a1a1a1;
+	}
+
+	.sortby-line {
+		white-space : nowrap;
+	}
 
   .pv-editor-block {
     padding-bottom: @component-padding * 2;
@@ -39,6 +64,10 @@ project-viewer-editor {
 
     .list-tree.groups-list {
       position: relative;
+			.list-item {
+				border-bottom : 1px solid rgba(0,0,0,0.1);
+			}
+
     }
 
     .list-item {
