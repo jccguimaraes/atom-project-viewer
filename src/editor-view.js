@@ -855,7 +855,15 @@ const initialize = function _initialize(model, candidate) {
 	if(candidate && candidate.amNew) {
 		title = "Creating New " + ( isGroup ? "Group" : "Project" );
 	} else {
-		title = "Editing " + model.name;
+		// Elevate (elevating) doesn't have a model?
+		if(model){
+			title = "Editing " + model.name;
+		} else {
+			// candidate will have path[0] which we theoretically could parse for a name?
+			// For now I'm a little lazy, so leave as is.
+			title = "Elevating Folder";
+		}
+
 	}
 
 
