@@ -121,19 +121,24 @@ const fetch = function _fetch () {
  * @since 1.0.0
  */
 const writeToDB = function _writeToDB (content) {
-  fs.writeFile(
-    filepath,
-    JSON.stringify(content, null, 2),
-    function writeToDBCallback (err) {
-      if (err) {
-        atom.notifications.addError('Local database corrupted', {
-          detail: '😱! Something when wrong while writing to local file!',
-          icon: 'database'
-        });
-      }
-      setTimeout(directoryWatch, 1000);
-    }
-  );
+	if(content){
+		fs.writeFile(
+	    filepath,
+	    JSON.stringify(content, null, 2),
+	    function writeToDBCallback (err) {
+	      if (err) {
+					console.log(err, "content", content);
+	        atom.notifications.addError('Local database corrupted', {
+						detail : 'ERROR 1001: ' + err.toString(),
+						//detail: '😱! Something when wrong while writing to local file!',
+	          icon: 'database'
+	        });
+	      }
+	      setTimeout(directoryWatch, 1000);
+	    }
+	  );
+	}
+
 };
 
 /**
@@ -154,17 +159,23 @@ const save = function _save () {
  * @since 1.0.0
  */
 const processFileContent = function _processFileContent(result) {
-  try {
-    let serialized = JSON.parse(result);
-    store.length = 0;
-    serialized.root.forEach(processList.bind(null, undefined));
-    runSubscribers();
-  } catch (e) {
-    atom.notifications.addError('Local database corrupted', {
-      detail: 'Please check the content of the local database',
-      icon: 'database'
-    });
-  }
+	if(result){
+		try {
+	    let serialized = JSON.parse(result);
+	    store.length = 0;
+	    serialized.root.forEach(processList.bind(null, undefined));
+	    runSubscribers();
+	  } catch (err) {
+
+				console.log(err, "result", result);
+	    atom.notifications.addError('Local database corrupted', {
+				detail : 'ERROR 1002: ' + err.toString(),
+	      //detail: 'Please check the content of the local database',
+	      icon: 'database'
+	    });
+	  }
+	}
+
   return store;
 }
 
