@@ -60,8 +60,8 @@ const buildBlock = function _buildBlock () {
   return view;
 };
 
-const buildHeader = function _buildHeader (text) {
-  const view = document.createElement('h2');
+const buildHeader = function _buildHeader (text, h) {
+  const view = document.createElement(h || 'h2');
   view.textContent = text;
   view.classList.add('pv-editor-header');
   return view;
