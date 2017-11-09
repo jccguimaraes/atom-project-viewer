@@ -120,12 +120,8 @@ const actionsContainer = function _actionsContainer (parentView) {
 
   actionsBlock.appendChild(cancelButton);
   if (context.model && (context.candidate && context.candidate.type)) {
-	  // @commit: mike: Read "amNew" flag and don't render DELETE button.
-	  if  (! context.candidate.amNew){
-		  actionsBlock.appendChild(deleteButton);
-	      context.refs['pv-button-delete'] = deleteButton;
-	  }
-
+    actionsBlock.appendChild(deleteButton);
+    context.refs['pv-button-delete'] = deleteButton;
   }
   actionsBlock.appendChild(successButton);
 
@@ -422,11 +418,7 @@ const addPath = function _addPath (context, parentView, path) {
 
   if (context.refs['pv-list-paths'].length === 1 && !getName(context)) {
     const name = nodePath.basename(context.refs['pv-list-paths'][0]);
-	// @commit: mike: This chokes when we fill a path... lets just validate before setting.
-	if(context.refs['pv-input-name']){
-		context.refs['pv-input-name'].value = name;
-	}
-
+    context.refs['pv-input-name'].value = name;
   }
 
   const listItem = document.createElement('li');
@@ -751,12 +743,12 @@ const initialize = function _initialize (model, candidate) {
 
   actionsContainer.call(this, panelHeading);
   typeContainer.call(this, panelBody);
-  pathsContainer.call(this, panelBody); // @commit: mike: Put path and name up top... all the other stuff is candy.
   nameContainer.call(this, panelBody);
   sortByContainer.call(this, panelBody);
   iconContainer.call(this, panelBody);
   colorContainer.call(this, panelBody);
   optionsContainer.call(this, panelBody);
+  pathsContainer.call(this, panelBody);
   configContainer.call(this, panelBody);
   groupsContainer.call(this, panelBody);
 

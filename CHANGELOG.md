@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.5] - 2017-11-09
+
+### Fixed
+
+- Reverted ([#177](https://github.com/jccguimaraes/atom-project-viewer/pull/177)).
+
+## [1.2.4] - 2017-10-28
+
+### Fixed
+
+- Fix issue regarding ([#177](https://github.com/jccguimaraes/atom-project-viewer/pull/177)).
+
 ## [1.2.3] - 2017-10-28
 
 ### Added
