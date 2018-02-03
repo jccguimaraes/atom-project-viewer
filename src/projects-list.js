@@ -22,7 +22,10 @@ class ProjectsList extends ProjectsListView {
   }
 
   confirmSelection (item) {
-    getViewFromModel(item).openOnWorkspace();
+    const view = getViewFromModel(item);
+    if (view) {
+      view.openOnWorkspace();
+    }
     this.cancel();
   }
 }

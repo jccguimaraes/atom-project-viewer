@@ -125,7 +125,9 @@ const removeRule = function _removeRule (itemId) {
   Array.from(mapper.element.sheet.cssRules).forEach(
     function (cssRule, idx) {
       if (cssRule.selectorText ===  selectorText) {
-        mapper.element.sheet.deleteRule(idx);
+        if (mapper.element && mapper.element.sheet) {
+          mapper.element.sheet.deleteRule(idx);
+        }
         mapper.selectorTexts[itemId];
         mapper.rules[itemId];
       }

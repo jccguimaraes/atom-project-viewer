@@ -174,7 +174,7 @@ const config = {
     title: 'List of packages to reload',
     description: 'This is an attempt to reload any package that stays in the *limbo* of the context switching\n\nExample: pigments, colorio\n\n **Keep in mind that some packages could not work properly. If this happens, please contact me via a feature issue asking to investigate**',
     type: 'array',
-    default: ['status-bar', 'linter', 'linter-ui-default'],
+    default: [],
     items: {
       type: 'string'
     },
@@ -184,8 +184,8 @@ const config = {
     title: 'Show release notes on startup',
     type: 'object',
     properties: {
-      'v121': {
-        title: "for v1.2.1",
+      'v130': {
+        title: "for v1.3.0",
         type: 'boolean',
         default: true
       }

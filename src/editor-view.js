@@ -825,7 +825,9 @@ const createModel = function _createModel (type, changes) {
   }
   else {
     const mainView = document.querySelector('project-viewer');
-    mainView.attachChild(view);
+    if (mainView) {
+      mainView.attachChild(view);
+    }
   }
   return true;
 };

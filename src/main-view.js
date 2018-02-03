@@ -452,7 +452,11 @@ const viewMethods = {
   getDefaultLocation,
   getAllowedLocations,
   isPermanentDockItem,
-  getPreferredWidth: () => this.list.style.width = '200px'
+  getPreferredWidth: () => {
+    if (this.list && this.list.style) {
+      this.list.style.width = '200px';
+    }
+  }
 };
 
 const createView = function _createView (model) {
