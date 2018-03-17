@@ -1,3 +1,3 @@
 {
-  "v130": "## [1.3.0] - 2018-02-03\n\n### Fixed\n\n- Issues ([#187](https://github.com/jccguimaraes/atom-project-viewer/issues/187)), ([#186](https://github.com/jccguimaraes/atom-project-viewer/issues/186)), ([#182](https://github.com/jccguimaraes/atom-project-viewer/issues/182)), ([#166](https://github.com/jccguimaraes/atom-project-viewer/issues/166))."
+  "v131": "## [1.3.1] - 2018-03-17\n\n### Fixed\n\n- Issue ([#187](https://github.com/jccguimaraes/atom-project-viewer/issues/190)).\n\n### Removed\n\n- Annoying delay autohide width ([#187](https://github.com/jccguimaraes/atom-project-viewer/issues/190))."
 }

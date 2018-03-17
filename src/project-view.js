@@ -227,7 +227,7 @@ const checkIfOpened = function _checkIfOpened (event, model, title, opened, acti
   });
 };
 
-const openOnWorkspace = function _openOnWorkspace (reverseOption) {
+const openOnWorkspace = async function _openOnWorkspace (reverseOption) {
   const model = map.get(this);
 
   if (!model) { return false; }
@@ -276,7 +276,7 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
   if (projectSHA !== null) {
     if (atom.config.get('project-viewer.keepContext') || database.KEEP_CONTEXT) {
       database.KEEP_CONTEXT = false;
-      serialization = atom.getStorageFolder().load(projectSHA);
+      serialization = await atom.stateStore.load(projectSHA);
 
       // Ensure that the serialized file exists
       if (typeof serialization === 'undefined') {
@@ -287,14 +287,14 @@ const openOnWorkspace = function _openOnWorkspace (reverseOption) {
     }
 
     serialization.treeView = packages.treeView.getState();
-    atom.getStorageFolder().storeSync(projectSHA, serialization);
+    await atom.stateStore.save(projectSHA, serialization);
   }
 
   statusBar.update(model.breadcrumb());
 
   projectSHA = atom.getStateKey(model.paths);
 
-  const state = atom.getStorageFolder().load(projectSHA);
+  const state = await atom.stateStore.load(projectSHA);
 
   database.pathsChangedBypass = true;
 

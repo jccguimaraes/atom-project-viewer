@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.3.1] - 2018-03-17
+
+### Fixed
+
+- Issue ([#187](https://github.com/jccguimaraes/atom-project-viewer/issues/190)).
+
+### Removed
+
+- Annoying delay autohide width ([#187](https://github.com/jccguimaraes/atom-project-viewer/issues/190)).
+
 ## [1.3.0] - 2018-02-03
 
 ### Fixed

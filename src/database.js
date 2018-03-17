@@ -339,9 +339,9 @@ const addTo = function _addTo (model, protoModel) {
   return true;
 };
 
-const applyMigration03x = function _applyMigration03x (importedDB) {
+const applyMigration03x = async function _applyMigration03x (importedDB) {
 
-    const store03x = importedDB || atom.getStorageFolder().load(file);
+    const store03x = importedDB || await atom.stateStore.load(file);
 
     if (!store03x) {
         atom.notifications.addInfo('Old database file not found!', {
