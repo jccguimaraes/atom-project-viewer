@@ -184,8 +184,8 @@ const config = {
     title: 'Show release notes on startup',
     type: 'object',
     properties: {
-      'v131': {
-        title: "for v1.3.1",
+      'v140': {
+        title: "for v1.4.0",
         type: 'boolean',
         default: true
       }

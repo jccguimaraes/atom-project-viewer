@@ -6,7 +6,7 @@ const PACKAGE_NAME = 'Project-Viewer';
 const WORKSPACE_URI = 'atom://atom-project-viewer';
 let KEEP_CONTEXT = false;
 
-const version = '1.0.15';
+const version = '1.1.0';
 const file = 'project-viewer.json';
 const filepath = path.join(atom.getConfigDirPath(), file);
 let store = [];
@@ -484,6 +484,7 @@ const directoryWatcher = function _directoryWatcher (event, filename) {
 const directoryUnwatch = function _directoryUnwatch () {
   if (!watcher) { return; }
   watcher.close();
+  watcher = undefined;
 };
 
 /**

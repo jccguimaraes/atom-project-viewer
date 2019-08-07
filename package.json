@@ -13,8 +13,8 @@
   "repository": "https://github.com/jccguimaraes/atom-project-viewer",
   "license": "MIT",
   "engines": {
-    "node": ">=7.9.0",
-    "atom": ">=1.25.0"
+    "atom": ">=1.39.1",
+    "node": ">=10.2.0"
   },
   "dependencies": {
     "atom-select-list": "latest",
